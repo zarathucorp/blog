@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="radix" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+  <!--radix_placeholder_meta_tags-->
+<title>Zarathu Blog: Redefine Null Hypothesis</title>
+
+<meta property="description" itemprop="description" content="P value의 가장 큰 문제는 샘플 숫자만 늘리면 아무리 작은 차이라도 유의미한 결과로 만들 수 있다는 것입니다. 이는 대부분의 연구에서 차이가 정확히 0이라는 비현실적인 귀무가설을 사용하기 때문에 생기는 문제인데, 실제 차이가 정확히 0이라고 생각하는 사람은 아무도 없으며 아무도 주장하지 않는 것을 반박해 봐야 유용한 결론을 얻지 못합니다. 본 연구에서는 귀무가설에 uncertainty 개념을 추가하여 가설검정방법을 재정의하였습니다."/>
+
+<link rel="canonical" href="https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/"/>
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
+<link rel="icon" type="image/png" href="../../img/logo_favicon.png"/>
+
+<!--  https://schema.org/Article -->
+<meta property="article:published" itemprop="datePublished" content="2018-11-08"/>
+<meta property="article:created" itemprop="dateCreated" content="2018-11-08"/>
+<meta name="article:author" content="Jinseob Kim"/>
+
+<!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+<meta property="og:title" content="Zarathu Blog: Redefine Null Hypothesis"/>
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="P value의 가장 큰 문제는 샘플 숫자만 늘리면 아무리 작은 차이라도 유의미한 결과로 만들 수 있다는 것입니다. 이는 대부분의 연구에서 차이가 정확히 0이라는 비현실적인 귀무가설을 사용하기 때문에 생기는 문제인데, 실제 차이가 정확히 0이라고 생각하는 사람은 아무도 없으며 아무도 주장하지 않는 것을 반박해 봐야 유용한 결론을 얻지 못합니다. 본 연구에서는 귀무가설에 uncertainty 개념을 추가하여 가설검정방법을 재정의하였습니다."/>
+<meta property="og:url" content="https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/"/>
+<meta property="og:image" content="https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/figures/fig1-1.png"/>
+<meta property="og:image:width" content="3900"/>
+<meta property="og:image:height" content="2400"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:site_name" content="Zarathu Blog"/>
+
+<!--  https://dev.twitter.com/cards/types/summary -->
+<meta property="twitter:card" content="summary_large_image"/>
+<meta property="twitter:title" content="Zarathu Blog: Redefine Null Hypothesis"/>
+<meta property="twitter:description" content="P value의 가장 큰 문제는 샘플 숫자만 늘리면 아무리 작은 차이라도 유의미한 결과로 만들 수 있다는 것입니다. 이는 대부분의 연구에서 차이가 정확히 0이라는 비현실적인 귀무가설을 사용하기 때문에 생기는 문제인데, 실제 차이가 정확히 0이라고 생각하는 사람은 아무도 없으며 아무도 주장하지 않는 것을 반박해 봐야 유용한 결론을 얻지 못합니다. 본 연구에서는 귀무가설에 uncertainty 개념을 추가하여 가설검정방법을 재정의하였습니다."/>
+<meta property="twitter:url" content="https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/"/>
+<meta property="twitter:image" content="https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/figures/fig1-1.png"/>
+<meta property="twitter:image:width" content="3900"/>
+<meta property="twitter:image:height" content="2400"/>
+
+<!--  https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
+<meta name="citation_title" content="Zarathu Blog: Redefine Null Hypothesis"/>
+<meta name="citation_fulltext_html_url" content="https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/"/>
+<meta name="citation_fulltext_world_readable" content=""/>
+<meta name="citation_online_date" content="2018/11/08"/>
+<meta name="citation_publication_date" content="2018/11/08"/>
+<meta name="citation_author" content="Jinseob Kim"/>
+<meta name="citation_author_institution" content="ANPANMAN Co.,Ltd"/>
+<!--/radix_placeholder_meta_tags-->
+  
+  <meta name="citation_reference" content="citation_title=The art of always being right: Thirty-eight ways to win when you are defeated;citation_publication_date=2005;citation_publisher=CO CENTRAL BOOKS, 99 WALLIS RD, LONDON E9 5LN, ENGLAND;citation_author=A Goffey"/>
+  <meta name="citation_reference" content="citation_title=The asa’s statement on p-values: Context, process, and purpose;citation_publication_date=2016;citation_publisher=Taylor &amp; Francis;citation_volume=70;citation_doi=10.1080/00031305.2016.1154108;citation_author=Ronald L. Wasserstein;citation_author=Nicole A. Lazar"/>
+  <meta name="citation_reference" content="citation_title=Sir ronald fisher and the design of experiments;citation_publication_date=1964;citation_publisher=\[Wiley, International Biometric Society\];citation_volume=20;citation_issn=0006341X, 15410420;citation_author=F. Yates"/>
+  <meta name="citation_reference" content="citation_title=Null hypothesis testing: Problems, prevalence, and an alternative;citation_publication_date=2000;citation_publisher=\[Wiley, Wildlife Society\];citation_volume=64;citation_issn=0022541X, 19372817;citation_author=David R. Anderson;citation_author=Kenneth P. Burnham;citation_author=William L. Thompson"/>
+  <meta name="citation_reference" content="citation_title=Using effect size—or why the p value is not enough;citation_publication_date=2012;citation_publisher=The Accreditation Council for Graduate Medical Education Suite 2000, 515 North State Street, Chicago, IL 60654;citation_volume=4;citation_author=Gail M Sullivan;citation_author=Richard Feinn"/>
+  <meta name="citation_reference" content="citation_title=Sample size calculations;citation_publication_date=2011;citation_volume=118;citation_author=M. Noordzij;citation_author=F. W. Dekker;citation_author=C. Zoccali;citation_author=K. J. Jager"/>
+  <meta name="citation_reference" content="citation_title=P\&lt; 5$\times$ 10- 8 has emerged as a standard of statistical significance for genome-wide association studies;citation_publication_date=2015;citation_publisher=Elsevier;citation_volume=68;citation_author=Anne-Sophie Jannot;citation_author=Georg Ehret;citation_author=Thomas Perneger"/>
+  <meta name="citation_reference" content="citation_title=When to use the bonferroni correction;citation_publication_date=2014;citation_publisher=Wiley-Blackwell;citation_volume=34;citation_doi=10.1111/opo.12131;citation_author=Richard A. Armstrong"/>
+  <meta name="citation_reference" content="citation_title=T test as a parametric statistic;citation_publication_date=2015;citation_publisher=The Korean Society of Anesthesiologists;citation_volume=68;citation_issn=2005-6419;citation_author=Tae Kyun Kim"/>
+  <meta name="citation_reference" content="citation_title=Introduction to multivariate regression analysis;citation_publication_date=2010;citation_publisher=LITHOGRAPHIA Antoniadis I.-Psarras Th. G.P.;citation_volume=14;citation_issn=1108-4189;citation_author=EC Alexopoulos"/>
+  <meta name="citation_reference" content="citation_title=Simple linear regression;citation_publication_date=2015;citation_publisher=Nature Publishing Group, a division of Macmillan Publishers Limited. All Rights Reserved. SN -;citation_volume=12;citation_author=Naomi Altman;citation_author=Martin Krzywinski"/>
+  <meta name="citation_reference" content="citation_title=Conjugate bayesian analysis of the gaussian distribution;citation_publication_date=2007;citation_publisher=Techincal report;citation_author=Kevin P Murphy"/>
+  <meta name="citation_reference" content="citation_title=Controlling the false discovery rate: A practical and powerful approach to multiple testing;citation_publication_date=1995;citation_publisher=JSTOR;citation_author=Yoav Benjamini;citation_author=Yosef Hochberg"/>
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+<script type="text/json" id="radix-rmarkdown-metadata">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creative_commons","title","description","categories","author","date","output","bibliography","editor_options","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["CC BY"]},{"type":"character","attributes":{},"value":["Redefine Null Hypothesis"]},{"type":"character","attributes":{},"value":["P value의 가장 큰 문제는 샘플 숫자만 늘리면 아무리 작은 차이라도 유의미한 결과로 만들 수 있다는 것입니다. 이는 대부분의 연구에서 차이가 정확히 0이라는 비현실적인 귀무가설을 사용하기 때문에 생기는 문제인데, 실제 차이가 정확히 0이라고 생각하는 사람은 아무도 없으며 아무도 주장하지 않는 것을 반박해 봐야 유용한 결론을 얻지 못합니다. 본 연구에서는 귀무가설에 uncertainty 개념을 추가하여 가설검정방법을 재정의하였습니다."]},{"type":"character","attributes":{},"value":["article","statistics","r"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation","affiliation_url"]}},"value":[{"type":"character","attributes":{},"value":["Jinseob Kim"]},{"type":"character","attributes":{},"value":["https://github.com/jinseob2kim"]},{"type":"character","attributes":{},"value":["ANPANMAN Co.,Ltd"]},{"type":"character","attributes":{},"value":["https://www.anpanman.co.kr"]}]}]},{"type":"character","attributes":{},"value":["11-08-2018"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["radix::radix_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc","toc_depth"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[2]}]}]},{"type":"character","attributes":{},"value":["NewHypoTest.bib"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["chunk_output_type"]}},"value":[{"type":"character","attributes":{},"value":["console"]}]},{"type":"character","attributes":{},"value":["https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/"]},{"type":"character","attributes":{},"value":["https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/"]}]}
+</script>
+<!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["figures/fig1-1.png","figures/fig2-1.png","figures/fig3-1.png","figures/fig4-1.png","figures/fig5-1.png","figures/fig6-1.png","figures/unnamed-chunk-1-1.png","figures/unnamed-chunk-2-1.png","figures/unnamed-chunk-3-1.png","figures/unnamed-chunk-4-1.png","figures/unnamed-chunk-5-1.png","figures/unnamed-chunk-6-1.png","NewHypoTest.bib","redefinenullhypothesis_files/bowser-1.9.3/bowser.min.js","redefinenullhypothesis_files/distill-2.2.21/template.v2.js","redefinenullhypothesis_files/jquery-1.11.3/jquery.min.js","redefinenullhypothesis_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+
+<script type="application/javascript">
+
+  window.headroom_prevent_pin = false;
+
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+
+    // initialize headroom for banner
+    var header = $('header').get(0);
+    var headerHeight = header.offsetHeight;
+    var headroom = new Headroom(header, {
+      onPin : function() {
+        if (window.headroom_prevent_pin) {
+          window.headroom_prevent_pin = false;
+          headroom.unpin();
+        }
+      }
+    });
+    headroom.init();
+    if(window.location.hash)
+      headroom.unpin();
+    $(header).addClass('headroom--transition');
+
+    // offset scroll location for banner on hash change
+    // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
+    window.addEventListener("hashchange", function(event) {
+      window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
+    });
+
+    // responsive menu
+    $('.radix-site-header').each(function(i, val) {
+      var topnav = $(this);
+      var toggle = topnav.find('.nav-toggle');
+      toggle.on('click', function() {
+        topnav.toggleClass('responsive');
+      });
+    });
+
+    // nav dropdowns
+    $('.nav-dropbtn').click(function(e) {
+      $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
+      $(this).parent().siblings('.nav-dropdown')
+         .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $("body").click(function(e){
+      $('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $(".nav-dropdown").click(function(e){
+      e.stopPropagation();
+    });
+  });
+</script>
+
+<style type="text/css">
+
+/* Theme (user-documented overrideables for nav appearance) */
+
+.radix-site-nav {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: #455a64;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+.radix-site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.radix-site-nav a:hover {
+  color: white;
+}
+
+@media print {
+  .radix-site-nav {
+    display: none;
+  }
+}
+
+.radix-site-header {
+
+}
+
+.radix-site-footer {
+
+}
+
+
+/* Site Header */
+
+.radix-site-header {
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.radix-site-header .nav-left {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .radix-site-header .nav-left {
+    margin-left: 0;
+  }
+}
+
+
+.radix-site-header .nav-right {
+  float: right;
+  margin-right: 8px;
+}
+
+.radix-site-header a,
+.radix-site-header .title {
+  display: inline-block;
+  text-align: center;
+  padding: 14px 10px 14px 10px;
+}
+
+.radix-site-header .title {
+  font-size: 18px;
+}
+
+.radix-site-header .logo {
+  padding: 0;
+}
+
+.radix-site-header .logo img {
+  display: none;
+  max-height: 20px;
+  width: auto;
+  margin-bottom: -4px;
+}
+
+.radix-site-header .nav-image img {
+  max-height: 18px;
+  width: auto;
+  display: inline-block;
+  margin-bottom: -3px;
+}
+
+
+
+@media screen and (min-width: 1000px) {
+  .radix-site-header .logo img {
+    display: inline-block;
+  }
+  .radix-site-header .nav-left {
+    margin-left: 20px;
+  }
+  .radix-site-header .nav-right {
+    margin-right: 20px;
+  }
+  .radix-site-header .title {
+    padding-left: 12px;
+  }
+}
+
+
+.radix-site-header .nav-toggle {
+  display: none;
+}
+
+.nav-dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.nav-dropdown .nav-dropbtn {
+  border: none;
+  outline: none;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 16px 10px;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+  margin-top: 1px;
+  z-index: 2;
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 200px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+  z-index: 1;
+  margin-top: 2px;
+  white-space: nowrap;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.nav-dropdown-content hr {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-dropdown-active {
+  display: block;
+}
+
+.nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
+  color: black;
+  padding: 6px 24px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.nav-dropdown-content .nav-dropdown-header {
+  display: block;
+  padding: 5px 24px;
+  padding-bottom: 0;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #999999;
+  white-space: nowrap;
+}
+
+.nav-dropdown:hover .nav-dropbtn {
+  color: white;
+}
+
+.nav-dropdown-content a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.nav-right .nav-dropdown-content {
+  margin-left: -45%;
+  right: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .radix-site-header a, .radix-site-header .nav-dropdown  {display: none;}
+  .radix-site-header a.nav-toggle {
+    float: right;
+    display: block;
+  }
+  .radix-site-header .title {
+    margin-left: 0;
+  }
+  .radix-site-header .nav-right {
+    margin-right: 0;
+  }
+  .radix-site-header {
+    overflow: hidden;
+  }
+  .nav-right .nav-dropdown-content {
+    margin-left: 0;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .radix-site-header.responsive {position: relative;}
+  .radix-site-header.responsive a.nav-toggle {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .radix-site-header.responsive a,
+  .radix-site-header.responsive .nav-dropdown {
+    display: block;
+    text-align: left;
+  }
+  .radix-site-header.responsive .nav-left,
+  .radix-site-header.responsive .nav-right {
+    width: 100%;
+  }
+  .radix-site-header.responsive .nav-dropdown {float: none;}
+  .radix-site-header.responsive .nav-dropdown-content {position: relative;}
+  .radix-site-header.responsive .nav-dropdown .nav-dropbtn {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* Site Footer */
+
+.radix-site-footer {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  z-index: 3;
+  margin-top: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  text-align: center;
+}
+
+/* Headroom */
+
+d-title {
+  padding-top: 6rem;
+}
+
+@media print {
+  d-title {
+    padding-top: 4rem;
+  }
+}
+
+.headroom {
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.headroom--transition {
+  transition: all .4s ease-in-out;
+}
+
+.headroom--unpinned {
+  top: -100px;
+}
+
+.headroom--pinned {
+  top: 0;
+}
+
+</style>
+
+<link href="../../site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
+<link href="../../site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
+<script src="../../site_libs/headroom-0.9.4/headroom.min.js"></script>
+<!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+<style type="text/css">
+
+body {
+  background-color: white;
+}
+
+.pandoc-table {
+  width: 100%;
+}
+
+.pandoc-table>caption {
+  margin-bottom: 10px;
+}
+
+.pandoc-table th:not([align]) {
+  text-align: left;
+}
+
+.pagedtable-footer {
+  font-size: 15px;
+}
+
+.html-widget {
+  margin-bottom: 2.0em;
+}
+
+.l-screen-inset {
+  padding-right: 16px;
+}
+
+.l-screen .caption {
+  margin-left: 10px;
+}
+
+.shaded {
+  background: rgb(247, 247, 247);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .html-widget {
+  margin-bottom: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .shaded-content {
+  background: white;
+}
+
+.text-output {
+  margin-top: 0;
+  line-height: 1.5em;
+}
+
+.hidden {
+  display: none !important;
+}
+
+d-article {
+  padding-bottom: 30px;
+}
+
+d-appendix {
+  padding-top: 30px;
+}
+
+d-article>p>img {
+  width: 100%;
+}
+
+d-article iframe {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 2.0em;
+  width: 100%;
+}
+
+figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+/* CSS for table of contents */
+
+.d-toc {
+  color: rgba(0,0,0,0.8);
+  font-size: 0.8em;
+  line-height: 1em;
+}
+
+.d-toc-header {
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 1.3em;
+}
+
+.d-toc a {
+  border-bottom: none;
+}
+
+.d-toc ul {
+  padding-left: 0;
+}
+
+.d-toc li>ul {
+  padding-top: 0.8em;
+  padding-left: 16px;
+  margin-bottom: 0.6em;
+}
+
+.d-toc ul,
+.d-toc li {
+  list-style-type: none;
+}
+
+.d-toc li {
+  margin-bottom: 0.9em;
+}
+
+.d-toc-separator {
+  margin-top: 20px;
+  margin-bottom: 2em;
+}
+
+.d-article-with-toc {
+  border-top: none;
+  padding-top: 0;
+}
+
+
+
+/* Tweak code blocks (note that this CSS is repeated above in an injection
+   into the d-code shadow dom) */
+
+d-code {
+  overflow-x: auto !important;
+}
+
+pre.d-code code.d-code {
+  padding-left: 10px;
+  font-size: 12px;
+  border-left: 2px solid rgba(0,0,0,0.1);
+}
+
+pre.text-output {
+
+  font-size: 12px;
+  color: black;
+  background: none;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+@media(min-width: 768px) {
+
+d-code {
+  overflow-x: visible !important;
+}
+
+pre.d-code code.d-code  {
+    padding-left: 18px;
+    font-size: 14px;
+}
+pre.text-output {
+  font-size: 14px;
+}
+}
+
+/* Figure */
+
+.figure {
+  position: relative;
+  margin-bottom: 2.5em;
+  margin-top: 1.5em;
+}
+
+.figure img {
+  width: 100%;
+}
+
+.figure .caption {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+.figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.figure .caption a {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.figure .caption b,
+.figure .caption strong, {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 1.0);
+}
+
+
+
+/* Tweak 1000px media break to show more text */
+
+@media(min-width: 1000px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 16px;
+  }
+
+  .grid {
+    grid-column-gap: 16px;
+  }
+
+  d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+  }
+  figure .caption, .figure .caption, figure figcaption {
+    font-size: 13px;
+  }
+}
+
+@media(min-width: 1180px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 32px;
+  }
+
+  .grid {
+    grid-column-gap: 32px;
+  }
+}
+
+
+/* Get the citation styles for the appendix (not auto-injected on render since
+   we do our own rendering of the citation appendix) */
+
+d-appendix .citation-appendix,
+.d-appendix .citation-appendix {
+  font-size: 11px;
+  line-height: 15px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  padding-left: 18px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.02);
+  padding: 10px 18px;
+  border-radius: 3px;
+  color: rgba(150, 150, 150, 1);
+  overflow: hidden;
+  margin-top: -12px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+
+/* Social footer */
+
+.social_footer {
+  margin-top: 30px;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.67);
+}
+
+.disqus-comments {
+  margin-right: 30px;
+}
+
+.disqus-comment-count {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+#disqus_thread {
+  margin-top: 30px;
+}
+
+.article-sharing a {
+  border-bottom: none;
+  margin-right: 8px;
+}
+
+.article-sharing a:hover {
+  border-bottom: none;
+}
+
+.sidebar-section.subscribe {
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+.subscribe p {
+  margin-bottom: 0.5em;
+}
+
+
+.article-footer .subscribe {
+  font-size: 15px;
+  margin-top: 45px;
+}
+
+
+/* Improve display for browsers without grid (IE/Edge <= 15) */
+
+.downlevel {
+  line-height: 1.6em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+}
+
+.downlevel .d-title {
+  padding-top: 6rem;
+  padding-bottom: 1.5rem;
+}
+
+.downlevel .d-title h1 {
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.1em;
+  margin: 0 0 0.5rem;
+}
+
+.downlevel .d-title p {
+  font-weight: 300;
+  font-size: 1.2rem;
+  line-height: 1.55em;
+  margin-top: 0;
+}
+
+.downlevel .d-byline {
+  padding-top: 0.8em;
+  padding-bottom: 0.8em;
+  font-size: 0.8rem;
+  line-height: 1.8em;
+}
+
+.downlevel .section-separator {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.downlevel .d-article {
+  font-size: 1.06rem;
+  line-height: 1.7em;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+
+.downlevel .d-appendix {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: none;
+  font-size: 0.8em;
+  line-height: 1.7em;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.5);
+  padding-top: 40px;
+  padding-bottom: 48px;
+}
+
+.downlevel .footnotes ol {
+  padding-left: 13px;
+}
+
+.downlevel .base-grid,
+.downlevel .distill-header,
+.downlevel .d-title,
+.downlevel .d-abstract,
+.downlevel .d-article,
+.downlevel .d-appendix,
+.downlevel .distill-appendix,
+.downlevel .d-byline,
+.downlevel .d-footnote-list,
+.downlevel .d-citation-list,
+.downlevel .distill-footer,
+.downlevel .appendix-bottom,
+.downlevel .posts-container {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+@media(min-width: 768px) {
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+  padding-left: 150px;
+  padding-right: 150px;
+  max-width: 900px;
+}
+}
+
+.downlevel pre code {
+  display: block;
+  border-left: 2px solid rgba(0, 0, 0, .1);
+  padding: 0 0 0 20px;
+  font-size: 14px;
+}
+
+.downlevel code, .downlevel pre {
+  color: black;
+  background: none;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+</style>
+
+<script type="application/javascript">
+
+function is_downlevel_browser() {
+  if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                 window.navigator.userAgent)) {
+    return true;
+  } else {
+    return window.load_distill_framework === undefined;
+  }
+}
+
+// show body when load is complete
+function on_load_complete() {
+
+  // set body to visible
+  document.body.style.visibility = 'visible';
+
+  // force redraw for leaflet widgets
+  if (window.HTMLWidgets) {
+    var maps = window.HTMLWidgets.findAll(".leaflet");
+    $.each(maps, function(i, el) {
+      var map = this.getMap();
+      map.invalidateSize();
+      map.eachLayer(function(layer) {
+        if (layer instanceof L.TileLayer)
+          layer.redraw();
+      });
+    });
+  }
+
+  // trigger 'shown' so htmlwidgets resize
+  $('d-article').trigger('shown');
+}
+
+function init_distill() {
+
+  init_common();
+
+  // create front matter
+  var front_matter = $('<d-front-matter></d-front-matter>');
+  $('#distill-front-matter').wrap(front_matter);
+
+  // create d-title
+  $('.d-title').changeElementType('d-title');
+
+  // create d-byline
+  var byline = $('<d-byline></d-byline>');
+  $('.d-byline').replaceWith(byline);
+
+  // create d-article
+  var article = $('<d-article></d-article>');
+  $('.d-article').wrap(article).children().unwrap();
+
+  // move posts container into article
+  $('.posts-container').appendTo($('d-article'));
+
+  // create d-appendix
+  $('.d-appendix').changeElementType('d-appendix');
+
+  // create d-bibliography
+  var bibliography = $('<d-bibliography></d-bibliography>');
+  $('#distill-bibliography').wrap(bibliography);
+
+  // flag indicating that we have appendix items
+  var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+  // replace citations with <d-cite>
+  $('.citation').each(function(i, val) {
+    appendix = true;
+    var cites = $(this).attr('data-cites').split(" ");
+    var dt_cite = $('<d-cite></d-cite>');
+    dt_cite.attr('key', cites.join());
+    $(this).replaceWith(dt_cite);
+  });
+  // remove refs
+  $('#refs').remove();
+
+  // replace footnotes with <d-footnote>
+  $('.footnote-ref').each(function(i, val) {
+    appendix = true;
+    var href = $(this).attr('href');
+    var id = href.replace('#', '');
+    var fn = $('#' + id);
+    var fn_p = $('#' + id + '>p');
+    fn_p.find('.footnote-back').remove();
+    var text = fn_p.html();
+    var dtfn = $('<d-footnote></d-footnote>');
+    dtfn.html(text);
+    $(this).replaceWith(dtfn);
+  });
+  // remove footnotes
+  $('.footnotes').remove();
+
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    var id = $(this).attr('id');
+    $('.d-toc a[href="#' + id + '"]').parent().remove();
+    appendix = true;
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+  });
+
+  // show d-appendix if we have appendix content
+  $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+  // replace code blocks with d-code
+  $('pre>code').each(function(i, val) {
+    var code = $(this);
+    var pre = code.parent();
+    var clz = "";
+    var language = pre.attr('class');
+    if (language) {
+      // map unknown languages to "clike" (without this they just dissapear)
+      if ($.inArray(language, ["bash", "clike", "css", "go", "html",
+                               "javascript", "js", "julia", "lua", "markdown",
+                               "markup", "mathml", "python", "svg", "xml"]) == -1)
+        language = "clike";
+      language = ' language="' + language + '"';
+      var dt_code = $('<d-code block' + language + clz + '></d-code>');
+      dt_code.text(code.text());
+      pre.replaceWith(dt_code);
+    } else {
+      code.addClass('text-output').unwrap().changeElementType('pre');
+    }
+  });
+
+  // localize layout chunks to just output
+  $('.layout-chunk').each(function(i, val) {
+
+    // capture layout
+    var layout = $(this).attr('data-layout');
+
+    // apply layout to markdown level block elements
+    var elements = $(this).children().not('d-code, pre.text-output, script');
+    elements.each(function(i, el) {
+      var layout_div = $('<div class="' + layout + '"></div>');
+      if (layout_div.hasClass('shaded')) {
+        var shaded_content = $('<div class="shaded-content"></div>');
+        $(this).wrap(shaded_content);
+        $(this).parent().wrap(layout_div);
+      } else {
+        $(this).wrap(layout_div);
+      }
+    });
+
+
+    // unwrap the layout-chunk div
+    $(this).children().unwrap();
+  });
+
+  // load distill framework
+  load_distill_framework();
+
+  // wait for window.distillRunlevel == 4 to do post processing
+  function distill_post_process() {
+
+    if (!window.distillRunlevel || window.distillRunlevel < 4)
+      return;
+
+    // hide author/affiliations entirely if we have no authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+    if (!have_authors)
+      $('d-byline').addClass('hidden');
+
+    // table of contents
+    if (have_authors) // adjust border if we are in authors
+      $('.d-toc').parent().addClass('d-article-with-toc');
+
+    // strip links that point to #
+    $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+    // hide elements of author/affiliations grid that have no value
+    function hide_byline_column(caption) {
+      $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+    }
+
+    // affiliations
+    var have_affiliations = false;
+    for (var i = 0; i<front_matter.authors.length; ++i) {
+      var author = front_matter.authors[i];
+      if (author.affiliation !== "&nbsp;") {
+        have_affiliations = true;
+        break;
+      }
+    }
+    if (!have_affiliations)
+      $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+    // published date
+    if (!front_matter.publishedDate)
+      hide_byline_column("Published");
+
+    // document object identifier
+    var doi = $('d-byline').find('h3:contains("DOI")');
+    var doi_p = doi.next().empty();
+    if (!front_matter.doi) {
+      // if we have a citation and valid citationText then link to that
+      if ($('#citation').length > 0 && front_matter.citationText) {
+        doi.html('Citation');
+        $('<a href="#citation"></a>')
+          .text(front_matter.citationText)
+          .appendTo(doi_p);
+      } else {
+        hide_byline_column("DOI");
+      }
+    } else {
+      $('<a></a>')
+         .attr('href', "https://doi.org/" + front_matter.doi)
+         .html(front_matter.doi)
+         .appendTo(doi_p);
+    }
+
+     // change plural form of authors/affiliations
+    if (front_matter.authors.length === 1) {
+      var grid = $('.authors-affiliations');
+      grid.children('h3:contains("Authors")').text('Author');
+      grid.children('h3:contains("Affiliations")').text('Affiliation');
+    }
+
+    // inject pre code styles (can't do this with a global stylesheet b/c a shadow root is used)
+    $('d-code').each(function(i, val) {
+      var style = document.createElement('style');
+      style.innerHTML = 'pre code { padding-left: 10px; font-size: 12px; border-left: 2px solid rgba(0,0,0,0.1); } ' +
+                        '@media(min-width: 768px) { pre code { padding-left: 18px; font-size: 14px; } }';
+      if (this.shadowRoot)
+        this.shadowRoot.appendChild(style);
+    });
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // clear polling timer
+    clearInterval(tid);
+
+    // show body now that everything is ready
+    on_load_complete();
+  }
+
+  var tid = setInterval(distill_post_process, 50);
+  distill_post_process();
+
+}
+
+function init_downlevel() {
+
+  init_common();
+
+   // insert hr after d-title
+  $('.d-title').after($('<hr class="section-separator"/>'));
+
+  // check if we have authors
+  var front_matter = JSON.parse($("#distill-front-matter").html());
+  var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+  // manage byline/border
+  if (!have_authors)
+    $('.d-byline').remove();
+  $('.d-byline').after($('<hr class="section-separator"/>'));
+  $('.d-byline a').remove();
+
+  // remove toc
+  $('.d-toc-header').remove();
+  $('.d-toc').remove();
+  $('.d-toc-separator').remove();
+
+  // move appendix elements
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+  });
+
+
+  // inject headers into references and footnotes
+  var refs_header = $('<h3></h3>');
+  refs_header.text('References');
+  $('#refs').prepend(refs_header);
+
+  var footnotes_header = $('<h3></h3');
+  footnotes_header.text('Footnotes');
+  $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+  // move appendix-bottom entries to the bottom
+  $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+  $('.appendix-bottom').remove();
+
+  // remove appendix if it's empty
+  if ($('.d-appendix').children().length === 0)
+    $('.d-appendix').remove();
+
+  // prepend separator above appendix
+  $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+  // trim code
+  $('pre>code').each(function(i, val) {
+    $(this).html($.trim($(this).html()));
+  });
+
+  // move posts-container right before article
+  $('.posts-container').insertBefore($('.d-article'));
+
+  $('body').addClass('downlevel');
+
+  on_load_complete();
+}
+
+
+function init_common() {
+
+  // jquery plugin to change element types
+  (function($) {
+    $.fn.changeElementType = function(newType) {
+      var attrs = {};
+
+      $.each(this[0].attributes, function(idx, attr) {
+        attrs[attr.nodeName] = attr.nodeValue;
+      });
+
+      this.replaceWith(function() {
+        return $("<" + newType + "/>", attrs).append($(this).contents());
+      });
+    };
+  })(jQuery);
+
+  // prevent underline for linked images
+  $('a > img').parent().css({'border-bottom' : 'none'});
+
+  // mark non-body figures created by knitr chunks as 100% width
+  $('.layout-chunk').each(function(i, val) {
+    var figures = $(this).find('img, .html-widget');
+    if ($(this).attr('data-layout') !== "l-body") {
+      figures.css('width', '100%');
+    } else {
+      figures.css('max-width', '100%');
+      figures.filter("[width]").each(function(i, val) {
+        var fig = $(this);
+        fig.css('width', fig.attr('width') + 'px');
+      });
+
+    }
+  });
+
+  // auto-append index.html to post-preview links in file: protocol
+  // and in rstudio ide preview
+  $('.post-preview').each(function(i, val) {
+    if (window.location.protocol === "file:")
+      $(this).attr('href', $(this).attr('href') + "index.html");
+  });
+
+  // get rid of index.html references in header
+  if (window.location.protocol !== "file:") {
+    $('.radix-site-header a[href]').each(function(i,val) {
+      $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+    });
+  }
+
+  // add class to pandoc style tables
+  $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+  $('.kable-table').children('table').addClass('pandoc-table');
+
+  // add figcaption style to table captions
+  $('caption').parent('table').addClass("figcaption");
+
+  // initialize posts list
+  if (window.init_posts_list)
+    window.init_posts_list();
+
+  // implmement disqus comment link
+  $('.disqus-comment-count').click(function() {
+    window.headroom_prevent_pin = true;
+    $('#disqus_thread').toggleClass('hidden');
+    if (!$('#disqus_thread').hasClass('hidden')) {
+      var offset = $(this).offset();
+      $(window).resize();
+      $('html, body').animate({
+        scrollTop: offset.top - 35
+      });
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (is_downlevel_browser())
+    init_downlevel();
+  else
+    window.addEventListener('WebComponentsReady', init_distill);
+});
+
+</script>
+
+<!--/radix_placeholder_distill-->
+  <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
+  <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="../../site_libs/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-122112532-3"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-122112532-3');
+</script>
+<!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"Redefine Null Hypothesis","description":"P value의 가장 큰 문제는 샘플 숫자만 늘리면 아무리 작은 차이라도 유의미한 결과로 만들 수 있다는 것입니다. 이는 대부분의 연구에서 차이가 정확히 0이라는 비현실적인 귀무가설을 사용하기 때문에 생기는 문제인데, 실제 차이가 정확히 0이라고 생각하는 사람은 아무도 없으며 아무도 주장하지 않는 것을 반박해 봐야 유용한 결론을 얻지 못합니다. 본 연구에서는 귀무가설에 uncertainty 개념을 추가하여 가설검정방법을 재정의하였습니다.","authors":[{"author":"Jinseob Kim","authorURL":"https://github.com/jinseob2kim","affiliation":"ANPANMAN Co.,Ltd","affiliationURL":"https://www.anpanman.co.kr"}],"publishedDate":"2018-11-08T00:00:00.000+09:00","citationText":"Kim, 2018"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<header class="header header--fixed" role="banner">
+<nav class="radix-site-nav radix-site-header">
+<div class="nav-left">
+<span class="logo">
+<img src="../../img/logo.png"/>
+</span>
+<a href="../../index.html" class="title">Zarathu Official Blog</a>
+</div>
+<div class="nav-right">
+<a href="../../index.html">Home</a>
+<a href="http://app.zarathu.com/">Applications</a>
+<div class="nav-dropdown">
+<button class="nav-dropbtn">
+R packages
+ 
+<span class="down-arrow">&#x25BE;</span>
+</button>
+<div class="nav-dropdown-content">
+<a href="https://jinseob2kim.github.io/jstable/">jstable</a>
+<a href="https://jinseob2kim.github.io/jskm/">jskm</a>
+<a href="https://jinseob2kim.github.io/jsmodule/">jsmodule</a>
+</div>
+</div>
+<a href="../../contributors.html">Contributors</a>
+<a href="../../index.xml">
+<i class="fa fa-rss"></i>
+</a>
+<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
+</div>
+</nav>
+</header>
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>Redefine Null Hypothesis</h1>
+<p>P value의 가장 큰 문제는 샘플 숫자만 늘리면 아무리 작은 차이라도 유의미한 결과로 만들 수 있다는 것입니다. 이는 대부분의 연구에서 차이가 정확히 0이라는 비현실적인 귀무가설을 사용하기 때문에 생기는 문제인데, 실제 차이가 정확히 0이라고 생각하는 사람은 아무도 없으며 아무도 주장하지 않는 것을 반박해 봐야 유용한 결론을 얻지 못합니다. 본 연구에서는 귀무가설에 uncertainty 개념을 추가하여 가설검정방법을 재정의하였습니다.</p>
+</div>
+
+<div class="d-byline">
+  Jinseob Kim <a href="https://github.com/jinseob2kim" class="uri">https://github.com/jinseob2kim</a> (ANPANMAN Co.,Ltd)<a href="https://www.anpanman.co.kr" class="uri">https://www.anpanman.co.kr</a>
+  
+<br/>11-08-2018
+</div>
+
+<div class="d-article">
+<h3 class="d-toc-header">Table of Contents</h3>
+<nav class="d-toc" id="TOC">
+<ul>
+<li><a href="#abstract">Abstract</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#basic-concept">Basic Concept</a></li>
+<li><a href="#extend-to-other-statistics">Extend to Other Statistics</a></li>
+<li><a href="#new-approach-for-multiple-comparison-uncertainty-control">New Approach for Multiple Comparison: Uncertainty control</a></li>
+<li><a href="#discussion">Discussion</a></li>
+</ul>
+</nav>
+<hr class="d-toc-separator"/>
+<p>본 연구는 <a href="https://github.com/jinseob2kim">김진섭</a> 대표가 계획했던 연구로, 결과적으로 학술지 게재에 실패했다는 것을 미리 알려드립니다.</p>
+<h2 id="abstract">Abstract</h2>
+<p>통계적 가설검정에서 광범위하게 이용되는 <span class="math inline">\(p\)</span>-value는 샘플 숫자만 늘리면, 아무리 작은 차이라도 유의미한 결과로 해석되는 문제가 있다. 이것은 대부분의 연구에서 차이 또는 효과가 정확히 0이라는 비현실적인 귀무가설을 사용하기 때문에 발생하는 문제이며, 실제 차이가 0.0000001이라도 정확히 0만 아니라면 샘플 수만 늘려도 결국 <span class="math inline">\(p &lt;0.05\)</span>인 유의한 결과를 얻을 수 있다. 그러나 실제 차이가 정확히 0이라고 생각하는 사람은 아무도 없으며, 아무도 주장하지 않는 것을 반박해 봐야 유용한 결론을 얻지 못한다. 이에 본 연구에서는 귀무가설에 uncertainty 개념을 추가하여 가설검정방법을 재정의하였고, 이 방법에 따른 새로운 <span class="math inline">\(p\)</span>-value가 기존의 <span class="math inline">\(p\)</span>-value와 effect size를 종합한 지표로서 지나치게 작은 차이를 유의한 결과로 해석하는 문제를 해결할 수 있음을 보였다. 한편 다중비교에서 검정할 가설의 갯수가 증가하는 것을 각 가설의 uncertainty가 증가하는 것으로 재해석할 수 있었고, 이 접근법이 기존의 family-wise error rate(FWER), false discovery rate(FDR) control이 지나치게 큰 sample size를 필요로 하는 단점을 보완할 수 있었다. 이 새로운 가설검정방법이 기존 가설검정의 단점을 극복한 새로운 표준이 될 것으로 기대한다.</p>
+<h2 id="introduction">Introduction</h2>
+<p>통계적 가설검정은 물리학, 생물학, 의학 등의 자연과학뿐만 아니라 경제학, 심리학 등의 사회과학에서도 어떤 주장을 하기위한 필수적인 도구로 이용되며 핵심 개념은 가설검정(hypothesis test)이다<span class="citation" data-cites="anderson2000null">(Anderson, Burnham, and Thompson <a href="#ref-anderson2000null">2000</a>)</span>. R.A Fisher에 의해 처음으로 사용된 귀무가설(null hypothesis)은 반박하려는 가설로 이용되며, 이 가설 하에서 일어날 확률이 낮은 사건을 제시함으로서 이것이 틀렸음을 설명하는데, 이는 수학의 증명법 중 하나인 귀류법과 비슷하다<span class="citation" data-cites="10.2307/2528399">(Yates <a href="#ref-10.2307/2528399">1964</a>)</span>. 여기서 일어날 확률이 낮은 사건을 정량적으로 표현하는 것이 <span class="math inline">\(p\)</span>-value이며 흔히 기준이 되는 <span class="math inline">\(p &lt;0.05\)</span>는 연구의 결과보다 더 극단적인 사건이 발생할 확률이 5%미만임을 의미한다<span class="citation" data-cites="ronald2016asa">(Wasserstein and Lazar <a href="#ref-ronald2016asa">2016</a>)</span>.</p>
+<p><span class="math inline">\(p &lt;0.05\)</span>는 지금까지 과학 연구에서 새로운 발견의 절대적인 기준으로 이용되었는데, 이에 대한 비판도 꾸준히 제시되어 왔으며 최근에는 유의성의 기준을 0.05에서 0.005로 바꿔야한다는 주장까지 나왔다<span class="citation" data-cites="doi:10.1001/jama.2018.1536 anderson2000null Benjamin2018 ronald2016asa">(JA <a href="#ref-doi:10.1001/jama.2018.1536">2018</a>; Anderson, Burnham, and Thompson <a href="#ref-anderson2000null">2000</a>; Benjamin et al. <a href="#ref-Benjamin2018">2018</a>; Wasserstein and Lazar <a href="#ref-ronald2016asa">2016</a>)</span>. 그러나 <span class="math inline">\(p\)</span>-value의 개념은 그대로 두고 유의수준만 낮추는 것은 지금부터 언급할 가설검정법의 근본적인 문제를 해결하지 못한 임시방편에 불과하다.</p>
+<p>본 연구자들은 비현실적인 귀무가설을 가설검정법의 근본적인 문제로 판단한다. 철학자 쇼펜하우어는 <strong>논쟁에서 이기는 38가지 비법</strong>이라는 책에서 <strong>상대방의 주장을 단순화하라</strong>고 주장했는데, 가설검정에서도 귀무가설은 명확하게 제시하는 것이 원칙이며(예: <span class="math inline">\(\mu =0\)</span>), 가설이 명확해야 그것을 반박하기도 쉽다<span class="citation" data-cites="goffey2005art">(Goffey <a href="#ref-goffey2005art">2005</a>)</span>. 그러나 명확한 귀무가설은 현실에서는 존재하지 않는다. 예를 들어 어떤 값이 정확히 0이라고 주장하는 사람이 있을까? 대부분은 어느 정도 uncertainty를 마음속에 갖고 있으며 실제 측정값이 0.0000001이기 때문에 값이 0이라는 가설은 틀렸다고 주장한다면 설득력을 얻기 어렵다. 그러나 현재의 가설검정방법은 uncertainty가 전혀 없는 명확한 귀무가설을 사용하기 때문에 실제 측정값과 가정의 차이가 아무리 작아도 샘플수만 커지면 결국은 <span class="math inline">\(p &lt; 0.05\)</span>인 결과를 얻을 수 있고, 이는 유의수준을 아무리 올려도 마찬가지이다. 예를 들어 Two-sided <span class="math inline">\(z\)</span>-test의 검정통계량은 <span class="math inline">\(z=\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}\)</span> 꼴인데 <span class="math inline">\(\bar{X}-\mu\)</span>가 0만 아니라면 <span class="math inline">\(n\)</span>을 늘려서 <span class="math inline">\(p\)</span>값을 무한히 0에 가깝게 만들 수 있다. 이에 <span class="math inline">\(p\)</span>-value와 별개로 실제 차이값도 살펴봐야 한다는 주장이 제기되었는데, 이 차이를 표준화한 개념이 effect size로 원래도 required sample size를 계산할 때 이용하는 지표이며, 흔히 차이를 표준편차로 나눈 값을 사용한다<span class="citation" data-cites="sullivan2012using">(Sullivan and Feinn <a href="#ref-sullivan2012using">2012</a>)</span>. 이처럼 현실적인 귀무가설을 설정하는 것은 그 자체로 중요한 것 뿐만 아니라 effect size를 고려하는 것과도 연결되어 있지만 이것을 개념화한 이론이 없어 실제 연구설계에 반영되기 어렵다.</p>
+<p>이에 저자는 uncertainty를 포함한 귀무가설과 이것을 이용한 가설검정방법을 제안할 것이며 이를 통해 계산된 새로운 <span class="math inline">\(p\)</span>-value가 기존 <span class="math inline">\(p\)</span>-value와 effect size를 종합적으로 고려할 수 있는 지표임을 보일 것이다. 현실적인 귀무가설을 설정하는 것이 effect size를 고려하는 것과 직접적으로 연결되어 있음을 보임으로서 가설검정 시 effect size를 고려해야 하는 이유에 대한 이론적 배경을 탄탄히 할 수 있으며, 새로운 <span class="math inline">\(p\)</span>를 기준으로 유의수준을 설정하면 샘플수의 힘만으로 작은 차이를 유의한 결과로 해석하는 것을 방지할 수 있다. 간단한 Two-sided <span class="math inline">\(z\)</span>-test를 예로 들어 개념을 정리 한 후 다른 test로 확장할 것이며, 마지막으로 이 개념을 다중비교에 활용하여 새로운 다중비교법을 제안하고 FWER, FDR control방법과 비교해 보겠다.</p>
+<h2 id="basic-concept">Basic Concept</h2>
+<h3 id="brief-review-of-hypothesis-test">Brief Review of Hypothesis Test</h3>
+<p>평균은 모르고 분산이 <span class="math inline">\(\sigma^2\)</span>인 모집단에서 <span class="math inline">\(n\)</span>개의 샘플 <span class="math inline">\(X_1, X_2, \cdots, X_n\)</span>을 뽑아 모평균이 <span class="math inline">\(\mu_0\)</span>인지 가설검정을 한다고 하자. 기존에는 귀무가설 <span class="math inline">\(H_0\)</span>를 <span class="math inline">\(\mu = \mu_0\)</span>로 설정한 후, 이 가정 하에서 <span class="math inline">\(\bar{X}\sim N(\mu_0, \frac{\sigma^2}{n})\)</span>임을 이용해서(<span class="math inline">\(n\)</span>이 적당히 클 때 중심극한정리) <span class="math inline">\((\bar{X}-\mu_0)\sim N(0,\frac{\sigma^2}{n})\)</span>을 얻을 수 있으며 검정통계량은 아래와 같이 표현된다.</p>
+<p><span class="math display">\[ z= \dfrac{\bar{X}-\mu_0}{\sigma/\sqrt{n}} \sim N(0,1)\]</span></p>
+<p>Two-sided test라면 <span class="math inline">\(z\)</span>값이 1.96보다 크거나 -1.96보다 작을 때 <span class="math inline">\(p &lt;0.05\)</span>로 유의한 결과로 판단한다. 한편, <span class="math inline">\(\bar{X}-\mu_0\)</span>이 딱 0만 아니라면 <span class="math inline">\(n\)</span>이 무한히 커질 때 <span class="math inline">\(z\)</span>도 무한히 커져 어떠한 <span class="math inline">\(p\)</span>-value 기준으로도 유의한 결과가 되는 문제가 있다.</p>
+<h3 id="null-hypothesis-with-uncertainty">Null hypothesis with uncertainty</h3>
+<p>위의 귀무가설에 uncertainty 개념을 추가해 보자. <span class="math inline">\(H_0: \mu \sim N(\mu_0,\tau^2)\)</span>는 모평균이 <span class="math inline">\(\mu_0\)</span>이라고 생각하지만 <span class="math inline">\(\tau\)</span>정도의 uncertainty를 갖고 있다는 뜻으로 <span class="math inline">\(\tau=0\)</span>이면 기존의 귀무가설과 일치한다(Figure <a href="#fig:fig1">1</a>).</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span id="fig:fig1"></span>
+<img src="figures/fig1-1.png" alt="Null hypothesis with uncertainty: $\mu_0=0$" width="1950" />
+<p class="caption">
+Figure 1: Null hypothesis with uncertainty: <span class="math inline">\(\mu_0=0\)</span>
+</p>
+</div>
+</div>
+<p>앞에서는 <span class="math inline">\(\bar{X}-\mu_0\)</span>의 분산이 <span class="math inline">\(\frac{\sigma^2}{n}\)</span>이었지만 이번에는 모평균 <span class="math inline">\(\mu_0\)</span>이 uncertainty를 갖고 있으므로 <span class="math inline">\(\bar{X}-\mu_0\)</span>의 분산은 <span class="math inline">\(\frac{\sigma^2}{n}\)</span>이 아니고 <span class="math inline">\(\frac{\sigma^2}{n}+ \tau^2\)</span>이 된다. 이를 토대로 검정통계량을 새로 표현하면</p>
+<p><span class="math display">\[z_{\tau}=\dfrac{\bar{X}-\mu_0}{\sqrt{\sigma^2/n + \tau^2}} \sim N(0,1)\]</span></p>
+<p>이고 이 때의 two-sided <span class="math inline">\(p\)</span>-value를 <span class="math inline">\(p_{\tau} = 2\times P(Z\ge |z_{\tau}|)\)</span>로 정의한다. <span class="math inline">\(p_0\)</span>은 기존의 <span class="math inline">\(p\)</span>-value와 같으며 <span class="math inline">\(\tau\)</span>가 0이 아니라면 <span class="math inline">\(n\)</span>이 아무리 커져도 <span class="math inline">\(|z_{\tau}| &lt; |\frac{\bar{X}-\mu_0}{\tau}|\)</span> 이 되어 <span class="math inline">\(1.96\times \tau\)</span> 이하의 차이는 <span class="math inline">\(p_{\tau}&lt;0.05\)</span>를 얻을 수 없다.</p>
+<h3 id="uncertainty-interpretation">Uncertainty interpretation</h3>
+<p>Uncertainty <span class="math inline">\(\tau\)</span>의 의미는 그것을 모표준편차 <span class="math inline">\(\sigma\)</span>와 비교했을 때 더 잘 드러난다. <span class="math inline">\(\tau = c\sigma\)</span>로 치환한 후 이를 <span class="math inline">\(z_{\tau}\)</span>에 적용하면 아래와 같다.</p>
+<p><span class="math display">\[z_{\tau}=z_{c\sigma}=\dfrac{\bar{X}-\mu_0}{\sqrt{\sigma^2/n + c^2\sigma^2}} = \dfrac{\bar{X}-\mu_0}{\sigma/\sqrt{n}}\cdot \dfrac{1}{\sqrt{1+nc^2}}=\dfrac{z}{\sqrt{1+nc^2}}\]</span> 이제 통계적으로 유의한결과를 얻으려면 기존 가설검정 대비 <span class="math inline">\(\sqrt{1+nc^2}\)</span>배의 <span class="math inline">\(z\)</span>값이 필요함을 알 수 있으며, 기존 <span class="math inline">\(p\)</span>-value와 <span class="math inline">\(z_{c\sigma}\)</span>로 계산한 <span class="math inline">\(p_{c\sigma}\)</span>의 관계를 Figure <a href="#fig:fig2">2</a>에 그래프로 나타내었다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span id="fig:fig2"></span>
+<img src="figures/fig2-1.png" alt="$p$ and $p_{c\sigma}$-values according uncertainty and sample size" width="1950" />
+<p class="caption">
+Figure 2: <span class="math inline">\(p\)</span> and <span class="math inline">\(p_{c\sigma}\)</span>-values according uncertainty and sample size
+</p>
+</div>
+</div>
+<p>한편 <span class="math inline">\(|z_{c\sigma}|\)</span>를 effect size <span class="math inline">\(d=|\frac{\bar{X}-\mu_0}{\sigma}|\)</span>에 대해 표현하면</p>
+<p><span class="math display">\[|z_{c\sigma}|= |\dfrac{\bar{X}-\mu_0}{\sigma}| \cdot \dfrac{1}{\sqrt{1/n + c^2}} = \dfrac{d}{\sqrt{1/n+c^2}}\]</span></p>
+<p>의 관계를 얻는다(Figure <a href="#fig:fig3">3</a>).</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span id="fig:fig3"></span>
+<img src="figures/fig3-1.png" alt="$p_{c\sigma}$ according to effect size, sample size and uncertainty of null hypothesis" width="1950" />
+<p class="caption">
+Figure 3: <span class="math inline">\(p_{c\sigma}\)</span> according to effect size, sample size and uncertainty of null hypothesis
+</p>
+</div>
+</div>
+<p>만약 <span class="math inline">\(d\)</span>가 <span class="math inline">\(1.96\times c\)</span> 이하라면</p>
+<p><span class="math display">\[|z_{c\sigma}| = \dfrac{d}{\sqrt{1/n+c^2}} &lt;  \dfrac{d}{c} \le \dfrac{1.96\times c}{c}  = 1.96\]</span> 이 되어 샘플수 <span class="math inline">\(n\)</span>을 아무리 늘리더라도 <span class="math inline">\(p_{c\sigma} &lt;0.05\)</span>를 얻을 수는 없다. 연구자는 이 사실을 이용하여 역으로 <span class="math inline">\(c\)</span>를 조절함으로서 연구자가 생각하기에 너무 작은 effect size가 유의한 결과가 되는 것을 막을 수 있는데, <span class="math inline">\(c=0.01\)</span> 즉, 모집단 표준편차 대비 1%의 불확실성을 설정한다면 <span class="math inline">\(d\)</span>가 0.0196 이하인 매우 작은 effect가 유의한 결과를 얻는 것을 막을 수 있다. <span class="math inline">\(n\)</span>이 작을 때는 1%의 uncertainty가 기존의 <span class="math inline">\(p\)</span>-value에 거의 영향을 끼치지 않지만, <span class="math inline">\(n=10,000\)</span>일 때는 유의한 <span class="math inline">\(p\)</span>-value 기준을 0.005로 강화한 것과 같은 효과를 갖는다(Figure 2).</p>
+<h3 id="sample-size-calculation">Sample Size Calculation</h3>
+<p>Uncertainty의 개념이 추가되면 Required sample size도 바뀌게 되는데, 먼저 기존 two-sided <span class="math inline">\(z\)</span>-test의 샘플수 구하는 공식을 standard error에 대해 정리하면 아래와 같다(<span class="math inline">\(\alpha\)</span>: Type 1 error rate, <span class="math inline">\(\beta\)</span>: Type 2 error rate)<span class="citation" data-cites="noordzij2011sample">(Noordzij et al. <a href="#ref-noordzij2011sample">2011</a>)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+n &amp;= (\dfrac{Z_{1-\alpha/2} + Z_{1-\beta}}{(\mu-\mu_0)/\sigma})^2 \\
+\dfrac{n}{\sigma^2} &amp;= (\dfrac{Z_{1-\alpha/2} + Z_{1-\beta}}{\mu-\mu_0})^2 \\
+\dfrac{1}{\sigma^2\cdot(1/n)} &amp;= (\dfrac{Z_{1-\alpha/2} + Z_{1-\beta}}{\mu-\mu_0})^2 
+\end{aligned}
+\]</span></p>
+<p>이제 uncertainty parameter <span class="math inline">\(c\)</span>를 추가하려면 좌변의 분모에 <span class="math inline">\(c^2\sigma^2\)</span>을 더해주면 되고 새로운 샘플수 구하는 공식은 아래와 같이 바뀌게 된다.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\dfrac{1}{\sigma^2\cdot(1/n_{c\sigma}+c^2)} &amp;= (\dfrac{Z_{1-\alpha/2} + Z_{1-\beta}}{\mu-\mu_0})^2 \\
+\dfrac{1}{n_{c\sigma}} &amp;= (\dfrac{(\mu-\mu_0)/\sigma}{Z_{1-\alpha/2} + Z_{1-\beta}})^2 -c^2 \\
+               &amp;= \dfrac{1}{n}-c^2 \\
+n_{c\sigma} &amp;= \dfrac{1}{1/n-c^2}
+\end{aligned}
+\]</span></p>
+<p>따라서 <span class="math inline">\(\frac{1}{n} -c^2 \le 0\)</span> 즉, 기존 가설검정방법으로도 <span class="math inline">\(1/c^2\)</span> 이상의 샘플수가 필요했었다면, uncertainty를 포함한 가설검정으로는 아무리 샘플수를 늘려도 Type 1,2 error를 컨트롤할 수 없다. Figure <a href="#fig:fig4">4</a>에 <span class="math inline">\(\alpha = 0.05\)</span>, <span class="math inline">\(1-\beta=0.8\)</span>인 경우의 effect size와 required sample size의 관계가 그래프로 표현되어 있으며, uncertainty가 존재한다면 아무리 샘플수를 늘려도 어떤 effect size이하는 검정할 수 없음을 확인할 수 있다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span id="fig:fig4"></span>
+<img src="figures/fig4-1.png" alt="Required sample size according effect size in some uncertainty scenarios: $\alpha=0.05$, $1-\beta=0.8$ " width="1950" />
+<p class="caption">
+Figure 4: Required sample size according effect size in some uncertainty scenarios: <span class="math inline">\(\alpha=0.05\)</span>, <span class="math inline">\(1-\beta=0.8\)</span>
+</p>
+</div>
+</div>
+<h2 id="extend-to-other-statistics">Extend to Other Statistics</h2>
+<p>이번엔 <span class="math inline">\(Z_{c\sigma}\)</span>의 논리를 다른 통계량으로 확장해보자.</p>
+<h3 id="t-test-one-or-paired-2-sample"><span class="math inline">\(t\)</span>-test: One or paired 2 sample</h3>
+<p>One sample <span class="math inline">\(t\)</span>-test의 귀무가설은 위의 <span class="math inline">\(z\)</span>-test와 일치하며, 모분산 <span class="math inline">\(\sigma^2\)</span>을 표본분산인 <span class="math inline">\(s^2\)</span>으로만 바꾸면 통계량은 자유도 <span class="math inline">\(n-1\)</span>인 <span class="math inline">\(t\)</span>-distribution을 따르는 것이 알려져 있다<span class="citation" data-cites="kim2015t">(Kim <a href="#ref-kim2015t">2015</a>)</span>. 이제 귀무가설에 <span class="math inline">\(cs\)</span>만큼의 uncertainty를 추가하면 아래와 같다.</p>
+<p><span class="math display">\[t_{cs} = \dfrac{\bar{X}-\mu_0}{\sqrt{s^2/n + c^2s^2}} = \dfrac{\bar{X}-\mu_0}{s/\sqrt{n}}\cdot \dfrac{1}{\sqrt{1+nc^2}}=\dfrac{t}{\sqrt{1+nc^2}}\]</span></p>
+<p>Paired <span class="math inline">\(t\)</span>-test의 경우도 <span class="math inline">\(\bar{X}\)</span>를 두 그룹의 차이의 평균인 <span class="math inline">\(\bar{d}\)</span>, <span class="math inline">\(s\)</span>를 차이의 표준편차인인 <span class="math inline">\(s_d\)</span>로 바꾸면 위와 동일하다.</p>
+<h3 id="independent-2-sample-t-test">Independent 2 sample <span class="math inline">\(t\)</span>-test</h3>
+<p>독립된 2집단(equal variance)의 평균이 같은지를 비교할 때 귀무가설은 <span class="math inline">\(H_0: \mu_1-\mu_2=0\)</span>의 형태가 되고 통계량은 아래와 같다<span class="citation" data-cites="kim2015t">(Kim <a href="#ref-kim2015t">2015</a>)</span>.</p>
+<p><span class="math display">\[t=\dfrac{\bar{X}_1-\bar{X}_2}{\sqrt{s_p^2(\frac{1}{n_1}+\frac{1}{n_2})}}\]</span> (<span class="math inline">\(s_p\)</span>: pooled variance, <span class="math inline">\(n_1, n_2\)</span>: sample numbers of group 1, 2 )</p>
+<p>이 <span class="math inline">\(t\)</span>값이 자유도 <span class="math inline">\(n_1+n_2-2\)</span>인 <span class="math inline">\(t\)</span>-distritution을 따른다고 알려져 있으며, 귀무가설 <span class="math inline">\(H_0: \mu_1-\mu_2=0\)</span> <span class="math inline">\(s_p\)</span>의 <span class="math inline">\(c\)</span>배만큼 uncertainty를 추가하면 통계량은</p>
+<p><span class="math display">\[t_{cs_p}=\dfrac{\bar{X}_1-\bar{X}_2}{\sqrt{s_p^2(\frac{1}{n_1}+\frac{1}{n_2})+c^2s_p^2)}}= \dfrac{\bar{X}_1-\bar{X}_2}{\sqrt{s_p^2(\frac{1}{n_1}+\frac{1}{n_2})}}\cdot \dfrac{1}{\sqrt{1+\frac{1}{\frac{1}{n_1}+\frac{1}{n_2}}}c^2} = \dfrac{t}{\sqrt{1+\frac{n_1n_2}{n_1+n_2}c^2}}\]</span> 이 된다.</p>
+<h3 id="regression-coefficient">Regression coefficient</h3>
+<p>종속변수 <span class="math inline">\(Y\)</span>와 독립변수 <span class="math inline">\(X_1\)</span>의 선형관계를 살펴보는 <span class="math inline">\(Y=\beta_0 + \beta_1X_1\)</span>에서 <span class="math inline">\(H_0: \beta_1=0\)</span>을 검정하는 아래 통계량은 자유도 <span class="math inline">\(n-2\)</span>인 <span class="math inline">\(t\)</span>-distribution을 따른다는 것이 알려져 있다<span class="citation" data-cites="Altman2015">(@ Altman and Krzywinski <a href="#ref-Altman2015">2015</a>)</span>.</p>
+<p><span class="math display">\[t= \dfrac{\hat{\beta}_1}{se({\hat{\beta}_1})}=\dfrac{\hat{\beta}_1}{\hat\sigma_{\varepsilon}/ \sqrt{\sum\limits_{i=1}^n (X_{1i}-\bar{X}_1)^2}}= \dfrac{\hat{\beta}_1}{\hat\sigma_{\varepsilon}/{s_{x_1}}}\cdot \frac{1}{\sqrt{1/n}} \]</span></p>
+<p>(<span class="math inline">\(\hat\sigma_{\varepsilon}\)</span>: Mean squared error(MSE), <span class="math inline">\(s_{x_1}\)</span>: standard deviance of <span class="math inline">\(X_1\)</span>)</p>
+<p>이제 <span class="math inline">\(\dfrac{\hat\sigma_{\varepsilon}}{{s_{x_1}}}\)</span>의 <span class="math inline">\(c\)</span>배 만큼 귀무가설에 uncertainty를 추가하면 통계량은 아래와 같다.</p>
+<p><span class="math display">\[t_{c\hat\sigma_{\varepsilon}/s_{x_1}}= \dfrac{\hat{\beta}_1}{\hat\sigma_{\varepsilon}/{s_{x_1}}}\cdot \frac{1}{\sqrt{1/n+c^2}} = (\dfrac{\hat{\beta}_1}{\hat\sigma_{\varepsilon}/{s_{x_1}}}\cdot \frac{1}{\sqrt{1/n}}) \cdot \dfrac{1}{\sqrt{1+nc^2}}= \dfrac{t}{\sqrt{1+nc^2}}\]</span></p>
+<p>일반적으로 <span class="math inline">\(Y\)</span>와 <span class="math inline">\(X_1, X_2, \cdots, X_p\)</span>들의 선형모형은 행렬을 이용해서 <span class="math inline">\(\mathbf{Y}= \mathbf{X\beta}\)</span>로 표현할 수 있으며, <span class="math inline">\(\beta_i=0\)</span>을 검정하는 경우 앞서 <span class="math inline">\(\frac{1}{\sum\limits_{i=1}^n (X_{1i}-\bar{X}_1)^2}\)</span>대신 <span class="math inline">\((\mathbf{X&#39;X})^{-1}\)</span>의 <span class="math inline">\(i+1\)</span>번째 diagonal인 <span class="math inline">\(g_{ii}\)</span>을 대입한 통계량을 사용하며 자유도는 <span class="math inline">\(n-p-1\)</span>이다<span class="citation" data-cites="alexopoulos2010introduction">(Alexopoulos <a href="#ref-alexopoulos2010introduction">2010</a>)</span>. 이제 uncertainty를 추가한 통계량을 <span class="math inline">\(\dfrac{t}{\sqrt{1+nc^2}}\)</span>로 정의하면 simple linear model의 경우를 자연스럽게 확장한 셈이 된다. 선형모형을 <span class="math inline">\(Y\)</span>가 정규분포가 아닐 때로 확장한 Generalized linear model(GLM)의 경우에는 <span class="math inline">\(z=\frac{\hat{\beta}_i}{se{(\hat{\beta}_i)}}\)</span>가 asymptotically normal distribution을 따르는 것을 이용하며, 앞서와 마찬가지로 uncertainty를 추가한 통계량을 <span class="math inline">\(\dfrac{z}{\sqrt{1+nc^2}}\)</span>로 정의하면 일관성을 유지할 수 있다<span class="citation" data-cites="nelder1972generalized wedderburn1974quasi">(Nelder and Wedderburn <a href="#ref-nelder1972generalized">1972</a>; Wedderburn <a href="#ref-wedderburn1974quasi">1974</a>)</span>. .</p>
+<h3 id="correlation-coefficients">Correlation coefficients</h3>
+<p>두 변수 <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>의 상관관계를 볼 때 흔히 사용되는 pearson correlation coefficient(<span class="math inline">\(r\)</span>)은 아래 통계량을 이용한다.</p>
+<p><span class="math display">\[t= \dfrac{r\sqrt{n-2}}{\sqrt{1-r^2}}\]</span></p>
+<p>이것이 자유도 <span class="math inline">\(n-2\)</span>인 <span class="math inline">\(t\)</span>-distribuition을 따른다는 것이 알려져 있으며 실제로 이 값을 계산해보면 앞서 simple linear model의 <span class="math inline">\(\dfrac{\hat{\beta}_1}{se(\hat{\beta}_1)}\)</span>과 정확히 일치한다. 따라서 uncertainty를 추가한 <span class="math inline">\(t\)</span>를 <span class="math inline">\(\dfrac{t}{\sqrt{1+nc^2}}\)</span>으로 정의하면 일관성을 유지할 수 있으며, 이는 <span class="math inline">\(H_0: r&#39;=\dfrac{r}{\sqrt{1-r^2}}=0\)</span>을 검정할 때 <span class="math inline">\(\dfrac{n}{n-2}\)</span>의 <span class="math inline">\(c\)</span>배 만큼 uncertainty를 준 것으로 해석할 수 있다.</p>
+<h2 id="new-approach-for-multiple-comparison-uncertainty-control">New Approach for Multiple Comparison: Uncertainty control</h2>
+<p>마지막으로 귀무가설의 uncertainty를 조절하여 multiple comparison 문제를 다루는 uncertainty control을 제안한다.</p>
+<h3 id="definition-of-uncertainty-control">Definition of uncertainty control</h3>
+<p>여러 개의 귀무가설을 동시에 검정할 때 원래의 유의수준을 그대로 적용하면 위양성이 늘어나는 문제가 있는데, 각 가설마다의 유의수준이 <span class="math inline">\(\alpha\)</span>라면 전체 <span class="math inline">\(m\)</span>개의 가설에서 하나라도 위양성결과를 얻을 확률은 <span class="math inline">\(1-(1-\alpha)^m \simeq m\alpha\)</span> 이 되어 원래 위양성 확률의 <span class="math inline">\(m\)</span>배가 된다. 이를 해결하기 위해 흔히 이용되는 방법은 family-wise error rate(FWER) control로 bonferroni correction이 대표적이다. Bonferroni correction에서는 가설이 <span class="math inline">\(m\)</span>개라면 각 가설의 유의수준을 <span class="math inline">\(\alpha_m=\frac{\alpha}{m}\)</span>로 낮춰 family-wise error rate를 <span class="math inline">\(\alpha\)</span>이하로 control 할 수 있으며 식으로 표현하면 아래와 같다<span class="citation" data-cites="armstrong2014use">(Armstrong <a href="#ref-armstrong2014use">2014</a>)</span>.</p>
+<p><span class="math display">\[-\text{log}\alpha_m = -\text{log}\alpha + \text{log}m\]</span></p>
+<p>한편, 여러 개의 귀무가설을 동시에 검정한다는 것을 각 가설의 uncertainty가 늘어나는 것으로 바라볼 수도 있다. Genome-Wide Association Study(GWAS)가 대표적인 예로 이것은 어떤 유전자가 질병과 관계있는지 아무런 사전정보도 없지만 일단 갖고있는 유전자들을 전부 각각 검정해보는 방법이며, 각 검정의 유의수준은 보통 100만개의 유전자를 동시검정할 때의 bonferroni correction에 해당하는 <span class="math inline">\(5\times 10^{-8}\)</span>를 사용한다<span class="citation" data-cites="jannot2015p">(Jannot, Ehret, and Perneger <a href="#ref-jannot2015p">2015</a>)</span>. 그런데 어떤 유전자가 질병과 관련있는지 사전정보가 없음에도 불구하고 각 효과가 정확히 0이라고 생각하는 사람이 과연 있을까? 검정하려는 귀무가설의 갯수가 증가할수록 가설의 uncertainty도 증가한다고 간주하는 것이 자연스러우며 가설이 <span class="math inline">\(m\)</span>개일 때의 uncertainty <span class="math inline">\(c_m\)</span>을 아래와 같이 정의하겠다.</p>
+<p><span class="math display">\[\text{log}c_m = \text{log}c + b\cdot\text{log}m\]</span></p>
+<p>이것은 아까의 bonferroni correction과 비슷한 형태로 원래의 <span class="math inline">\(c\)</span>(log scale)에 <span class="math inline">\(\text{log}m\)</span>에 비례하는 penalty를 추가로 부여하며, <span class="math inline">\(1.96\times c_m\)</span>보다 작은 effect size는 <span class="math inline">\(n\)</span>이 아무리 커도 통계적으로 유의한 결과를 얻을 수 없다. 연구자는 <span class="math inline">\(c\)</span>를 조절하여 initial uncertainty를, 상수 <span class="math inline">\(b\)</span>를 조정하여 uncertainty control의 정도를 조절할 수 있으며, <span class="math inline">\(c=0.01\)</span>, <span class="math inline">\(b=0.069\)</span>으로 정하면 <span class="math inline">\(n=10000\)</span>에서 bonferroni correction과 같은 정도의 control을 줄 수 있다 (Figure <a href="#fig:fig5">5</a>).</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span id="fig:fig5"></span>
+<img src="figures/fig5-1.png" alt="Number of hypotheses($m$) and required $p$-values($p_{\text{req}}$): bonferroni correction vs uncertainty control($b=0.069$, $c=0.01$" width="1950" />
+<p class="caption">
+Figure 5: Number of hypotheses(<span class="math inline">\(m\)</span>) and required <span class="math inline">\(p\)</span>-values(<span class="math inline">\(p_{\text{req}}\)</span>): bonferroni correction vs uncertainty control(<span class="math inline">\(b=0.069\)</span>, <span class="math inline">\(c=0.01\)</span>
+</p>
+</div>
+</div>
+<p>Figure <a href="#fig:fig5">5</a>를 보면 uncertainty control도 bonferroni correction과 마찬가지로 <span class="math inline">\(m\)</span>이 증가함에 따라 <span class="math inline">\(p\)</span>-value의 기준을 강화함을 알 수 있다. 차이점은 샘플 수에 따라 기준을 강화하는 정도가 다르다는 것인데, <span class="math inline">\(m=10^6\)</span> 기준으로 <span class="math inline">\(N=1500\)</span>일 때는 <span class="math inline">\(5.46\times 10^{-3}\)</span>, <span class="math inline">\(N=3000\)</span>일 때는 <span class="math inline">\(6.61\times 10^{-4}\)</span>, <span class="math inline">\(N=5000\)</span>일 때는 <span class="math inline">\(4.22\times 10^{-5}\)</span>의 <span class="math inline">\(p\)</span>-value 기준을 갖는다. <span class="math inline">\(N=10000\)</span>일 때는 아까 언급했듯이 <span class="math inline">\(p\)</span>-value 기준 <span class="math inline">\(5.06\times 10^{-8}\)</span>로 bonferroni correction과 비슷한 정도의 control을 주게 된다.</p>
+<p>We can look at the change in significance levels in terms of the effect size. Unlike the Bonferroni correction, the degree of significance correction can be changed by the effect sizes even if they have the same <span class="math inline">\(p_{c_{m\sigma}}\)</span>-values of the Uncertainty control (Figure <a href="#fig:fig6">6</a>).</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span id="fig:fig6"></span>
+<img src="figures/fig6-1.png" alt="Number of hypotheses($m$) and $p_{c_m}$ by effect size($d$): uncertainty control" width="1950" />
+<p class="caption">
+Figure 6: Number of hypotheses(<span class="math inline">\(m\)</span>) and <span class="math inline">\(p_{c_m}\)</span> by effect size(<span class="math inline">\(d\)</span>): uncertainty control
+</p>
+</div>
+</div>
+<p>In Figure <a href="#fig:fig6">6</a>, when applying <span class="math inline">\(c=0.01\)</span> and <span class="math inline">\(b=0.069\)</span>, the result with an effect size of <span class="math inline">\(0.5\)</span> and <span class="math inline">\(p_{c_{m\sigma}}=5\times 10^{-5}\)</span> is hardly affected by the increase in the number of hypotheses; however, the result with an the effect size of <span class="math inline">\(0.05\)</span> cannot gain significance when the number of hypotheses increases to <span class="math inline">\(10^6\)</span> even if the initial <span class="math inline">\(p_{c_{m\sigma}}\)</span>-value is same as above.</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<h3 id="some-scenarios-compare-with-bonferroni-correction-false-discovery-ratefdr">Some scenarios: compare with bonferroni correction, false discovery rate(FDR)</h3>
+<p>몇 가지 시나리오를 설정하여 uncertainty correction 방법을 흔히 이용하는 multiple comparison 방법인 bonferroni correction, FDR control과 비교해보겠다<span class="citation" data-cites="benjamini1995controlling">(Benjamini and Hochberg <a href="#ref-benjamini1995controlling">1995</a>)</span>. <span class="math inline">\(10^6\)</span>개의 귀무가설 중 1% 즉, 10000개가 실제로 참인 가설이고 그 effect size는 <span class="math inline">\(d\)</span>라고 가정하자. 통계적 유의성은 <span class="math inline">\(d\)</span>와 sample size <span class="math inline">\(N\)</span>, 그리고 multiple comparison 방법에 따라 달라지게 되며 이론상의 결과와 데이터를 생성해서 simulation한 결과를 Table 1,2에 정리하였다. FWER와 FDR control의 기준은 모두 0.05이며 simulation 때 FDR control은 Benjamini-Hochberg Procedure를 이용하였다<span class="citation" data-cites="benjamini1995controlling">(Benjamini and Hochberg <a href="#ref-benjamini1995controlling">1995</a>)</span>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<caption><span id="tab:unnamed-chunk-2">Table 1: </span>The number of false positive/negative results among <span class="math inline">\(10^6\)</span> hypotheses(1% true) with some scenarios</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Sample size</th>
+<th style="text-align: center;">d</th>
+<th style="text-align: center;">Bonferroni: False (+)</th>
+<th style="text-align: center;">Bonferroni: True (+)</th>
+<th style="text-align: center;">FDR: False (+)</th>
+<th style="text-align: center;">FDR: True (+)</th>
+<th style="text-align: center;">Uncertainty: False (+)</th>
+<th style="text-align: center;">Uncertainty: True (+)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">2000</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">2655</td>
+<td style="text-align: center;">176</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2000</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2655</td>
+<td style="text-align: center;">1125</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2000</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">28</td>
+<td style="text-align: center;">41</td>
+<td style="text-align: center;">788</td>
+<td style="text-align: center;">2655</td>
+<td style="text-align: center;">3750</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2000</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">305</td>
+<td style="text-align: center;">245</td>
+<td style="text-align: center;">4652</td>
+<td style="text-align: center;">2655</td>
+<td style="text-align: center;">7176</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2000</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1637</td>
+<td style="text-align: center;">437</td>
+<td style="text-align: center;">8311</td>
+<td style="text-align: center;">2655</td>
+<td style="text-align: center;">9292</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">654</td>
+<td style="text-align: center;">104</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">81</td>
+<td style="text-align: center;">654</td>
+<td style="text-align: center;">1123</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">152</td>
+<td style="text-align: center;">167</td>
+<td style="text-align: center;">3172</td>
+<td style="text-align: center;">654</td>
+<td style="text-align: center;">4526</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1424</td>
+<td style="text-align: center;">424</td>
+<td style="text-align: center;">8050</td>
+<td style="text-align: center;">654</td>
+<td style="text-align: center;">8355</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">5103</td>
+<td style="text-align: center;">515</td>
+<td style="text-align: center;">9776</td>
+<td style="text-align: center;">654</td>
+<td style="text-align: center;">9809</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4000</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">164</td>
+<td style="text-align: center;">62</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4000</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">450</td>
+<td style="text-align: center;">164</td>
+<td style="text-align: center;">1082</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4000</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">488</td>
+<td style="text-align: center;">301</td>
+<td style="text-align: center;">5727</td>
+<td style="text-align: center;">164</td>
+<td style="text-align: center;">5115</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4000</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">3477</td>
+<td style="text-align: center;">496</td>
+<td style="text-align: center;">9429</td>
+<td style="text-align: center;">164</td>
+<td style="text-align: center;">9021</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4000</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">8087</td>
+<td style="text-align: center;">525</td>
+<td style="text-align: center;">9979</td>
+<td style="text-align: center;">164</td>
+<td style="text-align: center;">9947</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">44</td>
+<td style="text-align: center;">64</td>
+<td style="text-align: center;">1217</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">1027</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1134</td>
+<td style="text-align: center;">400</td>
+<td style="text-align: center;">7596</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">5588</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">5814</td>
+<td style="text-align: center;">519</td>
+<td style="text-align: center;">9857</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">9409</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">9474</td>
+<td style="text-align: center;">526</td>
+<td style="text-align: center;">9998</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">9985</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">733</td>
+<td style="text-align: center;">350</td>
+<td style="text-align: center;">6656</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">736</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">7084</td>
+<td style="text-align: center;">523</td>
+<td style="text-align: center;">9944</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">7091</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">9946</td>
+<td style="text-align: center;">526</td>
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">9946</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">526</td>
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">10000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Table 1을 보면 uncertainty control는 나머지 둘과는 달리 sample size가 작을 때 유의한 결과를 많이 얻을 수 있음을 알 수 있다. 구체적으로 <span class="math inline">\(d\)</span>가 0.02일 때 bonferroni correction, FDR control로는 <span class="math inline">\(n\)</span>이 5000이하일 때 유의한 결과를 하나도 얻을 수 없지만 uncertainty control로는 <span class="math inline">\(n=1500,3000,5000\)</span>일 때 각각 5175, 646, 62개의 유의한 결과를 얻을 수 있다. <span class="math inline">\(d=0.05\)</span>인 경우 <span class="math inline">\(n=1500, 3000\)</span>이면 uncertainty control &gt; FDR control &gt; bonferroni correction, <span class="math inline">\(n=5000\)</span>이면 FDR control &gt; uncertainty control &gt; bonferroni correction 순으로 유의한 결과를 많이 얻을 수 있다. 한편 <span class="math inline">\(n=10000\)</span>인 모든 시나리오에서 uncertainty control은 bonferroni correction보다도 강한 기준으로 나타나고 sample size의 힘만으로 작은 effect size를 유의한 결과로 판단하는 것에 penalty를 주게 된다.</p>
+<h2 id="discussion">Discussion</h2>
+<p>본 연구에서는 uncertainty의 개념을 포함한 현실적인 귀무가설을 만들고 그것을 검정할 수 있는 가설검정법을 제안하였으며, 이를 통해 계산된 <span class="math inline">\(p_{c\sigma}\)</span>-value가 기존의 <span class="math inline">\(p\)</span>-value와 effect size를 종합적으로 고려한 지표로 작은 effect size가 sample size의 힘만으로 유의한 결과를 얻는 것에 penalty를 줄 수 있음을 보였다. 이는 현실적인 귀무가설을 설정하는 것이 effect size를 고려하는 것과 어떻게 연결되는지를 개념화했다는 의의가 있으며, 이제 연구자들은 차이가 정확히 0이라는 비현실적인 귀무가설에서 벗어나 현실적인 가설검정을 수행하면서 effect size를 가설검정의 틀 안에서 고려할 수 있을 것이다.</p>
+<p>얼마만큼의 uncertainty를 고려해야 하는지는 검증가능한 최소 effect size가 어느정도인지에 달려 있는데, 이는 연구분야와 주제에 따라서 달라질 수 있기 때문에 각 분야의 연구자들의 공감대가 형성되어야 할 것으로 생각된다. 앞서 언급한 <span class="math inline">\(c=0.01\)</span>이 기존의 <span class="math inline">\(p\)</span>-value에 큰 영향을 끼치지 않으면서 10000이상의 매우 큰 sample size에 0.005정도의 유의수준을 부여할 수 있는 적절한 기준이라 판단한다. 한편 effect size로 표준화하지 않더라도 차이값 자체를 기준으로 uncertainty를 고려할 수도 있는데, 사실 어떤 지표든지 그것을 측정하는 순간 측정의 최소단위로 인한 uncertainty가 존재할 수 밖에 없다. 예를 들어 수축기 혈압을 측정해서 120이 나왔을 때 그것의 의미는 실제값이 정확히 120이라는 것이 아니라 실제값이 119.5~120.5 사이에 존재한다는 것이다. 따라서 차이가 1이하인 것을 가설검정하는 것은 그 자체로 비현실적이라 할 수 있으며 <span class="math inline">\(\tau= \frac{1}{1.96}\)</span>로 두면 <span class="math inline">\(|z_{\tau}| &lt; |\frac{\bar{X}-\mu_0}{\tau}| \le \frac{1}{\tau} = 1.96\)</span>이 되어 1이하의 차이를 유의한 결과로 판단하는 것을 방지할 수 있다. 꼭 측정의 최소단위가 아니더라도 연구자가 생각하는 차이의 최소 단위를 <span class="math inline">\(\tau\)</span>에 반영할 수도 있다.</p>
+<p>베이지안 통계에서도 prior를 통해 사전지식의 uncertainty를 다룰 수 있는데, prior의 정보가 데이터의 정보가 합쳐져서 posterior가 된다는 것에서 본 연구와는 차이가 있다. 예를 들어 분산이 <span class="math inline">\(\sigma\)</span>인 정규분포 에서 <span class="math inline">\(n\)</span>개의 sample을 뽑아 베이지안 방법으로 모평균을 추정할 때, prior(conjugate prior)의 분산이 <span class="math inline">\(\tau^2\)</span>이라면 posterior의 분산은 <span class="math inline">\(\dfrac{1}{\frac{1}{\sigma^2/n}+\frac{1}{\tau^2}}\)</span>가 된다<span class="citation" data-cites="murphy2007conjugate">(Murphy <a href="#ref-murphy2007conjugate">2007</a>)</span>. 이 때 <span class="math inline">\(\tau\)</span>가 무한히 커지면 분산은 <span class="math inline">\(\sigma^2/n\)</span>이 되는데, <span class="math inline">\(\tau\)</span>가 커질수록 prior의 정보가 없어 data의 정보가 posterior로 그대로 반영되는 것으로 볼 수 있다. 반면 본 연구에서는 귀무가설의 uncertainty값인 <span class="math inline">\(\tau\)</span>가 penalty로 작용하여 이것이 커질수록 data의 정보가 희석된다고 생각할 수 있다.</p>
+<p>3개 이상의 그룹을 비교할 수 있는 ANOVA와 Chi-square test에 대해서는 uncertainty의 개념을 적용하기 힘들었다. ANOVA의 귀무가설은 <span class="math inline">\(H_0: \mu_1= \mu_2 = \cdots = \mu_k\)</span>꼴로 여러 그룹들을 동시에 비교하기 때문에 본 연구의 uncertainty의 개념을 그대로 적용할 수 없지만 실용적으로 <span class="math inline">\(F_c= \dfrac{F}{1+nc^2}\)</span>로 정의하면 다른 test들과 일관성을 유지할 수 있을 것이다. 범주형 변수끼리의 연관성을 비교할 때 쓰이는 카이제곱검정의 경우에도 <span class="math inline">\(\chi_c= \dfrac{\chi}{1+nc^2}\)</span>가 실용적인 지표로 활용될 수 있으리라 생각한다.</p>
+<p>Uncertainty의 개념은 multiple comparison에서도 활용될 수 있는데, 검정할 귀무가설의 갯수가 늘어나는 것을 각 가설에 대한 uncertainty가 늘어나는 것으로 생각할 수 있기 때문이다. 이 기준을 이용하면 sample size가 적을 때 상대적으로 유의한 결과를 많이 얻을 수 있어 반대의 특징을 갖는 FWER, FDR control의 한계를 보완할 수 있다. 다중비교가 흔히 쓰이는 GWAS의 경우 <span class="math inline">\(p&lt;5 \times 10^{-8}\)</span>라는 강한 기준이 gold standard로 사용되어 실제 효과가 있는 유전자는 통계적 유의성을 얻지 못하고, 아주 미미한 효과가 sample size의 힘만으로 의미있는 유전자가 되는 문제가 있었는데, uncertainty control을 같이 활용함으로서 이를 극복할 수 있으리라 생각한다.</p>
+<p>귀무가설에 uncertainty를 추가한 본 연구의 가설검정 방법이 과학연구에서 기존 가설 검정방법을 포괄하는 새로운 표준이 될 수 있으리라 확신한다.</p>
+<div id="refs" class="references">
+<div id="ref-alexopoulos2010introduction">
+<p>Alexopoulos, EC. 2010. “Introduction to Multivariate Regression Analysis.” <em>Hippokratia</em> 14 (Suppl 1). LITHOGRAPHIA Antoniadis I.-Psarras Th. G.P.: 23–28. <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3049417/">http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3049417/</a>.</p>
+</div>
+<div id="ref-Altman2015">
+<p>Altman, Naomi, and Martin Krzywinski. 2015. “Simple Linear Regression.” <em>Nature Methods</em> 12 (October). Nature Publishing Group, a division of Macmillan Publishers Limited. All Rights Reserved. SN -: 999 EP. <a href="http://dx.doi.org/10.1038/nmeth.3627">http://dx.doi.org/10.1038/nmeth.3627</a>.</p>
+</div>
+<div id="ref-anderson2000null">
+<p>Anderson, David R., Kenneth P. Burnham, and William L. Thompson. 2000. “Null Hypothesis Testing: Problems, Prevalence, and an Alternative.” <em>The Journal of Wildlife Management</em> 64 (4). [Wiley, Wildlife Society]: 912–23. <a href="http://www.jstor.org/stable/3803199">http://www.jstor.org/stable/3803199</a>.</p>
+</div>
+<div id="ref-armstrong2014use">
+<p>Armstrong, Richard A. 2014. “When to Use the Bonferroni Correction.” <em>Ophthalmic and Physiological Optics</em> 34 (5). Wiley-Blackwell: 502–8. <a href="https://doi.org/10.1111/opo.12131">https://doi.org/10.1111/opo.12131</a>.</p>
+</div>
+<div id="ref-Benjamin2018">
+<p>Benjamin, Daniel J., James O. Berger, Magnus Johannesson, Brian A. Nosek, E.-J. Wagenmakers, Richard Berk, Kenneth A. Bollen, et al. 2018. “Redefine Statistical Significance.” <em>Nature Human Behaviour</em> 2 (1): 6–10. <a href="https://doi.org/10.1038/s41562-017-0189-z">https://doi.org/10.1038/s41562-017-0189-z</a>.</p>
+</div>
+<div id="ref-benjamini1995controlling">
+<p>Benjamini, Yoav, and Yosef Hochberg. 1995. “Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.” <em>Journal of the Royal Statistical Society. Series B (Methodological)</em>. JSTOR, 289–300.</p>
+</div>
+<div id="ref-goffey2005art">
+<p>Goffey, A. 2005. “The Art of Always Being Right: Thirty-Eight Ways to Win When You Are Defeated.” CO CENTRAL BOOKS, 99 WALLIS RD, LONDON E9 5LN, ENGLAND.</p>
+</div>
+<div id="ref-doi:10.1001/jama.2018.1536">
+<p>JA, Ioannidis. 2018. “The Proposal to Lower P Value Thresholds to .005.” <em>JAMA</em>. <a href="https://doi.org/10.1001/jama.2018.1536">https://doi.org/10.1001/jama.2018.1536</a>.</p>
+</div>
+<div id="ref-jannot2015p">
+<p>Jannot, Anne-Sophie, Georg Ehret, and Thomas Perneger. 2015. “P&lt; 5<span class="math inline">\(\times\)</span> 10- 8 Has Emerged as a Standard of Statistical Significance for Genome-Wide Association Studies.” <em>Journal of Clinical Epidemiology</em> 68 (4). Elsevier: 460–65.</p>
+</div>
+<div id="ref-kim2015t">
+<p>Kim, Tae Kyun. 2015. “T Test as a Parametric Statistic.” <em>Korean J Anesthesiol</em> 68 (6). The Korean Society of Anesthesiologists: 540–46. <a href="http://synapse.koreamed.org/DOIx.php?id=10.4097%2Fkjae.2015.68.6.540">http://synapse.koreamed.org/DOIx.php?id=10.4097%2Fkjae.2015.68.6.540</a>.</p>
+</div>
+<div id="ref-murphy2007conjugate">
+<p>Murphy, Kevin P. 2007. “Conjugate Bayesian Analysis of the Gaussian Distribution.” Techincal report.</p>
+</div>
+<div id="ref-nelder1972generalized">
+<p>Nelder, J. A., and R. W. M. Wedderburn. 1972. “Generalized Linear Models.” <em>Journal of the Royal Statistical Society. Series A (General)</em> 135 (3). [Royal Statistical Society, Wiley]: 370–84. <a href="http://www.jstor.org/stable/2344614">http://www.jstor.org/stable/2344614</a>.</p>
+</div>
+<div id="ref-noordzij2011sample">
+<p>Noordzij, M., F. W. Dekker, C. Zoccali, and K. J. Jager. 2011. “Sample Size Calculations.” <em>Nephron Clinical Practice</em> 118 (4): c319–c323. <a href="https://www.karger.com/DOI/10.1159/000322830">https://www.karger.com/DOI/10.1159/000322830</a>.</p>
+</div>
+<div id="ref-sullivan2012using">
+<p>Sullivan, Gail M, and Richard Feinn. 2012. “Using Effect Size—or Why the P Value Is Not Enough.” <em>Journal of Graduate Medical Education</em> 4 (3). The Accreditation Council for Graduate Medical Education Suite 2000, 515 North State Street, Chicago, IL 60654: 279–82.</p>
+</div>
+<div id="ref-ronald2016asa">
+<p>Wasserstein, Ronald L., and Nicole A. Lazar. 2016. “The Asa’s Statement on P-Values: Context, Process, and Purpose.” <em>The American Statistician</em> 70 (2). Taylor &amp; Francis: 129–33. <a href="https://doi.org/10.1080/00031305.2016.1154108">https://doi.org/10.1080/00031305.2016.1154108</a>.</p>
+</div>
+<div id="ref-wedderburn1974quasi">
+<p>Wedderburn, R. W. M. 1974. “Quasi-Likelihood Functions, Generalized Linear Models, and the Gauss-Newton Method.” <em>Biometrika</em> 61 (3). [Oxford University Press, Biometrika Trust]: 439–47. <a href="http://www.jstor.org/stable/2334725">http://www.jstor.org/stable/2334725</a>.</p>
+</div>
+<div id="ref-10.2307/2528399">
+<p>Yates, F. 1964. “Sir Ronald Fisher and the Design of Experiments.” <em>Biometrics</em> 20 (2). [Wiley, International Biometric Society]: 307–21. <a href="http://www.jstor.org/stable/2528399">http://www.jstor.org/stable/2528399</a>.</p>
+</div>
+</div>
+<!--radix_placeholder_article_footer-->
+<div class="article-footer">
+  <p class="social_footer">
+    <span class="disqus-comments">
+      <i class="fas fa-comments"></i>
+      &nbsp;
+      <span class="disqus-comment-count" data-disqus-identifier="posts/2018-11-08-redefinenullhypothesis/">Comment on this article</span>
+    </span>
+    <span class="article-sharing">
+      Share: &nbsp;
+      <a href="https://www.facebook.com/sharer/sharer.php?s=100&amp;p[url]=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2018-11-08-redefinenullhypothesis%2F">
+        <i class="fab fa-facebook"></i>
+      </a>
+      <a href="https://twitter.com/share?text=Redefine%20Null%20Hypothesis&amp;url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2018-11-08-redefinenullhypothesis%2F">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2018-11-08-redefinenullhypothesis%2F&amp;title=Redefine%20Null%20Hypothesis">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      <a href="https://plus.google.com/share?url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2018-11-08-redefinenullhypothesis%2F">
+        <i class="fab fa-google-plus"></i>
+      </a>
+    </span>
+  </p>
+  <script id="dsq-count-scr" src="https://zarathu-blog.disqus.com/count.js" async></script>
+  <div id="disqus_thread" class="hidden"></div>
+  <script>
+var disqus_config = function () {
+  this.page.url = 'https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/';
+  this.page.identifier = 'posts/2018-11-08-redefinenullhypothesis/';
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://zarathu-blog.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+  <p>
+    <div class="subscribe"><form method='post' action='https://blogtrottr.com'>
+  <p>Enjoy this blog? Get notified of new posts via email:</p>
+  <input type='text' name='btr_email' />
+  <input type='hidden' name='btr_url'
+         value='https://blog.zarathu.com/index.xml'/>
+  <input type='hidden' name='schedule_type' value='0' />
+  <input type='submit' value='Subscribe' />
+</form></div>
+  </p>
+</div>
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom">
+  <h3 id="updates-and-corrections">Corrections</h3>
+  <p>If you see mistakes or want to suggest changes, please <a href="https://github.com/zarathucorp/blog/issues/new">create an issue</a> on the source repository.</p>
+  <h3 id="reuse">Reuse</h3>
+  <p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Source code is available at <a href="https://github.com/zarathucorp/blog">https://github.com/zarathucorp/blog</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
+  <h3 id="citation">Citation</h3>
+  <p>For attribution, please cite this work as</p>
+  <pre class="citation-appendix short">Kim (2018, Nov. 8). Zarathu Blog: Redefine Null Hypothesis. Retrieved from https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/</pre>
+  <p>BibTeX citation</p>
+  <pre class="citation-appendix long">@misc{kim2018redefine,
+  author = {Kim, Jinseob},
+  title = {Zarathu Blog: Redefine Null Hypothesis},
+  url = {https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis/},
+  year = {2018}
+}</pre>
+</div>
+<script id="distill-bibliography" type="text/bibtex">
+@misc{goffey2005art,
+  title={The art of always being right: Thirty-eight ways to win when you are defeated},
+  author={Goffey, A},
+  year={2005},
+  publisher={C\/O CENTRAL BOOKS, 99 WALLIS RD, LONDON E9 5LN, ENGLAND}
+}
+
+@article{ronald2016asa,
+author = {Ronald L. Wasserstein and Nicole A. Lazar},
+title = {The ASA's Statement on p-Values: Context, Process, and Purpose},
+journal = {The American Statistician},
+volume = {70},
+number = {2},
+pages = {129-133},
+year  = {2016},
+publisher = {Taylor & Francis},
+doi = {10.1080/00031305.2016.1154108},
+
+URL = { 
+        https://doi.org/10.1080/00031305.2016.1154108
+    
+},
+eprint = { 
+        https://doi.org/10.1080/00031305.2016.1154108
+    
+}
+
+}
+
+
+
+@article{10.2307/2528399,
+ ISSN = {0006341X, 15410420},
+ URL = {http://www.jstor.org/stable/2528399},
+ author = {F. Yates},
+ journal = {Biometrics},
+ number = {2},
+ pages = {307-321},
+ publisher = {[Wiley, International Biometric Society]},
+ title = {Sir Ronald Fisher and the Design of Experiments},
+ volume = {20},
+ year = {1964}
+}
+
+@article{stephens1986tests,
+  title={Tests based on EDF statistics},
+  author={Stephens, Michael A},
+  journal={Goodness-of-fit Techniques},
+  volume={68},
+  pages={97--193},
+  year={1986},
+  publisher={Marcel Dekker, New York}
+}
+
+@article{shaphiro1965analysis,
+  title={An analysis of variance test for normality},
+  author={Shaphiro, SS and Wilk, MB},
+  journal={Biometrika},
+  volume={52},
+  number={3},
+  pages={591--611},
+  year={1965}
+}
+
+@article{moore1986tests,
+  title={Tests of chi-squared type},
+  author={Moore, David S},
+  journal={Goodness-of-fit techniques},
+  number={68},
+  pages={69--70},
+  year={1986},
+  publisher={New York: Marcel Dekker}
+}
+
+
+@article{levene1960robust,
+  title={Robust tests for equality of variances1},
+  author={Levene, Howard},
+  journal={Contributions to probability and statistics: Essays in honor of Harold Hotelling},
+  volume={2},
+  pages={278--292},
+  year={1960}
+}
+
+
+@article{moser1992homogeneity,
+  title={Homogeneity of variance in the two-sample means test},
+  author={Moser, Barry K and Stevens, Gary R},
+  journal={The American Statistician},
+  volume={46},
+  number={1},
+  pages={19--21},
+  year={1992},
+  publisher={Taylor \& Francis Group}
+}
+
+
+@article{de1926approximatio,
+  title={Approximatio ad summam terminorum binomii (a+ b) n in seriem expansi},
+  author={De Moivre, Abraham},
+  journal={Supplement to Miscellanea Analytica, London},
+  volume={1733},
+  year={1926}
+}
+
+
+@incollection{de2001doctrine,
+  title={The doctrine of chances},
+  author={De Moivre, Abraham},
+  booktitle={Annotated Readings in the History of Statistics},
+  pages={32--36},
+  year={2001},
+  publisher={Springer}
+}
+
+
+@book{gauss1809theoria,
+  title={Theoria motus corporum coelestium in sectionibus conicis solem ambientium auctore Carolo Friderico Gauss},
+  author={Gauss, Carl Friedrich},
+  year={1809},
+  publisher={sumtibus Frid. Perthes et IH Besser}
+}
+
+
+@article{welch1947generalization,
+  title={The generalization ofstudent's' problem when several different population variances are involved},
+  author={Welch, Bernard L},
+  journal={Biometrika},
+  volume={34},
+  number={1/2},
+  pages={28--35},
+  year={1947},
+  publisher={JSTOR}
+}
+
+@Article{Benjamin2018,
+author={Benjamin, Daniel J.
+and Berger, James O.
+and Johannesson, Magnus
+and Nosek, Brian A.
+and Wagenmakers, E.-J.
+and Berk, Richard
+and Bollen, Kenneth A.
+and Brembs, Bj{\"o}rn
+and Brown, Lawrence
+and Camerer, Colin
+and Cesarini, David
+and Chambers, Christopher D.
+and Clyde, Merlise
+and Cook, Thomas D.
+and De Boeck, Paul
+and Dienes, Zoltan
+and Dreber, Anna
+and Easwaran, Kenny
+and Efferson, Charles
+and Fehr, Ernst
+and Fidler, Fiona
+and Field, Andy P.
+and Forster, Malcolm
+and George, Edward I.
+and Gonzalez, Richard
+and Goodman, Steven
+and Green, Edwin
+and Green, Donald P.
+and Greenwald, Anthony G.
+and Hadfield, Jarrod D.
+and Hedges, Larry V.
+and Held, Leonhard
+and Hua Ho, Teck
+and Hoijtink, Herbert
+and Hruschka, Daniel J.
+and Imai, Kosuke
+and Imbens, Guido
+and Ioannidis, John P. A.
+and Jeon, Minjeong
+and Jones, James Holland
+and Kirchler, Michael
+and Laibson, David
+and List, John
+and Little, Roderick
+and Lupia, Arthur
+and Machery, Edouard
+and Maxwell, Scott E.
+and McCarthy, Michael
+and Moore, Don A.
+and Morgan, Stephen L.
+and Munaf{\'o}, Marcus
+and Nakagawa, Shinichi
+and Nyhan, Brendan
+and Parker, Timothy H.
+and Pericchi, Luis
+and Perugini, Marco
+and Rouder, Jeff
+and Rousseau, Judith
+and Savalei, Victoria
+and Sch{\"o}nbrodt, Felix D.
+and Sellke, Thomas
+and Sinclair, Betsy
+and Tingley, Dustin
+and Van Zandt, Trisha
+and Vazire, Simine
+and Watts, Duncan J.
+and Winship, Christopher
+and Wolpert, Robert L.
+and Xie, Yu
+and Young, Cristobal
+and Zinman, Jonathan
+and Johnson, Valen E.},
+title={Redefine statistical significance},
+journal={Nature Human Behaviour},
+year={2018},
+volume={2},
+number={1},
+pages={6-10},
+abstract={We propose to change the default P-value threshold for statistical significance from 0.05 to 0.005 for claims of new discoveries.},
+issn={2397-3374},
+doi={10.1038/s41562-017-0189-z},
+url={https://doi.org/10.1038/s41562-017-0189-z}
+}
+
+@article{anderson2000null,
+ ISSN = {0022541X, 19372817},
+ URL = {http://www.jstor.org/stable/3803199},
+ abstract = {This paper presents a review and critique of statistical null hypothesis testing in ecological studies in general, and wildlife studies in particular, and describes an alternative. Our review of Ecology and the Journal of Wildlife Management found the use of null hypothesis testing to be pervasive. The estimated number of P-values appearing within articles of Ecology exceeded 8,000 in 1991 and has exceeded 3,000 in each year since 1984, whereas the estimated number of P-values in the Journal of Wildlife Management exceeded 8,000 in 1997 and has exceeded 3,000 in each year since 1994. We estimated that 47% (SE = 3.9%) of the P-values in the Journal of Wildlife Management lacked estimates of means or effect sizes or even the sign of the difference in means or other parameters. We find that null hypothesis testing is uninformative when no estimates of means or effect size and their precision are given. Contrary to common dogma, tests of statistical null hypotheses have relatively little utility in science and are not a fundamental aspect of the scientific method. We recommend their use be reduced in favor of more informative approaches. Towards this objective, we describe a relatively new paradigm of data analysis based on Kullback-Leibler information. This paradigm is an extension of likelihood theory and, when used correctly, avoids many of the fundamental limitations and common misuses of null hypothesis testing. Information-theoretic methods focus on providing a strength of evidence for an a priori set of alternative hypotheses, rather than a statistical test of a null hypothesis. This paradigm allows the following types of evidence for the alternative hypotheses: the rank of each hypothesis, expressed as a model; an estimate of the formal likelihood of each model, given the data; a measure of precision that incorporates model selection uncertainty; and simple methods to allow the use of the set of alternative models in making formal inference. We provide an example of the information-theoretic approach using data on the effect of lead on survival in spectacled eider ducks (Somateria fischeri). Regardless of the analysis paradigm used, we strongly recommend inferences based on a priori considerations be clearly separated from those resulting from some form of data dredging.},
+ author = {David R. Anderson and Kenneth P. Burnham and William L. Thompson},
+ journal = {The Journal of Wildlife Management},
+ number = {4},
+ pages = {912-923},
+ publisher = {[Wiley, Wildlife Society]},
+ title = {Null Hypothesis Testing: Problems, Prevalence, and an Alternative},
+ volume = {64},
+ year = {2000}
+}
+
+
+
+
+
+
+@article{sullivan2012using,
+  title={Using effect size—or why the P value is not enough},
+  author={Sullivan, Gail M and Feinn, Richard},
+  journal={Journal of graduate medical education},
+  volume={4},
+  number={3},
+  pages={279--282},
+  year={2012},
+  month = {09},
+  publisher={The Accreditation Council for Graduate Medical Education Suite 2000, 515 North State Street, Chicago, IL 60654}
+}
+
+
+
+@Article{noordzij2011sample,
+author={Noordzij, M.
+and Dekker, F. W.
+and Zoccali, C.
+and Jager, K. J.},
+title={Sample Size Calculations},
+journal={Nephron Clinical Practice},
+year={2011},
+volume={118},
+number={4},
+pages={c319-c323},
+abstract={The sample size is the number of patients or other experimental units that need to be included in a study to answer the research question. Pre-study calculation of the sample size is important; if a sample size is too small, one will not be able to detect an effect, while a sample that is too large may be a waste of time and money. Methods to calculate the sample size are explained in statistical textbooks, but because there are many different formulas available, it can be difficult for investigators to decide which method to use. Moreover, these calculations are prone to errors, because small changes in the selected parameters can lead to large differences in the sample size. This paper explains the basic principles of sample size calculations and demonstrates how to perform such a calculation for a simple study design.},
+url={https://www.karger.com/DOI/10.1159/000322830}
+}
+
+
+
+
+
+@article{jannot2015p,
+  title={P< 5$\times$ 10- 8 has emerged as a standard of statistical significance for genome-wide association studies},
+  author={Jannot, Anne-Sophie and Ehret, Georg and Perneger, Thomas},
+  journal={Journal of clinical epidemiology},
+  volume={68},
+  number={4},
+  pages={460--465},
+  year={2015},
+  publisher={Elsevier}
+}
+
+
+
+@article{wedderburn1974quasi,
+ ISSN = {00063444},
+ URL = {http://www.jstor.org/stable/2334725},
+ abstract = {To define a likelihood we have to specify the form of distribution of the observations, but to define a quasi-likelihood function we need only specify a relation between the mean and variance of the observations and the quasi-likelihood can then be used for estimation. For a one-parameter exponential family the log likelihood is the same as the quasi-likelihood and it follows that assuming a one-parameter exponential family is the weakest sort of distributional assumption that can be made. The Gauss-Newton method for calculating nonlinear least squares estimates generalizes easily to deal with maximum quasi-likelihood estimates, and a rearrangement of this produces a generalization of the method described by Nelder & Wedderburn (1972).},
+ author = {R. W. M. Wedderburn},
+ journal = {Biometrika},
+ number = {3},
+ pages = {439-447},
+ publisher = {[Oxford University Press, Biometrika Trust]},
+ title = {Quasi-Likelihood Functions, Generalized Linear Models, and the Gauss-Newton Method},
+ volume = {61},
+ year = {1974}
+}
+
+
+@article{nelder1972generalized,
+ ISSN = {00359238},
+ URL = {http://www.jstor.org/stable/2344614},
+ abstract = {The technique of iterative weighted linear regression can be used to obtain maximum likelihood estimates of the parameters with observations distributed according to some exponential family and systematic effects that can be made linear by a suitable transformation. A generalization of the analysis of variance is given for these models using log-likelihoods. These generalized linear models are illustrated by examples relating to four distributions; the Normal, Binomial (probit analysis, etc.), Poisson (contingency tables) and gamma (variance components). The implications of the approach in designing statistics courses are discussed.},
+ author = {J. A. Nelder and R. W. M. Wedderburn},
+ journal = {Journal of the Royal Statistical Society. Series A (General)},
+ number = {3},
+ pages = {370-384},
+ publisher = {[Royal Statistical Society, Wiley]},
+ title = {Generalized Linear Models},
+ volume = {135},
+ year = {1972}
+}
+
+
+
+
+@article{armstrong2014use,
+  doi = {10.1111/opo.12131},
+  url = {https://doi.org/10.1111/opo.12131},
+  year  = {2014},
+  month = {apr},
+  publisher = {Wiley-Blackwell},
+  volume = {34},
+  number = {5},
+  pages = {502--508},
+  author = {Richard A. Armstrong},
+  title = {When to use the Bonferroni correction},
+  journal = {Ophthalmic and Physiological Optics}
+}
+
+
+@Article{kim2015t,
+author={Kim, Tae Kyun},
+title={T test as a parametric statistic},
+journal={Korean J Anesthesiol},
+year={2015},
+month={Dec},
+publisher={The Korean Society of Anesthesiologists},
+volume={68},
+number={6},
+pages={540-546},
+keywords={Biostatistics},
+keywords={Matched-pair analysis},
+keywords={Normal distribution},
+keywords={Probability},
+issn={2005-6419},
+url={http://synapse.koreamed.org/DOIx.php?id=10.4097%2Fkjae.2015.68.6.540}
+}
+
+
+
+@Article{alexopoulos2010introduction,
+author={Alexopoulos, EC},
+title={Introduction to Multivariate Regression Analysis},
+journal={Hippokratia},
+year={2010},
+month={Dec},
+publisher={LITHOGRAPHIA Antoniadis I.-Psarras Th. G.P.},
+volume={14},
+number={Suppl 1},
+pages={23-28},
+note={1014s10023[PII]},
+note={21487487[pmid]},
+issn={1108-4189},
+url={http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3049417/}
+}
+
+@Article{Altman2015,
+author={Altman, Naomi
+and Krzywinski, Martin},
+title={Simple linear regression},
+journal={Nature Methods},
+year={2015},
+month={Oct},
+day={29},
+publisher={Nature Publishing Group, a division of Macmillan Publishers Limited. All Rights Reserved. SN  -},
+volume={12},
+pages={999 EP  -},
+url={http://dx.doi.org/10.1038/nmeth.3627}
+}
+
+
+
+@techreport{murphy2007conjugate,
+  title={Conjugate Bayesian analysis of the Gaussian distribution},
+  author={Murphy, Kevin P},
+  institution={Techincal report},	
+  year={2007},
+  month = {11}
+}
+
+
+
+
+@article{benjamini1995controlling,
+  title={Controlling the false discovery rate: a practical and powerful approach to multiple testing},
+  author={Benjamini, Yoav and Hochberg, Yosef},
+  journal={Journal of the royal statistical society. Series B (Methodological)},
+  pages={289--300},
+  year={1995},
+  publisher={JSTOR}
+}
+
+
+@online{1801.00008,
+Author = {Hai Tao Li and Ivan Vitev},
+Title = {Inverting the mass hierarchy of jet quenching effects with prompt $b$-jet substructure},
+Year = {2017},
+Eprint = {1801.00008},
+Eprinttype = {arXiv},
+}
+
+
+@book{bayesAndrew2013,
+  Author = {Andrew Gelman and John B. Carlin and Hal S. Stern and David B. Dunson and Aki Vehtari and Donald B. Rubin},
+  Title = {Bayesian Data Analysis, Third Edition (Chapman \& Hall/CRC Texts in Statistical Science)},
+  Publisher = {Chapman and Hall/CRC},
+  Year = {2013},
+  ISBN = {1439840954},
+  URL = {https://www.amazon.com/Bayesian-Analysis-Chapman-Statistical-Science/dp/1439840954?SubscriptionId=0JYN1NVW651KCA56C102&tag=techkie-20&linkCode=xm2&camp=2025&creative=165953&creativeASIN=1439840954},
+  pages = {29--62}
+}
+
+
+@article{doi:10.1001/jama.2018.1536,
+author = {Ioannidis JA},
+title = {The proposal to lower p value thresholds to .005},
+journal = {JAMA},
+volume = {},
+number = {},
+pages = {},
+year = {2018},
+doi = {10.1001/jama.2018.1536},
+URL = { + http://dx.doi.org/10.1001/jama.2018.1536},
+eprint = {/data/journals/jama/0/jama_ioannidis_2018_vp_180015.pdf}
+}
+</script>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<div class="radix-site-nav radix-site-footer">
+  <p>© Copyright 2019 <a href="https://www.zarathu.com">ZARATHU Co.,Ltd</a>.</p>
+  <p>Software licensed under the <a href="https://raw.githubusercontent.com/zarathucorp/blog/master/LICENSE">MIT License</a>.</p>
+</div>
+<!--/radix_placeholder_navigation_after_body-->
+
+
+</body>
+
+</html>

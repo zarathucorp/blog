@@ -1,0 +1,491 @@
+---
+title: "R Markdown 기초"
+description: |
+   YAML Header, 마크다운(Markdown) 텍스트, R 코드 청크(chunk) 그리고 그림과 테이블을 중심으로, R 코드와 분석 결과가 포함된 문서를 작성하는 방법을 정리하였습니다.   
+preview: https://reproducible-analysis-workshop.readthedocs.io/en/latest/_images/Rmd_output.png
+categories:
+  - lecture
+  - markdown
+author:
+  - name: Jinseob Kim
+    url: https://github.com/jinseob2kim
+    affiliation: ANPANMAN Co.,Ltd
+    affiliation_url: https://www.anpanman.co.kr
+date: 01-28-2019
+output:
+  radix::radix_article:
+    self_contained: false
+    toc: true
+    toc_depth: 2
+draft: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, fig.align = "center")
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+library(knitr)
+```
+
+[김진섭](https://github.com/jinseob2kim) 대표는 1월 28일(월) [성균관의대 사회의학교실](http://biomed.skku.edu/hkcheong)를 방문, **[R Markdown](https://rmarkdown.rstudio.com/)**으로 **[R](https://www.r-project.org/)** 코드와 분석 결과가 포함된 문서를 작성하는 방법을 강의할 예정입니다. 강의 내용을 미리 공유합니다. 
+
+
+## 시작하기 전에 
+
+**[R Markdown](https://rmarkdown.rstudio.com/)**은 **[R](https://www.r-project.org/)** 코드와 분석을 포함한 컨텐츠를 만드는 툴이며 크게 3가지 활용법이 있다. 
+
+1. 문서(`pdf`, `html`, `docx`): 글쓰기, 분석 결과, 참고문헌 등 논문의 모든 작업을 **[R Markdown](https://rmarkdown.rstudio.com/)**으로 수행한다. 
+
+
+2. 프리젠테이션(`pdf`, `html`, `pptx`): **[R](https://www.r-project.org/)** 코드나 분석결과가 포함된 프리젠테이션을 만든다. [기본 템플릿](https://rmarkdown.rstudio.com/lesson-11.html)^[https://rmarkdown.rstudio.com/lesson-11.html] 외에  **[xaringan](https://github.com/yihui/xaringan)**^[https://github.com/yihui/xaringan] 패키지가 최근 인기를 끌고 있다.
+
+
+3. 웹(`html`): 웹사이트나 블로그를 만든다. **[blogdown](https://github.com/rstudio/blogdown)**^[https://github.com/rstudio/blogdown] 이나 **[radix](https://rstudio.github.io/radix/)**^[https://rstudio.github.io/radix/] 패키지가 대표적이다. 이 글의 블로그도 **[radix](https://rstudio.github.io/radix/)**로 만들었으며, [Anpanman 홈페이지](https://www.anpanman.co.kr/)는 **[blogdown](https://github.com/rstudio/blogdown)**을 이용하였다.
+
+
+
+본 강의는 1의 가장 기초에 해당하는 강의로 간단한 문서를 작성하는 것을 목표로 한다. `pdf` 문서를 만들기 위해서는 추가로 **[LaTeX](https://www.latex-project.org/)** 문서작성 프로그램인 **[Tex Live](http://www.ktug.org/xe/?mid=Install)**를 설치해야 하며 본 강의에서는 생략한다.  
+
+
+## Rmd 문서 시작하기
+
+**[R Markdown](https://rmarkdown.rstudio.com/)**은 **Rmd** 파일로 작성되며 **[rmarkdown](https://github.com/rstudio/rmarkdown)**^[https://github.com/rstudio/rmarkdown] 패키지를 설치한 후, **[Rstudio](https://www.rstudio.com/)**에서 **File $\rightarrow$ New File $\rightarrow$ R markdown...** 의 순서로 클릭하여 시작할 수 있다(Figure \@ref(fig:rmdfilemenu), \@ref(fig:rmdstart)). 
+
+```{r rmdfilemenu, fig.cap="Rstudio `File` 메뉴^[https://rachaellappan.github.io/rmarkdown/]"}
+include_graphics("https://rachaellappan.github.io/images/rmarkdown.png")
+```
+
+
+```{r rmdstart, fig.cap="R markdown 시작 메뉴^[https://rachaellappan.github.io/rmarkdown/]"}
+include_graphics("https://rachaellappan.github.io/images/rmarkdown2.png")
+```
+
+문서의 제목과 저자 이름을 적은 후 파일 형태를 아무거나 고르면(나중에도 쉽게 수정 가능) Figure \@ref(fig:rmdfile)처럼 확장자가 `Rmd`인 문서가 생성될 것이다. 
+
+```{r rmdfile, fig.cap="R markdown 기본 문서^[https://aberdeenstudygroup.github.io/studyGroup/lessons/SG-T5-RMarkdown/Images/New_Markdown_v2.png]"}
+include_graphics("https://aberdeenstudygroup.github.io/studyGroup/lessons/SG-T5-RMarkdown/Images/New_Markdown_v2.png")
+```
+
+파일 내용을 보면 맨 먼저 제목을 쓰는 부분이 있고 글과 코드를 작성하는 부분도 있다. 일단 이 파일을 문서로 만들어보자. 문서 이름이 있는 바로 아래의 **knit** 탭을 누르거나, 그 옆의 아래방향 화살표를 누르고 원하는 파일 형태를 클릭하면 된다(Figure \@ref(fig:knittab)). 처음에 언급했듯이 `pdf`는 **[Tex Live](http://www.ktug.org/xe/?mid=Install)**를 설치한 후 이용할 수 있다. 
+
+```{r knittab, fig.cap="knit 탭^[https://rstudioblog.files.wordpress.com/2014/06/r-markdown-formats.png]"}
+include_graphics("https://rstudioblog.files.wordpress.com/2014/06/r-markdown-formats.png")
+```
+
+다음은 각각 `html`, `pdf`, `docx`로 생성된 문서이다.
+
+
+```{r rmdhtmlfile, fig.cap="html 문서^[https://stackoverflow.com/questions/47317229/rmarkdown-knit-pdf-to-look-exactly-like-html]"}
+include_graphics("https://i.stack.imgur.com/uTuZu.png")
+```
+
+```{r rmdpdffile, fig.cap="pdf 문서^[https://stackoverflow.com/questions/47317229/rmarkdown-knit-pdf-to-look-exactly-like-html]"}
+include_graphics("https://i.stack.imgur.com/Cyzfl.png")
+```
+
+```{r rmdwordfile, fig.cap="word 문서^[https://rmarkdown.rstudio.com/articles_docx.html]"}
+include_graphics("https://d33wubrfki0l68.cloudfront.net/9badad80dad0ed2859221733eb47b4674552a229/380fd/articles/images/first-word-view-02.png")
+```
+
+
+생각보다 간단하지 않은가? 이제 본격적으로 `Rmd` 파일의 내용을 살펴보면서 어떻게 글과 **[R](https://www.r-project.org/)** 코드를 작성하는지 알아보자. `Rmd`는 크게 제목을 적는 **YAML Header**, 글을 쓰는 **Markdown Text**와 코드를 적는 **Code Chunk**로 나눌 수 있다(Figure \@ref(fig:rmdcontents)). 
+
+```{r rmdcontents, fig.cap="Rmd 파일 구성^[https://rfriend.tistory.com/311]"}
+include_graphics("https://t1.daumcdn.net/cfile/tistory/231E974C59085A9E3D")
+```
+
+
+## YAML Header
+
+`YAML`은 **Y**AML **A**in’t **M**arkup **L**anguage의 재귀형식의 이름을 갖고 있는 언어로 가독성에 초점을 두고 개발되었다. **[R Markdown](https://rmarkdown.rstudio.com/)**은 `Rmd`의 시작 부분에 문서 형식을 설정하는 용도로 이 포맷을 이용한다. 다음은 기초 정보만 포함된 `YAML`이다. 
+
+
+```yaml
+---
+title: "R Markdown 기초"
+author: "김진섭"
+date: "`r format(Sys.Date())`"
+output: html_document
+---
+```
+
+
+Knit 버튼 오른쪽의 **설정(<i class="fa fa-cog"></i>) $\rightarrow$ Output Options...**를 클릭하여 `html`, `pdf`, `word` 포맷 각각에 대한 기본 설정을 할 수 있다(Figure \@ref(fig:outputoption), \@ref(fig:outputhtml)). 
+
+```{r outputoption, fig.cap="Output Options^[https://richardlent.github.io/post/rstudio-as-a-research-and-writing-platform/]", out.width="500"}
+include_graphics("https://richardlent.github.io/img/options1.png")
+```
+
+```{r outputhtml, fig.cap="HTML Option^[https://stackoverflow.com/questions/24934781/rstudio-knitr-themes]", out.width="500"}
+include_graphics("https://i.stack.imgur.com/d8mpo.png")
+```
+
+설정을 마치면 업데이트 된 `YAML`을 볼 수 있다. 모든 포맷 공통인 설정값은 
+
+1. **`toc`**(yes or no): 목차 포함 여부
+
+2. 그림의 **높이(`fig_height`)** 와 **넓이(`fig_width`)**: **[R](https://www.r-project.org/)** 코드로 만든 그림에는 해당되지 않는다. **[Figures]** 에서 다시 설명하겠다.
+
+
+```{r echo=FALSE}
+str="`r format(Sys.Date())`"
+```
+
+이며, 자동으로 현재 날짜를 입력하려면 아래와 같이 `` `r str` ``를 이용하면 된다. 
+
+```yaml
+---
+title: "R Markdown 기초"
+subtitle: "성균관의대 강의 2019"
+author: "김진섭"
+date: "`r str`" 
+---
+```
+
+아래는 필자가 `Rmd` 문서를 만들 때 흔히 쓰는 `YAML` 설정이다.   
+
+```yaml
+---
+title: "R Markdown 기초"
+subtitle: "성균관의대 강의 2019"
+author: "김진섭"
+date: "`r str`"
+output:
+  html_document:
+    fig_height: 6
+    fig_width: 10
+    highlight: textmate
+    theme: cosmo
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    fig_height: 6
+    fig_width: 10
+    toc: no
+  word_document:
+    fig_height: 6
+    fig_width: 9
+    toc: no
+---
+```
+
+`html`은 **[`theme`](http://www.datadreaming.org/post/r-markdown-theme-gallery/)**^[http://www.datadreaming.org/post/r-markdown-theme-gallery/]에서 테마, **[`highlight`](https://eranraviv.com/syntax-highlighting-style-in-rmarkdown/)^[https://eranraviv.com/syntax-highlighting-style-in-rmarkdown/]**에서 글씨 강조 스타일을 설정할 수 있으며, `toc_float` 옵션으로 움직이는 목차를 만들 수 있다(\@ref(fig:tocfloat)). 
+
+```{r tocfloat, fig.cap="toc_float- 움직이는 목차^[https://rfriend.tistory.com/311]", out.width="500"}
+include_graphics("https://t1.daumcdn.net/cfile/tistory/232EC13E590866C21E")
+```
+
+`docx`는 미리 설정을 마친 `docx` 문서를 아래와 같이 `YAML`에 추가하여 템플릿으로 이용할 수 있다. 
+
+```yaml
+---
+title: "R Markdown 기초"
+author: "김진섭"
+date: "`r format(Sys.Date())`"
+output: 
+    word_document:
+      reference_docx: mystyles.docx
+---
+```
+
+`docx`에 대한 자세한 내용은 [Rstudio 블로그](https://rmarkdown.rstudio.com/articles_docx.html)^[https://rmarkdown.rstudio.com/articles_docx.html]를 참고하기 바란다. 
+
+
+## Markdown 글쓰기
+
+
+
+**[R Markdown](https://rmarkdown.rstudio.com/)**은 이름에서 알 수 있듯이 **[마크다운(Markdown)](https://gist.github.com/ihoneymon/652be052a0727ad59601)** 을 기반으로 만들어졌다. **[마크다운](https://gist.github.com/ihoneymon/652be052a0727ad59601)**은 문법이 매우 간단한 것이 특징으로 **[깃허브](https://github.com)**의 **`README.md`**가 대표적인 마크다운 문서이다. 아래의 [R markdown reference]^[https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf]에 흔히 쓰는 문법이 정리되어 있다. 
+
+
+<embed src="https://drive.google.com/viewerng/
+viewer?embedded=true&url=https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf" width="100%" height="600">
+
+
+2 가지만 따로 살펴보겠다. 
+
+### Inline R code
+
+```{r echo=FALSE}
+inline <- "`r <코드>`"
+ex.inline <- "`r nrow(cars)`"
+```
+
+문장 안에 분석 결과값을 적을 때, 분석이 바뀔 때마다 바뀐 숫자를 직접 수정해야 한다. 그러나 숫자 대신 `` `r inline` `` 꼴로 **[R](https://www.r-project.org/)** 코드를 넣는다면 재분석시 그 숫자를 자동으로 업데이트 시킬 수 있다.   
+
+```rmd
+There were  `r ex.inline` cars studied
+```
+
+> There were `r nrow(cars)` cars studied
+
+
+
+### 수식 
+
+**[LaTeX](https://www.latex-project.org/)** 문법을 사용하며 `hwp` 문서의 수식 편집과 비슷하다. inline 삽입은 `$...$`, 새로운 줄은 `$$...$$` 안에 식을 적으면 된다.   
+
+```rmd
+This summation expression $\sum_{i=1}^n X_i$ appears inline.
+```
+
+> This summation expression $\sum_{i=1}^n X_i$ appears inline.
+
+
+    $$
+    \sigma = \sqrt{ \frac{1}{N} \sum_{i=1}^N (x_i -\mu)^2}
+    $$
+    
+$$\sigma = \sqrt{ \frac{1}{N} \sum_{i=1}^N (x_i -\mu)^2}$$
+
+
+수식 전반은 [LaTeX math and equations
+](https://www.latex-tutorial.com/tutorials/amsmath/)^[https://www.latex-tutorial.com/tutorials/amsmath/]을 참고하기 바란다. 
+
+
+
+## R chunk
+
+**Rmd** 문서에서 **[R](https://www.r-project.org/)** 코드가 들어가는 방식은 4가지이다.
+
+1. 몰래 실행. 코드와 결과는 다 숨긴다 - 최초 설정 때 쓰임.
+
+2. 실행. 코드와 결과를 모두 보여준다. 
+
+3. 실행. 코드는 숨기고 결과만 보여준다. 
+
+4. 실행하지 않음. 코드 보여주기만 한다. 
+
+
+하나씩 살펴보도록 하자. 
+
+
+### 최초 설정
+
+문서를 처음 생성했을 때 최초로 보이는 **[R](https://www.r-project.org/)** 코드는 다음과 같다. 
+
+````rmd
+`r ''````{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+````
+
+ `include=FALSE` 옵션으로 문서에는 포함시키지 않고 몰래 실행할 수 있으며, 주로 최초 설정에 이용된다. `setup`은 이 코드에 해당하는 라벨로 생략 가능하다. `knitr::opts_chunk$set` 에서 디폴트 옵션을 설정할 수 있으며 `echo = TRUE`는 코드를 보여준다는 뜻이다. 흔히 쓰는 옵션들은 아래와 같다.
+ 
+* `eval=F` - 코드를 실행하지 않는다. 
+* `echo=F` - 코드를 보여주지 않는다.
+* `include=F` - 실행 결과를 보여주지 않는다.
+* `message=F` - 실행 때 나오는 메세지를 보여주지 않는다.
+* `warning=F` - 실행 때 나오는 경고를 보여주지 않는다.
+* `error=T` - 에러가 있어도 실행하고 에러코드를 보여준다.
+* `fig.height = 7` - 그림 높이, **[R](https://www.r-project.org/)**로 그린 그림에만 해당한다.
+* `fig.width = 7` - 그림 너비, **[R](https://www.r-project.org/)**로 그린 그림에만 해당한다.
+* `fig.align = 'center'` - 그림 위치, **[R](https://www.r-project.org/)**로 그린 그림에만 해당한다.
+
+
+다음은 필자가 논문을 Rmd로 쓸 때 흔히 쓰는 디폴트 옵션이다.
+
+````rmd
+`r ''````{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=F, fig.align = "center", message=F, warning=F, fig.height = 8, cache=T, dpi = 300, dev = "jpg")
+```
+````
+
+전체 옵션은 `knitr::opts_chunk$get` 함수로 확인할 수 있다. 
+
+```rmd
+knitr::opts_chunk$get()
+```
+
+```{r}
+knitr::opts_chunk$get()
+```
+
+
+### Chunk 별 설정
+
+최초 설정 이후부터는 아래와 같이 간단하게 코드를 보여주거나 실행할 수 있다. 
+
+
+````rmd
+`r ''````{r}
+head(mtcars)
+```
+````
+
+```rmd
+head(mtcars)
+```
+
+```{r}
+rmarkdown::paged_table(head(mtcars))
+```
+
+
+기본 설정과 다른 옵션을 적용하려면 chunk에 옵션을 따로 적으면 된다. 예를 들어 코드는 숨기고 결과만 보여주려면 `echo=F` 를 추가하면 된다. 
+
+````rmd
+`r ''````{r, echo=F}
+head(mtcars)
+```
+````
+
+```{r}
+rmarkdown::paged_table(head(mtcars))
+```
+
+반대로 실행은 안하고 코드만 보여주려면 `eval=F`를 추가하면 된다. 
+
+
+````rmd
+`r ''````{r, eval=F}
+head(mtcars)
+```
+````
+
+```rmd
+head(mtcars)
+```
+
+
+## Figures
+
+Rmd 문서에 그림이 들어가는 방법은 2가지가 있다. 
+
+1. **[R](https://www.r-project.org/)** 코드로 생성 : `plot` 함수, `ggplot2` 패키지 등
+
+
+2. 외부 그림 삽입
+
+앞서도 언급했듯이 주의할 점은 그림이 만들어지는 방법에 따라 **서로 다른 옵션**이 적용된다는 것이다. 일단 전자부터 살펴보자. 
+
+
+### Figures with **[R](https://www.r-project.org/)**  
+
+**[R](https://www.r-project.org/)** 코드에서 자체적으로 만든 그림은 전부 chunk 옵션의 지배를 받아 간단하다. 
+
+
+````rmd
+`r ''````{r, fig.cap = "scatterplot: cars", fig.width = 8, fig.height = 6}
+plot(cars, pch = 18)
+```
+````
+
+```rmd
+plot(cars, pch = 18)
+```
+
+```{r, fig.cap = "scatterplot - cars",  fig.width = 8, fig.height = 6}
+plot(cars, pch = 18)
+```
+
+
+### External figures
+
+외부 그림은 **[R](https://www.r-project.org/)** 코드로도 삽입할 수 있고 **[마크다운](https://gist.github.com/ihoneymon/652be052a0727ad59601)** 문법을 쓸 수도 있는데, **어떤 방법을 쓰느냐에 따라 다른 옵션을 적용**받는다는 것을 주의해야 한다. **[R](https://www.r-project.org/)**에서는 `knitr::include_graphics` 함수를 이용하여 그림을 넣을 수 있고 이 때는 chunk 내부의 옵션이 적용된다. 
+
+
+````rmd
+`r ''````{r, fig.cap = "tidyverse logo", fig.align = "center"}
+library(knitr)
+include_graphics("https://www.tidyverse.org/images/tidyverse-default.png")
+```
+````
+
+
+```{r, fig.cap = "tidyverse logo", fig.align = "center"}
+library(knitr)
+include_graphics("https://www.tidyverse.org/images/tidyverse-default.png")
+```
+
+
+같은 그림을 chunk없이 바로 **[마크다운](https://gist.github.com/ihoneymon/652be052a0727ad59601)**에서 삽입할 수도 있다. 이 때는 `YAML`의 옵션이 적용된다. 
+
+
+```md
+![tidyverse logo](https://www.tidyverse.org/images/tidyverse-default.png){ width=50% }
+```
+
+![tidyverse logo](https://www.tidyverse.org/images/tidyverse-default.png){ width=50% }
+
+
+`{ width=50% }` 는 그림의 크기를 조절하는 옵션이며 **[R](https://www.r-project.org/)** chunk에서도 같은 옵션 `out.width="50%"`이 있다.   위치를 가운데로 조절하려면 `<center>...</center>` 를 포함시키자.
+
+```md
+<center>
+![tidyverse logo](https://www.tidyverse.org/images/tidyverse-default.png){ width=50% }
+</center>
+```
+
+
+<center>
+![tidyverse logo](https://www.tidyverse.org/images/tidyverse-default.png){ width=50% }
+</center>
+
+
+개인적으로는 외부 이미지도 chunk 내부에서 읽는 것을 추천한다. chunk 내부의 옵션들이 **[마크다운](https://gist.github.com/ihoneymon/652be052a0727ad59601)**의 그것보다 훨씬 체계적이고 쉬운 느낌이다.   
+
+
+## Tables
+
+논문을 쓸 때 가장 귀찮은 부분 중 하나가 분석 결과를 테이블로 만드는 것으로, `knitr::kable()` 함수를 쓰면 문서 형태에 상관없이 Rmd에서 바로 테이블을 만들 수 있다. 아래는 데이터를 살펴보는 가장 간단한 예시이다.
+
+
+````rmd
+`r ''````{r}
+kable(iris[1:5, ], caption = "A caption")
+```
+````
+
+```{r tables-mtcars}
+knitr::kable(iris[1:5, ], caption = 'A caption', row.names = T)
+```
+
+**epiDisplay** 패키지의 `regress.display`, `logistic.display` 함수를 활용하면 회귀분석의 결과를 바로 테이블로 나타낼 수 있다(Table \@ref(tab:regtable)). 
+
+````rmd
+`r ''````{r}
+mtcars$vs <- as.factor(mtcars$vs)
+mtcars$cyl <- as.factor(mtcars$cyl)
+
+model <- glm(mpg ~ disp + vs + cyl, data = mtcars)
+model.display <- epiDisplay::regress.display(model, crude = T, crude.p.value = T)
+model.table <- model.display$table[rownames(model.display$table)!="", ]
+kable(model.table, caption = model.display$first.line)
+```
+````
+
+
+```{r regtable}
+mtcars$vs <- as.factor(mtcars$vs)
+mtcars$cyl <- as.factor(mtcars$cyl)
+model <- glm(mpg ~ disp + vs + cyl, data = mtcars)
+model.display <- epiDisplay::regress.display(model, crude = T, crude.p.value = T)
+model.table <- model.display$table[rownames(model.display$table)!="", ]
+kable(model.table, caption = model.display$first.line)
+```
+
+테이블을 좀 더 다듬으려면 **[kableExtra](https://github.com/haozhu233/kableExtra)** 패키지가 필요하며, 자세한 내용은 **[cran 설명서](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html)**^[https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html]를 참고하기 바란다. `html` 문서의 경우 `kable()`외에도 다양한 함수들을 이용할 수 있는데, 대표적인 것이 `rmarkdown::paged_table()` 함수와 **[DT](https://github.com/rstudio/DT)** 패키지이다. 전자는 아래와 같이 `YAML`에서 테이블 보기의 기본 옵션으로 설정할 수도 있다.   
+
+
+````yaml
+---
+title: "Motor Trend Car Road Tests"
+output:
+  html_document:
+    df_print: paged
+---
+````
+
+**[DT](https://github.com/rstudio/DT)** 패키지에 대한 설명은 [Rstudio DT 홈페이지](https://rstudio.github.io/DT/)^[https://rstudio.github.io/DT/]를 참고하기 바란다.
+
+
+## 마치며
+
+본 강의를 통해 **[R Markdown](https://rmarkdown.rstudio.com/)**으로 기본적인 문서를 만드는 법을 알아보았다. 본 강의에서는 시간 관계상 참고문헌 다는 법을 언급하지 않았는데 궁금하다면 [Bibliographies and Citations](https://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)^[https://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html]을 참고하자. 이 내용까지 숙지한다면 **[R Markdown](https://rmarkdown.rstudio.com/)**으로 논문을 쓸 준비가 된 것이다. **[R Markdown](https://rmarkdown.rstudio.com/)**에 대한 전반적인 내용은 아래의 [R Markdown Cheet Sheet](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf)^[https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf]에 잘 요약되어 있으니 그때그떄 확인하면 좋다.
+
+<embed src="https://drive.google.com/viewerng/
+viewer?embedded=true&url=https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf" width="100%" height="600">
+
