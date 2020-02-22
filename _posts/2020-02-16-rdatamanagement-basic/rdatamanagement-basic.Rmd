@@ -22,7 +22,8 @@ draft: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo=T)
+library(rmarkdown)
 ```
 
 [김진섭](https://github.com/jinseob2kim) 대표는 3월 18일(수) 부터 6회에 걸쳐, **[서울대병원 진단검사의학과](http://www.snuhlab.org/main/main.aspx) 의국원들의 통계분석 능력 함양을 위한 맞춤 교육** 이라는 주제로 R 교육을 진행할 예정입니다. 강의록을 미리 공유합니다.
@@ -42,9 +43,20 @@ knitr::opts_chunk$set(echo = FALSE)
 3. **[data.table](https://github.com/Rdatatable/data.table/wiki)** 패키지는 빠른 실행속도를 장점으로 **[tidyverse](https://www.tidyverse.org/)** 의 득세 속에서 살아남았으며, 역시  **[과거 홈페이지](https://jinseob2kim.github.io/radv1.html)**^[https://jinseob2kim.github.io/radv1.html]에 정리한 바 있다. 
 
 
-본 강의는 이중 첫 번째에 해당하며 2주차에 **[tidyverse](https://www.tidyverse.org/)** 를 다룰 것이다. **[data.table](https://github.com/Rdatatable/data.table/wiki)** 은 이번 교육에는 포함시키지 않았는데, R에 익숙해지면서 느린 속도가 점점 거슬실 때 배우는 것을 추천한다.
+본 강의는 이중 첫 번째에 해당하며 2주차에 **[tidyverse](https://www.tidyverse.org/)** 를 다룰 것이다. **[data.table](https://github.com/Rdatatable/data.table/wiki)** 은 이번 교육에는 포함시키지 않았는데, R에 익숙해지면서 느린 속도가 점점 거슬린다면 **[data.table](https://github.com/Rdatatable/data.table/wiki)** 을 시작할 때이다.
 
 
+실습은 **[RStudio cloud](https://rstudio.cloud)** 로 진행할 것이며, 아래 단계를 따라 실습환경을 구축하고 데이터를 다운받자.
+
+
+1. https://rstudio.cloud 회원 가입
+
+2. https://rstudio.cloud/spaces/30306/join?access_code <- s4hEiPXQF%2BjosPclQEzgTtR0mPWDuh7Dhr2O7wAg 들어가서 __*"Join Space"*__ 클릭
+
+3. 위쪽 __*"Projects"*__ 클릭 후, __*"New Project"*__ 를 눌러 __*"New Project from Git Repo"*__ 를 선택 후, Repo 주소 https://github.com/jinseob2kim/lecture-snuhlab 입력.
+
+
+개인 PC에서 실습을 원한다면 http://www.r-project.org 와 https://rstudio.com 에서 **[R](https://www.r-project.org/)**과 **[RStudio](https://rstudio.com/)** 를 설치하자.
 
 
 ## 전체 강의 일정
@@ -59,5 +71,168 @@ knitr::opts_chunk$set(echo = FALSE)
 |6|  5월 29일(목) 11-13시 | R로 논문쓰기: [rmarkdown](https://blog.zarathu.com/posts/2019-01-03-rmarkdown/) |
 
 
-## 
+## *R* 기초연산 : 벡터(vector) 
+
+*R* 의 기본 연산 단위는 벡터이며 `x <- c(1,2,3)` 이라고 쓰면 1,2,3 으로 이루어진 길이 3인 벡터를 `x`에 저장하는 것이다. 기타 연산은 직접 실습으로 알아보자.
+
+```{r}
+x <- c(1, 2, 3, 4, 5, 6)            ## vector of variable
+y <- c(7, 8, 9, 10, 11, 12)
+x + y              
+x * y
+sqrt(x)
+sum(x)
+sum(x >= 4)                         ## 주의: TRUE/FALSE 값을 더한다. 
+diff(x) 
+mean(x)
+sd(x)
+max(x)
+max(x, y)
+length(x)
+
+x[2]
+x[-2]  
+x[1:3]
+x[c(1, 3, 4, 5, 6)]
+x[c(1, 2, 3)]
+sum(x[x >= 4])                     ## x 중 4 이상인 것들만 더하기. 
+```
+
+
+### 벡터만들기
+
+이번에는 벡터를 생성하는 다양한 방법들을 예시를 통해 배워보도록 한다.
+
+```{r}
+## Sequence
+v1 <- seq(-5, 5, by = .2); v1 
+## Repeat 
+v2 <- rep(1, 3); v2
+v3 <- rep(c(1, 2, 3), 2); v3              ## Repeat for vector
+v4 <- rep(c(1, 2, 3), each = 2); v4       ## Repeat for vector : each
+```
+
+
+### `for`, `if`, `else`, `ifelse` 문 
+
+마찬가지로 예시를 통해 배워보자.
+
+```{r}
+## for loop
+for (i in 1:3){
+  print(i)
+}
+
+i <- 0
+for (j in c(1, 2, 4, 5, 6)){
+  i <- i + j
+}
+i
+
+## if 
+x <- 5
+if (x >= 3 ){
+  x <- x + 3
+}
+x
+
+x <- 5
+if (x >= 10){
+  print("High")
+} else if (x >= 5){
+  print("Medium")
+} else {
+  print("Low")
+}                                ## if, else if 주의: 반드시 } 와 같은 줄에 위치하도록.
+ 
+
+## ifelse
+x <- 5
+y <- ifelse(x == 5, "OK", "Suck")       ## ifelse(조건,참일때,거짓일때)
+y
+```
+
+
+### 함수 만들기 
+
+기초수준에서는 함수를 만들어 쓸일이 거의 없을 것이다. 그러나 평균, 분산 등을 구할 때 결측치가 있으면 *R*은 `NA`를 출력하는 문제점이 있어 이를 해결하기 위해서라도 기본적인 함수 만드는 법은 알고 있는 것이 좋다. 예제를 통해 살펴보자.
+
+```{r}
+x <- c(1:10, 12, 13, NA, NA, 15, 17)               ## 결측치가 포함되어 있다면..
+mean(x)
+mean0 <- function(x){
+  mean(x, na.rm = T)
+}                                         ## x에 대한 함수이며 mean함수에 na.rm 옵션을 TRUE로 해두었다. default는 F
+
+mean0 <- function(x){mean(x, na.rm = T)}        ## 한줄에 쓸 수도 있다. 
+mean0(x)
+```
+
+하나 이상의 변수를 포함한 함수도 다음과 같이 만들 수 있다.
+
+```{r}
+twomean <- function(x1, x2){
+  a <- (x1 + x2)/2
+  a
+}
+twomean(4, 6)
+```
+
+### Apply 문 : `apply`, `sapply`, `lapply`
+
+*R*은 벡터 기반의 연산을 지원하므로 이를 이용하면 여러가지 계산을 간단히 할 수 있다. 예제로 살펴보자. 
+
+```{r}
+mat <- matrix(1:20, nrow = 4, byrow = T)   ## 4행 5열, byrow = T : 행부터 채운다. 
+mat
+apply(mat, 1, mean)                 ## 1: 행- 행별로 평균
+apply(mat, 2, mean)                 ## 2: 열- 열별로 평균
+sapply(1:nrow(mat), function(x){mean(mat[x, ])})       
+sapply(1:ncol(mat), function(x){mean(mat[, x])})
+lapply(1:nrow(mat), function(x){mean(mat[x, ])})             ## Return list type
+unlist(lapply(1:nrow(mat), function(x){mean(mat[x, ])}))     ## Same to sapply
+```
+
+
+## 데이터 불러와서 작업하기
+
+이제부터는 실제 데이터를 읽어서 그 데이터를 매니징 하는 방법을 배워보도록 하겠다. 
+
+### 데이터 불러오기, 저장하기
+
+데이터를 불러오기 전에 미리 디렉토리를 지정하면 그 다음부터는 편하게 읽고 쓸 수 있다.
+
+```{r, eval=F}
+getwd()                                                   ## 현재 디렉토리 
+setwd("/data")                                            ## 디렉토리 설정 
+getwd()
+```
+
+
+폴더 구분을  **"/"** 로 해야 한다는 점을 명심하자. *R* 은 유닉스 기반의 언어이기 때문이다. 이제 실습 데이터를 읽어볼텐데, 가급적이면 데이터 포맷은 `csv`로 만드는 것을 추천한다. 콤마로 분리된 가장 간단한 형태로, 용량도 작고 어떤 소프트웨어 에서도 읽을 수 있기 때문이다. 물론 Excel, SPSS, SAS 파일도 읽을 수 있는데, 변수명이나 값에 한글이 있으면 encoding 에러가 생길 수 있으므로 미리 처리하자. 
+
+
+```{r, eval=F}
+ex <- read.csv("example_g1e.csv")
+head(ex)
+```
+
+```{r, echo=F,  eval=T}
+ex <- read.csv("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv")
+paged_table(head(ex))
+```
+
+Excel 파일은 **[readxl](https://readxl.tidyverse.org/)**, SAS나 SPSS는 **[haven](https://haven.tidyverse.org/)** 패키지를 이용한다.
+
+```{r, eval=F}
+library(readxl)                                          ## package for xlsx
+ex <- read_excel("example_g1e.xlsx", sheet = 1)          ## 1st sheet
+
+library(haven)                                           ## package for SAS/SPSS/STATA   
+ex <- read_sas("example_g1e.sas7bdat")                   ## SAS
+ex <- read_sav("example_g1e.sav")                        ## SPSS
+```
+
+
+
 
