@@ -972,6 +972,7 @@
 <li><a href="#전체-강의-일정">전체 강의 일정</a></li>
 <li><a href="#r-기초연산-벡터vector"><em>R</em> 기초연산 : 벡터(vector)</a></li>
 <li><a href="#데이터-불러와서-작업하기">데이터 불러와서 작업하기</a></li>
+<li><a href="#마치며">마치며</a></li>
 </ul>
 </nav>
 <hr class="d-toc-separator"/>
@@ -990,7 +991,7 @@
 <li><p><a href="https://rstudio.cloud/spaces/30306/join?access_code" class="uri">https://rstudio.cloud/spaces/30306/join?access_code</a> &lt;- s4hEiPXQF%2BjosPclQEzgTtR0mPWDuh7Dhr2O7wAg 들어가서 <strong><em>“Join Space”</em></strong> 클릭</p></li>
 <li><p>위쪽 <strong><em>“Projects”</em></strong> 클릭 후, <strong><em>“New Project”</em></strong> 를 눌러 <strong><em>“New Project from Git Repo”</em></strong> 를 선택 후, Repo 주소 <a href="https://github.com/jinseob2kim/lecture-snuhlab" class="uri">https://github.com/jinseob2kim/lecture-snuhlab</a> 입력.</p></li>
 </ol>
-<p>개인 PC에서 실습을 원한다면 <a href="http://www.r-project.org" class="uri">http://www.r-project.org</a> 와 <a href="https://rstudio.com" class="uri">https://rstudio.com</a> 에서 <strong><a href="https://www.r-project.org/">R</a></strong>과 <strong><a href="https://rstudio.com/">RStudio</a></strong> 를 설치하자.</p>
+<p>개인 PC에서 실습을 원한다면 <a href="http://www.r-project.org" class="uri">http://www.r-project.org</a> 와 <a href="https://rstudio.com/products/rstudio/download/#download" class="uri">https://rstudio.com/products/rstudio/download/#download</a> 에서 <strong><a href="https://www.r-project.org/">R</a></strong>과 <strong><a href="https://rstudio.com/">RStudio</a></strong> 를 설치하자.</p>
 <h2 id="전체-강의-일정">전체 강의 일정</h2>
 <table>
 <thead>
@@ -1034,7 +1035,7 @@
 </tbody>
 </table>
 <h2 id="r-기초연산-벡터vector"><em>R</em> 기초연산 : 벡터(vector)</h2>
-<p><em>R</em> 의 기본 연산 단위는 벡터이며 <code>x &lt;- c(1,2,3)</code> 이라고 쓰면 1,2,3 으로 이루어진 길이 3인 벡터를 <code>x</code>에 저장하는 것이다. 기타 연산은 직접 실습으로 알아보자.</p>
+<p><em>R</em> 의 기본 연산단위는 벡터이며, <code>x &lt;- c(1, 2, 3)</code> 은 1,2,3 으로 이루어진 길이 3인 벡터를 <code>x</code> 에 저장한다. 대입연산자는 <code>=</code> 와 <code>&lt;-</code> 둘 다 가능하지만 함수의 인자로도 쓰이는 <code>=</code> 와 구별하기 위해 <code>&lt;-</code> 를 권장한다. 자주 쓰는 연산을 실습하자.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 x &lt;- c(1, 2, 3, 4, 5, 6)            ## vector of variable
@@ -1054,10 +1055,6 @@ sqrt(x)</code></pre>
 sum(x)</code></pre>
 <pre><code>
 [1] 21</code></pre>
-<pre class="r"><code>
-sum(x &gt;= 4)                         ## 주의: TRUE/FALSE 값을 더한다. </code></pre>
-<pre><code>
-[1] 3</code></pre>
 <pre class="r"><code>
 diff(x) </code></pre>
 <pre><code>
@@ -1082,45 +1079,66 @@ max(x, y)</code></pre>
 length(x)</code></pre>
 <pre><code>
 [1] 6</code></pre>
+</div>
+<p>벡터에서 특정 항목을 골라내려면 그것의 <strong>위치</strong> 혹은 <strong>조건문</strong>을 이용한다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-x[2]</code></pre>
+x[2]                               ## 2 번째</code></pre>
 <pre><code>
 [1] 2</code></pre>
 <pre class="r"><code>
-x[-2]  </code></pre>
+x[-2]                              ## 2 번째만 빼고</code></pre>
 <pre><code>
 [1] 1 3 4 5 6</code></pre>
 <pre class="r"><code>
-x[1:3]</code></pre>
+x[1:3]                             ## 1-3 번째</code></pre>
 <pre><code>
 [1] 1 2 3</code></pre>
 <pre class="r"><code>
-x[c(1, 3, 4, 5, 6)]</code></pre>
+x[c(1, 2, 3)]                      ## 동일 </code></pre>
+<pre><code>
+[1] 1 2 3</code></pre>
+<pre class="r"><code>
+x[c(1, 3, 4, 5, 6)]                ## 1, 3, 4, 5, 6  번째</code></pre>
 <pre><code>
 [1] 1 3 4 5 6</code></pre>
 <pre class="r"><code>
-x[c(1, 2, 3)]</code></pre>
+x &gt;= 4                             ## 각 항목이 4 이상인지 TRUE/FALSE</code></pre>
 <pre><code>
-[1] 1 2 3</code></pre>
+[1] FALSE FALSE FALSE  TRUE  TRUE  TRUE</code></pre>
 <pre class="r"><code>
-sum(x[x &gt;= 4])                     ## x 중 4 이상인 것들만 더하기. </code></pre>
+sum(x &gt;= 4)                        ## TRUE 1, FALSE 0 인식 </code></pre>
+<pre><code>
+[1] 3</code></pre>
+<pre class="r"><code>
+x[x &gt;= 4]                          ## TRUE 인 것들만, 즉 4 이상인 것들         </code></pre>
+<pre><code>
+[1] 4 5 6</code></pre>
+<pre class="r"><code>
+sum(x[x &gt;= 4])                     ## 4 이상인 것들만 더하기. </code></pre>
 <pre><code>
 [1] 15</code></pre>
+<pre class="r"><code>
+x %in% c(1, 3, 5)                  ## 1, 3, 5 중 하나에 속하는지 TRUE/FALSE</code></pre>
+<pre><code>
+[1]  TRUE FALSE  TRUE FALSE  TRUE FALSE</code></pre>
+<pre class="r"><code>
+x[x %in% c(1, 3, 5)]               </code></pre>
+<pre><code>
+[1] 1 3 5</code></pre>
 </div>
 <h3 id="벡터만들기">벡터만들기</h3>
-<p>이번에는 벡터를 생성하는 다양한 방법들을 예시를 통해 배워보도록 한다.</p>
+<p><code>seq</code> 로 일정 간격인, <code>rep</code> 로 항목들이 반복되는 벡터를 만들 수 있다.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-## Sequence
-v1 &lt;- seq(-5, 5, by = .2); v1 </code></pre>
+v1 &lt;- seq(-5, 5, by = .2); v1             ## Sequence</code></pre>
 <pre><code>
  [1] -5.0 -4.8 -4.6 -4.4 -4.2 -4.0 -3.8 -3.6 -3.4 -3.2 -3.0 -2.8 -2.6
 [14] -2.4 -2.2 -2.0 -1.8 -1.6 -1.4 -1.2 -1.0 -0.8 -0.6 -0.4 -0.2  0.0
 [27]  0.2  0.4  0.6  0.8  1.0  1.2  1.4  1.6  1.8  2.0  2.2  2.4  2.6
 [40]  2.8  3.0  3.2  3.4  3.6  3.8  4.0  4.2  4.4  4.6  4.8  5.0</code></pre>
 <pre class="r"><code>
-## Repeat 
-v2 &lt;- rep(1, 3); v2</code></pre>
+v2 &lt;- rep(1, 3); v2                       ## Repeat</code></pre>
 <pre><code>
 [1] 1 1 1</code></pre>
 <pre class="r"><code>
@@ -1132,11 +1150,10 @@ v4 &lt;- rep(c(1, 2, 3), each = 2); v4       ## Repeat for vector : each</code><
 <pre><code>
 [1] 1 1 2 2 3 3</code></pre>
 </div>
-<h3 id="for-if-else-ifelse-문"><code>for</code>, <code>if</code>, <code>else</code>, <code>ifelse</code> 문</h3>
-<p>마찬가지로 예시를 통해 배워보자.</p>
+<h3 id="for-ifelse-ifelse-문"><code>for</code>, <code>if/else</code>, <code>ifelse</code> 문</h3>
+<p><code>for</code> loop 는 같은 작업을 반복할 때 이용하며 <code>while</code> 도 비슷한 의미이다. 예시를 통해 배워보자.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-## for loop
 for (i in 1:3){
   print(i)
 }</code></pre>
@@ -1152,8 +1169,10 @@ for (j in c(1, 2, 4, 5, 6)){
 i</code></pre>
 <pre><code>
 [1] 18</code></pre>
+</div>
+<p><code>if</code> 와 <code>else</code> 는 조건문을 다룬다. <strong><code>else</code> 나 <code>else if</code> 문은 선행 조건문의 마지막과 같은 줄</strong>이어야 함을 기억하자.</p>
+<div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-## if 
 x &lt;- 5
 if (x &gt;= 3 ){
   x &lt;- x + 3
@@ -1169,36 +1188,38 @@ if (x &gt;= 10){
   print(&quot;Medium&quot;)
 } else {
   print(&quot;Low&quot;)
-}                                ## if, else if 주의: 반드시 } 와 같은 줄에 위치하도록.</code></pre>
+}                                          ## else if, else 주의: 반드시 } 와 같은 줄에 위치하도록.</code></pre>
 <pre><code>
 [1] &quot;Medium&quot;</code></pre>
-<pre class="r"><code>
-## ifelse
-x &lt;- 5
-y &lt;- ifelse(x == 5, &quot;OK&quot;, &quot;Suck&quot;)       ## ifelse(조건,참일때,거짓일때)
-y</code></pre>
-<pre><code>
-[1] &quot;OK&quot;</code></pre>
 </div>
-<h3 id="함수-만들기">함수 만들기</h3>
-<p>기초수준에서는 함수를 만들어 쓸일이 거의 없을 것이다. 그러나 평균, 분산 등을 구할 때 결측치가 있으면 <em>R</em>은 <code>NA</code>를 출력하는 문제점이 있어 이를 해결하기 위해서라도 기본적인 함수 만드는 법은 알고 있는 것이 좋다. 예제를 통해 살펴보자.</p>
+<p><code>ifelse</code> 는 <strong>벡터화</strong>된 <code>if/else</code> 문으로 벡터의 각 항목마다 조건문을 적용하는데, 엑셀의 <code>if</code> 문과 비슷하다.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-x &lt;- c(1:10, 12, 13, NA, NA, 15, 17)               ## 결측치가 포함되어 있다면..
-mean(x)</code></pre>
+x &lt;- 1:6
+y &lt;- ifelse(x &gt;= 4, &quot;Yes&quot;, &quot;No&quot;)           ## ifelse (조건,참일때,거짓일때)
+y</code></pre>
+<pre><code>
+[1] &quot;No&quot;  &quot;No&quot;  &quot;No&quot;  &quot;Yes&quot; &quot;Yes&quot; &quot;Yes&quot;</code></pre>
+</div>
+<h3 id="함수-만들기">함수 만들기</h3>
+<p>막 <strong>R</strong>을 배우는 단계에서는 함수를 만들어 쓸 일이 거의 없겠지만, 결측치 포함된 데이터에서 평균이나 분산을 구할 때 귀찮을 수 있다. <strong>R</strong>은 결측치가 하나라도 포함되면 평균값, 분산값으로 <code>NA</code>를 출력하기 때문이다. 이를 해결하기 위해서라도 아래처럼 기초 함수 만드는 법은 알고 있는 것이 좋다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+x &lt;- c(1:10, 12, 13, NA, NA, 15, 17)      ## 결측치가 포함되어 있다면..
+mean(x)                                           </code></pre>
 <pre><code>
 [1] NA</code></pre>
 <pre class="r"><code>
 mean0 &lt;- function(x){
   mean(x, na.rm = T)
-}                                         ## x에 대한 함수이며 mean함수에 na.rm 옵션을 TRUE로 해두었다. default는 F
+}                                         ## mean함수의 na.rm 옵션을 TRUE로 바꿈. default는 F
 
-mean0 &lt;- function(x){mean(x, na.rm = T)}        ## 한줄에 쓸 수도 있다. 
+mean0 &lt;- function(x){mean(x, na.rm = T)}  ## 한줄에 쓸 수도 있다. 
 mean0(x)</code></pre>
 <pre><code>
 [1] 8</code></pre>
 </div>
-<p>하나 이상의 변수를 포함한 함수도 다음과 같이 만들 수 있다.</p>
+<p>둘 이상의 변수를 포함한 함수도 다음과 같이 만들 수 있다.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 twomean &lt;- function(x1, x2){
@@ -1210,7 +1231,7 @@ twomean(4, 6)</code></pre>
 [1] 5</code></pre>
 </div>
 <h3 id="apply-문-apply-sapply-lapply">Apply 문 : <code>apply</code>, <code>sapply</code>, <code>lapply</code></h3>
-<p><em>R</em>은 벡터 기반의 연산을 지원하므로 이를 이용하면 여러가지 계산을 간단히 할 수 있다. 예제로 살펴보자.</p>
+<p>벡터를 다루는 연산을 잘 활용하면, 벡터의 각 항목에 대해 <code>for</code> loop 을 쓰는 것보다 간편하게 코드를 작성할 수 있다. 행렬에서 행마다 평균을 구하는 예를 살펴보자.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 mat &lt;- matrix(1:20, nrow = 4, byrow = T)   ## 4행 5열, byrow = T : 행부터 채운다. 
@@ -1221,22 +1242,24 @@ mat</code></pre>
 [2,]    6    7    8    9   10
 [3,]   11   12   13   14   15
 [4,]   16   17   18   19   20</code></pre>
+</div>
+<p>모든 행에 대해 <code>for</code> loop 을 이용, 평균을 구하여 저장하는 코드는 아래와 같다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-apply(mat, 1, mean)                 ## 1: 행- 행별로 평균</code></pre>
+out &lt;- NULL                                ## 빈 벡터, 여기에 하나씩 붙여넣는다.
+for (i in 1:nrow(mat)){
+  out &lt;- c(out, mean(mat[i, ]))
+}
+out</code></pre>
 <pre><code>
 [1]  3  8 13 18</code></pre>
+</div>
+<p>처음에 빈 벡터를 만들고 여기에 결과를 붙여가는 모습이 번거로워 보인다. <code>sapply</code> 또는 <code>lapply</code> 를 사용하면 행 또는 열 단위 연산을 간단히 수행할 수 있다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-apply(mat, 2, mean)                 ## 2: 열- 열별로 평균</code></pre>
-<pre><code>
-[1]  8.5  9.5 10.5 11.5 12.5</code></pre>
-<pre class="r"><code>
-sapply(1:nrow(mat), function(x){mean(mat[x, ])})       </code></pre>
+sapply(1:nrow(mat), function(x){mean(mat[x, ])})             ## Return vector</code></pre>
 <pre><code>
 [1]  3  8 13 18</code></pre>
-<pre class="r"><code>
-sapply(1:ncol(mat), function(x){mean(mat[, x])})</code></pre>
-<pre><code>
-[1]  8.5  9.5 10.5 11.5 12.5</code></pre>
 <pre class="r"><code>
 lapply(1:nrow(mat), function(x){mean(mat[x, ])})             ## Return list type</code></pre>
 <pre><code>
@@ -1256,17 +1279,48 @@ unlist(lapply(1:nrow(mat), function(x){mean(mat[x, ])}))     ## Same to sapply</
 <pre><code>
 [1]  3  8 13 18</code></pre>
 </div>
+<p>처음에 빈 벡터를 만들고, 이어붙이는 과정이 생략되어 간단한 코드가 되었다. <strong>list</strong> 는 벡터보다 더 상위의 개념으로, 본 강의에서는 <code>unlist</code> 를 취하면 벡터나 행렬을 얻게 된다는 정도만 언급하고 넘어가겠다. 사실 행렬의 행/열 단위 연산은 <code>apply</code> 혹은 <code>row***</code>, <code>col***</code> 시리즈의 함수가 따로 있어, 더 간단히 이용할 수 있다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+apply(mat, 1, mean)                                          ## 1: 행</code></pre>
+<pre><code>
+[1]  3  8 13 18</code></pre>
+<pre class="r"><code>
+rowMeans(mat)                                                ## 동일</code></pre>
+<pre><code>
+[1]  3  8 13 18</code></pre>
+<pre class="r"><code>
+rowSums(mat)                                                 ## 행별로 합</code></pre>
+<pre><code>
+[1] 15 40 65 90</code></pre>
+<pre class="r"><code>
+apply(mat, 2, mean)                                          ## 2: 열</code></pre>
+<pre><code>
+[1]  8.5  9.5 10.5 11.5 12.5</code></pre>
+<pre class="r"><code>
+colMeans(mat)                                                ## 열별로 합</code></pre>
+<pre><code>
+[1]  8.5  9.5 10.5 11.5 12.5</code></pre>
+</div>
+<p>멀티코어 병렬연산으로 <code>apply</code> 를 빠르게 수행할 수도 있는데 본 강의에서는 생략한다. 궁금하신 분은 <a href="https://jinseob2kim.github.io/rbasic.html#apply_%EB%AC%B8_:_apply,_sapply,_lapply">과거 정리 내용</a> 을 참고하기 바란다.</p>
 <h2 id="데이터-불러와서-작업하기">데이터 불러와서 작업하기</h2>
 <p>이제부터는 실제 데이터를 읽어서 그 데이터를 매니징 하는 방법을 배워보도록 하겠다.</p>
 <h3 id="데이터-불러오기-저장하기">데이터 불러오기, 저장하기</h3>
 <p>데이터를 불러오기 전에 미리 디렉토리를 지정하면 그 다음부터는 편하게 읽고 쓸 수 있다.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-getwd()                                                   ## 현재 디렉토리 
-setwd(&quot;/data&quot;)                                            ## 디렉토리 설정 
+getwd()                                                     ## 현재 디렉토리 </code></pre>
+<pre><code>
+[1] &quot;/home/js/Homepage/blog/_posts/2020-02-16-rdatamanagement-basic&quot;</code></pre>
+<pre class="r"><code>
+setwd(&quot;data&quot;)                                               ## 디렉토리 설정
+## 동일
+setwd(&quot;/home/js/Homepage/blog/_posts/2020-02-16-rdatamanagement-basic/data&quot;)
 getwd()</code></pre>
+<pre><code>
+[1] &quot;/home/js/Homepage/blog/_posts/2020-02-16-rdatamanagement-basic/data&quot;</code></pre>
 </div>
-<p>폴더 구분을 <strong>“/”</strong> 로 해야 한다는 점을 명심하자. <em>R</em> 은 유닉스 기반의 언어이기 때문이다. 이제 실습 데이터를 읽어볼텐데, 가급적이면 데이터 포맷은 <code>csv</code>로 만드는 것을 추천한다. 콤마로 분리된 가장 간단한 형태로, 용량도 작고 어떤 소프트웨어 에서도 읽을 수 있기 때문이다. 물론 Excel, SPSS, SAS 파일도 읽을 수 있는데, 변수명이나 값에 한글이 있으면 encoding 에러가 생길 수 있으므로 미리 처리하자.</p>
+<p>폴더 구분을 <strong>“/”</strong> 로 해야 한다는 점을 명심하자. <strong>R</strong> 은 유닉스 기반이기 때문이다. 이제 실습 데이터를 읽어볼텐데, 가급적이면 데이터 포맷은 <code>csv</code>로 만드는 것을 추천한다. 콤마로 분리된 가장 간단한 형태로, 용량도 작고 어떤 소프트웨어 에서도 읽을 수 있기 때문이다. 물론 Excel, SPSS, SAS 파일도 읽을 수 있는데, 변수명이나 값에 한글이 있으면 encoding 에러가 생길 수 있으므로 미리 처리하자.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 ex &lt;- read.csv(&quot;example_g1e.csv&quot;)
@@ -1275,20 +1329,35 @@ head(ex)</code></pre>
 <div class="layout-chunk" data-layout="l-body">
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["EXMD_BZ_YYYY"],"name":[1],"type":["int"],"align":["right"]},{"label":["RN_INDI"],"name":[2],"type":["int"],"align":["right"]},{"label":["HME_YYYYMM"],"name":[3],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_STK"],"name":[4],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_HTDZ"],"name":[5],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_HTN"],"name":[6],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_DM"],"name":[7],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_DLD"],"name":[8],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_PTB"],"name":[9],"type":["int"],"align":["right"]},{"label":["Q_HBV_AG"],"name":[10],"type":["int"],"align":["right"]},{"label":["Q_SMK_YN"],"name":[11],"type":["int"],"align":["right"]},{"label":["Q_DRK_FRQ_V09N"],"name":[12],"type":["int"],"align":["right"]},{"label":["G1E_HGHT"],"name":[13],"type":["int"],"align":["right"]},{"label":["G1E_WGHT"],"name":[14],"type":["int"],"align":["right"]},{"label":["G1E_WSTC"],"name":[15],"type":["int"],"align":["right"]},{"label":["G1E_BMI"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["G1E_VA_LT"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["G1E_VA_RT"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["G1E_BP_SYS"],"name":[19],"type":["int"],"align":["right"]},{"label":["G1E_BP_DIA"],"name":[20],"type":["int"],"align":["right"]},{"label":["G1E_URN_PROT"],"name":[21],"type":["int"],"align":["right"]},{"label":["G1E_HGB"],"name":[22],"type":["dbl"],"align":["right"]},{"label":["G1E_FBS"],"name":[23],"type":["int"],"align":["right"]},{"label":["G1E_TOT_CHOL"],"name":[24],"type":["int"],"align":["right"]},{"label":["G1E_TG"],"name":[25],"type":["int"],"align":["right"]},{"label":["G1E_HDL"],"name":[26],"type":["int"],"align":["right"]},{"label":["G1E_LDL"],"name":[27],"type":["int"],"align":["right"]},{"label":["G1E_CRTN"],"name":[28],"type":["dbl"],"align":["right"]},{"label":["G1E_SGOT"],"name":[29],"type":["int"],"align":["right"]},{"label":["G1E_SGPT"],"name":[30],"type":["int"],"align":["right"]},{"label":["G1E_GGT"],"name":[31],"type":["int"],"align":["right"]},{"label":["G1E_GFR"],"name":[32],"type":["int"],"align":["right"]}],"data":[{"1":"2009","2":"562083","3":"200909","4":"0","5":"0","6":"1","7":"0","8":"0","9":"NA","10":"3","11":"1","12":"0","13":"144","14":"61","15":"90","16":"29.4","17":"0.7","18":"0.8","19":"120","20":"80","21":"1","22":"12.6","23":"117","24":"264","25":"128","26":"60","27":"179","28":"0.9","29":"25","30":"20","31":"25","32":"59","_rn_":"1"},{"1":"2009","2":"334536","3":"200911","4":"0","5":"0","6":"0","7":"0","8":"0","9":"NA","10":"2","11":"1","12":"0","13":"162","14":"51","15":"63","16":"19.4","17":"0.8","18":"1.0","19":"120","20":"80","21":"1","22":"13.8","23":"96","24":"169","25":"92","26":"70","27":"80","28":"0.9","29":"18","30":"15","31":"28","32":"74","_rn_":"2"},{"1":"2009","2":"911867","3":"200903","4":"0","5":"0","6":"0","7":"0","8":"0","9":"NA","10":"3","11":"1","12":"0","13":"163","14":"65","15":"82","16":"24.5","17":"0.7","18":"0.6","19":"130","20":"80","21":"1","22":"15.0","23":"118","24":"216","25":"132","26":"55","27":"134","28":"0.8","29":"26","30":"30","31":"30","32":"79","_rn_":"3"},{"1":"2009","2":"183321","3":"200908","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"3","11":"1","12":"0","13":"152","14":"51","15":"70","16":"22.1","17":"0.8","18":"0.9","19":"101","20":"62","21":"1","22":"13.1","23":"90","24":"199","25":"100","26":"65","27":"114","28":"0.9","29":"18","30":"14","31":"11","32":"61","_rn_":"4"},{"1":"2009","2":"942671","3":"200909","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"3","11":"1","12":"0","13":"159","14":"50","15":"73","16":"19.8","17":"0.7","18":"0.8","19":"132","20":"78","21":"1","22":"13.0","23":"92","24":"162","25":"58","26":"40","27":"111","28":"0.9","29":"24","30":"23","31":"15","32":"49","_rn_":"5"},{"1":"2009","2":"979358","3":"200912","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"2","11":"1","12":"0","13":"157","14":"55","15":"73","16":"22.3","17":"1.5","18":"1.5","19":"110","20":"70","21":"1","22":"11.9","23":"100","24":"192","25":"109","26":"53","27":"117","28":"0.7","29":"15","30":"12","31":"14","32":"83","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["EXMD_BZ_YYYY"],"name":[1],"type":["int"],"align":["right"]},{"label":["RN_INDI"],"name":[2],"type":["int"],"align":["right"]},{"label":["HME_YYYYMM"],"name":[3],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_STK"],"name":[4],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_HTDZ"],"name":[5],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_HTN"],"name":[6],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_DM"],"name":[7],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_DLD"],"name":[8],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_PTB"],"name":[9],"type":["int"],"align":["right"]},{"label":["Q_HBV_AG"],"name":[10],"type":["int"],"align":["right"]},{"label":["Q_SMK_YN"],"name":[11],"type":["int"],"align":["right"]},{"label":["Q_DRK_FRQ_V09N"],"name":[12],"type":["int"],"align":["right"]},{"label":["HGHT"],"name":[13],"type":["int"],"align":["right"]},{"label":["WGHT"],"name":[14],"type":["int"],"align":["right"]},{"label":["WSTC"],"name":[15],"type":["int"],"align":["right"]},{"label":["BMI"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["VA_LT"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["VA_RT"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["BP_SYS"],"name":[19],"type":["int"],"align":["right"]},{"label":["BP_DIA"],"name":[20],"type":["int"],"align":["right"]},{"label":["URN_PROT"],"name":[21],"type":["int"],"align":["right"]},{"label":["HGB"],"name":[22],"type":["dbl"],"align":["right"]},{"label":["FBS"],"name":[23],"type":["int"],"align":["right"]},{"label":["TOT_CHOL"],"name":[24],"type":["int"],"align":["right"]},{"label":["TG"],"name":[25],"type":["int"],"align":["right"]},{"label":["HDL"],"name":[26],"type":["int"],"align":["right"]},{"label":["LDL"],"name":[27],"type":["int"],"align":["right"]},{"label":["CRTN"],"name":[28],"type":["dbl"],"align":["right"]},{"label":["SGOT"],"name":[29],"type":["int"],"align":["right"]},{"label":["SGPT"],"name":[30],"type":["int"],"align":["right"]},{"label":["GGT"],"name":[31],"type":["int"],"align":["right"]},{"label":["GFR"],"name":[32],"type":["int"],"align":["right"]}],"data":[{"1":"2009","2":"562083","3":"200909","4":"0","5":"0","6":"1","7":"0","8":"0","9":"NA","10":"3","11":"1","12":"0","13":"144","14":"61","15":"90","16":"29.4","17":"0.7","18":"0.8","19":"120","20":"80","21":"1","22":"12.6","23":"117","24":"264","25":"128","26":"60","27":"179","28":"0.9","29":"25","30":"20","31":"25","32":"59","_rn_":"1"},{"1":"2009","2":"334536","3":"200911","4":"0","5":"0","6":"0","7":"0","8":"0","9":"NA","10":"2","11":"1","12":"0","13":"162","14":"51","15":"63","16":"19.4","17":"0.8","18":"1.0","19":"120","20":"80","21":"1","22":"13.8","23":"96","24":"169","25":"92","26":"70","27":"80","28":"0.9","29":"18","30":"15","31":"28","32":"74","_rn_":"2"},{"1":"2009","2":"911867","3":"200903","4":"0","5":"0","6":"0","7":"0","8":"0","9":"NA","10":"3","11":"1","12":"0","13":"163","14":"65","15":"82","16":"24.5","17":"0.7","18":"0.6","19":"130","20":"80","21":"1","22":"15.0","23":"118","24":"216","25":"132","26":"55","27":"134","28":"0.8","29":"26","30":"30","31":"30","32":"79","_rn_":"3"},{"1":"2009","2":"183321","3":"200908","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"3","11":"1","12":"0","13":"152","14":"51","15":"70","16":"22.1","17":"0.8","18":"0.9","19":"101","20":"62","21":"1","22":"13.1","23":"90","24":"199","25":"100","26":"65","27":"114","28":"0.9","29":"18","30":"14","31":"11","32":"61","_rn_":"4"},{"1":"2009","2":"942671","3":"200909","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"3","11":"1","12":"0","13":"159","14":"50","15":"73","16":"19.8","17":"0.7","18":"0.8","19":"132","20":"78","21":"1","22":"13.0","23":"92","24":"162","25":"58","26":"40","27":"111","28":"0.9","29":"24","30":"23","31":"15","32":"49","_rn_":"5"},{"1":"2009","2":"979358","3":"200912","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"2","11":"1","12":"0","13":"157","14":"55","15":"73","16":"22.3","17":"1.5","18":"1.5","19":"110","20":"70","21":"1","22":"11.9","23":"100","24":"192","25":"109","26":"53","27":"117","28":"0.7","29":"15","30":"12","31":"14","32":"83","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
 <p>Excel 파일은 <strong><a href="https://readxl.tidyverse.org/">readxl</a></strong>, SAS나 SPSS는 <strong><a href="https://haven.tidyverse.org/">haven</a></strong> 패키지를 이용한다.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-library(readxl)                                          ## package for xlsx
-ex &lt;- read_excel(&quot;example_g1e.xlsx&quot;, sheet = 1)          ## 1st sheet
+library(readxl)                                            ## Package for xlsx
+ex &lt;- read_excel(&quot;example_g1e.xlsx&quot;, sheet = 1)            ## 1st sheet
 
-library(haven)                                           ## package for SAS/SPSS/STATA   
-ex &lt;- read_sas(&quot;example_g1e.sas7bdat&quot;)                   ## SAS
-ex &lt;- read_sav(&quot;example_g1e.sav&quot;)                        ## SPSS</code></pre>
+library(haven)                                             ## Package for SAS/SPSS/STATA   
+ex.sas &lt;- read_sas(&quot;example_g1e.sas7bdat&quot;)                 ## SAS
+ex.spss &lt;- read_sav(&quot;example_g1e.sav&quot;)                     ## SPSS</code></pre>
 </div>
+<p>파일 저장은 <code>write.csv</code> 를 이용하며, 맨 왼쪽에 나타나는 행 넘버링을 빼려면 <code>row.names = F</code> 옵션을 추가한다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+write.csv(ex, &quot;example_g1e_ex.csv&quot;, row.names = F)</code></pre>
+</div>
+<p><strong><a href="https://haven.tidyverse.org/">haven</a></strong> 패키지에서 <code>write_sas</code> 나 <code>write_sav</code> 도 가능하다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+write_sas(ex.sas, &quot;example_g1e_ex.sas7bdat&quot;)
+write_sav(ex.spss, &quot;example_g1e_ex.sav&quot;)</code></pre>
+</div>
+<h2 id="마치며">마치며</h2>
+<p>아래의 <a href="https://rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf">Base R Cheat Sheet</a> 에서 확인할 수 있다.</p>
+<embed src="https://drive.google.com/viewerng/
+viewer?embedded=true&url=https://rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf" width="100%" height="600">
 <section class="footnotes" role="doc-endnotes">
 <hr />
 <ol>

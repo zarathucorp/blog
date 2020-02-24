@@ -56,7 +56,7 @@ library(rmarkdown)
 3. 위쪽 __*"Projects"*__ 클릭 후, __*"New Project"*__ 를 눌러 __*"New Project from Git Repo"*__ 를 선택 후, Repo 주소 https://github.com/jinseob2kim/lecture-snuhlab 입력.
 
 
-개인 PC에서 실습을 원한다면 http://www.r-project.org 와 https://rstudio.com 에서 **[R](https://www.r-project.org/)**과 **[RStudio](https://rstudio.com/)** 를 설치하자.
+개인 PC에서 실습을 원한다면 http://www.r-project.org 와 https://rstudio.com/products/rstudio/download/#download 에서 **[R](https://www.r-project.org/)**과 **[RStudio](https://rstudio.com/)** 를 설치하자.
 
 
 ## 전체 강의 일정
@@ -73,7 +73,7 @@ library(rmarkdown)
 
 ## *R* 기초연산 : 벡터(vector) 
 
-*R* 의 기본 연산 단위는 벡터이며 `x <- c(1,2,3)` 이라고 쓰면 1,2,3 으로 이루어진 길이 3인 벡터를 `x`에 저장하는 것이다. 기타 연산은 직접 실습으로 알아보자.
+*R* 의 기본 연산단위는 벡터이며, `x <- c(1, 2, 3)` 은 1,2,3 으로 이루어진 길이 3인 벡터를 `x` 에 저장한다. 대입연산자는 `=` 와 `<-` 둘 다 가능하지만 함수의 인자로도 쓰이는 `=` 와 구별하기 위해 `<-` 를 권장한다. 자주 쓰는 연산을 실습하자.
 
 ```{r}
 x <- c(1, 2, 3, 4, 5, 6)            ## vector of variable
@@ -82,43 +82,49 @@ x + y
 x * y
 sqrt(x)
 sum(x)
-sum(x >= 4)                         ## 주의: TRUE/FALSE 값을 더한다. 
 diff(x) 
 mean(x)
 sd(x)
 max(x)
 max(x, y)
 length(x)
+```
 
-x[2]
-x[-2]  
-x[1:3]
-x[c(1, 3, 4, 5, 6)]
-x[c(1, 2, 3)]
-sum(x[x >= 4])                     ## x 중 4 이상인 것들만 더하기. 
+벡터에서 특정 항목을 골라내려면 그것의 **위치** 혹은 **조건문**을 이용한다. 
+
+```{r}
+x[2]                               ## 2 번째
+x[-2]                              ## 2 번째만 빼고
+x[1:3]                             ## 1-3 번째
+x[c(1, 2, 3)]                      ## 동일 
+x[c(1, 3, 4, 5, 6)]                ## 1, 3, 4, 5, 6  번째
+x >= 4                             ## 각 항목이 4 이상인지 TRUE/FALSE
+sum(x >= 4)                        ## TRUE 1, FALSE 0 인식 
+x[x >= 4]                          ## TRUE 인 것들만, 즉 4 이상인 것들         
+sum(x[x >= 4])                     ## 4 이상인 것들만 더하기. 
+x %in% c(1, 3, 5)                  ## 1, 3, 5 중 하나에 속하는지 TRUE/FALSE
+x[x %in% c(1, 3, 5)]               
 ```
 
 
 ### 벡터만들기
 
-이번에는 벡터를 생성하는 다양한 방법들을 예시를 통해 배워보도록 한다.
+`seq` 로 일정 간격인, `rep` 로 항목들이 반복되는 벡터를 만들 수 있다. 
 
 ```{r}
-## Sequence
-v1 <- seq(-5, 5, by = .2); v1 
-## Repeat 
-v2 <- rep(1, 3); v2
+v1 <- seq(-5, 5, by = .2); v1             ## Sequence
+
+v2 <- rep(1, 3); v2                       ## Repeat
 v3 <- rep(c(1, 2, 3), 2); v3              ## Repeat for vector
 v4 <- rep(c(1, 2, 3), each = 2); v4       ## Repeat for vector : each
 ```
 
 
-### `for`, `if`, `else`, `ifelse` 문 
+### `for`, `if/else`, `ifelse` 문 
 
-마찬가지로 예시를 통해 배워보자.
+`for` loop 는 같은 작업을 반복할 때 이용하며 `while` 도 비슷한 의미이다. 예시를 통해 배워보자.
 
 ```{r}
-## for loop
 for (i in 1:3){
   print(i)
 }
@@ -128,8 +134,11 @@ for (j in c(1, 2, 4, 5, 6)){
   i <- i + j
 }
 i
+```
 
-## if 
+`if` 와 `else` 는 조건문을 다룬다. **`else` 나 `else if` 문은 선행 조건문의 마지막과 같은 줄**이어야 함을 기억하자.
+
+```{r}
 x <- 5
 if (x >= 3 ){
   x <- x + 3
@@ -143,32 +152,35 @@ if (x >= 10){
   print("Medium")
 } else {
   print("Low")
-}                                ## if, else if 주의: 반드시 } 와 같은 줄에 위치하도록.
- 
+}                                          ## else if, else 주의: 반드시 } 와 같은 줄에 위치하도록.
+```
 
-## ifelse
-x <- 5
-y <- ifelse(x == 5, "OK", "Suck")       ## ifelse(조건,참일때,거짓일때)
+`ifelse` 는 **벡터화**된 `if/else` 문으로 벡터의 각 항목마다 조건문을 적용하는데, 엑셀의 `if` 문과 비슷하다. 
+
+```{r}
+x <- 1:6
+y <- ifelse(x >= 4, "Yes", "No")           ## ifelse (조건,참일때,거짓일때)
 y
 ```
 
 
 ### 함수 만들기 
 
-기초수준에서는 함수를 만들어 쓸일이 거의 없을 것이다. 그러나 평균, 분산 등을 구할 때 결측치가 있으면 *R*은 `NA`를 출력하는 문제점이 있어 이를 해결하기 위해서라도 기본적인 함수 만드는 법은 알고 있는 것이 좋다. 예제를 통해 살펴보자.
+막 **R**을 배우는 단계에서는 함수를 만들어 쓸 일이 거의 없겠지만, 결측치 포함된 데이터에서 평균이나 분산을 구할 때 귀찮을 수 있다. **R**은 결측치가 하나라도 포함되면 평균값, 분산값으로 `NA`를 출력하기 때문이다. 이를 해결하기 위해서라도 아래처럼 기초 함수 만드는 법은 알고 있는 것이 좋다. 
+
 
 ```{r}
-x <- c(1:10, 12, 13, NA, NA, 15, 17)               ## 결측치가 포함되어 있다면..
-mean(x)
+x <- c(1:10, 12, 13, NA, NA, 15, 17)      ## 결측치가 포함되어 있다면..
+mean(x)                                           
 mean0 <- function(x){
   mean(x, na.rm = T)
-}                                         ## x에 대한 함수이며 mean함수에 na.rm 옵션을 TRUE로 해두었다. default는 F
+}                                         ## mean함수의 na.rm 옵션을 TRUE로 바꿈. default는 F
 
-mean0 <- function(x){mean(x, na.rm = T)}        ## 한줄에 쓸 수도 있다. 
+mean0 <- function(x){mean(x, na.rm = T)}  ## 한줄에 쓸 수도 있다. 
 mean0(x)
 ```
 
-하나 이상의 변수를 포함한 함수도 다음과 같이 만들 수 있다.
+둘 이상의 변수를 포함한 함수도 다음과 같이 만들 수 있다.
 
 ```{r}
 twomean <- function(x1, x2){
@@ -178,20 +190,48 @@ twomean <- function(x1, x2){
 twomean(4, 6)
 ```
 
+
 ### Apply 문 : `apply`, `sapply`, `lapply`
 
-*R*은 벡터 기반의 연산을 지원하므로 이를 이용하면 여러가지 계산을 간단히 할 수 있다. 예제로 살펴보자. 
+벡터를 다루는 연산을 잘 활용하면, 벡터의 각 항목에 대해 `for` loop 을 쓰는 것보다 간편하게 코드를 작성할 수 있다. 행렬에서 행마다 평균을 구하는 예를 살펴보자.
 
 ```{r}
 mat <- matrix(1:20, nrow = 4, byrow = T)   ## 4행 5열, byrow = T : 행부터 채운다. 
 mat
-apply(mat, 1, mean)                 ## 1: 행- 행별로 평균
-apply(mat, 2, mean)                 ## 2: 열- 열별로 평균
-sapply(1:nrow(mat), function(x){mean(mat[x, ])})       
-sapply(1:ncol(mat), function(x){mean(mat[, x])})
+```
+
+모든 행에 대해 `for` loop 을 이용, 평균을 구하여 저장하는 코드는 아래와 같다.
+
+```{r}
+out <- NULL                                ## 빈 벡터, 여기에 하나씩 붙여넣는다.
+for (i in 1:nrow(mat)){
+  out <- c(out, mean(mat[i, ]))
+}
+out
+```
+
+처음에 빈 벡터를 만들고 여기에 결과를 붙여가는 모습이 번거로워 보인다. `sapply` 또는 `lapply` 를 사용하면 행 또는 열 단위 연산을 간단히 수행할 수 있다.
+
+```{r}
+sapply(1:nrow(mat), function(x){mean(mat[x, ])})             ## Return vector
 lapply(1:nrow(mat), function(x){mean(mat[x, ])})             ## Return list type
 unlist(lapply(1:nrow(mat), function(x){mean(mat[x, ])}))     ## Same to sapply
 ```
+
+처음에 빈 벡터를 만들고, 이어붙이는 과정이 생략되어 간단한 코드가 되었다. **list** 는 벡터보다 더 상위의 개념으로, 본 강의에서는 `unlist` 를 취하면 벡터나 행렬을 얻게 된다는 정도만 언급하고 넘어가겠다. 사실 행렬의 행/열 단위 연산은 `apply` 혹은 `row***`, `col***` 시리즈의 함수가 따로 있어, 더 간단히 이용할 수 있다.
+
+```{r}
+apply(mat, 1, mean)                                          ## 1: 행
+rowMeans(mat)                                                ## 동일
+rowSums(mat)                                                 ## 행별로 합
+
+apply(mat, 2, mean)                                          ## 2: 열
+colMeans(mat)                                                ## 열별로 합
+
+
+```
+
+멀티코어 병렬연산으로 `apply` 를 빠르게 수행할 수도 있는데 본 강의에서는 생략한다. 궁금하신 분은 [과거 정리 내용](https://jinseob2kim.github.io/rbasic.html#apply_%EB%AC%B8_:_apply,_sapply,_lapply) 을 참고하기 바란다. 
 
 
 ## 데이터 불러와서 작업하기
@@ -202,14 +242,16 @@ unlist(lapply(1:nrow(mat), function(x){mean(mat[x, ])}))     ## Same to sapply
 
 데이터를 불러오기 전에 미리 디렉토리를 지정하면 그 다음부터는 편하게 읽고 쓸 수 있다.
 
-```{r, eval=F}
-getwd()                                                   ## 현재 디렉토리 
-setwd("/data")                                            ## 디렉토리 설정 
+```{r, eval=T}
+getwd()                                                     ## 현재 디렉토리 
+setwd("data")                                               ## 디렉토리 설정
+## 동일
+setwd("/home/js/Homepage/blog/_posts/2020-02-16-rdatamanagement-basic/data")
 getwd()
 ```
 
 
-폴더 구분을  **"/"** 로 해야 한다는 점을 명심하자. *R* 은 유닉스 기반의 언어이기 때문이다. 이제 실습 데이터를 읽어볼텐데, 가급적이면 데이터 포맷은 `csv`로 만드는 것을 추천한다. 콤마로 분리된 가장 간단한 형태로, 용량도 작고 어떤 소프트웨어 에서도 읽을 수 있기 때문이다. 물론 Excel, SPSS, SAS 파일도 읽을 수 있는데, 변수명이나 값에 한글이 있으면 encoding 에러가 생길 수 있으므로 미리 처리하자. 
+폴더 구분을  **"/"** 로 해야 한다는 점을 명심하자. **R** 은 유닉스 기반이기 때문이다. 이제 실습 데이터를 읽어볼텐데, 가급적이면 데이터 포맷은 `csv`로 만드는 것을 추천한다. 콤마로 분리된 가장 간단한 형태로, 용량도 작고 어떤 소프트웨어 에서도 읽을 수 있기 때문이다. 물론 Excel, SPSS, SAS 파일도 읽을 수 있는데, 변수명이나 값에 한글이 있으면 encoding 에러가 생길 수 있으므로 미리 처리하자. 
 
 
 ```{r, eval=F}
@@ -225,14 +267,35 @@ paged_table(head(ex))
 Excel 파일은 **[readxl](https://readxl.tidyverse.org/)**, SAS나 SPSS는 **[haven](https://haven.tidyverse.org/)** 패키지를 이용한다.
 
 ```{r, eval=F}
-library(readxl)                                          ## package for xlsx
-ex <- read_excel("example_g1e.xlsx", sheet = 1)          ## 1st sheet
+library(readxl)                                            ## Package for xlsx
+ex <- read_excel("example_g1e.xlsx", sheet = 1)            ## 1st sheet
 
-library(haven)                                           ## package for SAS/SPSS/STATA   
-ex <- read_sas("example_g1e.sas7bdat")                   ## SAS
-ex <- read_sav("example_g1e.sav")                        ## SPSS
+library(haven)                                             ## Package for SAS/SPSS/STATA   
+ex.sas <- read_sas("example_g1e.sas7bdat")                 ## SAS
+ex.spss <- read_sav("example_g1e.sav")                     ## SPSS
 ```
 
+
+파일 저장은 `write.csv` 를 이용하며, 맨 왼쪽에 나타나는 행 넘버링을 빼려면 `row.names = F` 옵션을 추가한다. 
+
+```{r, eval=F}
+write.csv(ex, "example_g1e_ex.csv", row.names = F)
+```
+
+**[haven](https://haven.tidyverse.org/)** 패키지에서 `write_sas` 나 `write_sav` 도 가능하다. 
+
+```{r, eval=F}
+write_sas(ex.sas, "example_g1e_ex.sas7bdat")
+write_sav(ex.spss, "example_g1e_ex.sav")
+```
+
+
+## 마치며 
+
+아래의 [Base R Cheat Sheet](https://rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf) 에서 확인할 수 있다. 
+
+<embed src="https://drive.google.com/viewerng/
+viewer?embedded=true&url=https://rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf" width="100%" height="600">
 
 
 
