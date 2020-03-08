@@ -1365,7 +1365,7 @@ lapply(list(x, y), max)</code></pre>
 [1]  6 12</code></pre>
 </div>
 </details>
-<p><br><br></p>
+<p><br></p>
 <p>멀티코어 병렬연산으로 <code>apply</code> 를 빠르게 수행할 수도 있는데 본 강의에서는 생략한다. 궁금하신 분은 <a href="https://jinseob2kim.github.io/rbasic.html#apply_%EB%AC%B8_:_apply,_sapply,_lapply">과거 정리 내용</a> 을 참고하기 바란다.</p>
 <h2 id="데이터-불러와서-작업하기">데이터 불러와서 작업하기</h2>
 <p>이제부터는 실제 데이터를 읽어서 그 데이터를 매니징 하는 방법을 배워보도록 하겠다.</p>
@@ -1655,6 +1655,188 @@ table(ex$EXMD_BZ_YYYY)                                    ## table</code></pre>
 2009 2010 2011 2012 2013 2014 2015 
  214  236  223  234  243  254  240 </code></pre>
 </div>
+<h3 id="새로운-변수-만들기">새로운 변수 만들기</h3>
+<p>연속형 변수인 <strong>BMI</strong> 에서 원하는 조건에 맞는 정보를 뽑아내는 연습을 해 보자.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+mean(ex$BMI)                                              ## mean</code></pre>
+<pre><code>
+[1] 23.92257</code></pre>
+<pre class="r"><code>
+BMI_cat &lt;- (ex$BMI &gt;= 25)                                 ## TRUE of FALSE
+table(BMI_cat)                         </code></pre>
+<pre><code>
+BMI_cat
+FALSE  TRUE 
+ 1077   567 </code></pre>
+<pre class="r"><code>
+rows &lt;- which(ex$BMI &gt;= 25)                               ## row numbers
+head(rows)                                      </code></pre>
+<pre><code>
+[1]  1 14 18 21 23 24</code></pre>
+<pre class="r"><code>
+values &lt;- ex$BMI[ex$BMI &gt;= 25]                            ## values
+head(values)</code></pre>
+<pre><code>
+[1] 29.4 27.5 27.7 28.0 30.7 25.6</code></pre>
+<pre class="r"><code>
+length(values)</code></pre>
+<pre><code>
+[1] 567</code></pre>
+<pre class="r"><code>
+BMI_HGHT_and &lt;- (ex$BMI &gt;= 25 &amp; ex$HGHT &gt;= 175)              ## and
+BMI_HGHT_or &lt;- (ex$BMI &gt;= 25 | ex$HGHT &gt;= 175)               ## or</code></pre>
+</div>
+<p>데이터에 새로운 변수로 추가하는 방법은 간단하다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ex$zero &lt;- 0                                              ## variable with 0
+ex$BMI_cat &lt;- (ex$BMI &gt;= 25)                              ## T/F
+ex$BMI_cat &lt;- as.integer(ex$BMI &gt;= 25)                    ## 0, 1
+ex$BMI_cat &lt;- as.character(ex$BMI &gt;= 25)                  ## &quot;0&quot;, &quot;1&quot;
+ex$BMI_cat &lt;- ifelse(ex$BMI &gt;= 25, &quot;1&quot;, &quot;0&quot;)              ## same
+table(ex$BMI_cat)</code></pre>
+<pre><code>
+   0    1 
+1077  567 </code></pre>
+<pre class="r"><code>
+ex[, &quot;BMI_cat&quot;] &lt;- (ex$BMI &gt;= 25)                         ## matrix style
+ex[[&quot;BMI_cat&quot;]] &lt;- (ex$BMI &gt;= 25)                         ## list style</code></pre>
+</div>
+<h3 id="변수-클래스-설정-데이터-읽은-후-가장-먼저-해야할-것.">변수 클래스 설정: 데이터 읽은 후 가장 먼저 해야할 것.</h3>
+<p>앞서 읽은 데이터 전체의 클래스가 <strong>data.frame</strong> 을 언급했었는데, 각 변수들도 자신의 클래스를 갖고 있으며 대표적인 것이 <strong>숫자형(numeric), 문자형(character), 팩터(factor)</strong> 이다. 그 외 T/F 로 나타내는 <strong>논리(logical)</strong>, 날짜를 나타내는 <strong>Date</strong> 클래스가 있다. 숫자는 integer(정수), numeric(실수) 이 있는데, 전부 실수형(numeric)으로 해도 상관없어 설명은 생략한다. 범주형은 <strong>character</strong> 와 <strong>factor</strong> 두 종류가 있는데, 전자는 단순 문자인 반면 후자는 레벨(level) 이 있어 reference 나 순서를 설정할 수 있다. <code>read.csv</code> 로 읽으면 숫자는 int/num, <strong>문자는 전부 factor</strong> 가 기본값이므로, 숫자 변수 중 0/1 같은 것들은 직접 <strong>factor</strong> 로 바꿔줘야 한다. ID와 설문조사 변수를 범주형으로 바꿔보자.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+vars.cat &lt;- c(&quot;RN_INDI&quot;, &quot;Q_PHX_DX_STK&quot;, &quot;Q_PHX_DX_HTDZ&quot;, &quot;Q_PHX_DX_HTN&quot;, &quot;Q_PHX_DX_DM&quot;, &quot;Q_PHX_DX_DLD&quot;, &quot;Q_PHX_DX_PTB&quot;, 
+              &quot;Q_HBV_AG&quot;, &quot;Q_SMK_YN&quot;, &quot;Q_DRK_FRQ_V09N&quot;)
+vars.cat &lt;- names(ex)[c(2, 4:12)]                              ## same
+vars.cat &lt;- c(&quot;RN_INDI&quot;, grep(&quot;Q_&quot;, names(ex), value = T))     ## same: extract variables starting with &quot;Q_&quot;
+
+vars.conti &lt;- setdiff(names(ex), vars.cat)                     ## Exclude categorical variables
+vars.conti &lt;- names(ex)[!(names(ex) %in% vars.cat)]            ## same: !- not, %in%- including
+
+for (vn in vars.cat){                                          ## for loop: as.factor
+  ex[, vn] &lt;- as.factor(ex[, vn])
+}
+
+for (vn in vars.conti){                                        ## for loop: as.numeric
+  ex[, vn] &lt;- as.numeric(ex[, vn])
+}
+
+summary(ex)</code></pre>
+<pre><code>
+  EXMD_BZ_YYYY     RN_INDI       HME_YYYYMM     Q_PHX_DX_STK
+ Min.   :2009   4263   :   7   Min.   :200901   0   :1059   
+ 1st Qu.:2010   38967  :   7   1st Qu.:201011   1   :  12   
+ Median :2012   56250  :   7   Median :201210   NA&#39;s: 573   
+ Mean   :2012   84322  :   7   Mean   :201216               
+ 3rd Qu.:2014   99917  :   7   3rd Qu.:201406               
+ Max.   :2015   115809 :   7   Max.   :201512               
+                (Other):1602                                
+ Q_PHX_DX_HTDZ Q_PHX_DX_HTN Q_PHX_DX_DM Q_PHX_DX_DLD Q_PHX_DX_PTB
+ 0   :1052     0   :864     0   :1021   0   :1035    0   :915    
+ 1   :  26     1   :288     1   :  76   1   :  43    1   : 26    
+ NA&#39;s: 566     NA&#39;s:492     NA&#39;s: 547   NA&#39;s: 566    NA&#39;s:703    
+                                                                 
+                                                                 
+                                                                 
+                                                                 
+ Q_HBV_AG    Q_SMK_YN   Q_DRK_FRQ_V09N      HGHT      
+ 1   :  77   1   :995   0      :805    Min.   :134.0  
+ 2   :1102   2   :256   1      :379    1st Qu.:158.0  
+ 3   : 463   3   :391   2      :249    Median :165.0  
+ NA&#39;s:   2   NA&#39;s:  2   3      :121    Mean   :164.5  
+                        4      : 28    3rd Qu.:171.0  
+                        (Other): 56    Max.   :188.0  
+                        NA&#39;s   :  6                   
+      WGHT            WSTC             BMI            VA_LT      
+ Min.   : 31.0   Min.   : 57.00   Min.   :12.30   Min.   :0.100  
+ 1st Qu.: 56.0   1st Qu.: 74.00   1st Qu.:21.50   1st Qu.:0.800  
+ Median : 64.0   Median : 81.00   Median :23.70   Median :1.000  
+ Mean   : 65.1   Mean   : 80.69   Mean   :23.92   Mean   :0.984  
+ 3rd Qu.: 73.0   3rd Qu.: 87.00   3rd Qu.:26.20   3rd Qu.:1.200  
+ Max.   :118.0   Max.   :114.00   Max.   :37.20   Max.   :9.900  
+                                                                 
+     VA_RT            BP_SYS          BP_DIA         URN_PROT    
+ Min.   :0.1000   Min.   : 81.0   Min.   : 49.0   Min.   :1.000  
+ 1st Qu.:0.7000   1st Qu.:110.0   1st Qu.: 70.0   1st Qu.:1.000  
+ Median :1.0000   Median :120.0   Median : 78.0   Median :1.000  
+ Mean   :0.9792   Mean   :122.3   Mean   : 76.6   Mean   :1.078  
+ 3rd Qu.:1.2000   3rd Qu.:130.0   3rd Qu.: 82.0   3rd Qu.:1.000  
+ Max.   :9.9000   Max.   :180.0   Max.   :120.0   Max.   :5.000  
+                                                  NA&#39;s   :4      
+      HGB             FBS            TOT_CHOL           TG        
+ Min.   : 5.90   Min.   : 61.00   Min.   : 68.0   Min.   :  13.0  
+ 1st Qu.:12.90   1st Qu.: 86.00   1st Qu.:170.0   1st Qu.:  72.0  
+ Median :14.10   Median : 94.00   Median :193.0   Median : 106.0  
+ Mean   :14.11   Mean   : 97.23   Mean   :194.9   Mean   : 134.9  
+ 3rd Qu.:15.40   3rd Qu.:103.00   3rd Qu.:218.0   3rd Qu.: 163.0  
+ Max.   :18.30   Max.   :290.00   Max.   :363.0   Max.   :1210.0  
+                                                                  
+      HDL             LDL              CRTN              SGOT      
+ Min.   : 23.0   Min.   :  19.0   Min.   : 0.4000   Min.   :  6.0  
+ 1st Qu.: 46.0   1st Qu.:  90.0   1st Qu.: 0.8000   1st Qu.: 19.0  
+ Median : 54.0   Median : 112.0   Median : 0.9000   Median : 23.0  
+ Mean   : 55.9   Mean   : 118.7   Mean   : 0.9891   Mean   : 25.6  
+ 3rd Qu.: 64.0   3rd Qu.: 134.0   3rd Qu.: 1.0000   3rd Qu.: 28.0  
+ Max.   :593.0   Max.   :8100.0   Max.   :16.5000   Max.   :459.0  
+                 NA&#39;s   :16                                        
+      SGPT             GGT              GFR              zero  
+ Min.   :  3.00   Min.   :  6.00   Min.   :  3.00   Min.   :0  
+ 1st Qu.: 15.00   1st Qu.: 16.00   1st Qu.: 76.00   1st Qu.:0  
+ Median : 20.00   Median : 24.50   Median : 87.00   Median :0  
+ Mean   : 25.98   Mean   : 36.34   Mean   : 89.74   Mean   :0  
+ 3rd Qu.: 30.00   3rd Qu.: 41.00   3rd Qu.:101.00   3rd Qu.:0  
+ Max.   :779.00   Max.   :408.00   Max.   :196.00   Max.   :0  
+                                   NA&#39;s   :467                 
+    BMI_cat      
+ Min.   :0.0000  
+ 1st Qu.:0.0000  
+ Median :0.0000  
+ Mean   :0.3449  
+ 3rd Qu.:1.0000  
+ Max.   :1.0000  
+                 </code></pre>
+</div>
+<p><code>summary</code> 를 보면 설문조사 변수들이 처음과 달리 빈도로 요약됨을 알 수 있다. 한 가지 주의할 점은 <strong>factor 를 numeric 으로 바로 바꾸면 안된다는 것이다</strong>. 방금 factor 로 바꾼 <strong>Q_PHX_DX_STK</strong> 를 numeric 으로 바꿔서 테이블로 요약하면, 원래의 0/1 이 아닌 1/2로 바뀐다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+table(
+  as.numeric(ex$Q_PHX_DX_STK)
+  )</code></pre>
+<pre><code>
+   1    2 
+1059   12 </code></pre>
+</div>
+<p>factor를 바로 바꾸면 원래 값이 아닌, factor에 내장된 레벨(순서값) 로 바뀌기 때문이다. 제대로 바꾸려면 아래처럼 <strong>character</strong> 로 먼저 바꿔준 후 숫자형을 적용해야 한다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+table(
+  as.numeric(as.character(ex$Q_PHX_DX_STK))
+  )</code></pre>
+<pre><code>
+   0    1 
+1059   12 </code></pre>
+</div>
+<p>마지막으로 <strong>Date</strong> 클래스를 살펴보자. 검진년월 변수인 <strong>HME_YYYYMM</strong> 를 Date 로 바꿔 볼텐데, Date는 년/월/일 이 모두 필요하므로 일은 1로 통일하고 <code>paste</code> 로 붙이겠다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+addDate &lt;- paste(ex$HME_YYYYMM, &quot;01&quot;, sep = &quot;&quot;)                ## add day- use `paste`
+ex$HME_YYYYMM &lt;- as.Date(addDate, format = &quot;%Y%m%d&quot;)           ## set format                  
+head(ex$HME_YYYYMM)</code></pre>
+<pre><code>
+[1] &quot;2009-09-01&quot; &quot;2009-11-01&quot; &quot;2009-03-01&quot; &quot;2009-08-01&quot; &quot;2009-09-01&quot;
+[6] &quot;2009-12-01&quot;</code></pre>
+<pre class="r"><code>
+class(ex$HME_YYYYMM)</code></pre>
+<pre><code>
+[1] &quot;Date&quot;</code></pre>
+</div>
+<h3 id="결측치-다루기">결측치 다루기</h3>
+<h3 id="sort">Sort</h3>
+<h3 id="subset">Subset</h3>
+<h3 id="merge">Merge</h3>
+<h3 id="long-to-wide-wide-to-long-format">Long to wide, wide to long format</h3>
 <h2 id="마치며">마치며</h2>
 <p>아래의 <a href="https://rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf">Base R Cheat Sheet</a> 에서 확인할 수 있다.</p>
 <embed src="https://drive.google.com/viewerng/

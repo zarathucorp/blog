@@ -76,7 +76,7 @@ include_graphics("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/
 
 |회차| 일시  | 주제  |
 |---|---|---|
-|**1**| **3월 18일(수) 11-13시**  | **R 데이터 매니지먼트 [기초](https://jinseob2kim.github.io/rbasic.html)**  |
+|**1**| **3월 18일(수) 11-13시**  | **R 데이터 매니지먼트 [기초](https://blog.zarathu.com/posts/2020-02-16-rdatamanagement-basic)**  |
 |2|  4월 2일(목) 11-13시 |  R 데이터 매니지먼트 최근: [tidyverse](https://blog.zarathu.com/posts/2019-01-03-rdatamanagement/) |
 |3|  4월 16일(목) 11-13시 | R 데이터 시각화: [ggplot2](https://evamaerey.github.io/ggplot_flipbook/ggplot_flipbook_xaringan.html)  |
 |4|  4월 28일(목) 11-13시 | [의학연구에서의 기술통계](https://blog.zarathu.com/posts/2018-11-24-basic-biostatistics/)  |
@@ -439,6 +439,100 @@ length(unique(ex$EXMD_BZ_YYYY))                           ## number of unique va
 table(ex$EXMD_BZ_YYYY)                                    ## table
 ```
 
+### 새로운 변수 만들기
+
+연속형 변수인 **BMI** 에서 원하는 조건에 맞는 정보를 뽑아내는 연습을 해 보자.
+
+```{r}
+mean(ex$BMI)                                              ## mean
+BMI_cat <- (ex$BMI >= 25)                                 ## TRUE of FALSE
+table(BMI_cat)                         
+rows <- which(ex$BMI >= 25)                               ## row numbers
+head(rows)                                      
+values <- ex$BMI[ex$BMI >= 25]                            ## values
+head(values)
+length(values)
+BMI_HGHT_and <- (ex$BMI >= 25 & ex$HGHT >= 175)              ## and
+BMI_HGHT_or <- (ex$BMI >= 25 | ex$HGHT >= 175)               ## or
+```
+
+데이터에 새로운 변수로 추가하는 방법은 간단하다.
+
+```{r}
+ex$zero <- 0                                              ## variable with 0
+ex$BMI_cat <- (ex$BMI >= 25)                              ## T/F
+ex$BMI_cat <- as.integer(ex$BMI >= 25)                    ## 0, 1
+ex$BMI_cat <- as.character(ex$BMI >= 25)                  ## "0", "1"
+ex$BMI_cat <- ifelse(ex$BMI >= 25, "1", "0")              ## same
+table(ex$BMI_cat)
+ex[, "BMI_cat"] <- (ex$BMI >= 25)                         ## matrix style
+ex[["BMI_cat"]] <- (ex$BMI >= 25)                         ## list style
+```
+
+### 변수 클래스 설정: 데이터 읽은 후 가장 먼저 해야할 것.
+
+앞서 읽은 데이터 전체의 클래스가 **data.frame** 을 언급했었는데, 각 변수들도 자신의 클래스를 갖고 있으며 대표적인 것이 **숫자형(numeric), 문자형(character), 팩터(factor)** 이다. 그 외 T/F 로 나타내는 **논리(logical)**, 날짜를 나타내는 **Date** 클래스가 있다. 숫자는 integer(정수), numeric(실수) 이 있는데, 전부 실수형(numeric)으로 해도 상관없어 설명은 생략한다. 범주형은 **character** 와 **factor** 두 종류가 있는데, 전자는 단순 문자인 반면 후자는 레벨(level) 이 있어 reference 나 순서를 설정할 수 있다. `read.csv` 로 읽으면 숫자는 int/num, **문자는 전부 factor** 가 기본값이므로, 숫자 변수 중 0/1 같은 것들은 직접 **factor** 로 바꿔줘야 한다. ID와 설문조사 변수를 범주형으로 바꿔보자. 
+
+```{r}
+vars.cat <- c("RN_INDI", "Q_PHX_DX_STK", "Q_PHX_DX_HTDZ", "Q_PHX_DX_HTN", "Q_PHX_DX_DM", "Q_PHX_DX_DLD", "Q_PHX_DX_PTB", 
+              "Q_HBV_AG", "Q_SMK_YN", "Q_DRK_FRQ_V09N")
+vars.cat <- names(ex)[c(2, 4:12)]                              ## same
+vars.cat <- c("RN_INDI", grep("Q_", names(ex), value = T))     ## same: extract variables starting with "Q_"
+
+vars.conti <- setdiff(names(ex), vars.cat)                     ## Exclude categorical variables
+vars.conti <- names(ex)[!(names(ex) %in% vars.cat)]            ## same: !- not, %in%- including
+
+for (vn in vars.cat){                                          ## for loop: as.factor
+  ex[, vn] <- as.factor(ex[, vn])
+}
+
+for (vn in vars.conti){                                        ## for loop: as.numeric
+  ex[, vn] <- as.numeric(ex[, vn])
+}
+
+summary(ex)
+```
+
+`summary` 를 보면 설문조사 변수들이 처음과 달리 빈도로 요약됨을 알 수 있다. 한 가지 주의할 점은 **factor 를 numeric 으로 바로 바꾸면 안된다는 것이다**. 방금 factor 로 바꾼 **Q_PHX_DX_STK** 를 numeric 으로 바꿔서 테이블로 요약하면, 원래의 0/1 이 아닌 1/2로 바뀐다. 
+
+```{r}
+table(
+  as.numeric(ex$Q_PHX_DX_STK)
+  )
+```
+
+factor를 바로 바꾸면 원래 값이 아닌, factor에 내장된 레벨(순서값) 로 바뀌기 때문이다. 제대로 바꾸려면 아래처럼 **character** 로 먼저 바꿔준 후 숫자형을 적용해야 한다.
+
+```{r}
+table(
+  as.numeric(as.character(ex$Q_PHX_DX_STK))
+  )
+```
+
+마지막으로 **Date** 클래스를 살펴보자. 검진년월 변수인 **HME_YYYYMM** 를 Date 로 바꿔 볼텐데,  Date는 년/월/일 이 모두 필요하므로 일은 1로 통일하고 `paste` 로 붙이겠다.
+
+```{r}
+addDate <- paste(ex$HME_YYYYMM, "01", sep = "")                ## add day- use `paste`
+ex$HME_YYYYMM <- as.Date(addDate, format = "%Y%m%d")           ## set format                  
+head(ex$HME_YYYYMM)
+class(ex$HME_YYYYMM)
+```
+
+
+
+### 결측치 다루기
+
+
+### Sort
+
+
+### Subset
+
+
+### Merge
+
+
+### Long to wide, wide to long format
 
 
 
