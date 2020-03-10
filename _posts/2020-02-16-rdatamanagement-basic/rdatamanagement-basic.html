@@ -973,6 +973,7 @@
 <li><a href="#r-기초연산-벡터vector"><em>R</em> 기초연산 : 벡터(vector)</a></li>
 <li><a href="#데이터-불러와서-작업하기">데이터 불러와서 작업하기</a></li>
 <li><a href="#읽은-데이터-살펴보기">읽은 데이터 살펴보기</a></li>
+<li><a href="#그룹별-통계">그룹별 통계</a></li>
 <li><a href="#마치며">마치며</a></li>
 </ul>
 </nav>
@@ -1027,7 +1028,7 @@ Figure 1: Project 생성
 <tr class="odd">
 <td><strong>1</strong></td>
 <td><strong>3월 18일(수) 11-13시</strong></td>
-<td><strong>R 데이터 매니지먼트 <a href="https://jinseob2kim.github.io/rbasic.html">기초</a></strong></td>
+<td><strong>R 데이터 매니지먼트 <a href="https://blog.zarathu.com/posts/2020-02-16-rdatamanagement-basic">기초</a></strong></td>
 </tr>
 <tr class="even">
 <td>2</td>
@@ -1704,7 +1705,7 @@ ex[, &quot;BMI_cat&quot;] &lt;- (ex$BMI &gt;= 25)                         ## mat
 ex[[&quot;BMI_cat&quot;]] &lt;- (ex$BMI &gt;= 25)                         ## list style</code></pre>
 </div>
 <h3 id="변수-클래스-설정-데이터-읽은-후-가장-먼저-해야할-것.">변수 클래스 설정: 데이터 읽은 후 가장 먼저 해야할 것.</h3>
-<p>앞서 읽은 데이터 전체의 클래스가 <strong>data.frame</strong> 을 언급했었는데, 각 변수들도 자신의 클래스를 갖고 있으며 대표적인 것이 <strong>숫자형(numeric), 문자형(character), 팩터(factor)</strong> 이다. 그 외 T/F 로 나타내는 <strong>논리(logical)</strong>, 날짜를 나타내는 <strong>Date</strong> 클래스가 있다. 숫자는 integer(정수), numeric(실수) 이 있는데, 전부 실수형(numeric)으로 해도 상관없어 설명은 생략한다. 범주형은 <strong>character</strong> 와 <strong>factor</strong> 두 종류가 있는데, 전자는 단순 문자인 반면 후자는 레벨(level) 이 있어 reference 나 순서를 설정할 수 있다. <code>read.csv</code> 로 읽으면 숫자는 int/num, <strong>문자는 전부 factor</strong> 가 기본값이므로, 숫자 변수 중 0/1 같은 것들은 직접 <strong>factor</strong> 로 바꿔줘야 한다. ID와 설문조사 변수를 범주형으로 바꿔보자.</p>
+<p>앞서 데이터의 클래스가 <strong>data.frame</strong> 임을 언급했었는데, 각 변수들도 자신의 클래스를 갖으며 대표적인 것이 <strong>숫자형(numeric), 문자형(character), 팩터(factor)</strong> 이다. 그 외 T/F 로 나타내는 <strong>논리(logical)</strong>, 날짜를 나타내는 <strong>Date</strong> 클래스가 있다. 숫자는 integer(정수), numeric(실수) 이 있는데, 전부 실수형(numeric)으로 해도 상관없어 설명은 생략한다. 범주형은 <strong>character</strong> 와 <strong>factor</strong> 두 종류가 있는데, 전자는 단순 문자인 반면 후자는 레벨(level) 이 있어 reference 나 순서를 설정할 수 있다. <code>read.csv</code> 로 읽으면 숫자는 int/num, <strong>문자는 전부 factor</strong> 가 기본값이므로, 숫자 변수 중 0/1 같은 것들은 직접 <strong>factor</strong> 로 바꿔줘야 한다. ID와 설문조사 변수를 범주형으로 바꿔보자.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 vars.cat &lt;- c(&quot;RN_INDI&quot;, &quot;Q_PHX_DX_STK&quot;, &quot;Q_PHX_DX_HTDZ&quot;, &quot;Q_PHX_DX_HTN&quot;, &quot;Q_PHX_DX_DM&quot;, &quot;Q_PHX_DX_DLD&quot;, &quot;Q_PHX_DX_PTB&quot;, 
@@ -1833,10 +1834,181 @@ class(ex$HME_YYYYMM)</code></pre>
 [1] &quot;Date&quot;</code></pre>
 </div>
 <h3 id="결측치-다루기">결측치 다루기</h3>
-<h3 id="sort">Sort</h3>
+<p>변수 클래스만큼 중요한 것이 결측치 처리이다. 앞서 “함수만들기” 에서 봤듯이 결측치가 있으면 평균같은 기본적인 계산도 <code>na.rm = T</code> 옵션이 필요하다. 결측치가 있는 <strong>LDL</strong> 변수의 평균을 <strong>연도별</strong>로 구해보자. 그룹별 통계는 <code>tapply</code> 를 이용한다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+tapply(ex$LDL, ex$EXMD_BZ_YYYY, mean)                          ## measure/group/function</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">2009</th>
+<th style="text-align: right;">2010</th>
+<th style="text-align: right;">2011</th>
+<th style="text-align: right;">2012</th>
+<th style="text-align: right;">2013</th>
+<th style="text-align: right;">2014</th>
+<th style="text-align: right;">2015</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">150.9486</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>2009년만 결측치가 없고, 나머지는 결측치가 있어 평균값이 NA 로 나온다.<code>na.rm = T</code> 옵션으로 결측치를 제외하면 원하는 결과를 얻는다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+tapply(ex$LDL, ex$EXMD_BZ_YYYY, 
+       function(x){
+         mean(x, na.rm = T)
+         })    </code></pre>
+<pre><code>
+    2009     2010     2011     2012     2013     2014     2015 
+150.9486 112.9914 112.9450 117.5259 111.1577 116.5455 111.5294 </code></pre>
+</div>
+<p>더 큰 문제는, 대부분의 <strong>R</strong> 통계분석이 결측치를 갖는 샘플을 분석에서 제외한다는 점이다. 그래서 결측치를 신경쓰지 않고 분석하다보면, 원래 샘플 수와 분석에 이용된 샘플 수가 달라지는 문제가 생길 수 있다. <strong>LDL</strong>과 <strong>HDL</strong> 의 회귀분석 결과를 예로 살펴보자.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+summary(lm(LDL ~ HDL, data = ex))</code></pre>
+<pre><code>
+Call:
+lm(formula = LDL ~ HDL, data = ex)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-103.8  -28.2   -6.6   15.4 7974.7 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 138.2747    15.2318   9.078   &lt;2e-16 ***
+HDL          -0.3499     0.2570  -1.362    0.174    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 201.9 on 1626 degrees of freedom
+  (16 observations deleted due to missingness)
+Multiple R-squared:  0.001139,  Adjusted R-squared:  0.0005244 
+F-statistic: 1.854 on 1 and 1626 DF,  p-value: 0.1735</code></pre>
+</div>
+<p><strong>“16 observations deleted due to missingness”</strong> 라는 글자가 보일 것이다. <strong>LDL</strong> 이 결측인 16명은 분석에서 제외했다는 뜻이다.</p>
+<h4 id="연습문제-2-결측치-처리">연습문제 2: 결측치 처리</h4>
+<p>결측치를 처리하는 제일 간단한 방법은 <strong>“하나라도 결측치 있는 샘플은 제외”</strong> 로, <code>na.omit</code> 함수를 이용하면 된다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ex.naomit &lt;- na.omit(ex)
+nrow(ex.naomit)</code></pre>
+<pre><code>
+[1] 620</code></pre>
+</div>
+<p>1644 명에서 620 명으로 샘플 수가 줄어든 것을 확인할 수 있다. 필자는 보통 결측치 처리에 다음의 3가지 원칙을 적용한다.</p>
+<ol type="1">
+<li><p>결측치 너무 많으면(예: 10% 이상) 그 변수는 <strong>삭제</strong></p></li>
+<li><p>연속변수는 <strong>중간값(median)</strong></p></li>
+<li><p>범주형변수는 <strong>최빈값(mode)</strong></p></li>
+</ol>
+<p>이제 문제이다. 아까 변수형을 정리한 <strong>ex</strong> 데이터에 위 3가지 원칙을 적용, 새로운 데이터 <strong>ex.impute</strong> 을 만들어 보아라. 단 최빈값 함수는 아래와 같이 <code>getmode</code> 로 주어진다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+getmode &lt;- function(v){
+   uniqv &lt;- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+getmode(ex$Q_PHX_DX_STK)</code></pre>
+<pre><code>
+[1] 0
+Levels: 0 1</code></pre>
+</div>
+<details>
+<summary>정답 보기</summary>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+vars.ok &lt;- sapply(names(ex), function(v){sum(is.na(ex[, v])) &lt; nrow(ex)/10})
+ex.impute &lt;- ex[, vars.ok]                                     ## only missing &lt; 10%
+
+for (v in names(ex.impute)){
+  if (is.factor(ex.impute[, v])){                                   ## or class(ex[, v]) == &quot;factor&quot;
+    ex.impute[, v] &lt;- ifelse(is.na(ex.impute[, v]), 
+                             getmode(ex.impute[, v]), 
+                             ex.impute[, v])
+  } else if (is.numeric(ex[, v])){                             ## or class(ex[, v]) %in% c(&quot;integer&quot;, &quot;numeric&quot;)
+    ex.impute[, v] &lt;- ifelse(is.na(ex.impute[, v]), 
+                             median(ex.impute[, v], na.rm = T), 
+                             ex.impute[, v])
+  } else{                                                      ## when date
+    ex.impute[, v]
+  }
+}
+
+summary(ex.impute)</code></pre>
+<pre><code>
+  EXMD_BZ_YYYY     RN_INDI        HME_YYYYMM            Q_HBV_AG    
+ Min.   :2009   Min.   :  1.0   Min.   :2009-01-01   Min.   :1.000  
+ 1st Qu.:2010   1st Qu.:133.8   1st Qu.:2010-11-01   1st Qu.:2.000  
+ Median :2012   Median :275.0   Median :2012-10-01   Median :2.000  
+ Mean   :2012   Mean   :272.7   Mean   :2012-08-31   Mean   :2.235  
+ 3rd Qu.:2014   3rd Qu.:405.2   3rd Qu.:2014-06-01   3rd Qu.:3.000  
+ Max.   :2015   Max.   :547.0   Max.   :2015-12-01   Max.   :3.000  
+    Q_SMK_YN     Q_DRK_FRQ_V09N       HGHT            WGHT      
+ Min.   :1.000   Min.   :1.000   Min.   :134.0   Min.   : 31.0  
+ 1st Qu.:1.000   1st Qu.:1.000   1st Qu.:158.0   1st Qu.: 56.0  
+ Median :1.000   Median :2.000   Median :165.0   Median : 64.0  
+ Mean   :1.631   Mean   :2.023   Mean   :164.5   Mean   : 65.1  
+ 3rd Qu.:2.000   3rd Qu.:3.000   3rd Qu.:171.0   3rd Qu.: 73.0  
+ Max.   :3.000   Max.   :8.000   Max.   :188.0   Max.   :118.0  
+      WSTC             BMI            VA_LT           VA_RT       
+ Min.   : 57.00   Min.   :12.30   Min.   :0.100   Min.   :0.1000  
+ 1st Qu.: 74.00   1st Qu.:21.50   1st Qu.:0.800   1st Qu.:0.7000  
+ Median : 81.00   Median :23.70   Median :1.000   Median :1.0000  
+ Mean   : 80.69   Mean   :23.92   Mean   :0.984   Mean   :0.9792  
+ 3rd Qu.: 87.00   3rd Qu.:26.20   3rd Qu.:1.200   3rd Qu.:1.2000  
+ Max.   :114.00   Max.   :37.20   Max.   :9.900   Max.   :9.9000  
+     BP_SYS          BP_DIA         URN_PROT          HGB       
+ Min.   : 81.0   Min.   : 49.0   Min.   :1.000   Min.   : 5.90  
+ 1st Qu.:110.0   1st Qu.: 70.0   1st Qu.:1.000   1st Qu.:12.90  
+ Median :120.0   Median : 78.0   Median :1.000   Median :14.10  
+ Mean   :122.3   Mean   : 76.6   Mean   :1.078   Mean   :14.11  
+ 3rd Qu.:130.0   3rd Qu.: 82.0   3rd Qu.:1.000   3rd Qu.:15.40  
+ Max.   :180.0   Max.   :120.0   Max.   :5.000   Max.   :18.30  
+      FBS            TOT_CHOL           TG              HDL       
+ Min.   : 61.00   Min.   : 68.0   Min.   :  13.0   Min.   : 23.0  
+ 1st Qu.: 86.00   1st Qu.:170.0   1st Qu.:  72.0   1st Qu.: 46.0  
+ Median : 94.00   Median :193.0   Median : 106.0   Median : 54.0  
+ Mean   : 97.23   Mean   :194.9   Mean   : 134.9   Mean   : 55.9  
+ 3rd Qu.:103.00   3rd Qu.:218.0   3rd Qu.: 163.0   3rd Qu.: 64.0  
+ Max.   :290.00   Max.   :363.0   Max.   :1210.0   Max.   :593.0  
+      LDL              CRTN              SGOT            SGPT       
+ Min.   :  19.0   Min.   : 0.4000   Min.   :  6.0   Min.   :  3.00  
+ 1st Qu.:  90.0   1st Qu.: 0.8000   1st Qu.: 19.0   1st Qu.: 15.00  
+ Median : 112.0   Median : 0.9000   Median : 23.0   Median : 20.00  
+ Mean   : 118.6   Mean   : 0.9891   Mean   : 25.6   Mean   : 25.98  
+ 3rd Qu.: 134.0   3rd Qu.: 1.0000   3rd Qu.: 28.0   3rd Qu.: 30.00  
+ Max.   :8100.0   Max.   :16.5000   Max.   :459.0   Max.   :779.00  
+      GGT              zero      BMI_cat      
+ Min.   :  6.00   Min.   :0   Min.   :0.0000  
+ 1st Qu.: 16.00   1st Qu.:0   1st Qu.:0.0000  
+ Median : 24.50   Median :0   Median :0.0000  
+ Mean   : 36.34   Mean   :0   Mean   :0.3449  
+ 3rd Qu.: 41.00   3rd Qu.:0   3rd Qu.:1.0000  
+ Max.   :408.00   Max.   :0   Max.   :1.0000  </code></pre>
+</div>
+</details>
+<p><br></p>
 <h3 id="subset">Subset</h3>
-<h3 id="merge">Merge</h3>
+<h2 id="그룹별-통계">그룹별 통계</h2>
+<h3 id="sort">Sort</h3>
 <h3 id="long-to-wide-wide-to-long-format">Long to wide, wide to long format</h3>
+<h3 id="merge">Merge</h3>
 <h2 id="마치며">마치며</h2>
 <p>아래의 <a href="https://rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf">Base R Cheat Sheet</a> 에서 확인할 수 있다.</p>
 <embed src="https://drive.google.com/viewerng/

@@ -471,7 +471,7 @@ ex[["BMI_cat"]] <- (ex$BMI >= 25)                         ## list style
 
 ### 변수 클래스 설정: 데이터 읽은 후 가장 먼저 해야할 것.
 
-앞서 읽은 데이터 전체의 클래스가 **data.frame** 을 언급했었는데, 각 변수들도 자신의 클래스를 갖고 있으며 대표적인 것이 **숫자형(numeric), 문자형(character), 팩터(factor)** 이다. 그 외 T/F 로 나타내는 **논리(logical)**, 날짜를 나타내는 **Date** 클래스가 있다. 숫자는 integer(정수), numeric(실수) 이 있는데, 전부 실수형(numeric)으로 해도 상관없어 설명은 생략한다. 범주형은 **character** 와 **factor** 두 종류가 있는데, 전자는 단순 문자인 반면 후자는 레벨(level) 이 있어 reference 나 순서를 설정할 수 있다. `read.csv` 로 읽으면 숫자는 int/num, **문자는 전부 factor** 가 기본값이므로, 숫자 변수 중 0/1 같은 것들은 직접 **factor** 로 바꿔줘야 한다. ID와 설문조사 변수를 범주형으로 바꿔보자. 
+앞서 데이터의 클래스가 **data.frame** 임을 언급했었는데, 각 변수들도 자신의 클래스를 갖으며 대표적인 것이 **숫자형(numeric), 문자형(character), 팩터(factor)** 이다. 그 외 T/F 로 나타내는 **논리(logical)**, 날짜를 나타내는 **Date** 클래스가 있다. 숫자는 integer(정수), numeric(실수) 이 있는데, 전부 실수형(numeric)으로 해도 상관없어 설명은 생략한다. 범주형은 **character** 와 **factor** 두 종류가 있는데, 전자는 단순 문자인 반면 후자는 레벨(level) 이 있어 reference 나 순서를 설정할 수 있다. `read.csv` 로 읽으면 숫자는 int/num, **문자는 전부 factor** 가 기본값이므로, 숫자 변수 중 0/1 같은 것들은 직접 **factor** 로 바꿔줘야 한다. ID와 설문조사 변수를 범주형으로 바꿔보자. 
 
 ```{r}
 vars.cat <- c("RN_INDI", "Q_PHX_DX_STK", "Q_PHX_DX_HTDZ", "Q_PHX_DX_HTN", "Q_PHX_DX_DM", "Q_PHX_DX_DLD", "Q_PHX_DX_PTB", 
@@ -522,17 +522,115 @@ class(ex$HME_YYYYMM)
 
 ### 결측치 다루기
 
+변수 클래스만큼 중요한 것이 결측치 처리이다. 앞서 "함수만들기" 에서 봤듯이 결측치가 있으면 평균같은 기본적인 계산도 `na.rm = T` 옵션이 필요하다. 결측치가 있는 **LDL** 변수의 평균을 **연도별**로 구해보자. 그룹별 통계는 `tapply` 를 이용한다.
 
-### Sort
+```{r, eval = F}
+tapply(ex$LDL, ex$EXMD_BZ_YYYY, mean)                          ## measure/group/function
+```
+
+
+```{r, echo=F}
+kable(
+  t(tapply(ex$LDL, ex$EXMD_BZ_YYYY, mean))                     ## measure/group/function
+)
+```
+
+2009년만 결측치가 없고, 나머지는 결측치가 있어 평균값이 NA 로 나온다.`na.rm = T` 옵션으로 결측치를 제외하면 원하는 결과를 얻는다.
+
+```{r}
+tapply(ex$LDL, ex$EXMD_BZ_YYYY, 
+       function(x){
+         mean(x, na.rm = T)
+         })    
+```
+
+
+더 큰 문제는, 대부분의 **R** 통계분석이 결측치를 갖는 샘플을 분석에서 제외한다는 점이다. 그래서 결측치를 신경쓰지 않고 분석하다보면, 원래 샘플 수와 분석에 이용된 샘플 수가 달라지는 문제가 생길 수 있다. **LDL**과 **HDL** 의 회귀분석 결과를 예로 살펴보자. 
+
+```{r}
+summary(lm(LDL ~ HDL, data = ex))
+```
+
+**"16 observations deleted due to missingness"** 라는 글자가 보일 것이다. **LDL** 이 결측인 16명은 분석에서 제외했다는 뜻이다.
+
+
+#### 연습문제 2: 결측치 처리
+
+결측치를 처리하는 제일 간단한 방법은 **"하나라도 결측치 있는 샘플은 제외"** 로, `na.omit` 함수를 이용하면 된다. 
+
+```{r}
+ex.naomit <- na.omit(ex)
+nrow(ex.naomit)
+```
+
+`r nrow(ex)` 명에서 `r nrow(ex.naomit)` 명으로 샘플 수가 줄어든 것을 확인할 수 있다. 필자는 보통 결측치 처리에 다음의 3가지 원칙을 적용한다.
+
+
+1. 결측치 너무 많으면(예: 10% 이상) 그 변수는 **삭제**
+
+2. 연속변수는 **중간값(median)** 
+
+3. 범주형변수는 **최빈값(mode)**
+
+
+
+이제 문제이다. 아까 변수형을 정리한 **ex** 데이터에 위 3가지 원칙을 적용, 새로운 데이터 **ex.impute** 을 만들어 보아라. 단 최빈값 함수는 아래와 같이 `getmode` 로 주어진다.
+
+```{r}
+getmode <- function(v){
+   uniqv <- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+getmode(ex$Q_PHX_DX_STK)
+```
+
+
+<details>
+<summary>정답 보기</summary>
+```{r}
+vars.ok <- sapply(names(ex), function(v){sum(is.na(ex[, v])) < nrow(ex)/10})
+ex.impute <- ex[, vars.ok]                                     ## only missing < 10%
+
+for (v in names(ex.impute)){
+  if (is.factor(ex.impute[, v])){                              ## or class(ex[, v]) == "factor"
+    ex.impute[, v] <- ifelse(is.na(ex.impute[, v]), 
+                             getmode(ex.impute[, v]), 
+                             ex.impute[, v])
+  } else if (is.numeric(ex[, v])){                             ## or class(ex[, v]) %in% c("integer", "numeric")
+    ex.impute[, v] <- ifelse(is.na(ex.impute[, v]), 
+                             median(ex.impute[, v], na.rm = T), 
+                             ex.impute[, v])
+  } else{                                                      ## when date
+    ex.impute[, v]
+  }
+}
+
+summary(ex.impute)
+```
+</details>
+<br>
+
+
 
 
 ### Subset
 
 
-### Merge
+## 그룹별 통계
+
+
+### Sort
+
+
 
 
 ### Long to wide, wide to long format
+
+
+### Merge
+
+
 
 
 
