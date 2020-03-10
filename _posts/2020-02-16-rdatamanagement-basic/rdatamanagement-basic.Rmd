@@ -359,7 +359,7 @@ head(ex, 10)                                               ## 처음 10행
 ```
 
 ```{r, echo=F, eval = T}
-head(ex, 10) %>% paged_table(options = list(rownames.print = F) )
+head(ex, 10) %>% paged_table(options = list(rownames.print = F))
 ```
 
 `str` 은 `head` 와는 다른 방식으로 데이터를 확인한다. **int** 는 정수, **num** 은 실수형을 의미한다.
@@ -611,27 +611,157 @@ summary(ex.impute)
 </details>
 <br>
 
-
-
-
 ### Subset
 
+특정 조건을 만족하는 서브데이터는 지금까지 배웠던 것을 응용해 만들 수도 있지만, `subset` 함수가 편하다. 아래는 2012 이후의 자료만 뽑는 예시이다. 이제부터는 결측치를 전부 제외한 **ex.naomit** 데이터를 이용하겠다.
 
-## 그룹별 통계
+```{r}
+ex1 <- ex.naomit                                               ## simple name
+ex1.2012 <- ex1[ex1$EXMD_BZ_YYYY >= 2012, ]
+table(ex1.2012$EXMD_BZ_YYYY)
+
+ex1.2012 <- subset(ex1, EXMD_BZ_YYYY >= 2012)                  ## subset
+table(ex1.2012$EXMD_BZ_YYYY)
+```
+
+
+### 그룹별 통계
+
+결측치 다루기에서 그룹별 통계를 구할 때 `tapply` 를 이용했었다. `tapply` 를 여러 변수, 여러 그룹을 동시에 고려도록 확장할 수 있는 함수가 `aggregate` 로, 허리둘레와 BMI의 평균을 고혈압 또는 당뇨 여부에 따라 살펴보자.
+
+```{r, eval=F}
+aggregate(ex1[, c("WSTC", "BMI")], list(ex1$Q_PHX_DX_HTN), mean)
+aggregate(cbind(WSTC, BMI) ~ Q_PHX_DX_HTN, data = ex1, mean)   ## same
+```
+
+```{r, echo=F}
+aggregate(ex1[, c("WSTC", "BMI")], list(ex1$Q_PHX_DX_HTN), mean) %>% kable()
+aggregate(cbind(WSTC, BMI) ~ Q_PHX_DX_HTN, data = ex1, mean) %>% kable()
+```
+
+결측치가 있어도 잘 적용된다는 장점이 있다.
+
+```{r, eval=F}
+aggregate(cbind(WSTC, BMI) ~ Q_PHX_DX_HTN, data = ex, mean)
+```
+
+```{r, echo=F}
+aggregate(cbind(WSTC, BMI) ~ Q_PHX_DX_HTN, data = ex, mean) %>% kable()
+```
+
+
+당뇨여부도 그룹으로 다루려면 **list** 에 추가하면 된다.
+
+```{r, eval=F}
+aggregate(ex1[, c("WSTC", "BMI")], list(ex1$Q_PHX_DX_HTN, ex1$Q_PHX_DX_DM), mean)
+```
+
+```{r, echo=F}
+aggregate(ex1[, c("WSTC", "BMI")], list(ex1$Q_PHX_DX_HTN, ex1$Q_PHX_DX_DM), mean) %>% kable()
+```
+
+
+**Group.1** 이 첫번째 그룹은 고혈압 여부, **Group.2** 가 두번째 그룹인 당뇨 여부이다. 위와 마찬가지로 formula 형태를 이용할 수도 있다.
+
+```{r, eval=F}
+aggregate(cbind(WSTC, BMI) ~ Q_PHX_DX_HTN + Q_PHX_DX_DM, data = ex1, mean)
+```
+
+```{r, echo=F}
+aggregate(cbind(WSTC, BMI) ~ Q_PHX_DX_HTN + Q_PHX_DX_DM, data = ex1, mean) %>% kable()
+```
+
+
+표준편차를 같이 보려면 `function(x){c(mean = mean(x), sd = sd(x))}` 와 같이 원하는 함수들을 벡터로 모으면 된다.
+
+```{r, eval=F}
+aggregate(cbind(WSTC, BMI) ~ Q_PHX_DX_HTN + Q_PHX_DX_DM, data = ex1, function(x){c(mean = mean(x), sd = sd(x))})
+```
+
+```{r, echo=F}
+aggregate(cbind(WSTC, BMI) ~ Q_PHX_DX_HTN + Q_PHX_DX_DM, data = ex1, function(x){c(mean = mean(x), sd = sd(x))}) %>% kable()
+```
+
+아예 데이터의 모든 변수의 평균을 다 볼순 없을까? 아래처럼 **"."** 으로 전체 데이터를 지정할 수 있다. 
+
+```{r, eval=F}
+aggregate(. ~ Q_PHX_DX_HTN  + Q_PHX_DX_DM, data = ex1, function(x){c(mean = mean(x), sd = sd(x))})    
+```
+
+```{r, eval=T}
+aggregate(. ~ Q_PHX_DX_HTN  + Q_PHX_DX_DM, data = ex1, function(x){c(mean = mean(x), sd = sd(x))})
+```
 
 
 ### Sort
 
+정렬은 순위함수인 `order` 를 이용한다. 기본은 오름차순이며, 내림차순을 원한다면 **(-) 붙인 값의 순위**를 구하면 된다.
+
+```{r}
+ord <- order(ex1$HGHT)                                        ## 작은 순서대로 순위
+head(ord)
+head(ex1$HGHT[ord])                                           ## Sort
+
+ord.desc <- order(-ex1$HGHT)                                  ## descending
+head(ex1$HGHT[ord.desc])
+```
+
+```{r, eval=F}
+ex1.sort <- ex1[ord, ]
+head(ex1.sort)
+```
+
+```{r, echo=F}
+ex1.sort <- ex1[ord, ]
+ex1.sort %>% paged_table(options = list(rownames.print = F))
+```
 
 
+### Wide to long, long to wide format
 
-### Long to wide, wide to long format
+받은 데이터가 원하는 형태가 아닌 경우가 있다. 수축기 혈압을 10번 측정해서 각각 SBP1, SBP2, ..., SBP10 변수에 기록된 데이터를 본다면, 이것들을 쫙 아래로 내려 측정시기, 측정값 2개의 변수로 정리하고 싶다는 마음이 들 것이다. 이럴 때 쓰는 함수가 `melt`, 반대로 데이터를 옆으로 늘릴 때 쓰는 함수가 `dcast` 이다. 먼저 수축기/이완기 혈압 변수를 합쳐서 아래로 내려보자.
 
+```{r, eval = F}
+library(reshape2)
+long <- melt(ex1, id = c("EXMD_BZ_YYYY", "RN_INDI"), measure.vars = c("BP_SYS", "BP_DIA"), variable.name = "BP_type", value.name = "BP")
+long
+```
+
+```{r, echo = F}
+library(reshape2)
+long <- melt(ex1, id = c("EXMD_BZ_YYYY", "RN_INDI"), measure.vars = c("BP_SYS", "BP_DIA"), variable.name = "BP_type", value.name = "BP")
+long %>% paged_table(options = list(rownames.print = F))
+```
+
+**id** 는 유지할 변수, **measure.vars** 는 내릴 변수를 의미하고, **variable.name, value.name** 은 각각 그룹, 값의 변수이름을 의미한다. 이를 원래대로 되돌리려면 `dcast` 를 이용하는데, **"유지할 변수 ~ 펼칠 변수"** 형태로 formula 를 입력한다.
+
+```{r, eval=F}
+short <- dcast(long, EXMD_BZ_YYYY + RN_INDI ~ BP_type, value.var = "BP")
+head(short)
+```
+
+```{r, echo=F}
+short <- dcast(long, EXMD_BZ_YYYY + RN_INDI ~ BP_type, value.var = "BP")
+head(short) %>% paged_table(options = list(rownames.print = F))
+```
 
 ### Merge
 
+`merge` 함수를 이용한다. **"by"** 옵션으로 기준이 되는 공통 컬럼을 설정하며, 기준 컬럼의 이름이 두 데이터 셋에서 다른 경우는 **"by.x"** 와 **"by.y"** 로 따로 설정한다. 환자 자격 데이터를 불러와 검진 데이터와 합치는 것을 예로 살펴보겠다. 먼저 자격 데이터를 읽어오자.
 
+```{r, eval = F}
+ex.bnc <- read.csv("example_bnc.csv")
+head(ex.bnc)
+```
 
+```{r, echo=F}
+ex.bnc <- read.csv("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_bnc.csv")
+head(ex.bnc) %>% paged_table(options = list(rownames.print = F))
+```
+
+```{r}
+zz <- merge(ex.bnc, ex, by.x = c("RN_INDI", "STD_YYYY"), by.y = c("RN_INDI", "EXMD_BZ_YYYY"), all = T)
+```
 
 
 ## 마치며 
