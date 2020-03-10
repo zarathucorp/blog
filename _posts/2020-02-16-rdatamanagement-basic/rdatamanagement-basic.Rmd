@@ -1,8 +1,8 @@
 ---
 title: "R 데이터 매니지먼트: 기초"
 description: |
-  R 기초연산을 다룬 후, 보험공단 샘플 데이터를 이용하여 데이터 다루는 법을 정리하였습니다. 본 내용은 서울대병원 진단검사의학과 선생님들의 교육에 쓰일 예정입니다. 
-preview: https://lh3.googleusercontent.com/proxy/2ak4xAEz9T-3Kc8DrmPWfclqROWB3IDLgQUmY_j1OJ-d5pFBzPU_Qhn8ijvhXyWCF02Q_l08wpRChHVQ4yBDdDTFzjt-s8ia
+  R 기본 문법과 보험공단 샘플 데이터를 이용한 데이터를 매니지먼트 방법을 정리하였습니다. 본 내용은 서울대병원 진단검사의학과 선생님들의 교육에 쓰일 예정입니다. 
+preview: https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/R_logo.svg/220px-R_logo.svg.png
 categories:
   - presentation
   - lecture
@@ -12,13 +12,13 @@ author:
     url: https://github.com/jinseob2kim
     affiliation: Zarathu Co.,Ltd
     affiliation_url: https://www.zarathu.com
-date: 02-14-2020
+date: 03-10-2020
 output:
   distill::distill_article:
     self_contained: false
     toc: true
     toc_depth: 2
-draft: true
+draft: false
 editor_options: 
   chunk_output_type: console
 ---
@@ -719,7 +719,13 @@ ex1.sort %>% paged_table(options = list(rownames.print = F))
 
 ### Wide to long, long to wide format
 
-받은 데이터가 원하는 형태가 아닌 경우가 있다. 수축기 혈압을 10번 측정해서 각각 SBP1, SBP2, ..., SBP10 변수에 기록된 데이터를 본다면, 이것들을 쫙 아래로 내려 측정시기, 측정값 2개의 변수로 정리하고 싶다는 마음이 들 것이다. 이럴 때 쓰는 함수가 `melt`, 반대로 데이터를 옆으로 늘릴 때 쓰는 함수가 `dcast` 이다. 먼저 수축기/이완기 혈압 변수를 합쳐서 아래로 내려보자.
+받은 데이터가 원하는 형태가 아닌 경우가 있다. 수축기 혈압을 10번 측정해서 각각 SBP1, SBP2, ..., SBP10 변수에 기록된 데이터를 본다면, 이것들을 쫙 아래로 내려 측정시기, 측정값 2개의 변수로 정리하고 싶다는 마음이 들 것이다. 이럴 때 쓰는 함수가 `melt`, 반대로 데이터를 옆으로 늘릴 때 쓰는 함수가 `dcast` 이다(Figure \@ref(fig:melt)^[https://t1.daumcdn.net/cfile/tistory/2433F13D55E1163907]). 
+
+```{r melt, fig.align="center", echo=F, fig.cap="melt and dcast"}
+knitr::include_graphics("https://t1.daumcdn.net/cfile/tistory/2433F13D55E1163907")
+```
+
+실습으로 수축기/이완기 혈압 변수를 합쳐서 아래로 내려보자.
 
 ```{r, eval = F}
 library(reshape2)
@@ -736,39 +742,68 @@ long %>% paged_table(options = list(rownames.print = F))
 **id** 는 유지할 변수, **measure.vars** 는 내릴 변수를 의미하고, **variable.name, value.name** 은 각각 그룹, 값의 변수이름을 의미한다. 이를 원래대로 되돌리려면 `dcast` 를 이용하는데, **"유지할 변수 ~ 펼칠 변수"** 형태로 formula 를 입력한다.
 
 ```{r, eval=F}
-short <- dcast(long, EXMD_BZ_YYYY + RN_INDI ~ BP_type, value.var = "BP")
-head(short)
+wide <- dcast(long, EXMD_BZ_YYYY + RN_INDI ~ BP_type, value.var = "BP")
+head(wide)
 ```
 
 ```{r, echo=F}
-short <- dcast(long, EXMD_BZ_YYYY + RN_INDI ~ BP_type, value.var = "BP")
-head(short) %>% paged_table(options = list(rownames.print = F))
+wide <- dcast(long, EXMD_BZ_YYYY + RN_INDI ~ BP_type, value.var = "BP")
+head(wide) %>% paged_table(options = list(rownames.print = F))
 ```
 
 ### Merge
 
-`merge` 함수를 이용한다. **"by"** 옵션으로 기준이 되는 공통 컬럼을 설정하며, 기준 컬럼의 이름이 두 데이터 셋에서 다른 경우는 **"by.x"** 와 **"by.y"** 로 따로 설정한다. 환자 자격 데이터를 불러와 검진 데이터와 합치는 것을 예로 살펴보겠다. 먼저 자격 데이터를 읽어오자.
+`merge` 함수를 이용한다. **"by"** 옵션으로 기준이 되는 공통 컬럼을 설정하며, 기준 컬럼의 이름이 두 데이터 셋에서 다른 경우는 **"by.x"** 와 **"by.y"** 로 따로 설정한다. 실습을 위해 **ex1** 데이터를 2개로 나눈 후 `merge` 를 적용하겠다.  
 
 ```{r, eval = F}
-ex.bnc <- read.csv("example_bnc.csv")
-head(ex.bnc)
+ex1.Q <- ex1[, c(1:3, 4:12)]
+ex1.measure <- ex1[, c(1:3, 13:ncol(ex1))]
+head(ex1.Q)
+head(ex1.measure)
+```
+
+```{r, echo = F}
+ex1.Q <- ex1[, c(1:3, 4:12)]
+ex1.measure <- ex1[, c(1:3, 13:ncol(ex1))]
+head(ex1.Q) %>% paged_table(options = list(rownames.print = F))
+head(ex1.measure) %>% paged_table(options = list(rownames.print = F))
+```
+
+전자는 설문조사 결과를, 후자는 측정값을 포함했고 **"년도, ID, 검진년월"** 은 공통변수이다. 이 공통변수로 `merge` 를 적용하면 
+
+```{r, eval=F}
+ex1.merge <- merge(ex1.Q, ex1.measure, by = c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM"), all = T)
+head(ex1.merge)
 ```
 
 ```{r, echo=F}
-ex.bnc <- read.csv("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_bnc.csv")
-head(ex.bnc) %>% paged_table(options = list(rownames.print = F))
+ex1.merge <- merge(ex1.Q, ex1.measure, by = c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM"), all = T)
+head(ex1.merge) %>% paged_table(options = list(rownames.print = F))
 ```
 
-```{r}
-zz <- merge(ex.bnc, ex, by.x = c("RN_INDI", "STD_YYYY"), by.y = c("RN_INDI", "EXMD_BZ_YYYY"), all = T)
-```
+합쳐진 원래 데이터를 얻을 수 있다. `all = T` 는 한 쪽에만 있는 샘플을 유지하는 옵션이며 빈 변수는 `NA` 로 채워진다. 공통인 샘플만 취하려면 `all = F` 로 바꾸자.
 
 
 ## 마치며 
 
-아래의 [Base R Cheat Sheet](https://rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf) 에서 확인할 수 있다. 
+이번 강의를 정리하자. 
+
+1. [RStudio cloud](https://rstudio.cloud/) 로 클라우드 환경에서 실습을 진행했으며
+
+2. 기초 벡터연산과 `for`, `if`, `ifelse`, `함수만들기`, `apply` 문을 통해 기본 문법을 익혔고 
+
+3. 공단 검진 데이터를 실습자료를 읽어와 데이터를 살펴보는 법을 배웠다. 
+
+    + 변수 생성, 클래스 설정, 결측치 처리, 서브데이터, 그룹별 통계, 정렬
+
+4. 마지막으로 Long/wide type 데이터 변환과 `merge` 를 다루었다.
+
+
+기타 기본적으로 알아야 할 **R** 명령어는 아래의 [Base R Cheat Sheet](https://rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf) 에서 확인할 수 있다. 
 
 <embed src="https://drive.google.com/viewerng/
 viewer?embedded=true&url=https://rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf" width="100%" height="600">
 
+<br>
+다음 강의에서는 쉬운 문법으로 **R** 의 대세가 된 **[tidyverse](https://www.tidyverse.org/)** 를 다룰 예정인데, 오늘 배운 기본 문법과 많은 비교가 될 것이다. 미리 알아보고 싶은 분은 **[본 블로그의 이전 글](https://blog.zarathu.com/posts/2019-01-03-rdatamanagement/)^[https://blog.zarathu.com/posts/2019-01-03-rdatamanagement]** 을 참고하기 바란다.
 
