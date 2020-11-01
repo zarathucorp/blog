@@ -358,7 +358,7 @@ Scale = `r round(model.weibull$scale, 2)` 임을 확인할 수 있고, **trt** �
 ```{r}
 pcut <- seq(0.01, 1, by = 0.01)  ## 1%-99%
 ptime <- predict(model.weibull, newdata = data.frame(trt = 1), type = "quantile", p = pcut, se = T)
-matplot(cbind(ptime$fit, ptime$fit + 2*ptime$se.fit, ptime$fit - 2*ptime$se.fit), 1 - pcut,
+matplot(cbind(ptime$fit, ptime$fit + 1.96*ptime$se.fit, ptime$fit - 1.96*ptime$se.fit), 1 - pcut,
         xlab = "Days", ylab = "Survival", type = 'l', lty = c(1, 2, 2), col=1)
 
 ```
