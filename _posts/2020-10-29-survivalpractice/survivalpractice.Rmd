@@ -58,7 +58,7 @@ Kaplan-meier plot 은 R 기본 plot에서도 제공하지만, **[survminer](http
 
 ```{r}
 library(DT);library(survival);library(jskm)
-datatable(veteran, rownames = F, caption = "Example data")
+datatable(veteran, rownames = F, caption = "Example data", options = list(scrollX = T))
 
 
 sfit <- survfit(Surv(time, status) ~ trt, data = veteran)
@@ -236,7 +236,7 @@ for (v in 4:7){
 names(df.tf)[c(1,4,6,7)]<-c("id", "time", "grp","age")
 df.tf <- df.tf[, -3]
 
-datatable(df.tf, rownames = F, caption = "df.tf: Original data")
+datatable(df.tf, rownames = F, caption = "df.tf: Original data", options = list(scrollX = T))
 
 
  nft<-sample(1:10,
@@ -255,7 +255,7 @@ id.n<-rep(i,n+1)
 id<-c(id,id.n)
 }
 df.td <- cbind(data.frame(id,time)[-1,],crp)
-datatable(df.td, rownames = F, caption = "df.td: Time dependent CRP")
+datatable(df.td, rownames = F, caption = "df.td: Time dependent CRP", options = list(scrollX = T))
 ```
 
 **df.tf** 는 기본정보가 담긴 데이터, **df.td** 는 time-dependent covariate 가 담긴 데이터이다. `tmerge` 함수를 2번 실행하면 두 정보를 합칠 수 있다. 먼저 **df.tf** 만 이용해서 **tstart, tstop** 변수를 만들자. 
@@ -264,7 +264,7 @@ datatable(df.td, rownames = F, caption = "df.td: Time dependent CRP")
 ```{r}
 df <- tmerge(df.tf, df.tf, id = id, status1 = event(time, status))
 
-datatable(df, rownames = F, caption = "df: add tstart/tstop")
+datatable(df, rownames = F, caption = "df: add tstart/tstop", options = list(scrollX = T))
 ```
 
 `tmerge` 함수의 첫번째는 baseline data, 둘째는 time-dependent covariate 가 담긴 데이터가 들어가지만, **tstart, tstop** 를 만들기 위해 모두 **df.tf** 를 넣었다. **status1** 이라는 변수를 **event(time, status)** 로 지정함으로서 tstart, tstop 을 인식할 수 있다. **status1** 변수 자체는 **status** 와 동일하다. 이렇게 만든 **df** 에 time-dependent 정보가 담긴 **df.td** 를 결합하면 원하는 데이터를 얻을 수 있다. `tmerge` 의 자세한 내용은 https://ww2.amstat.org/meetings/sdss/2018/onlineprogram/ViewPresentation.cfm?file=304494.pdf 를 참고하기 바란다.
@@ -273,7 +273,7 @@ datatable(df, rownames = F, caption = "df: add tstart/tstop")
 ```{r}
 df2 <- tmerge(df, df.td, id = id, crp = tdc(time, crp))
 
-datatable(df2, rownames = F, caption = "df2: final")
+datatable(df2, rownames = F, caption = "df2: final", options = list(scrollX = T))
 ```
 
 **crp** 변수를 **tdc(time, crp)** 로 만들었다. 이제 cox model 을 실행할 수 있는데, 반복측정정보를 **cluster** 옵션에 넣는 것을 잊지 말자. 
