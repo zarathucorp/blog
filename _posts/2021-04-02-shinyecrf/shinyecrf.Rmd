@@ -1,0 +1,53 @@
+---
+title: "Shiny 환자데이터 입력웹 개발"
+description: |
+  삼성서울병원 심혈관중재실과 개발 중인 shiny 환자데이티 입력웹 개발 현황을 공유합니다. 본 내용은 Zarathu가 후원하는 Shinykorea 4월 밋업에서 발표할 예정입니다. 
+preview: ecrf.png
+categories:
+  - presentation
+  - shiny
+author:
+  - name: Jinseob Kim
+    url: https://github.com/jinseob2kim
+    affiliation: Zarathu Co.,Ltd
+    affiliation_url: https://www.zarathu.com
+date: 04-02-2021
+output:
+  distill::distill_article:
+    self_contained: false
+    toc: true
+    toc_depth: 2
+draft: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+[김진섭](https://github.com/jinseob2kim) 대표는 [Zarathu](https://www.zarathu.com) 가 후원하는 4월 [Shinykorea 밋업](https://github.com/shinykorea/Meetup)에 참석, [삼성서울병원 심혈관중재실](http://www.samsunghospital.com/m/reservation/common/doctorProfile.do?DR_NO=2157)과 개발 중인 shiny 환자데이티 입력웹 개발 현황을 공유할 예정입니다. 정리한 슬라이드를 미리 공유합니다. 
+
+
+
+## 요약
+
+삼성서울병원 [심혈관중재실 의뢰](http://www.samsunghospital.com/m/reservation/common/doctorProfile.do?DR_NO=2157): 환자데이터 입력웹(eCRF).
+
+* [Tychobra](https://www.tychobra.com/)의 [Shiny CRUD](https://www.tychobra.com/posts/2020-01-29-shiny-crud-traditional/) 참고해 용병 1인과 개발 중. 
+
+* [shinymanager](https://github.com/datastorm-open/shinymanager) 로 로그인 모듈: 어떤 ID가 생성, 수정했는지 기록. 
+
+* DB: [RSQLite](https://github.com/r-dbi/RSQLite) 이용, 파일로 관리.
+
+* [DT](https://rstudio.github.io/DT/) 사용: proxy 기능으로 빠른 업데이트 가능. 테이블 안에 클릭(수정)버튼 삽입.
+
+* 버튼 1개 당 [shiny module](https://shiny.rstudio.com/articles/modules.html) 1개. 
+
+* 의료데이터 입력/관리/분석 통합서비스 목표.
+
+
+## Slide
+
+아래 슬라이드를 보거나 https://zarathucorp.github.io/eCRF-SMCcath/shinykorea 를 클릭하면 볼 수 있다.
+
+<iframe src="https://zarathucorp.github.io/eCRF-SMCcath/shinykorea" width="900" height="600" style="border: none;"></iframe>
+
