@@ -1,5 +1,26 @@
 [
   {
+    "path": "posts/2021-09-11-googlelogin/",
+    "title": "Google Login",
+    "description": "Zarathu 앱에 적용할 예정인 구글 로그인에 대해 소개합니다.",
+    "author": [
+      {
+        "name": "Lee Hyunki",
+        "url": "https://github.com/leevenstar"
+      }
+    ],
+    "date": "2021-09-11",
+    "categories": [
+      "review"
+    ],
+    "contents": "\r\n\r\nContents\r\n목표\r\n요약\r\n본문\r\nallauth 설치\r\n구글 클라이언트 발급\r\n접근 권한 관리\r\n참고사항\r\n\r\n결론\r\n\r\n목표\r\nDjango allauth와 google OAuth를 이용해 zarathu 앱에 구글 로그인을 구현합니다.\r\nDjango admin 페이지에서 회원별 접근 권한을 관리합니다.\r\n요약\r\n구글 로그인 구현에 필요한 Django allauth 패키지를 설치합니다.\r\n구글 클라이언트를 발급하여 장고 사이트에 연결합니다.\r\n장고 admin을 이용하여 접근 권한을 관리합니다.\r\n참고 사항: 포트 포워딩 및 shinyproxy 배포\r\n코드 실행\r\ngit pull\r\n\r\ngit pull https://github.com/zarathucorp/google_login\r\n\r\ninstall python, pip, Django, Django allauth, markdown\r\nadd your IP to ALLOWED_HOST\r\nmake directory for logs\r\n\r\nmkdir logs \r\n\r\ntouch mysite.log in logs\r\n\r\nlogger.debug()\r\nlogger.info()\r\nlogger.warning()\r\nlogger.error()\r\nlogger.critical()\r\nimport logging \r\nlogging.info(query_set.query)\r\n\r\nrun\r\n\r\npython3 manage.py makemigrations --settings=config.settings.prod\r\npython3 manage.py migrate --settings=config.settings.prod\r\npython3 manage.py runserver --settings=config.settings.prod \r\n\r\n본문\r\nallauth 설치\r\npython Django에서는 쉽게 사용할 수 있는 로그인 모듈을 제공합니다. 로그인 모듈 사용을 위해 Django allauth를 설치합니다.\r\n\r\npip install Django  \r\npip install django-allauth \r\n\r\nDjango allauth 사용을 위해서 settings.py에 다음과 같이 추가합니다.\r\n\r\n구글 클라이언트 발급\r\nGoogle cloud platform (https://console.cloud.google.com)에서 웹 애플리케이션의 클라이언트를 발급합니다.\r\n자세한 방법은 https://cloud.google.com/endpoints/docs/frameworks/java/creating-client-ids?hl=ko#web-client 를 참고하여 주시기 바랍니다.\r\n클라이언트를 발급하면 클라이언트 ID와 보안 비밀번호를 얻게 되는데,\r\n이 ID와 비밀번호를 장고 admin 페이지의 소셜 어플리케이션 탭에 입력합니다.\r\n장고 admin 페이지는 장고 사이트 주소 뒤에 /admin 을 입력하여 접근할 수 있습니다.\r\n\r\n이제 장고 사이트에서 구글 로그인 링크를 누르면 400 오류:redirect_uri_mismatch 메시지가 뜹니다.\r\nGoogle cloud platform의 웹 애플리케이션 클라이언트에서 ’승인된 리디렉션 URI’에 https://domain.name/accounts/google/login/callback/ 을 입력해 주면 오류를 해결할 수 있습니다.\r\n\r\n리디렉션 uri에는 반드시 도메인 네임을 포함하여야 합니다. IP주소만으로는 실행할 수 없습니다.\r\n접근 권한 관리\r\n장고로 배포한 페이지에서 shinyproxy로 shiny app을 배포한 주소로 링크를 연결할 것입니다.\r\n저희의 목표는 회원분들 개인마다 접근할 수 있는 앱을 지정해 주는 것입니다.\r\n이는 장고 admin 페이지와 html 파일에서 쉽게 구현할 수 있습니다.\r\n먼저, 장고 admin에서 다음과 같이 개인 사용자에게 그룹을 지정해줍니다.\r\n\r\n그리고 다음과 같이 링크를 연결할 페이지에서 해당 유저가 링크를 보기 위한 그룹에 속해있는지 확인하는 코드를 입력합니다.\r\n제 코드에서는 main.html에 입력하였습니다.\r\nmain.html 파일의 if 다음의 class가 해당 그룹에 속한 유저들에게만 노출됩니다.\r\n\r\n{% if request.user | has_group:\"<group>\" %}\r\n\r\n\r\nhas_group 함수의 내용은 다음과 같습니다.\r\n\r\nhas_group 함수는 제 코드에서는 goologin/templatetags/user_tags에 정의되어 있고 main.html에 다음 코드를 입력하여 불러옵니다.\r\n\r\n{% load user_tags %} \r\n\r\n참고사항\r\n포트 포워딩\r\n장고의 기본 포트가 8000이기 때문에 브라우저 도메인 뒤에 8000포트가 붙게 됩니다.\r\n다양한 해결 방법이 있지만, 여기서는 프로그램 iptables를 이용하여 포트 포워딩을 수행하는 방법을 소개합니다.\r\n다음 명령어를 이용하면 80포트로 들어온 신호를 8000포트로 리다이렉트할 수 있습니다.\r\n\r\niptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8000 \r\n\r\nshinyproxy 배포\r\n장고 사이트에서 링크로 연결할 샤이니 앱을 배포하기 위해 shinyproxy를 이용합니다.\r\n먼저, rstudio server에서 도커 컨테이너를 빌드합니다.\r\n\r\nsudo docker build -t <container image>\r\n\r\napplication.yml 파일의 specs: 에 컨테이너 이미지를 입력하고 shinyproxy를 구동합니다.\r\n\r\njava -jar shinyproxy-2.5.0.jar\r\n\r\napplication.yml 파일에서 port, authentication, template-path, landing-page를 건드리면 배포할 포트를 결정하거나, 사용자 인증을 만들거나, 템플릿으로 이용할 html 파일을 지정하거나, 기본 페이지를 설정할 수 있습니다.\r\nshinyproxy에 관한 자세한 내용은 https://shinyproxy.io 를 참고하여 주시기 바랍니다.\r\n결론\r\n구글 로그인을 구현하고, 사용자 별 접근 권한을 설정하는 방법에 대해 알아보았습니다.\r\n구현 방법이 어렵지 않고, 파이썬을 이용하기 때문에 검색을 통해 얻을 수 있는 정보가 많아 운영도 편리할 것으로 기대됩니다.\r\n\r\n\r\n\r\n",
+    "preview": "posts/2021-09-11-googlelogin/images/django.png",
+    "last_modified": "2021-09-11T10:18:01+09:00",
+    "input_file": {},
+    "preview_width": 465,
+    "preview_height": 58
+  },
+  {
     "path": "posts/2021-08-19-pubicdatawithr/",
     "title": "R 활용 공공빅데이터 분석지원",
     "description": "R 활용 웹기반으로 공공빅데이터 분석지원한 경험을 공유합니다. 본 내용은 \"대한상부위장관 · 헬리코박터학회 주관  2021 위원회 워크숍\" 에서 발표할 예정입니다.",
@@ -17,8 +38,8 @@
     ],
     "contents": "\n\nContents\n요약\nSlide\n\n김진섭 대표는 9월 12일 “대한상부위장관 · 헬리코박터학회 주관 2021 위원회 워크숍” 에 참석, R 활용 웹기반으로 공공빅데이터 분석지원한 경험을 공유할 예정입니다. 발표 슬라이드를 미리 공유합니다.\n요약\nR 로 보험공단/심평원 빅데이터 분석가능.\n공단표본코호트 V1 은 내부 분석환경 구축\n공단표본코호트 V2, 심평원 데이터는 원격 분석환경 이용\n대용량데이터 위한 R 패키지: data.table, fst, parallel\n자체개발 R 패키지 CRAN 배포, 원격분석환경에서도 이용가능.\nKaplan-meier 그림: jskm\n논문용 테이블: jstable\nGUI 분석: jsmodule\nShiny 로 웹기반 실시간 분석서비스.\n내부 분석환경: 웹에서 실시간 분석수행\n원격 분석환경: 모든 분석결과 반출 후 웹기반 시각화\nExcel/PPT 다운로드\nCDM 다기관 메타분석 서비스\nTable 1 합치기, Forest/Funnel plot 등\nSlide\n아래 슬라이드를 보거나 https://jinseob2kim.github.io/lecture-general/publicdata_with_R 를 클릭하면 볼 수 있다.\n\n\n\n\n\n",
     "preview": "https://www.hpylori.or.kr/static/images/logo.png",
-    "last_modified": "2021-08-21T22:22:10+09:00",
-    "input_file": "pubicdatawithr.knit.md"
+    "last_modified": "2021-08-21T22:22:11+09:00",
+    "input_file": {}
   },
   {
     "path": "posts/2021-08-19-beadatascientist/",
@@ -38,8 +59,8 @@
     ],
     "contents": "\n\nContents\n요약\nSlide\n\n김진섭 대표는 사단법인 헬리코박터 마이크로바이옴 연구회 워크숍에 참석, “Be a data scientist - major actor in the future research” 라는 제목으로 R 활용 의학연구지원경험을 발표할 예정입니다. 발표 슬라이드를 미리 공유합니다.\n\n\n\n요약\nR로 통계분석 뿐 아니라 논문, 발표 슬라이드, 홈페이지, 블로그, 웹 어플리케이션을 만들 수 있다.\n의학연구자들에게 맞춤형 통계 웹을 제공.\n범용으로 쓰일만한 것들을 웹과 R 패키지로 배포.\nShinykorea 밋업 후원: R 웹만들기 지식 공유\n카카오 오픈채팅: 프로그래밍 갤러리 R사용자 모임\nSlide\n아래 슬라이드를 보거나 https://jinseob2kim.github.io/lecture-general/microbiome 를 클릭하면 볼 수 있다.\n\n\n\n\n\n",
     "preview": "https://www.hnm.or.kr/fboard/data/event/event3_1627892725.jpg",
-    "last_modified": "2021-08-19T09:53:17+09:00",
-    "input_file": "beadatascientist.knit.md"
+    "last_modified": "2021-08-19T09:53:18+09:00",
+    "input_file": {}
   },
   {
     "path": "posts/2021-07-25-googleauth/",
@@ -56,7 +77,7 @@
     "contents": "\n7월 17일 Virtual Box를 이용해 ShinyProxy 환경을 구축하는 강의가 있었습니다. 강의 시간에 직접 해보지 못한 Social Login 중 Google Authentication 방법에 대해 알아보겠습니다.\n요약\n지난 Lecture에서 구축한 환경설정 간단하게 리뷰\nApplication.yml을 project folder에 생성하여 Social login을 사용하도록 설정\nGoogle Developer Console에서 OAuth 설정을 통해 Client Id, Key 발급과 Redirection URL 설정\nContents\nReview of previous lecture\nShinyManager (https://datastorm-open.github.io/shinymanager/)\nShiny App의 Authentication service 제공\nSigle thread 기반으로 구성되기 때문에 동시에 여러 유저가 로그인 불가\n\nShinyProxy (https://www.shinyproxy.io/)\nShinyManager를 사용할 때 동시에 하나의 유저만 로그인할 수 있는 한계를 극복하기 위해 도입\n여러 사용자의 동시 접근을 가능한 Shiny App deploy\n\nGoogle OAuth 설정으로 넘어가기 전에…\n강의시간에 만든 Virtual box의 가상이미지 실행 후 shinyproxy docker 이미지가 실행되고 있는지 확인\n\nsudo docker images | grep shinyproxy\n\nRstudio server 로그인 후 Terminal에서 shinyproxy 실행\n브라우저에서 127.0.0.1:8787로 접속 후 Virtual Box 이미지 생성 시 입력했던 아이디와 패스워드로 로그인\nRstudio Terminal에서 shinyproxy 실행\n\njava -jar shinyproxy-2.5.0.jar\n\n127.0.0.1:8080으로 접속하여 admin 계정을 통해 login 기능 작동 확인\n\n\n\nGoogle OAuth\nFacebook, Github 등 다양한 소셜 로그인 중 하나\nGoogle Developer Console (https://console.cloud.google.com/apis/)에서 프로젝트 생성 후 Client Id와 Client Key 발급\n발급받은 Id, Key를 application.yml 파일에 입력\nGoogle Devloper Console에서 로그인 후 redirection할 URL을 입력하면 끝!\n구체적인 과정은 네이버 블로그(http://yoonbumtae.com/?p=2631)를 따라하세요\nShinyProxy Setting\napplication.yml : Authentication 방법을 정의하는 파일로 simple, LDAP, openid, social 등의 방법 선택 가능 (authentication: {원하는 로그인 방식})\nRStudio server에서 홈 디렉토리에 application.yml 파일 생성(아래 코드를 복사하세요)\n\nproxy:\n  title: Shiny App\n  logo-url: https://www.openanalytics.eu/shinyproxy/logo.png\n  landing-page: /\n  heartbeat-rate: 10000\n  heartbeat-timeout: 60000\n  port: 8080\n  authentication: social\n  admin-groups: scientists\n  openid:\n    auth-url: https://accounts.google.com/o/oauth2/v2/auth\n    token-url: https://www.googleapis.com/oauth2/v4/token\n    jwks-url: https://www.googleapis.com/oauth2/v3/certs\n    client-id:     528600301937-aic4b7n55ka3ac9he6g4d67fb6cdrkc6.apps.googleusercontent.com\n    client-secret: x7KIiNvJcwh4cl2eouPJ3IiS\n    # Docker configuration\n  social:\n    google:\n      app-id:     528600301937-aic4b7n55ka3ac9he6g4d67fb6cdrkc6.apps.googleusercontent.com\n      app-secret: x7KIiNvJcwh4cl2eouPJ3IiS\n  docker:\n    url: http://localhost:2375\n    port-range-start: 20000\n  specs:\n  - id: 01_hello\n    display-name: Hello Application\n    description: Application which demonstrates the basics of a Shiny app\n    container-cmd: [\"R\", \"-e\", \"shinyproxy::run_01_hello()\"]\n    container-image: openanalytics/shinyproxy-demo\n    access-groups: [scientists, mathematicians]\n  - id: 06_tabsets\n    container-cmd: [\"R\", \"-e\", \"shinyproxy::run_06_tabsets()\"]\n    container-image: openanalytics/shinyproxy-demo\n    access-groups: scientists\n\nlogging:\n  file:\n    shinyproxy.log\n\nauthenticaiton을 openid로 설정할 경우\n위 코드의 openid 부분과 동일하게 auth, token, jws url 작성\nclient-id와 client-secret을 Google Developer Console에서 확인 후 입력\nGoogle Developer Console에서 승인된 redirect url에 다음을 입력 http://127.0.0.1:8080/login/oauth2/code/shinyproxy\nRStudio server Terminal에서 실행중인 shinyproxy 종료(Ctrl + C) 후 재실행\n브라우저에 127.0.0.1:8080을 입력 후 google login 수행 (localhost:8080로 접근하기 위해서는 redirect url에 http://localhost:8080/login/oauth2/code/shinyproxy 등록)\nauthentication을 social로 설정할 경우\n위 코드의 social 부분과 동일하게 작성\nGoogle Developer Console에서 승인된 redirect url에 다음을 입력 http://127.0.0.1:8080/signin/google\nRStudio server Terminal에서 실행중인 shinyproxy 종료(Ctrl + C) 후 재실행\n브라우저에 127.0.0.1:8080을 입력 후 google login 수행\n마무리\nShinyProxy는 Spring framework 기반으로 작성되어 application.yml 수정을 통해 여러 인증방법을 적용할 수 있습니다.\nFacebook, Github 등 여러 API provider들이 구글과 비슷한 인증 서비스를 제공하고 있어 손쉽게 여러 social 인증을 추가할 수 있습니다.\n발급받은 client id와 secret은 외부로 노출되어서는 안됩니다(Github Repo에 commit 금지!)\nsocial과 openid 모두 적용할 수 있으나 redirect url에 차이가 있음에 주의 (정확한 차이는 연구 필요)\n\n\n\n",
     "preview": "posts/2021-07-25-googleauth/images/google-sign.png",
     "last_modified": "2021-07-25T18:12:48+09:00",
-    "input_file": "googleauth.knit.md",
+    "input_file": {},
     "preview_width": 580,
     "preview_height": 286
   },
@@ -78,7 +99,7 @@
     "contents": "\n\nContents\n요약\nSlide\n\n김진섭 대표는 차라투 가 후원하는 7월 Shinykorea 밋업에 참석, 창업지원사업 도전경험을 공유할 예정입니다. 정리한 슬라이드를 미리 공유합니다.\n요약\n4전 5기만에 창업지원사업(비대면스타트업육성사업) 선정(1.4억)\n비대면 의료 분야: 블록체인 기반 의료데이터 입력, 관리, 분석 플랫폼\n18년초 창업전, 지도교수, 대학원동료와 함께 창업선도대학 선정(6천만)\n서울대학교: 블록체인 기반 유전체 빅데이터 플랫폼\n심평원 공모전 선정: 맞춤형 의학연구웹\n창업 후 주요사업 광탈, 작은 사업 선정\n20년 초기창업패키지, 추경(비대면), 추경2차, 21년 초기창업패키지 4연속 서류탈락\n비대면바우처(400만원), 클라우드 지원사업(720만원) 선정\n벤처기업인증: 혁신성장유형\n21년 공개소프트웨어 기반 창업기업 선정, 선릉역 오피스 6개월 지원.\nSlide\n아래 슬라이드를 보거나 https://jinseob2kim.github.io/lecture-general/kstartup 를 클릭하면 볼 수 있다.\n\n\n\n\n\n",
     "preview": "https://www.k-startup.go.kr/images/main_kstartup.jpg",
     "last_modified": "2021-07-11T13:48:31+09:00",
-    "input_file": "kstartup.knit.md"
+    "input_file": {}
   },
   {
     "path": "posts/2021-07-05-channel.io-install-review/",
