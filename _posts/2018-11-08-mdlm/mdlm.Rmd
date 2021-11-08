@@ -14,7 +14,7 @@ author:
     affiliation_url: https://www.anpanman.co.kr
 date: 11-08-2018
 output:
-  radix::radix_article:
+  distill::distill_article:
     self_contained: false
     toc: true
     toc_depth: 2
@@ -372,8 +372,8 @@ $$(\text{log(LOS)})^2 = \beta_{00}^2 + (\beta_{01}+ \beta_1\cdot \text{MAP})^2$$
 
 
 ```{r}
-a=fread("http://biostat.mc.vanderbilt.edu/dupontwd/wddtext/data/3.25.2.SUPPORT.csv")
-#a=fread("/home/secondmath/Dropbox/Survival_new/3.25.2.SUPPORT.csv")
+#a=fread("http://biostat.mc.vanderbilt.edu/dupontwd/wddtext/data/3.25.2.SUPPORT.csv")
+a <- fread("3.25.2.SUPPORT.csv")
 a[,":="(intcpt=1,loglos=log(los))]
 a=data.frame(a)
 ```
