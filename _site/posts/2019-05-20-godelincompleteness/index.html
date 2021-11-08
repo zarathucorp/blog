@@ -409,7 +409,7 @@ d-title {
 
 </style>
 
-<script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="../../site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
 <link href="../../site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
 <script src="../../site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -1816,7 +1816,10 @@ function init_distill() {
 
     // hoverable references
     $('span.citation[data-cites]').each(function() {
-      var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+      var refs = $(this).attr('data-cites').split(" ");
+      var refHtml = refs.map(function(ref) {
+        return "<p>" + $('#ref-' + ref).html() + "</p>";
+      }).join("\n");
       window.tippy(this, {
         allowHTML: true,
         content: refHtml,
@@ -2009,7 +2012,7 @@ gtag('config', 'UA-135478021-2');
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"괴델의 불완전성 정리","description":"괴델(Kurt Gödel)의 불완전성 정리가 나온 배경을 소개하고 증명의 핵심 아이디어를 수학과 메타수학(meta-mathematics), 괴델수(Gödel number), 그리고 메타수학의 수학화 3가지로 나누어 설명하였습니다. 본 내용은 \"제주대학교 경영정보학과 산업·직무 특화 전문가 특강\" 에서 발표할 예정입니다.","authors":[{"author":"Jinseob Kim","authorURL":"https://github.com/jinseob2kim","affiliation":"Zarathu Co.,Ltd","affiliationURL":"https://www.zarathu.com","orcidID":""}],"publishedDate":"2019-05-22T00:00:00.000+00:00","citationText":"Kim, 2019"}
+{"title":"괴델의 불완전성 정리","description":"괴델(Kurt Gödel)의 불완전성 정리가 나온 배경을 소개하고 증명의 핵심 아이디어를 수학과 메타수학(meta-mathematics), 괴델수(Gödel number), 그리고 메타수학의 수학화 3가지로 나누어 설명하였습니다. 본 내용은 \"제주대학교 경영정보학과 산업·직무 특화 전문가 특강\" 에서 발표할 예정입니다.","authors":[{"author":"Jinseob Kim","authorURL":"https://github.com/jinseob2kim","affiliation":"Zarathu Co.,Ltd","affiliationURL":"https://www.zarathu.com","orcidID":""}],"publishedDate":"2019-05-22T00:00:00.000+09:00","citationText":"Kim, 2019"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2365,12 +2368,14 @@ var disqus_config = function () {
 }</pre>
 </div>
 <!--/radix_placeholder_appendices-->
-<!--radix_placeholder_navigation_after_body-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--radix_placeholder_navigation_after_body--><html><body>
 <div class="distill-site-nav distill-site-footer">
-  <p>© Copyright 2019 <a href="https://www.zarathu.com">Zarathu Co.,Ltd</a>.</p>
-  <p>Software licensed under the <a href="https://raw.githubusercontent.com/zarathucorp/blog/master/LICENSE">MIT License</a>.</p>
+<p>Â© Copyright 2019 <a href="https://www.zarathu.com">Zarathu Co.,Ltd</a>.</p>
+<p>Software licensed under the <a href="https://raw.githubusercontent.com/zarathucorp/blog/master/LICENSE">MIT License</a>.</p>
 </div>
 <!--/radix_placeholder_navigation_after_body-->
+</body></html>
 
 
 </body>
