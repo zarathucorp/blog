@@ -57,7 +57,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { } /* Attribute */
+code span.at { color: #20794d; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
 code span.cf { color: #007ba5; } /* ControlFlow */
@@ -78,14 +78,13 @@ code span.kw { color: #007ba5; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
 code span.ot { color: #007ba5; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #5e5e5e; } /* SpecialChar */
+code span.sc { color: #20794d; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
 code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
-
 
   <!--radix_placeholder_meta_tags-->
   <title>Zarathu Blog: 차라투 블로그</title>
@@ -456,7 +455,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </style>
 
-  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
   <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
   <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -1863,10 +1862,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        var refs = $(this).attr('data-cites').split(" ");
-        var refHtml = refs.map(function(ref) {
-          return "<p>" + $('#ref-' + ref).html() + "</p>";
-        }).join("\n");
+        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
         window.tippy(this, {
           allowHTML: true,
           content: refHtml,
@@ -2037,7 +2033,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2115,7 +2111,7 @@ function init_posts_list() {
     var src = $(img).attr('data-src');
     if (src) {
       $(img).attr('src', src);
-      $(img).on("load", function() {
+      $(img).load(function() {
         img.removeAttribute('data-src');
       });
     }
@@ -2161,7 +2157,6 @@ function init_posts_list() {
 
       // mark posts that match the category visible
       var page_category = window.location.hash.replace(/^#category:/, "");
-      page_category = decodeURIComponent(page_category)
       var posts = $('.post-metadata').map(function(idx, script) {
         var metadata = $.parseJSON($(script).html());
         var post = null;
@@ -2177,7 +2172,7 @@ function init_posts_list() {
       set_posts_visible(posts, true);
 
       // mark the hash active
-      $('.categories li>a[href="' + decodeURIComponent(window.location.hash) + '"]').addClass('active');
+      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
 
       // update the list_caption
       var list_caption = $('.posts-list-caption');
@@ -2240,6 +2235,23 @@ function init_posts_list() {
 <div class="posts-container posts-with-sidebar posts-apply-limit l-screen-inset">
 <div class="posts-list">
 <h1 class="posts-list-caption" data-caption="차라투 블로그">차라투 블로그</h1>
+<a href="posts/2022-01-06-internship-django-1/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":[]}</script>
+<div class="metadata">
+<div class="publishedDate">Jan. 5, 2022</div>
+<div class="dt-authors">
+<div class="dt-author">Siyeol Jung</div>
+</div>
+</div>
+<div class="thumbnail">
+<img/>
+</div>
+<div class="description">
+<h2>인턴십 - Django로 게시판 만들고 기능 추가하기</h2>
+<div class="dt-tags"></div>
+<p>숭실대학교 인턴십 프로그램을 통해 인턴으로 활동하게 된 차라투에서 1주차 동안 학습한 내용에 대해 공유합니다.</p>
+</div>
+</a>
 <a href="posts/2021-10-01-notionoopy/" class="post-preview">
 <script class="post-metadata" type="text/json">{"categories":["review"]}</script>
 <div class="metadata">
@@ -2328,7 +2340,7 @@ function init_posts_list() {
 </div>
 </div>
 <div class="thumbnail">
-<img src="https://www.hnm.or.kr/fboard/data/event/event3_1627892725.jpg"/>
+<img data-src="https://www.hnm.or.kr/fboard/data/event/event3_1627892725.jpg"/>
 </div>
 <div class="description">
 <h2>R 활용 의학연구지원</h2>
@@ -2891,7 +2903,7 @@ function init_posts_list() {
 <a href="posts/2019-04-03-reviewmoneypin/" class="post-preview">
 <script class="post-metadata" type="text/json">{"categories":["review","finance"]}</script>
 <div class="metadata">
-<div class="publishedDate">April 3, 2019</div>
+<div class="publishedDate">April 4, 2019</div>
 <div class="dt-authors">
 <div class="dt-author">Jinseob Kim</div>
 </div>
@@ -3038,8 +3050,8 @@ function init_posts_list() {
 <p>중앙보훈병원 정신건강의학과에서 강의한 내용으로, 의학 연구에 필요한 기술 통계(descriptive statistics)를 정리하고 웹 애플리케이션과 Rstudio Addins을 이용하여 실습하였습니다.</p>
 </div>
 </a>
-<a href="posts/2018-11-08-ruck2018/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":["presentation","lecture","devOps","r","docker","shiny"]}</script>
+<a href="posts/2018-11-08-mdlm/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":["article","statistics","r","rpackage"]}</script>
 <div class="metadata">
 <div class="publishedDate">Nov. 8, 2018</div>
 <div class="dt-authors">
@@ -3047,19 +3059,17 @@ function init_posts_list() {
 </div>
 </div>
 <div class="thumbnail">
-<img data-src="posts/2018-11-08-ruck2018/ruck2018.png"/>
+<img data-src="posts/2018-11-08-mdlm/mdlm_files/figure-html5/fig1-1.png"/>
 </div>
 <div class="description">
-<h2>맞춤형 의학연구 애플리케이션을 위한 개발 환경 구축</h2>
+<h2>선형모형의 다차원공간으로의 확장 (Linear Model in Multidimensional Space)</h2>
 <div class="dt-tags">
-<div class="dt-tag">presentation</div>
-<div class="dt-tag">lecture</div>
-<div class="dt-tag">devOps</div>
+<div class="dt-tag">article</div>
+<div class="dt-tag">statistics</div>
 <div class="dt-tag">r</div>
-<div class="dt-tag">docker</div>
-<div class="dt-tag">shiny</div>
+<div class="dt-tag">rpackage</div>
 </div>
-<p>R User Conference in Korea 2018(RUCK 2018)에서 발표했던 내용입니다.</p>
+<p>아인슈타인의 일반상대성이론은 태양 근처에서 빛이 휘어지는 현상을 빛이 아닌 시공간이 휘어지는 것으로 해석합니다. 비슷한 아이디어를 통계학에 적용하여 U-shape 관계를 휘어진 다차원 공간에서의 선형모형으로 재해석하였습니다.</p>
 </div>
 </a>
 <a href="posts/2018-11-08-medianorratio/" class="post-preview">
@@ -3104,8 +3114,8 @@ function init_posts_list() {
 <p>P value의 가장 큰 문제는 샘플 숫자만 늘리면 아무리 작은 차이라도 유의미한 결과로 만들 수 있다는 것입니다. 이는 대부분의 연구에서 차이가 정확히 0이라는 비현실적인 귀무가설을 사용하기 때문에 생기는 문제인데, 실제 차이가 정확히 0이라고 생각하는 사람은 아무도 없으며 아무도 주장하지 않는 것을 반박해 봐야 유용한 결론을 얻지 못합니다. 본 연구에서는 귀무가설에 uncertainty 개념을 추가하여 가설검정방법을 재정의하였습니다.</p>
 </div>
 </a>
-<a href="posts/2018-11-08-mdlm/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":["article","statistics","r","rpackage"]}</script>
+<a href="posts/2018-11-08-ruck2018/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":["presentation","lecture","devOps","r","docker","shiny"]}</script>
 <div class="metadata">
 <div class="publishedDate">Nov. 8, 2018</div>
 <div class="dt-authors">
@@ -3113,17 +3123,19 @@ function init_posts_list() {
 </div>
 </div>
 <div class="thumbnail">
-<img data-src="posts/2018-11-08-mdlm/mdlm_files/figure-html5/fig1-1.png"/>
+<img data-src="posts/2018-11-08-ruck2018/ruck2018.png"/>
 </div>
 <div class="description">
-<h2>선형모형의 다차원공간으로의 확장 (Linear Model in Multidimensional Space)</h2>
+<h2>맞춤형 의학연구 애플리케이션을 위한 개발 환경 구축</h2>
 <div class="dt-tags">
-<div class="dt-tag">article</div>
-<div class="dt-tag">statistics</div>
+<div class="dt-tag">presentation</div>
+<div class="dt-tag">lecture</div>
+<div class="dt-tag">devOps</div>
 <div class="dt-tag">r</div>
-<div class="dt-tag">rpackage</div>
+<div class="dt-tag">docker</div>
+<div class="dt-tag">shiny</div>
 </div>
-<p>아인슈타인의 일반상대성이론은 태양 근처에서 빛이 휘어지는 현상을 빛이 아닌 시공간이 휘어지는 것으로 해석합니다. 비슷한 아이디어를 통계학에 적용하여 U-shape 관계를 휘어진 다차원 공간에서의 선형모형으로 재해석하였습니다.</p>
+<p>R User Conference in Korea 2018(RUCK 2018)에서 발표했던 내용입니다.</p>
 </div>
 </a>
 <a href="posts/2018-09-25-welcome/" class="post-preview">
@@ -3163,7 +3175,7 @@ function init_posts_list() {
 <ul>
 <li>
 <a href="#category:Articles">Articles</a>
-<span class="category-count">(43)</span>
+<span class="category-count">(44)</span>
 </li>
 <li>
 <a href="#category:article">article</a>
