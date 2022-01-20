@@ -482,7 +482,7 @@ d-title {
 
 </style>
 
-<script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="../../site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
 <link href="../../site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
 <script src="../../site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -1889,7 +1889,10 @@ function init_distill() {
 
     // hoverable references
     $('span.citation[data-cites]').each(function() {
-      var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+      var refs = $(this).attr('data-cites').split(" ");
+      var refHtml = refs.map(function(ref) {
+        return "<p>" + $('#ref-' + ref).html() + "</p>";
+      }).join("\n");
       window.tippy(this, {
         allowHTML: true,
         content: refHtml,
@@ -2088,7 +2091,7 @@ gtag('config', 'UA-135478021-2');
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Notion으로 홈페이지 제작후 oopy로 배포한 후기","description":"Notion과 Oopy를 사용해 개편한 [당사 홈페이지](https://www.zarathu.com)의 구축 논의 사항과 장·단점을 설명하였습니다.","authors":[{"author":"Changwoo Lim","authorURL":"https://github.com/ChangwooLim","affiliation":"Zarathu Co.,Ltd","affiliationURL":"https://www.zarathu.com","orcidID":""}],"publishedDate":"2021-10-01T00:00:00.000+00:00","citationText":"Lim, 2021"}
+{"title":"Notion으로 홈페이지 제작후 oopy로 배포한 후기","description":"Notion과 Oopy를 사용해 개편한 [당사 홈페이지](https://www.zarathu.com)의 구축 논의 사항과 장·단점을 설명하였습니다.","authors":[{"author":"Changwoo Lim","authorURL":"https://github.com/ChangwooLim","affiliation":"Zarathu Co.,Ltd","affiliationURL":"https://www.zarathu.com","orcidID":""}],"publishedDate":"2021-10-01T00:00:00.000+09:00","citationText":"Lim, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2291,12 +2294,14 @@ var disqus_config = function () {
 }</pre>
 </div>
 <!--/radix_placeholder_appendices-->
-<!--radix_placeholder_navigation_after_body-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--radix_placeholder_navigation_after_body--><html><body>
 <div class="distill-site-nav distill-site-footer">
-  <p>© Copyright 2019 <a href="https://www.zarathu.com">Zarathu Co.,Ltd</a>.</p>
-  <p>Software licensed under the <a href="https://raw.githubusercontent.com/zarathucorp/blog/master/LICENSE">MIT License</a>.</p>
+<p>Â© Copyright 2019 <a href="https://www.zarathu.com">Zarathu Co.,Ltd</a>.</p>
+<p>Software licensed under the <a href="https://raw.githubusercontent.com/zarathucorp/blog/master/LICENSE">MIT License</a>.</p>
 </div>
 <!--/radix_placeholder_navigation_after_body-->
+</body></html>
 
 
 </body>
