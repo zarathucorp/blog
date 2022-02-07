@@ -1,0 +1,281 @@
+---
+title: "tableone 패키지 소개"
+description: |
+  효율적으로 의학 연구 논문에 들어갈 table1을 만들 수 있는 tableone 패키지에 대해 소개합니다.
+categories:
+  - R
+  - RPACKAGE
+preview: https://user-images.githubusercontent.com/96602999/152754381-a8d2126d-bc9e-437f-a29b-7a1ebc9185e7.png
+author:
+  - name: Yujin Lee
+    url: https://github.com/lyj7518
+date: 02-07-2022
+output:
+  distill::distill_article:
+    self_contained: false
+    toc: true
+    toc_depth: 2
+    toc_float: yes
+draft: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=F, fig.align = "center", message=F, warning=F)
+```
+
+# 시작하기 전에
+
+본 자료는 데이터셋의 변수를 하나의 테이블로 요약하는 방법에 대해 알아볼 것이다. **tableone** 패키지를 이용하면 효율적으로 논문에 들어갈 table1을 만들 수 있다. 
+
+# What is tableone?
+
+`tableone`은 의학 연구 논문에서 볼 수 있는 table1을 구성하는 데 사용되는 패키지로, 한 테이블 내에 혼합된 범주형 변수와 연속형 변수를 모두 요약할 수 있고 사용법이 매우 간단하다는 장점이 있다.
+
+```{r, fig.align = "center", echo=FALSE}
+library(knitr)
+include_graphics("https://blog.zarathu.com/posts/2018-11-24-basic-biostatistics/table1.jpg")
+```
+
+# Creating a tableone
+
+**CreateTableOne()** 함수를 사용하여 테이블을 만들 수 있다. `fread`를 통해 데이터를 불러와 간단한 테이블을 만들어보자. 데이터는 09-15년 공단 건강검진 데이터에서 실습용으로 32 명을 뽑은 자료이며, 자세한 내용은  ["data/2교시 테이블 세부 레이아웃 소개(최신자료).pdf"](https://github.com/jinseob2kim/lecture-snuhlab/raw/master/data/2%EA%B5%90%EC%8B%9C%20%ED%85%8C%EC%9D%B4%EB%B8%94%20%EC%84%B8%EB%B6%80%20%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83%20%EC%86%8C%EA%B0%9C(%EC%B5%9C%EC%8B%A0%EC%9E%90%EB%A3%8C).pdf) 를 참고하자.
+
+```{r, echo=T}
+## Setup
+
+# install.packages("data.table")
+# install.packages("curl")
+# install.packages("tableone")
+
+library(data.table)
+library(curl)
+library(tableone)
+```
+
+```{r, eval=F, echo=T}
+# Load file
+url <- "https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"
+dt <- fread(url,header=T)
+```
+
+```{r, echo=F}
+# Load file
+url <- "https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"
+dt <- fread(url, header=T)
+rmarkdown::paged_table(dt)
+```
+
+**CreateTableOne()** 함수를 사용해 간단한 테이블을 만들어 보자.
+
+```{r, eval=F, echo=T}
+# create table1
+CreateTableOne(data=dt)
+```
+
+```{r, echo=F}
+# create table1
+kableone(CreateTableOne(data=dt))
+```
+
+- 범주형 변수는 개수(백분율)로 요약된다. 
+- 연속형 변수는 normal인 경우 mean(sd)로 나타나고, nonnormal인 경우 median(IQR)로 요약된다.
+
+# Argument customize
+
+**CreateTableOne()** 함수에는 다양한 옵션이 존재한다. 세부적인 옵션 설정을 통해 원하는 table1을 만들 수 있다. 주요 옵션은 다음과 같다.
+
+- `CreateTableOne`
+  - vars : 테이블에 들어갈 변수들
+  - factorVars : 범주형 변수들
+  - data : 데이터
+  - strata : 그룹 변수 지정
+  - includeNA : 범주형 변수에서 `NA`를 하나의 범주로 포함할지 여부
+  
+옵션에 대한 자세한 설명은 예시를 통해 다루도록 하겠다.
+
+## Categorical variable conversion
+
+**factorVars** 인자를 사용하여 범주형 변수를 지정할 수 있다. 이때 **vars** 인자를 통해 전체 데이터 셋 중 테이블에 들어갈 변수를 설정할 수 있고, 지정하지 않을 시 데이터 셋의 모든 변수가 포함된다.
+
+```{r, eval=F, echo=T}
+# Variables
+myVars <- c("HGHT", "WGHT", "BMI", "HDL", "LDL", "TG", "SGPT", 
+            "Q_PHX_DX_STK", "Q_PHX_DX_HTDZ", "Q_HBV_AG", "Q_SMK_YN")
+# Categorical variables
+catVars <- c("Q_PHX_DX_STK", "Q_PHX_DX_HTDZ", "Q_HBV_AG", "Q_SMK_YN")
+t1 <- CreateTableOne(vars = myVars, factorVars = catVars, data = dt)
+t1
+```
+
+```{r, echo=F}
+# Variables
+myVars <- c("HGHT", "WGHT", "BMI", "HDL", "LDL", "TG", "SGPT", 
+            "Q_PHX_DX_STK", "Q_PHX_DX_HTDZ", "Q_HBV_AG", "Q_SMK_YN")
+# Categorical variables
+catVars <- c("Q_PHX_DX_STK", "Q_PHX_DX_HTDZ", "Q_HBV_AG", "Q_SMK_YN")
+t1 <- CreateTableOne(vars = myVars, factorVars = catVars, data = dt)
+kableone(print(t1))
+```
+
+- 범주형 변수로 설정한 컬럼의 요약값이 mean(sd)에서 n(percentage)로 바뀐 것을 볼 수 있다.
+
+- 두 개의 범주가 있는 범주형 변수의 경우, 두 번째 범주의 요약값만 출력된다. 예를 들어 0과 1의 범주가 있을 때, 범주1의 개수와 백분율이 출력된다. 이는 옵션 설정을 통해 전체 범주의 요약값을 출력하도록 변경할 수 있다.
+
+- 3개 이상의 범주가 있을 때에는 모든 범주의 값이 요약되며, 백분율은 누락된 값을 제외한 후 계산된다.
+
+
+## Multiple group summary 
+
+**strata** 인자를 설정하여 그룹별 연산을 할 수 있다. **strata**는 dplyr 패키지의 group_by() 함수와 유사하며, 그룹 연산을 할 변수를 지정하여 사용할 수 있다.
+
+```{r, eval=F, echo=T}
+t2 <- CreateTableOne(data = dt,
+                     vars = myVars,
+                     strata = "Q_SMK_YN",
+                     factorVars = catVars,
+                     includeNA = F)
+t2
+```
+
+```{r, echo=F}
+t2 <- CreateTableOne(data = dt,
+                     vars = myVars,
+                     strata = "Q_SMK_YN",
+                     factorVars = catVars,
+                     includeNA = F)
+kableone(print(t2))
+```
+
+- 연속형 변수의 경우, 기본적으로 one-way ANOVA test가 적용되며 nonnormal일 경우 옵션 설정을 통해 Kruskal–Wallis one-way ANOVA test를 적용할 수 있다.
+
+- 범주형 변수의 경우, 기본적으로 chisq-test가 적용되며 print 함수의 exact 옵션 설정을 통해 fisher-test를 적용할 수 있다.
+
+
+# Print tableone
+
+**CreateTableOne()** 함수를 사용하여 테이블을 만든 후, **print** 명령어로 세부 옵션을 지정할 수 있다. 주요 옵션은 다음과 같다.
+
+- `print`
+  - showAllLevels, cramVars : 2범주인 변수에서 2범주를 다 보여줄 변수
+  - nonnormal : 비모수통계를 쓸 연속 변수
+  - exact : fisher-test를 쓸 범주형 변수
+  - smd : standardized mean difference
+
+
+## Showing all levels
+
+범주형 변수에서 모든 범주의 요약값을 확인하려면 **ShowAllLevels** 또는 **cramVars** 옵션을 사용한다. ShowAllLevels = T 를 설정하거나 cramVars 옵션에 원하는 변수명을 지정하여 사용할 수 있다.
+
+- 1.use **showAllLevels**
+
+```{r, eval=F, echo=T}
+print(t1, showAllLevels = T)
+```
+
+```{r, echo=F}
+kableone(print(t1, showAllLevels = T))
+```
+
+- 2.use **cramVars**
+
+```{r, eval=F, echo=T}
+print(t1, cramVars="Q_PHX_DX_STK")
+```
+
+```{r, echo=F}
+kableone(print(t1, cramVars="Q_PHX_DX_STK"))
+```
+
+## nonnormal variables
+
+비모수통계를 사용하는 연속형 변수에는 **nonnormal** 옵션을 설정한다. nonnormal 설정 시 mean(sd)에서 median(IQR)로 요약값이 변경된다.
+
+```{r, eval=F, echo=T}
+print(t1, nonnormal="LDL")
+```
+
+```{r, echo=F}
+kableone(print(t1, nonnormal="LDL"))
+```
+
+## exact
+
+**exact** 옵션을 통해 fisher-test를 진행할 범주형 변수를 설정할 수 있다. 범주형 변수는 기본적으로 chisq-test가 적용되며, exact 옵션에 fisher-test를 적용할 변수를 지정하여 사용할 수 있다.
+
+```{r, eval=F, echo=T}
+print(t2, exact=c("Q_PHX_DX_STK", "Q_PHX_DX_HTDZ"))
+```
+
+```{r, echo=F}
+kableone(print(t2, exact=c("Q_PHX_DX_STK", "Q_PHX_DX_HTDZ")))
+```
+
+## smd
+
+**smd** 옵션을 통해 smd(standardized mean difference)를 table1에 포함할 수 있다. default는 FALSE이고, smd=TRUE 설정 시 각 변수의 smd 값이 출력된다.
+
+```{r, eval=F, echo=T}
+print(t2, smd = TRUE)
+```
+  
+```{r, echo=F}
+kableone(print(t2, smd = TRUE))
+``` 
+
+# Detailed information : summary()
+
+`summary` 함수를 쓰면 누락값을 포함한 table1의 자세한 정보를 알 수 있다. 연속형 변수의 값들이 먼저 출력되며 그 다음으로 범주형 변수의 요약값이 출력된다.
+
+```{r, echo=T}
+summary(t1)
+```
+
+# Show categorical or continuous variable only
+
+앞에서 만든 table1에서 연속형 변수와 범주형 변수를 구분하여 출력할 수 있다. **"$"**를 사용하여 연속형 변수는 ConTable, 범주형 변수는 CaTable을 설정하면 해당 변수를 따로 출력할 수 있다.
+
+```{r, eval=F, echo=T}
+# Categorical variables
+t2$CatTable
+```
+
+```{r, echo=F}
+# Categorical variables
+kableone(t2$CatTable)
+```
+
+``` {r, eval=F, echo=T}
+# Continuous variables
+t2$ContTable
+```
+
+``` {r, echo=F}
+# Continuous variables
+kableone(t2$ContTable)
+```
+
+# Export tableone
+
+`write.csv` 함수를 사용하여 table1을 csv파일로 저장할 수 있다. **write.csv(x, file="파일명")** 형식을 사용하여 csv파일로 저장한다.
+
+```{r, eval=F, echo=T}
+# export table1
+table1 <- print(t2)
+write.csv(table1, file = "table1.csv")
+```
+
+# 마치며
+
+이번 강의를 정리하자.
+
+1. **tableone** 패키지의 **`CreateTableone`** 함수를 사용하여 요약 통계량 테이블을 작성할 수 있다. 
+
+2. **`CreateTableone`** 함수에는 다양한 옵션이 존재하며 **strata** 옵션을 통해 그룹별 통계량을 계산할 수 있다.
+
+3. **`CreateTableOne`** 함수를 사용하여 테이블을 만든 후, **print** 명령어로 세부 옵션을 지정할 수 있다.
+
+4. **`summary`** 함수를 쓰면 누락값을 포함한 table1의 자세한 정보를 알 수 있다.
+
+5. **`write.csv`** 함수를 사용하여 **tableone** 패키지로 만든 table을 csv파일로 저장할 수 있다.
+
+
