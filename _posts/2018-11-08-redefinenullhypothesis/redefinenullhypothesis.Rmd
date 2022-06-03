@@ -9,8 +9,8 @@ categories:
 author:
   - name: Jinseob Kim
     url: https://github.com/jinseob2kim
-    affiliation: ANPANMAN Co.,Ltd
-    affiliation_url: https://www.anpanman.co.kr
+    affiliation: Zarathu Co.,Ltd
+    affiliation_url: https://www.zarathu.com
 date: 11-08-2018
 output:
   distill::distill_article:
@@ -23,7 +23,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F,fig.align="center",message=FALSE, warning=FALSE,cache=T,dpi=300,fig.path = 'figures/')
+knitr::opts_chunk$set(echo = F,fig.align="center",message=FALSE, warning=FALSE,cache=F,dpi=300,fig.path = 'figures/')
 library(knitr);library(reshape2);library(ggplot2);require(grid);library(gridExtra);library(scales);library(dplyr);library(data.table)
 
 reverselog_trans <- function(base = exp(1)) {
@@ -41,10 +41,10 @@ reverselog_trans <- function(base = exp(1)) {
 통계적 가설검정에서 광범위하게 이용되는 $p$-value는 샘플 숫자만 늘리면, 아무리 작은 차이라도 유의미한 결과로 해석되는 문제가 있다. 이것은 대부분의 연구에서 차이 또는 효과가 정확히 0이라는 비현실적인 귀무가설을 사용하기 때문에 발생하는 문제이며, 실제 차이가 0.0000001이라도  정확히 0만 아니라면 샘플 수만 늘려도 결국 $p <0.05$인 유의한 결과를 얻을 수 있다. 그러나 실제 차이가 정확히 0이라고 생각하는 사람은 아무도 없으며, 아무도 주장하지 않는 것을 반박해 봐야 유용한 결론을 얻지 못한다. 이에 본 연구에서는 귀무가설에 uncertainty 개념을 추가하여 가설검정방법을 재정의하였고, 이 방법에 따른 새로운 $p$-value가 기존의 $p$-value와 effect size를 종합한 지표로서 지나치게 작은 차이를 유의한 결과로 해석하는 문제를 해결할 수 있음을 보였다. 한편 다중비교에서 검정할 가설의 갯수가 증가하는 것을 각 가설의 uncertainty가 증가하는 것으로 재해석할 수 있었고, 이 접근법이 기존의 family-wise error rate(FWER), false discovery rate(FDR) control이 지나치게 큰 sample size를 필요로 하는 단점을 보완할 수 있었다. 이 새로운 가설검정방법이 기존 가설검정의 단점을 극복한 새로운 표준이 될 것으로 기대한다. 
 
 ## Introduction
-통계적 가설검정은 물리학, 생물학, 의학 등의 자연과학뿐만 아니라 경제학, 심리학 등의 사회과학에서도 어떤 주장을 하기위한 필수적인 도구로 이용되며 핵심 개념은 가설검정(hypothesis test)이다[@anderson2000null]. R.A Fisher에 의해 처음으로 사용된 귀무가설(null hypothesis)은 반박하려는 가설로 이용되며, 이 가설 하에서 일어날 확률이 낮은 사건을 제시함으로서 이것이 틀렸음을 설명하는데, 이는 수학의 증명법 중 하나인 귀류법과 비슷하다[@10.2307/2528399]. 여기서 일어날 확률이 낮은 사건을 정량적으로 표현하는 것이 $p$-value이며 흔히 기준이 되는 $p <0.05$는 연구의 결과보다 더 극단적인 사건이 발생할 확률이 5%미만임을 의미한다[@ronald2016asa]. 
+통계적 가설검정은 물리학, 생물학, 의학 등의 자연과학뿐만 아니라 경제학, 심리학 등의 사회과학에서도 어떤 주장을 하기위한 필수적인 도구로 이용되며 핵심 개념은 가설검정(hypothesis test)이다[@anderson2000null]. R.A Fisher에 의해 처음으로 사용된 귀무가설(null hypothesis)은 반박하려는 가설로 이용되며, 이 가설 하에서 일어날 확률이 낮은 사건을 제시함으로서 이것이 틀렸음을 설명하는데, 이는 수학의 증명법 중 하나인 귀류법과 비슷하다[@2528399]. 여기서 일어날 확률이 낮은 사건을 정량적으로 표현하는 것이 $p$-value이며 흔히 기준이 되는 $p <0.05$는 연구의 결과보다 더 극단적인 사건이 발생할 확률이 5%미만임을 의미한다[@ronald2016asa]. 
 
 
-$p <0.05$는 지금까지 과학 연구에서 새로운 발견의 절대적인 기준으로 이용되었는데, 이에 대한 비판도 꾸준히 제시되어 왔으며 최근에는 유의성의 기준을 0.05에서 0.005로 바꿔야한다는 주장까지 나왔다[@doi:10.1001/jama.2018.1536;@anderson2000null;@Benjamin2018;@ronald2016asa]. 그러나 $p$-value의 개념은 그대로 두고 유의수준만 낮추는 것은 지금부터 언급할 가설검정법의 근본적인 문제를 해결하지 못한 임시방편에 불과하다.  
+$p <0.05$는 지금까지 과학 연구에서 새로운 발견의 절대적인 기준으로 이용되었는데, 이에 대한 비판도 꾸준히 제시되어 왔으며 최근에는 유의성의 기준을 0.05에서 0.005로 바꿔야한다는 주장까지 나왔다[@jama20181536;@anderson2000null;@Benjamin2018;@ronald2016asa]. 그러나 $p$-value의 개념은 그대로 두고 유의수준만 낮추는 것은 지금부터 언급할 가설검정법의 근본적인 문제를 해결하지 못한 임시방편에 불과하다.  
 
 
 본 연구자들은 비현실적인 귀무가설을 가설검정법의 근본적인 문제로 판단한다. 철학자 쇼펜하우어는 **논쟁에서 이기는 38가지 비법**이라는 책에서 **상대방의 주장을 단순화하라**고 주장했는데, 가설검정에서도 귀무가설은 명확하게 제시하는 것이 원칙이며(예: $\mu =0$), 가설이 명확해야 그것을 반박하기도 쉽다[@goffey2005art]. 그러나 명확한 귀무가설은 현실에서는 존재하지 않는다. 예를 들어 어떤 값이 정확히 0이라고 주장하는 사람이 있을까? 대부분은 어느 정도 uncertainty를 마음속에 갖고 있으며 실제 측정값이 0.0000001이기 때문에 값이 0이라는 가설은 틀렸다고 주장한다면 설득력을 얻기 어렵다. 그러나 현재의 가설검정방법은 uncertainty가 전혀 없는 명확한 귀무가설을 사용하기 때문에 실제 측정값과 가정의 차이가 아무리 작아도 샘플수만 커지면 결국은 $p < 0.05$인 결과를 얻을 수 있고, 이는 유의수준을 아무리 올려도 마찬가지이다. 예를 들어 Two-sided $z$-test의 검정통계량은 $z=\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$ 꼴인데 $\bar{X}-\mu$가 0만 아니라면 $n$을 늘려서 $p$값을 무한히 0에 가깝게 만들 수 있다. 이에 $p$-value와 별개로 실제 차이값도 살펴봐야 한다는 주장이 제기되었는데, 이 차이를 표준화한 개념이 effect size로 원래도 required sample size를 계산할 때 이용하는 지표이며, 흔히 차이를 표준편차로 나눈 값을 사용한다[@sullivan2012using]. 이처럼 현실적인 귀무가설을 설정하는 것은 그 자체로 중요한 것 뿐만 아니라 effect size를 고려하는 것과도 연결되어 있지만 이것을 개념화한 이론이 없어 실제 연구설계에 반영되기 어렵다.  
