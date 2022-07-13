@@ -543,6 +543,7 @@ full_join을 실행하였습니다. dt1과 dt2의 모든 행이 나열된 것을
 ```{r, eval=F}
 left_join(dt1,dt2)
 merge(dt1, dt2, by=c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM"), all.x=T)
+dt2[dt1, on = c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM")]
 ```
 ```{r, echo=F}
 rmarkdown::paged_table(merge(dt1, dt2, by=c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM"), all.x=T))
@@ -552,11 +553,12 @@ left_join을 실행하였습니다. 변수의 값이 dt1의 row를 기준으로 
 
 right_join으로도 직접 실습하여 차이를 확인하시기 바랍니다.
 
-하나의 차이가 있다면, left_join을 했을 때는 **all.x =**  였지만, right_join의 경우에는 **all.y =** 를 사용합니다.
+하나의 차이가 있다면, left_join을 했을 때는 **all.x = T**  였지만, right_join의 경우에는 **all.y =T** 를 사용합니다.
 
 ```{r, eval=F}
 right_join(dt1, dt2)
 merge(dt1, dt2, by=c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM"), all.y=T)
+dt1[dt2, on = c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM")]
 ```
 ```{r, echo=F}
 rmarkdown::paged_table(merge(dt1, dt2, by=c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM"), all.y=T))
@@ -566,6 +568,7 @@ rmarkdown::paged_table(merge(dt1, dt2, by=c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYY
 
 ```{r, eval=F}
 anti_join(dt1,dt2)
+dt1[!dt2, on = c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM")]
 ```
 ```{r, echo=F}
 rmarkdown::paged_table(dt1[!dt2, on = c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM")])
@@ -573,7 +576,7 @@ rmarkdown::paged_table(dt1[!dt2, on = c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM")
 
 직관적으로 확인할 수 있듯, dt2와 겹치지 않는 dt1의 값들에 대해서만 나타낸 것을 확인할 수 있습니다. 또한 다른 join들이 dt2의 column(variable)을 가져왔던 것과 다르게, anti_join은 오직 dt1의 변수들로만 구성된 것을 확인할 수 있습니다.
 
-만약에 anti_join(dt2,dt1)이라고 작성한다면 위와 반대로, dt2를 기준으로 데이터의 값이 도출됩니다.
+만약에 anti_join(dt2,dt1) (또는, dt2[!dt1, on = c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM"))은 이라고 작성한다면 위와 반대로 dt2를 기준으로 데이터의 값이 도출됩니다.
 
 ### 3-3. 수정 연산자 :=
 
