@@ -2491,6 +2491,7 @@ dt1에는 속해있지 않습니다. 그렇기 때문에 <strong>Q_</strong>로 
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>left_join</span><span class='op'>(</span><span class='va'>dt1</span>,<span class='va'>dt2</span><span class='op'>)</span>
 <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/merge.html'>merge</a></span><span class='op'>(</span><span class='va'>dt1</span>, <span class='va'>dt2</span>, by<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"EXMD_BZ_YYYY"</span>, <span class='st'>"RN_INDI"</span>, <span class='st'>"HME_YYYYMM"</span><span class='op'>)</span>, all.x<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>
+<span class='va'>dt2</span><span class='op'>[</span><span class='va'>dt1</span>, on <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"EXMD_BZ_YYYY"</span>, <span class='st'>"RN_INDI"</span>, <span class='st'>"HME_YYYYMM"</span><span class='op'>)</span><span class='op'>]</span>
 </code></pre>
 </div>
 </div>
@@ -2508,13 +2509,14 @@ dt1에는 속해있지 않습니다. 그렇기 때문에 <strong>Q_</strong>로 
 dt1에는 없었던 HGHT, WGHT 등의 값이 새로 생긴 것을 확인할 수
 있습니다.</p>
 <p>right_join으로도 직접 실습하여 차이를 확인하시기 바랍니다.</p>
-<p>하나의 차이가 있다면, left_join을 했을 때는 <strong>all.x =</strong>
-였지만, right_join의 경우에는 <strong>all.y =</strong> 를
+<p>하나의 차이가 있다면, left_join을 했을 때는 <strong>all.x =
+T</strong> 였지만, right_join의 경우에는 <strong>all.y =T</strong> 를
 사용합니다.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>right_join</span><span class='op'>(</span><span class='va'>dt1</span>, <span class='va'>dt2</span><span class='op'>)</span>
 <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/merge.html'>merge</a></span><span class='op'>(</span><span class='va'>dt1</span>, <span class='va'>dt2</span>, by<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"EXMD_BZ_YYYY"</span>, <span class='st'>"RN_INDI"</span>, <span class='st'>"HME_YYYYMM"</span><span class='op'>)</span>, all.y<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>
+<span class='va'>dt1</span><span class='op'>[</span><span class='va'>dt2</span>, on <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"EXMD_BZ_YYYY"</span>, <span class='st'>"RN_INDI"</span>, <span class='st'>"HME_YYYYMM"</span><span class='op'>)</span><span class='op'>]</span>
 </code></pre>
 </div>
 </div>
@@ -2530,6 +2532,7 @@ dt1에는 없었던 HGHT, WGHT 등의 값이 새로 생긴 것을 확인할 수
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>anti_join</span><span class='op'>(</span><span class='va'>dt1</span>,<span class='va'>dt2</span><span class='op'>)</span>
+<span class='va'>dt1</span><span class='op'>[</span><span class='op'>!</span><span class='va'>dt2</span>, on <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"EXMD_BZ_YYYY"</span>, <span class='st'>"RN_INDI"</span>, <span class='st'>"HME_YYYYMM"</span><span class='op'>)</span><span class='op'>]</span>
 </code></pre>
 </div>
 </div>
@@ -2544,8 +2547,9 @@ dt1에는 없었던 HGHT, WGHT 등의 값이 새로 생긴 것을 확인할 수
 나타낸 것을 확인할 수 있습니다. 또한 다른 join들이 dt2의
 column(variable)을 가져왔던 것과 다르게, anti_join은 오직 dt1의
 변수들로만 구성된 것을 확인할 수 있습니다.</p>
-<p>만약에 anti_join(dt2,dt1)이라고 작성한다면 위와 반대로, dt2를
-기준으로 데이터의 값이 도출됩니다.</p>
+<p>만약에 anti_join(dt2,dt1) (또는, dt2[!dt1, on = c(“EXMD_BZ_YYYY”,
+“RN_INDI”, “HME_YYYYMM”))은 이라고 작성한다면 위와 반대로 dt2를 기준으로
+데이터의 값이 도출됩니다.</p>
 <h3 id="수정-연산자">3-3. 수정 연산자 :=</h3>
 <p>data.table에서 열 j를 추가하거나 갱신 또는 삭제할 때 특수 기호
 <strong>:=</strong> 연산자를 사용합니다.</p>
