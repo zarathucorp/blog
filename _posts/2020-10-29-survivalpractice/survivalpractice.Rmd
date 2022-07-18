@@ -279,7 +279,7 @@ datatable(df2, rownames = F, caption = "df2: final", options = list(scrollX = T)
 **crp** 변수를 **tdc(time, crp)** 로 만들었다. 이제 cox model 을 실행할 수 있는데, 반복측정정보를 **cluster** 옵션에 넣는 것을 잊지 말자. 
 
 ```{r}
-model.td <- coxph(Surv(tstart, tstop, status) ~ grp + age + crp, data = df2, cluster = id)
+model.td <- coxph(Surv(tstart, tstop, status1) ~ grp + age + crp, data = df2, cluster = id)
 summary(model.td)
 ```
 
