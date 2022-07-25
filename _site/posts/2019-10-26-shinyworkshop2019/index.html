@@ -985,10 +985,6 @@ figure img.external {
   margin-top: 1.5em;
 }
 
-.figure img {
-  width: 100%;
-}
-
 .figure .caption {
   color: rgba(0, 0, 0, 0.6);
   font-size: 12px;
@@ -1818,6 +1814,12 @@ function init_distill() {
 
     // hoverable references
     $('span.citation[data-cites]').each(function() {
+      if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+        var fn = $(this).children()[0]
+        $(this).html(fn.shadowRoot.querySelector("sup"))
+        $(this).id = fn.id
+        fn.remove()
+      }
       var refs = $(this).attr('data-cites').split(" ");
       var refHtml = refs.map(function(ref) {
         return "<p>" + $('#ref-' + ref).html() + "</p>";
@@ -1832,6 +1834,31 @@ function init_distill() {
         placement: 'bottom-start'
       });
     });
+
+    // fix footnotes in tables (#411)
+    // replacing broken distill.pub feature
+    $('table d-footnote').each(function() {
+      // we replace internal showAtNode methode which is triggered when hovering a footnote
+      this.hoverBox.showAtNode = function(node) {
+        // ported from https://github.com/distillpub/template/pull/105/files
+        calcOffset = function(elem) {
+            let x = elem.offsetLeft;
+            let y = elem.offsetTop;
+            // Traverse upwards until an `absolute` element is found or `elem`
+            // becomes null.
+            while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                x += elem.offsetLeft;
+                y += elem.offsetTop;
+            }
+
+            return { left: x, top: y };
+        }
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+        const bbox = node.getBoundingClientRect();
+        const offset = calcOffset(node);
+        this.show([offset.left + bbox.width, offset.top + bbox.height]);
+      }
+    })
 
     // clear polling timer
     clearInterval(tid);
@@ -1931,6 +1958,8 @@ function init_common() {
   // mark non-body figures created by knitr chunks as 100% width
   $('.layout-chunk').each(function(i, val) {
     var figures = $(this).find('img, .html-widget');
+    // ignore leaflet img layers (#106)
+    figures = figures.filter(':not(img[class*="leaflet"])')
     if ($(this).attr('data-layout') !== "l-body") {
       figures.css('width', '100%');
     } else {
@@ -1953,7 +1982,7 @@ function init_common() {
   // get rid of index.html references in header
   if (window.location.protocol !== "file:") {
     $('.distill-site-header a[href]').each(function(i,val) {
-      $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+      $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
     });
   }
 
@@ -2014,7 +2043,7 @@ gtag('config', 'UA-135478021-2');
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Shiny 워크샵: 서울IT직업전문학교 국비교육","description":"Shiny 기초학습을 위한 강의 슬라이드와 실습파일입니다.  본 내용은 \"서울IT직업전문학교 빅데이터 사이언스 실무자 양성과정\" 에서 쓰일 예정입니다.","authors":[{"author":"Jinseob Kim","authorURL":"https://github.com/jinseob2kim","affiliation":"Zarathu Co.,Ltd","affiliationURL":"https://www.zarathu.com","orcidID":""}],"publishedDate":"2019-10-27T00:00:00.000+00:00","citationText":"Kim, 2019"}
+{"title":"Shiny 워크샵: 서울IT직업전문학교 국비교육","description":"Shiny 기초학습을 위한 강의 슬라이드와 실습파일입니다.  본 내용은 \"서울IT직업전문학교 빅데이터 사이언스 실무자 양성과정\" 에서 쓰일 예정입니다.","authors":[{"author":"Jinseob Kim","authorURL":"https://github.com/jinseob2kim","affiliation":"Zarathu Co.,Ltd","affiliationURL":"https://www.zarathu.com","orcidID":""}],"publishedDate":"2019-10-27T00:00:00.000+09:00","citationText":"Kim, 2019"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2115,17 +2144,17 @@ install.packages(c(&quot;shiny&quot;, &quot;ggplot2&quot;, &quot;dplyr&quot;, &q
     </span>
     <span class="article-sharing">
       Share: &nbsp;
-      <a href="https://www.facebook.com/sharer/sharer.php?s=100&amp;p[url]=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2019-10-26-shinyworkshop2019%2F">
-        <i class="fab fa-facebook"></i>
+      <a href="https://www.facebook.com/sharer/sharer.php?s=100&amp;p[url]=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2019-10-26-shinyworkshop2019%2F" aria-label="share on facebook">
+        <i class="fab fa-facebook" aria-hidden="true"></i>
       </a>
-      <a href="https://twitter.com/share?text=Shiny%20%EC%9B%8C%ED%81%AC%EC%83%B5%3A%20%EC%84%9C%EC%9A%B8IT%EC%A7%81%EC%97%85%EC%A0%84%EB%AC%B8%ED%95%99%EA%B5%90%20%EA%B5%AD%EB%B9%84%EA%B5%90%EC%9C%A1&amp;url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2019-10-26-shinyworkshop2019%2F">
-        <i class="fab fa-twitter"></i>
+      <a href="https://twitter.com/share?text=Shiny%20%EC%9B%8C%ED%81%AC%EC%83%B5%3A%20%EC%84%9C%EC%9A%B8IT%EC%A7%81%EC%97%85%EC%A0%84%EB%AC%B8%ED%95%99%EA%B5%90%20%EA%B5%AD%EB%B9%84%EA%B5%90%EC%9C%A1&amp;url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2019-10-26-shinyworkshop2019%2F" aria-label="share on twitter">
+        <i class="fab fa-twitter" aria-hidden="true"></i>
       </a>
-      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2019-10-26-shinyworkshop2019%2F&amp;title=Shiny%20%EC%9B%8C%ED%81%AC%EC%83%B5%3A%20%EC%84%9C%EC%9A%B8IT%EC%A7%81%EC%97%85%EC%A0%84%EB%AC%B8%ED%95%99%EA%B5%90%20%EA%B5%AD%EB%B9%84%EA%B5%90%EC%9C%A1">
-        <i class="fab fa-linkedin"></i>
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2019-10-26-shinyworkshop2019%2F&amp;title=Shiny%20%EC%9B%8C%ED%81%AC%EC%83%B5%3A%20%EC%84%9C%EC%9A%B8IT%EC%A7%81%EC%97%85%EC%A0%84%EB%AC%B8%ED%95%99%EA%B5%90%20%EA%B5%AD%EB%B9%84%EA%B5%90%EC%9C%A1" aria-label="share on linkedin">
+        <i class="fab fa-linkedin" aria-hidden="true"></i>
       </a>
-      <a href="https://plus.google.com/share?url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2019-10-26-shinyworkshop2019%2F">
-        <i class="fab fa-google-plus"></i>
+      <a href="https://plus.google.com/share?url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2019-10-26-shinyworkshop2019%2F" aria-label="share on google-plus">
+        <i class="fab fa-google-plus" aria-hidden="true"></i>
       </a>
     </span>
   </p>
@@ -2184,7 +2213,7 @@ var disqus_config = function () {
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <!--radix_placeholder_navigation_after_body--><html><body>
 <div class="distill-site-nav distill-site-footer">
-<p>Â© Copyright 2019 <a href="https://www.zarathu.com">Zarathu
+<p>© Copyright 2019 <a href="https://www.zarathu.com">Zarathu
 Co.,Ltd</a>.</p>
 <p>Software licensed under the <a href="https://raw.githubusercontent.com/zarathucorp/blog/master/LICENSE">MIT
 License</a>.</p>
