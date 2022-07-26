@@ -1,0 +1,3386 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { color: #00769e; background-color: #f1f3f5; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #00769e; } /* Normal */
+code span.al { color: #ad0000; } /* Alert */
+code span.an { color: #5e5e5e; } /* Annotation */
+code span.at { color: #657422; } /* Attribute */
+code span.bn { color: #ad0000; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #00769e; } /* ControlFlow */
+code span.ch { color: #20794d; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #5e5e5e; } /* Comment */
+code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+code span.dt { color: #ad0000; } /* DataType */
+code span.dv { color: #ad0000; } /* DecVal */
+code span.er { color: #ad0000; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #ad0000; } /* Float */
+code span.fu { color: #4758ab; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #5e5e5e; } /* Information */
+code span.kw { color: #00769e; } /* Keyword */
+code span.op { color: #5e5e5e; } /* Operator */
+code span.ot { color: #00769e; } /* Other */
+code span.pp { color: #ad0000; } /* Preprocessor */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
+code span.ss { color: #20794d; } /* SpecialString */
+code span.st { color: #20794d; } /* String */
+code span.va { color: #111111; } /* Variable */
+code span.vs { color: #20794d; } /* VerbatimString */
+code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+</style>
+
+
+  <!--radix_placeholder_meta_tags-->
+<title>Zarathu Blog: collapse 패키지 소개</title>
+
+<meta property="description" itemprop="description" content="collapse 패키지를 소개하고 data.table, dplyr, plm 패키지들과 비교하여 파악해보겠습니다."/>
+
+<link rel="canonical" href="https://blog.zarathu.com/posts/2022-07-25-collapse/"/>
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
+<link rel="icon" type="image/png" href="../../img/logo_favicon.png"/>
+
+<!--  https://schema.org/Article -->
+<meta property="article:published" itemprop="datePublished" content="2022-07-25"/>
+<meta property="article:created" itemprop="dateCreated" content="2022-07-25"/>
+<meta name="article:author" content="beomsu park"/>
+
+<!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+<meta property="og:title" content="Zarathu Blog: collapse 패키지 소개"/>
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="collapse 패키지를 소개하고 data.table, dplyr, plm 패키지들과 비교하여 파악해보겠습니다."/>
+<meta property="og:url" content="https://blog.zarathu.com/posts/2022-07-25-collapse/"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:site_name" content="Zarathu Blog"/>
+
+<!--  https://dev.twitter.com/cards/types/summary -->
+<meta property="twitter:card" content="summary"/>
+<meta property="twitter:title" content="Zarathu Blog: collapse 패키지 소개"/>
+<meta property="twitter:description" content="collapse 패키지를 소개하고 data.table, dplyr, plm 패키지들과 비교하여 파악해보겠습니다."/>
+<meta property="twitter:url" content="https://blog.zarathu.com/posts/2022-07-25-collapse/"/>
+
+<!--  https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
+<meta name="citation_title" content="Zarathu Blog: collapse 패키지 소개"/>
+<meta name="citation_fulltext_html_url" content="https://blog.zarathu.com/posts/2022-07-25-collapse/"/>
+<meta name="citation_fulltext_world_readable" content=""/>
+<meta name="citation_online_date" content="2022/07/25"/>
+<meta name="citation_publication_date" content="2022/07/25"/>
+<meta name="citation_author" content="beomsu park"/>
+<!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+<script type="text/json" id="radix-rmarkdown-metadata">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creative_commons","title","description","preview","categories","author","date","output","draft","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["CC BY"]},{"type":"character","attributes":{},"value":["collapse 패키지 소개"]},{"type":"character","attributes":{},"value":["collapse 패키지를 소개하고 data.table, dplyr, plm 패키지들과 비교하여 파악해보겠습니다."]},{"type":"character","attributes":{},"value":["https://raw.githubusercontent.com/SebKrantz/collapse/master/misc/figures/collapse_logo_small.png"]},{"type":"character","attributes":{},"value":["R","COLLAPSE","DATA.TABLE","DPLYR"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["beomsu park"]},{"type":"character","attributes":{},"value":["https://github.com/qkrqjatn218"]}]}]},{"type":"character","attributes":{},"value":["07-25-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc","toc_depth","toc_float"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[2]},{"type":"logical","attributes":{},"value":[true]}]}]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["https://blog.zarathu.com/posts/2022-07-25-collapse/"]},{"type":"character","attributes":{},"value":["https://blog.zarathu.com/posts/2022-07-25-collapse/"]}]}
+</script>
+<!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["2022-07-25-collapse_files/anchor-4.2.2/anchor.min.js","2022-07-25-collapse_files/bowser-1.9.3/bowser.min.js","2022-07-25-collapse_files/distill-2.2.21/template.v2.js","2022-07-25-collapse_files/figure-html5/unnamed-chunk-30-1.png","2022-07-25-collapse_files/figure-html5/unnamed-chunk-31-1.png","2022-07-25-collapse_files/figure-html5/unnamed-chunk-32-1.png","2022-07-25-collapse_files/figure-html5/unnamed-chunk-33-1.png","2022-07-25-collapse_files/figure-html5/unnamed-chunk-50-1.png","2022-07-25-collapse_files/figure-html5/unnamed-chunk-51-1.png","2022-07-25-collapse_files/figure-html5/unnamed-chunk-52-1.png","2022-07-25-collapse_files/figure-html5/unnamed-chunk-53-1.png","2022-07-25-collapse_files/figure-html5/unnamed-chunk-56-1.png","2022-07-25-collapse_files/figure-html5/unnamed-chunk-59-1.png","2022-07-25-collapse_files/header-attrs-2.14/header-attrs.js","2022-07-25-collapse_files/jquery-3.6.0/jquery-3.6.0.js","2022-07-25-collapse_files/jquery-3.6.0/jquery-3.6.0.min.js","2022-07-25-collapse_files/jquery-3.6.0/jquery-3.6.0.min.map","2022-07-25-collapse_files/pagedtable-1.1/css/pagedtable.css","2022-07-25-collapse_files/pagedtable-1.1/js/pagedtable.js","2022-07-25-collapse_files/popper-2.6.0/popper.min.js","2022-07-25-collapse_files/tippy-6.2.7/tippy-bundle.umd.min.js","2022-07-25-collapse_files/tippy-6.2.7/tippy-light-border.css","2022-07-25-collapse_files/tippy-6.2.7/tippy.css","2022-07-25-collapse_files/tippy-6.2.7/tippy.umd.min.js","2022-07-25-collapse_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+<meta name="distill:offset" content="../.."/>
+
+<script type="application/javascript">
+
+  window.headroom_prevent_pin = false;
+
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+
+    // initialize headroom for banner
+    var header = $('header').get(0);
+    var headerHeight = header.offsetHeight;
+    var headroom = new Headroom(header, {
+      tolerance: 5,
+      onPin : function() {
+        if (window.headroom_prevent_pin) {
+          window.headroom_prevent_pin = false;
+          headroom.unpin();
+        }
+      }
+    });
+    headroom.init();
+    if(window.location.hash)
+      headroom.unpin();
+    $(header).addClass('headroom--transition');
+
+    // offset scroll location for banner on hash change
+    // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
+    window.addEventListener("hashchange", function(event) {
+      window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
+    });
+
+    // responsive menu
+    $('.distill-site-header').each(function(i, val) {
+      var topnav = $(this);
+      var toggle = topnav.find('.nav-toggle');
+      toggle.on('click', function() {
+        topnav.toggleClass('responsive');
+      });
+    });
+
+    // nav dropdowns
+    $('.nav-dropbtn').click(function(e) {
+      $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
+      $(this).parent().siblings('.nav-dropdown')
+         .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $("body").click(function(e){
+      $('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $(".nav-dropdown").click(function(e){
+      e.stopPropagation();
+    });
+  });
+</script>
+
+<style type="text/css">
+
+/* Theme (user-documented overrideables for nav appearance) */
+
+.distill-site-nav {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: #0F2E3D;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+.distill-site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.distill-site-nav a:hover {
+  color: white;
+}
+
+@media print {
+  .distill-site-nav {
+    display: none;
+  }
+}
+
+.distill-site-header {
+
+}
+
+.distill-site-footer {
+
+}
+
+
+/* Site Header */
+
+.distill-site-header {
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.distill-site-header .nav-left {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header .nav-left {
+    margin-left: 0;
+  }
+}
+
+
+.distill-site-header .nav-right {
+  float: right;
+  margin-right: 8px;
+}
+
+.distill-site-header a,
+.distill-site-header .title {
+  display: inline-block;
+  text-align: center;
+  padding: 14px 10px 14px 10px;
+}
+
+.distill-site-header .title {
+  font-size: 18px;
+  min-width: 150px;
+}
+
+.distill-site-header .logo {
+  padding: 0;
+}
+
+.distill-site-header .logo img {
+  display: none;
+  max-height: 20px;
+  width: auto;
+  margin-bottom: -4px;
+}
+
+.distill-site-header .nav-image img {
+  max-height: 18px;
+  width: auto;
+  display: inline-block;
+  margin-bottom: -3px;
+}
+
+
+
+@media screen and (min-width: 1000px) {
+  .distill-site-header .logo img {
+    display: inline-block;
+  }
+  .distill-site-header .nav-left {
+    margin-left: 20px;
+  }
+  .distill-site-header .nav-right {
+    margin-right: 20px;
+  }
+  .distill-site-header .title {
+    padding-left: 12px;
+  }
+}
+
+
+.distill-site-header .nav-toggle {
+  display: none;
+}
+
+.nav-dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.nav-dropdown .nav-dropbtn {
+  border: none;
+  outline: none;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 16px 10px;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+  margin-top: 1px;
+  z-index: 2;
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 200px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+  z-index: 1;
+  margin-top: 2px;
+  white-space: nowrap;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.nav-dropdown-content hr {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-dropdown-active {
+  display: block;
+}
+
+.nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
+  color: black;
+  padding: 6px 24px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.nav-dropdown-content .nav-dropdown-header {
+  display: block;
+  padding: 5px 24px;
+  padding-bottom: 0;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #999999;
+  white-space: nowrap;
+}
+
+.nav-dropdown:hover .nav-dropbtn {
+  color: white;
+}
+
+.nav-dropdown-content a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.nav-right .nav-dropdown-content {
+  margin-left: -45%;
+  right: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
+  .distill-site-header a.nav-toggle {
+    float: right;
+    display: block;
+  }
+  .distill-site-header .title {
+    margin-left: 0;
+  }
+  .distill-site-header .nav-right {
+    margin-right: 0;
+  }
+  .distill-site-header {
+    overflow: hidden;
+  }
+  .nav-right .nav-dropdown-content {
+    margin-left: 0;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .distill-site-header.responsive {position: relative; min-height: 500px; }
+  .distill-site-header.responsive a.nav-toggle {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .distill-site-header.responsive a,
+  .distill-site-header.responsive .nav-dropdown {
+    display: block;
+    text-align: left;
+  }
+  .distill-site-header.responsive .nav-left,
+  .distill-site-header.responsive .nav-right {
+    width: 100%;
+  }
+  .distill-site-header.responsive .nav-dropdown {float: none;}
+  .distill-site-header.responsive .nav-dropdown-content {position: relative;}
+  .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* Site Footer */
+
+.distill-site-footer {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  z-index: 3;
+  margin-top: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  text-align: center;
+}
+
+/* Headroom */
+
+d-title {
+  padding-top: 6rem;
+}
+
+@media print {
+  d-title {
+    padding-top: 4rem;
+  }
+}
+
+.headroom {
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.headroom--transition {
+  transition: all .4s ease-in-out;
+}
+
+.headroom--unpinned {
+  top: -100px;
+}
+
+.headroom--pinned {
+  top: 0;
+}
+
+/* adjust viewport for navbar height */
+/* helps vertically center bootstrap (non-distill) content */
+.min-vh-100 {
+  min-height: calc(100vh - 100px) !important;
+}
+
+</style>
+
+<script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="../../site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
+<link href="../../site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
+<script src="../../site_libs/headroom-0.9.4/headroom.min.js"></script>
+<script src="../../site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
+<script src="../../site_libs/fuse-6.4.1/fuse.min.js"></script>
+
+<script type="application/javascript">
+
+function getMeta(metaName) {
+  var metas = document.getElementsByTagName('meta');
+  for (let i = 0; i < metas.length; i++) {
+    if (metas[i].getAttribute('name') === metaName) {
+      return metas[i].getAttribute('content');
+    }
+  }
+  return '';
+}
+
+function offsetURL(url) {
+  var offset = getMeta('distill:offset');
+  return offset ? offset + '/' + url : url;
+}
+
+function createFuseIndex() {
+
+  // create fuse index
+  var options = {
+    keys: [
+      { name: 'title', weight: 20 },
+      { name: 'categories', weight: 15 },
+      { name: 'description', weight: 10 },
+      { name: 'contents', weight: 5 },
+    ],
+    ignoreLocation: true,
+    threshold: 0
+  };
+  var fuse = new window.Fuse([], options);
+
+  // fetch the main search.json
+  return fetch(offsetURL('search.json'))
+    .then(function(response) {
+      if (response.status == 200) {
+        return response.json().then(function(json) {
+          // index main articles
+          json.articles.forEach(function(article) {
+            fuse.add(article);
+          });
+          // download collections and index their articles
+          return Promise.all(json.collections.map(function(collection) {
+            return fetch(offsetURL(collection)).then(function(response) {
+              if (response.status === 200) {
+                return response.json().then(function(articles) {
+                  articles.forEach(function(article) {
+                    fuse.add(article);
+                  });
+                })
+              } else {
+                return Promise.reject(
+                  new Error('Unexpected status from search index request: ' +
+                            response.status)
+                );
+              }
+            });
+          })).then(function() {
+            return fuse;
+          });
+        });
+
+      } else {
+        return Promise.reject(
+          new Error('Unexpected status from search index request: ' +
+                      response.status)
+        );
+      }
+    });
+}
+
+window.document.addEventListener("DOMContentLoaded", function (event) {
+
+  // get search element (bail if we don't have one)
+  var searchEl = window.document.getElementById('distill-search');
+  if (!searchEl)
+    return;
+
+  createFuseIndex()
+    .then(function(fuse) {
+
+      // make search box visible
+      searchEl.classList.remove('hidden');
+
+      // initialize autocomplete
+      var options = {
+        autoselect: true,
+        hint: false,
+        minLength: 2,
+      };
+      window.autocomplete(searchEl, options, [{
+        source: function(query, callback) {
+          const searchOptions = {
+            isCaseSensitive: false,
+            shouldSort: true,
+            minMatchCharLength: 2,
+            limit: 10,
+          };
+          var results = fuse.search(query, searchOptions);
+          callback(results
+            .map(function(result) { return result.item; })
+          );
+        },
+        templates: {
+          suggestion: function(suggestion) {
+            var img = suggestion.preview && Object.keys(suggestion.preview).length > 0
+              ? `<img src="${offsetURL(suggestion.preview)}"</img>`
+              : '';
+            var html = `
+              <div class="search-item">
+                <h3>${suggestion.title}</h3>
+                <div class="search-item-description">
+                  ${suggestion.description || ''}
+                </div>
+                <div class="search-item-preview">
+                  ${img}
+                </div>
+              </div>
+            `;
+            return html;
+          }
+        }
+      }]).on('autocomplete:selected', function(event, suggestion) {
+        window.location.href = offsetURL(suggestion.path);
+      });
+      // remove inline display style on autocompleter (we want to
+      // manage responsive display via css)
+      $('.algolia-autocomplete').css("display", "");
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+
+});
+
+</script>
+
+<style type="text/css">
+
+.nav-search {
+  font-size: x-small;
+}
+
+/* Algolioa Autocomplete */
+
+.algolia-autocomplete {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: sub;
+  background-color: white;
+  color: black;
+  padding: 6px;
+  padding-top: 8px;
+  padding-bottom: 0;
+  border-radius: 6px;
+  border: 1px #0F2E3D solid;
+  width: 180px;
+}
+
+
+@media screen and (max-width: 768px) {
+  .distill-site-nav .algolia-autocomplete {
+    display: none;
+    visibility: hidden;
+  }
+  .distill-site-nav.responsive .algolia-autocomplete {
+    display: inline-block;
+    visibility: visible;
+  }
+  .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
+    margin-left: 0;
+    width: 400px;
+    max-height: 400px;
+  }
+}
+
+.algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
+  width: 90%;
+  outline: none;
+  border: none;
+}
+
+.algolia-autocomplete .aa-hint {
+  color: #999;
+}
+.algolia-autocomplete .aa-dropdown-menu {
+  width: 550px;
+  max-height: 70vh;
+  overflow-x: visible;
+  overflow-y: scroll;
+  padding: 5px;
+  margin-top: 3px;
+  margin-left: -150px;
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid #999;
+  border-top: none;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
+  cursor: pointer;
+  padding: 5px 4px;
+  border-bottom: 1px solid #eee;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
+  border-bottom: none;
+  margin-bottom: 2px;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
+  overflow: hidden;
+  font-size: 0.8em;
+  line-height: 1.4em;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
+  font-size: 1rem;
+  margin-block-start: 0;
+  margin-block-end: 5px;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
+  display: inline-block;
+  overflow: hidden;
+  height: 2.8em;
+  width: 80%;
+  margin-right: 4%;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
+  display: inline-block;
+  width: 15%;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
+  height: 3em;
+  width: auto;
+  display: none;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
+  display: initial;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
+  background-color: #eee;
+}
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
+  font-weight: bold;
+  font-style: normal;
+}
+
+</style>
+
+
+<!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+<style type="text/css">
+
+body {
+  background-color: white;
+}
+
+.pandoc-table {
+  width: 100%;
+}
+
+.pandoc-table>caption {
+  margin-bottom: 10px;
+}
+
+.pandoc-table th:not([align]) {
+  text-align: left;
+}
+
+.pagedtable-footer {
+  font-size: 15px;
+}
+
+d-byline .byline {
+  grid-template-columns: 2fr 2fr;
+}
+
+d-byline .byline h3 {
+  margin-block-start: 1.5em;
+}
+
+d-byline .byline .authors-affiliations h3 {
+  margin-block-start: 0.5em;
+}
+
+.authors-affiliations .orcid-id {
+  width: 16px;
+  height:16px;
+  margin-left: 4px;
+  margin-right: 4px;
+  vertical-align: middle;
+  padding-bottom: 2px;
+}
+
+d-title .dt-tags {
+  margin-top: 1em;
+  grid-column: text;
+}
+
+.dt-tags .dt-tag {
+  text-decoration: none;
+  display: inline-block;
+  color: rgba(0,0,0,0.6);
+  padding: 0em 0.4em;
+  margin-right: 0.5em;
+  margin-bottom: 0.4em;
+  font-size: 70%;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+d-article table.gt_table td,
+d-article table.gt_table th {
+  border-bottom: none;
+}
+
+.html-widget {
+  margin-bottom: 2.0em;
+}
+
+.l-screen-inset {
+  padding-right: 16px;
+}
+
+.l-screen .caption {
+  margin-left: 10px;
+}
+
+.shaded {
+  background: rgb(247, 247, 247);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .html-widget {
+  margin-bottom: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .shaded-content {
+  background: white;
+}
+
+.text-output {
+  margin-top: 0;
+  line-height: 1.5em;
+}
+
+.hidden {
+  display: none !important;
+}
+
+d-article {
+  padding-top: 2.5rem;
+  padding-bottom: 30px;
+}
+
+d-appendix {
+  padding-top: 30px;
+}
+
+d-article>p>img {
+  width: 100%;
+}
+
+d-article h2 {
+  margin: 1rem 0 1.5rem 0;
+}
+
+d-article h3 {
+  margin-top: 1.5rem;
+}
+
+d-article iframe {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 2.0em;
+  width: 100%;
+}
+
+/* Tweak code blocks */
+
+d-article div.sourceCode code,
+d-article pre code {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+d-article pre,
+d-article div.sourceCode,
+d-article div.sourceCode pre {
+  overflow: auto;
+}
+
+d-article div.sourceCode {
+  background-color: white;
+}
+
+d-article div.sourceCode pre {
+  padding-left: 10px;
+  font-size: 12px;
+  border-left: 2px solid rgba(0,0,0,0.1);
+}
+
+d-article pre {
+  font-size: 12px;
+  color: black;
+  background: none;
+  margin-top: 0;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+d-article pre a {
+  border-bottom: none;
+}
+
+d-article pre a:hover {
+  border-bottom: none;
+  text-decoration: underline;
+}
+
+d-article details {
+  grid-column: text;
+  margin-bottom: 0.8em;
+}
+
+@media(min-width: 768px) {
+
+d-article pre,
+d-article div.sourceCode,
+d-article div.sourceCode pre {
+  overflow: visible !important;
+}
+
+d-article div.sourceCode pre {
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+d-article pre {
+  font-size: 14px;
+}
+
+}
+
+figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+/* CSS for d-contents */
+
+.d-contents {
+  grid-column: text;
+  color: rgba(0,0,0,0.8);
+  font-size: 0.9em;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  margin-bottom: 1em;
+  padding-left: 0.25em;
+  justify-self: start;
+}
+
+@media(min-width: 1000px) {
+  .d-contents.d-contents-float {
+    height: 0;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    justify-self: center;
+    padding-right: 3em;
+    padding-left: 2em;
+  }
+}
+
+.d-contents nav h3 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.d-contents li {
+  list-style-type: none
+}
+
+.d-contents nav > ul {
+  padding-left: 0;
+}
+
+.d-contents ul {
+  padding-left: 1em
+}
+
+.d-contents nav ul li {
+  margin-top: 0.6em;
+  margin-bottom: 0.2em;
+}
+
+.d-contents nav a {
+  font-size: 13px;
+  border-bottom: none;
+  text-decoration: none
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.d-contents nav a:hover {
+  text-decoration: underline solid rgba(0, 0, 0, 0.6)
+}
+
+.d-contents nav > ul > li > a {
+  font-weight: 600;
+}
+
+.d-contents nav > ul > li > ul {
+  font-weight: inherit;
+}
+
+.d-contents nav > ul > li > ul > li {
+  margin-top: 0.2em;
+}
+
+
+.d-contents nav ul {
+  margin-top: 0;
+  margin-bottom: 0.25em;
+}
+
+.d-article-with-toc h2:nth-child(2) {
+  margin-top: 0;
+}
+
+
+/* Figure */
+
+.figure {
+  position: relative;
+  margin-bottom: 2.5em;
+  margin-top: 1.5em;
+}
+
+.figure .caption {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+.figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.figure .caption a {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.figure .caption b,
+.figure .caption strong, {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 1.0);
+}
+
+/* Citations */
+
+d-article .citation {
+  color: inherit;
+  cursor: inherit;
+}
+
+div.hanging-indent{
+  margin-left: 1em; text-indent: -1em;
+}
+
+/* Citation hover box */
+
+.tippy-box[data-theme~=light-border] {
+  background-color: rgba(250, 250, 250, 0.95);
+}
+
+.tippy-content > p {
+  margin-bottom: 0;
+  padding: 2px;
+}
+
+
+/* Tweak 1000px media break to show more text */
+
+@media(min-width: 1000px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 16px;
+  }
+
+  .grid {
+    grid-column-gap: 16px;
+  }
+
+  d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+  }
+  figure .caption, .figure .caption, figure figcaption {
+    font-size: 13px;
+  }
+}
+
+@media(min-width: 1180px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 32px;
+  }
+
+  .grid {
+    grid-column-gap: 32px;
+  }
+}
+
+
+/* Get the citation styles for the appendix (not auto-injected on render since
+   we do our own rendering of the citation appendix) */
+
+d-appendix .citation-appendix,
+.d-appendix .citation-appendix {
+  font-size: 11px;
+  line-height: 15px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  padding-left: 18px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.02);
+  padding: 10px 18px;
+  border-radius: 3px;
+  color: rgba(150, 150, 150, 1);
+  overflow: hidden;
+  margin-top: -12px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Include appendix styles here so they can be overridden */
+
+d-appendix {
+  contain: layout style;
+  font-size: 0.8em;
+  line-height: 1.7em;
+  margin-top: 60px;
+  margin-bottom: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  color: rgba(0,0,0,0.5);
+  padding-top: 60px;
+  padding-bottom: 48px;
+}
+
+d-appendix h3 {
+  grid-column: page-start / text-start;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 1em;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.65);
+}
+
+d-appendix h3 + * {
+  margin-top: 1em;
+}
+
+d-appendix ol {
+  padding: 0 0 0 15px;
+}
+
+@media (min-width: 768px) {
+  d-appendix ol {
+    padding: 0 0 0 30px;
+    margin-left: -30px;
+  }
+}
+
+d-appendix li {
+  margin-bottom: 1em;
+}
+
+d-appendix a {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+d-appendix > * {
+  grid-column: text;
+}
+
+d-appendix > d-footnote-list,
+d-appendix > d-citation-list,
+d-appendix > distill-appendix {
+  grid-column: screen;
+}
+
+/* Include footnote styles here so they can be overridden */
+
+d-footnote-list {
+  contain: layout style;
+}
+
+d-footnote-list > * {
+  grid-column: text;
+}
+
+d-footnote-list a.footnote-backlink {
+  color: rgba(0,0,0,0.3);
+  padding-left: 0.5em;
+}
+
+
+
+/* Anchor.js */
+
+.anchorjs-link {
+  /*transition: all .25s linear; */
+  text-decoration: none;
+  border-bottom: none;
+}
+*:hover > .anchorjs-link {
+  margin-left: -1.125em !important;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+/* Social footer */
+
+.social_footer {
+  margin-top: 30px;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.67);
+}
+
+.disqus-comments {
+  margin-right: 30px;
+}
+
+.disqus-comment-count {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+#disqus_thread {
+  margin-top: 30px;
+}
+
+.article-sharing a {
+  border-bottom: none;
+  margin-right: 8px;
+}
+
+.article-sharing a:hover {
+  border-bottom: none;
+}
+
+.sidebar-section.subscribe {
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+.subscribe p {
+  margin-bottom: 0.5em;
+}
+
+
+.article-footer .subscribe {
+  font-size: 15px;
+  margin-top: 45px;
+}
+
+
+.sidebar-section.custom {
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+.custom p {
+  margin-bottom: 0.5em;
+}
+
+/* Styles for listing layout (hide title) */
+.layout-listing d-title, .layout-listing .d-title {
+  display: none;
+}
+
+/* Styles for posts lists (not auto-injected) */
+
+
+.posts-with-sidebar {
+  padding-left: 45px;
+  padding-right: 45px;
+}
+
+.posts-list .description h2,
+.posts-list .description p {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+.posts-list .description h2 {
+  font-weight: 700;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.posts-list h2.post-tag {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 12px;
+}
+.posts-list {
+  margin-top: 60px;
+  margin-bottom: 24px;
+}
+
+.posts-list .post-preview {
+  text-decoration: none;
+  overflow: hidden;
+  display: block;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 24px 0;
+}
+
+.post-preview-last {
+  border-bottom: none !important;
+}
+
+.posts-list .posts-list-caption {
+  grid-column: screen;
+  font-weight: 400;
+}
+
+.posts-list .post-preview h2 {
+  margin: 0 0 6px 0;
+  line-height: 1.2em;
+  font-style: normal;
+  font-size: 24px;
+}
+
+.posts-list .post-preview p {
+  margin: 0 0 12px 0;
+  line-height: 1.4em;
+  font-size: 16px;
+}
+
+.posts-list .post-preview .thumbnail {
+  box-sizing: border-box;
+  margin-bottom: 24px;
+  position: relative;
+  max-width: 500px;
+}
+.posts-list .post-preview img {
+  width: 100%;
+  display: block;
+}
+
+.posts-list .metadata {
+  font-size: 12px;
+  line-height: 1.4em;
+  margin-bottom: 18px;
+}
+
+.posts-list .metadata > * {
+  display: inline-block;
+}
+
+.posts-list .metadata .publishedDate {
+  margin-right: 2em;
+}
+
+.posts-list .metadata .dt-authors {
+  display: block;
+  margin-top: 0.3em;
+  margin-right: 2em;
+}
+
+.posts-list .dt-tags {
+  display: block;
+  line-height: 1em;
+}
+
+.posts-list .dt-tags .dt-tag {
+  display: inline-block;
+  color: rgba(0,0,0,0.6);
+  padding: 0.3em 0.4em;
+  margin-right: 0.2em;
+  margin-bottom: 0.4em;
+  font-size: 60%;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.posts-list img {
+  opacity: 1;
+}
+
+.posts-list img[data-src] {
+  opacity: 0;
+}
+
+.posts-more {
+  clear: both;
+}
+
+
+.posts-sidebar {
+  font-size: 16px;
+}
+
+.posts-sidebar h3 {
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.sidebar-section {
+  margin-bottom: 30px;
+}
+
+.categories ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.categories li {
+  color: rgba(0, 0, 0, 0.8);
+  margin-bottom: 0;
+}
+
+.categories li>a {
+  border-bottom: none;
+}
+
+.categories li>a:hover {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.categories .active {
+  font-weight: 600;
+}
+
+.categories .category-count {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+
+@media(min-width: 768px) {
+  .posts-list .post-preview h2 {
+    font-size: 26px;
+  }
+  .posts-list .post-preview .thumbnail {
+    float: right;
+    width: 30%;
+    margin-bottom: 0;
+  }
+  .posts-list .post-preview .description {
+    float: left;
+    width: 45%;
+  }
+  .posts-list .post-preview .metadata {
+    float: left;
+    width: 20%;
+    margin-top: 8px;
+  }
+  .posts-list .post-preview p {
+    margin: 0 0 12px 0;
+    line-height: 1.5em;
+    font-size: 16px;
+  }
+  .posts-with-sidebar .posts-list {
+    float: left;
+    width: 75%;
+  }
+  .posts-with-sidebar .posts-sidebar {
+    float: right;
+    width: 20%;
+    margin-top: 60px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+}
+
+
+/* Improve display for browsers without grid (IE/Edge <= 15) */
+
+.downlevel {
+  line-height: 1.6em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+}
+
+.downlevel .d-title {
+  padding-top: 6rem;
+  padding-bottom: 1.5rem;
+}
+
+.downlevel .d-title h1 {
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.1em;
+  margin: 0 0 0.5rem;
+}
+
+.downlevel .d-title p {
+  font-weight: 300;
+  font-size: 1.2rem;
+  line-height: 1.55em;
+  margin-top: 0;
+}
+
+.downlevel .d-byline {
+  padding-top: 0.8em;
+  padding-bottom: 0.8em;
+  font-size: 0.8rem;
+  line-height: 1.8em;
+}
+
+.downlevel .section-separator {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.downlevel .d-article {
+  font-size: 1.06rem;
+  line-height: 1.7em;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+
+.downlevel .d-appendix {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: none;
+  font-size: 0.8em;
+  line-height: 1.7em;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.5);
+  padding-top: 40px;
+  padding-bottom: 48px;
+}
+
+.downlevel .footnotes ol {
+  padding-left: 13px;
+}
+
+.downlevel .base-grid,
+.downlevel .distill-header,
+.downlevel .d-title,
+.downlevel .d-abstract,
+.downlevel .d-article,
+.downlevel .d-appendix,
+.downlevel .distill-appendix,
+.downlevel .d-byline,
+.downlevel .d-footnote-list,
+.downlevel .d-citation-list,
+.downlevel .distill-footer,
+.downlevel .appendix-bottom,
+.downlevel .posts-container {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+@media(min-width: 768px) {
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+  padding-left: 150px;
+  padding-right: 150px;
+  max-width: 900px;
+}
+}
+
+.downlevel pre code {
+  display: block;
+  border-left: 2px solid rgba(0, 0, 0, .1);
+  padding: 0 0 0 20px;
+  font-size: 14px;
+}
+
+.downlevel code, .downlevel pre {
+  color: black;
+  background: none;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+.downlevel .posts-list .post-preview {
+  color: inherit;
+}
+
+
+
+</style>
+
+<script type="application/javascript">
+
+function is_downlevel_browser() {
+  if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                 window.navigator.userAgent)) {
+    return true;
+  } else {
+    return window.load_distill_framework === undefined;
+  }
+}
+
+// show body when load is complete
+function on_load_complete() {
+
+  // add anchors
+  if (window.anchors) {
+    window.anchors.options.placement = 'left';
+    window.anchors.add('d-article > h2, d-article > h3, d-article > h4, d-article > h5');
+  }
+
+
+  // set body to visible
+  document.body.style.visibility = 'visible';
+
+  // force redraw for leaflet widgets
+  if (window.HTMLWidgets) {
+    var maps = window.HTMLWidgets.findAll(".leaflet");
+    $.each(maps, function(i, el) {
+      var map = this.getMap();
+      map.invalidateSize();
+      map.eachLayer(function(layer) {
+        if (layer instanceof L.TileLayer)
+          layer.redraw();
+      });
+    });
+  }
+
+  // trigger 'shown' so htmlwidgets resize
+  $('d-article').trigger('shown');
+}
+
+function init_distill() {
+
+  init_common();
+
+  // create front matter
+  var front_matter = $('<d-front-matter></d-front-matter>');
+  $('#distill-front-matter').wrap(front_matter);
+
+  // create d-title
+  $('.d-title').changeElementType('d-title');
+
+  // create d-byline
+  var byline = $('<d-byline></d-byline>');
+  $('.d-byline').replaceWith(byline);
+
+  // create d-article
+  var article = $('<d-article></d-article>');
+  $('.d-article').wrap(article).children().unwrap();
+
+  // move posts container into article
+  $('.posts-container').appendTo($('d-article'));
+
+  // create d-appendix
+  $('.d-appendix').changeElementType('d-appendix');
+
+  // flag indicating that we have appendix items
+  var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+  // replace footnotes with <d-footnote>
+  $('.footnote-ref').each(function(i, val) {
+    appendix = true;
+    var href = $(this).attr('href');
+    var id = href.replace('#', '');
+    var fn = $('#' + id);
+    var fn_p = $('#' + id + '>p');
+    fn_p.find('.footnote-back').remove();
+    var text = fn_p.html();
+    var dtfn = $('<d-footnote></d-footnote>');
+    dtfn.html(text);
+    $(this).replaceWith(dtfn);
+  });
+  // remove footnotes
+  $('.footnotes').remove();
+
+  // move refs into #references-listing
+  $('#references-listing').replaceWith($('#refs'));
+
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    var id = $(this).attr('id');
+    $('.d-contents a[href="#' + id + '"]').parent().remove();
+    appendix = true;
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+  });
+
+  // show d-appendix if we have appendix content
+  $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+  // localize layout chunks to just output
+  $('.layout-chunk').each(function(i, val) {
+
+    // capture layout
+    var layout = $(this).attr('data-layout');
+
+    // apply layout to markdown level block elements
+    var elements = $(this).children().not('details, div.sourceCode, pre, script');
+    elements.each(function(i, el) {
+      var layout_div = $('<div class="' + layout + '"></div>');
+      if (layout_div.hasClass('shaded')) {
+        var shaded_content = $('<div class="shaded-content"></div>');
+        $(this).wrap(shaded_content);
+        $(this).parent().wrap(layout_div);
+      } else {
+        $(this).wrap(layout_div);
+      }
+    });
+
+
+    // unwrap the layout-chunk div
+    $(this).children().unwrap();
+  });
+
+  // remove code block used to force  highlighting css
+  $('.distill-force-highlighting-css').parent().remove();
+
+  // remove empty line numbers inserted by pandoc when using a
+  // custom syntax highlighting theme
+  $('code.sourceCode a:empty').remove();
+
+  // load distill framework
+  load_distill_framework();
+
+  // wait for window.distillRunlevel == 4 to do post processing
+  function distill_post_process() {
+
+    if (!window.distillRunlevel || window.distillRunlevel < 4)
+      return;
+
+    // hide author/affiliations entirely if we have no authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+    if (!have_authors)
+      $('d-byline').addClass('hidden');
+
+    // article with toc class
+    $('.d-contents').parent().addClass('d-article-with-toc');
+
+    // strip links that point to #
+    $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+    // add orcid ids
+    $('.authors-affiliations').find('.author').each(function(i, el) {
+      var orcid_id = front_matter.authors[i].orcidID;
+      if (orcid_id) {
+        var a = $('<a></a>');
+        a.attr('href', 'https://orcid.org/' + orcid_id);
+        var img = $('<img></img>');
+        img.addClass('orcid-id');
+        img.attr('alt', 'ORCID ID');
+        img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
+        a.append(img);
+        $(this).append(a);
+      }
+    });
+
+    // hide elements of author/affiliations grid that have no value
+    function hide_byline_column(caption) {
+      $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+    }
+
+    // affiliations
+    var have_affiliations = false;
+    for (var i = 0; i<front_matter.authors.length; ++i) {
+      var author = front_matter.authors[i];
+      if (author.affiliation !== "&nbsp;") {
+        have_affiliations = true;
+        break;
+      }
+    }
+    if (!have_affiliations)
+      $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+    // published date
+    if (!front_matter.publishedDate)
+      hide_byline_column("Published");
+
+    // document object identifier
+    var doi = $('d-byline').find('h3:contains("DOI")');
+    var doi_p = doi.next().empty();
+    if (!front_matter.doi) {
+      // if we have a citation and valid citationText then link to that
+      if ($('#citation').length > 0 && front_matter.citationText) {
+        doi.html('Citation');
+        $('<a href="#citation"></a>')
+          .text(front_matter.citationText)
+          .appendTo(doi_p);
+      } else {
+        hide_byline_column("DOI");
+      }
+    } else {
+      $('<a></a>')
+         .attr('href', "https://doi.org/" + front_matter.doi)
+         .html(front_matter.doi)
+         .appendTo(doi_p);
+    }
+
+     // change plural form of authors/affiliations
+    if (front_matter.authors.length === 1) {
+      var grid = $('.authors-affiliations');
+      grid.children('h3:contains("Authors")').text('Author');
+      grid.children('h3:contains("Affiliations")').text('Affiliation');
+    }
+
+    // remove d-appendix and d-footnote-list local styles
+    $('d-appendix > style:first-child').remove();
+    $('d-footnote-list > style:first-child').remove();
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // hoverable references
+    $('span.citation[data-cites]').each(function() {
+      if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+        var fn = $(this).children()[0]
+        $(this).html(fn.shadowRoot.querySelector("sup"))
+        $(this).id = fn.id
+        fn.remove()
+      }
+      var refs = $(this).attr('data-cites').split(" ");
+      var refHtml = refs.map(function(ref) {
+        return "<p>" + $('#ref-' + ref).html() + "</p>";
+      }).join("\n");
+      window.tippy(this, {
+        allowHTML: true,
+        content: refHtml,
+        maxWidth: 500,
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start'
+      });
+    });
+
+    // fix footnotes in tables (#411)
+    // replacing broken distill.pub feature
+    $('table d-footnote').each(function() {
+      // we replace internal showAtNode methode which is triggered when hovering a footnote
+      this.hoverBox.showAtNode = function(node) {
+        // ported from https://github.com/distillpub/template/pull/105/files
+        calcOffset = function(elem) {
+            let x = elem.offsetLeft;
+            let y = elem.offsetTop;
+            // Traverse upwards until an `absolute` element is found or `elem`
+            // becomes null.
+            while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                x += elem.offsetLeft;
+                y += elem.offsetTop;
+            }
+
+            return { left: x, top: y };
+        }
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+        const bbox = node.getBoundingClientRect();
+        const offset = calcOffset(node);
+        this.show([offset.left + bbox.width, offset.top + bbox.height]);
+      }
+    })
+
+    // clear polling timer
+    clearInterval(tid);
+
+    // show body now that everything is ready
+    on_load_complete();
+  }
+
+  var tid = setInterval(distill_post_process, 50);
+  distill_post_process();
+
+}
+
+function init_downlevel() {
+
+  init_common();
+
+   // insert hr after d-title
+  $('.d-title').after($('<hr class="section-separator"/>'));
+
+  // check if we have authors
+  var front_matter = JSON.parse($("#distill-front-matter").html());
+  var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+  // manage byline/border
+  if (!have_authors)
+    $('.d-byline').remove();
+  $('.d-byline').after($('<hr class="section-separator"/>'));
+  $('.d-byline a').remove();
+
+  // remove toc
+  $('.d-contents').remove();
+
+  // move appendix elements
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+  });
+
+
+  // inject headers into references and footnotes
+  var refs_header = $('<h3></h3>');
+  refs_header.text('References');
+  $('#refs').prepend(refs_header);
+
+  var footnotes_header = $('<h3></h3');
+  footnotes_header.text('Footnotes');
+  $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+  // move appendix-bottom entries to the bottom
+  $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+  $('.appendix-bottom').remove();
+
+  // remove appendix if it's empty
+  if ($('.d-appendix').children().length === 0)
+    $('.d-appendix').remove();
+
+  // prepend separator above appendix
+  $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+  // trim code
+  $('pre>code').each(function(i, val) {
+    $(this).html($.trim($(this).html()));
+  });
+
+  // move posts-container right before article
+  $('.posts-container').insertBefore($('.d-article'));
+
+  $('body').addClass('downlevel');
+
+  on_load_complete();
+}
+
+
+function init_common() {
+
+  // jquery plugin to change element types
+  (function($) {
+    $.fn.changeElementType = function(newType) {
+      var attrs = {};
+
+      $.each(this[0].attributes, function(idx, attr) {
+        attrs[attr.nodeName] = attr.nodeValue;
+      });
+
+      this.replaceWith(function() {
+        return $("<" + newType + "/>", attrs).append($(this).contents());
+      });
+    };
+  })(jQuery);
+
+  // prevent underline for linked images
+  $('a > img').parent().css({'border-bottom' : 'none'});
+
+  // mark non-body figures created by knitr chunks as 100% width
+  $('.layout-chunk').each(function(i, val) {
+    var figures = $(this).find('img, .html-widget');
+    // ignore leaflet img layers (#106)
+    figures = figures.filter(':not(img[class*="leaflet"])')
+    if ($(this).attr('data-layout') !== "l-body") {
+      figures.css('width', '100%');
+    } else {
+      figures.css('max-width', '100%');
+      figures.filter("[width]").each(function(i, val) {
+        var fig = $(this);
+        fig.css('width', fig.attr('width') + 'px');
+      });
+
+    }
+  });
+
+  // auto-append index.html to post-preview links in file: protocol
+  // and in rstudio ide preview
+  $('.post-preview').each(function(i, val) {
+    if (window.location.protocol === "file:")
+      $(this).attr('href', $(this).attr('href') + "index.html");
+  });
+
+  // get rid of index.html references in header
+  if (window.location.protocol !== "file:") {
+    $('.distill-site-header a[href]').each(function(i,val) {
+      $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
+    });
+  }
+
+  // add class to pandoc style tables
+  $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+  $('.kable-table').children('table').addClass('pandoc-table');
+
+  // add figcaption style to table captions
+  $('caption').parent('table').addClass("figcaption");
+
+  // initialize posts list
+  if (window.init_posts_list)
+    window.init_posts_list();
+
+  // implmement disqus comment link
+  $('.disqus-comment-count').click(function() {
+    window.headroom_prevent_pin = true;
+    $('#disqus_thread').toggleClass('hidden');
+    if (!$('#disqus_thread').hasClass('hidden')) {
+      var offset = $(this).offset();
+      $(window).resize();
+      $('html, body').animate({
+        scrollTop: offset.top - 35
+      });
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (is_downlevel_browser())
+    init_downlevel();
+  else
+    window.addEventListener('WebComponentsReady', init_distill);
+});
+
+</script>
+
+<!--/radix_placeholder_distill-->
+  <script src="../../site_libs/header-attrs-2.14/header-attrs.js"></script>
+  <link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+  <script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+  <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <script src="../../site_libs/popper-2.6.0/popper.min.js"></script>
+  <link href="../../site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="../../site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="../../site_libs/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="../../site_libs/anchor-4.2.2/anchor.min.js"></script>
+  <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
+  <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="../../site_libs/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+<script type="text/javascript" cookie-consent="tracking" async src="https://www.googletagmanager.com/gtag/js?id=UA-135478021-2"></script>
+<script type="text/javascript" cookie-consent="tracking">
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-135478021-2');
+</script>
+<!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"collapse 패키지 소개","description":"collapse 패키지를 소개하고 data.table, dplyr, plm 패키지들과 비교하여 파악해보겠습니다.","authors":[{"author":"beomsu park","authorURL":"https://github.com/qkrqjatn218","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-25T00:00:00.000+09:00","citationText":"park, 2022"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<header class="header header--fixed" role="banner">
+<nav class="distill-site-nav distill-site-header">
+<div class="nav-left">
+<span class="logo">
+<img src="../../img/logo.png"/>
+</span>
+<a href="../../index.html" class="title">Zarathu Blog</a>
+<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
+</div>
+<div class="nav-right">
+<a href="../../index.html">Home</a>
+<a href="http://app.zarathu.com/">Applications</a>
+<div class="nav-dropdown">
+<button class="nav-dropbtn">
+R packages
+ 
+<span class="down-arrow">&#x25BE;</span>
+</button>
+<div class="nav-dropdown-content">
+<a href="https://jinseob2kim.github.io/jstable/">jstable</a>
+<a href="https://jinseob2kim.github.io/jskm/">jskm</a>
+<a href="https://jinseob2kim.github.io/jsmodule/">jsmodule</a>
+</div>
+</div>
+<a href="../../contributors.html">Contributors</a>
+<a href="../../index.xml">
+<i class="fa fa-rss" aria-hidden="true"></i>
+</a>
+<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
+</div>
+</nav>
+</header>
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>collapse 패키지 소개</h1>
+<!--radix_placeholder_categories-->
+<div class="dt-tags">
+  <a href="../../index.html#category:R" class="dt-tag">R</a>
+  <a href="../../index.html#category:COLLAPSE" class="dt-tag">COLLAPSE</a>
+  <a href="../../index.html#category:DATA.TABLE" class="dt-tag">DATA.TABLE</a>
+  <a href="../../index.html#category:DPLYR" class="dt-tag">DPLYR</a>
+</div>
+<!--/radix_placeholder_categories-->
+<p>collapse 패키지를 소개하고 data.table, dplyr, plm 패키지들과 비교하여
+파악해보겠습니다.</p>
+</div>
+
+<div class="d-byline">
+  beomsu park <a href="https://github.com/qkrqjatn218"
+class="uri">https://github.com/qkrqjatn218</a> 
+  
+<br/>07-25-2022
+</div>
+
+<div class="d-article">
+<div class="d-contents d-contents-float">
+<nav class="l-text toc figcaption" id="TOC">
+<h3>Contents</h3>
+<ul>
+<li><a href="#collapse-주요-특징-소개-및-설치"
+id="toc-collapse-주요-특징-소개-및-설치">1. collapse 주요 특징 소개 및
+설치</a>
+<ul>
+<li><a href="#setup" id="toc-setup">Setup</a></li>
+<li><a href="#load-file" id="toc-load-file">load file</a></li>
+</ul></li>
+<li><a href="#collapse-패키지" id="toc-collapse-패키지">2. collapse
+패키지</a>
+<ul>
+<li><a href="#기본적인-데이터-요약"
+id="toc-기본적인-데이터-요약">기본적인 데이터 요약</a></li>
+<li><a href="#선택-부분-집합화-정렬-및-그룹화"
+id="toc-선택-부분-집합화-정렬-및-그룹화">선택, 부분 집합화, 정렬 및
+그룹화</a></li>
+</ul></li>
+<li><a href="#벤치마킹" id="toc-벤치마킹">3. 벤치마킹</a>
+<ul>
+<li><a href="#기본-연산" id="toc-기본-연산">기본 연산</a></li>
+</ul></li>
+<li><a href="#마치며" id="toc-마치며">4. 마치며</a></li>
+</ul>
+</nav>
+</div>
+<h1 id="collapse-주요-특징-소개-및-설치">1. collapse 주요 특징 소개 및
+설치</h1>
+<p>R의 고급 데이터 변환 및 통계 컴퓨팅을 위한 C/C++ 기반
+패키지입니다.</p>
+<ul>
+<li><p>유연하고 간결한 구문을 통해 매우 빠르고 클래스에 구애받지
+않습니다,</p></li>
+<li><p>기본 R, ‘dplyr’, ‘tibble’, ‘data.table’, ‘sf’, ‘plm’ 과 잘
+통합됩니다.</p></li>
+</ul>
+<h2 id="setup">Setup</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>##setup</span></span>
+<span></span>
+<span><span class='co'>#install.packages("collapse")</span></span>
+<span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://magrittr.tidyverse.org'>magrittr</a></span><span class='op'>)</span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-datatable.com'>data.table</a></span><span class='op'>)</span> </span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://sebkrantz.github.io/collapse/'>collapse</a></span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h2 id="load-file">load file</h2>
+<p>collapse 패키지에 있는 기본 예제 파일을 불러오겠습니다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>#load file</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wlddev</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["iso3c"],"name":[2],"type":["fct"],"align":["left"]},{"label":["date"],"name":[3],"type":["date"],"align":["right"]},{"label":["year"],"name":[4],"type":["int"],"align":["right"]},{"label":["decade"],"name":[5],"type":["int"],"align":["right"]},{"label":["region"],"name":[6],"type":["fct"],"align":["left"]},{"label":["income"],"name":[7],"type":["fct"],"align":["left"]},{"label":["OECD"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["PCGDP"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["LIFEEX"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["GINI"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ODA"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["POP"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"Afghanistan","2":"AFG","3":"1961-01-01","4":"1960","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"32.446","11":"NA","12":"116769997","13":"8996973","_rn_":"1"},{"1":"Afghanistan","2":"AFG","3":"1962-01-01","4":"1961","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"32.962","11":"NA","12":"232080002","13":"9169410","_rn_":"2"},{"1":"Afghanistan","2":"AFG","3":"1963-01-01","4":"1962","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"33.471","11":"NA","12":"112839996","13":"9351441","_rn_":"3"},{"1":"Afghanistan","2":"AFG","3":"1964-01-01","4":"1963","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"33.971","11":"NA","12":"237720001","13":"9543205","_rn_":"4"},{"1":"Afghanistan","2":"AFG","3":"1965-01-01","4":"1964","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"34.463","11":"NA","12":"295920013","13":"9744781","_rn_":"5"},{"1":"Afghanistan","2":"AFG","3":"1966-01-01","4":"1965","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"34.948","11":"NA","12":"341839996","13":"9956320","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>#load file</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>GGDC10S</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Regioncode"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Region"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Variable"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Year"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["AGR"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["MIN"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["MAN"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["PU"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["CON"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["WRT"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["TRA"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["FIRE"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["GOV"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["OTH"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["SUM"],"name":[16],"type":["dbl"],"align":["right"]}],"data":[{"1":"BWA","2":"SSA","3":"Sub-saharan Africa","4":"VA","5":"1960","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA","15":"NA","16":"NA","_rn_":"1"},{"1":"BWA","2":"SSA","3":"Sub-saharan Africa","4":"VA","5":"1961","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA","15":"NA","16":"NA","_rn_":"2"},{"1":"BWA","2":"SSA","3":"Sub-saharan Africa","4":"VA","5":"1962","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA","15":"NA","16":"NA","_rn_":"3"},{"1":"BWA","2":"SSA","3":"Sub-saharan Africa","4":"VA","5":"1963","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA","15":"NA","16":"NA","_rn_":"4"},{"1":"BWA","2":"SSA","3":"Sub-saharan Africa","4":"VA","5":"1964","6":"16.30154","7":"3.494075","8":"0.7365696","9":"0.1043936","10":"0.6600454","11":"6.243732","12":"1.658928","13":"1.119194","14":"4.822485","15":"2.341328","16":"37.48229","_rn_":"5"},{"1":"BWA","2":"SSA","3":"Sub-saharan Africa","4":"VA","5":"1965","6":"15.72700","7":"2.495768","8":"1.0181992","9":"0.1350976","10":"1.3462312","11":"7.064825","12":"1.939007","13":"1.246789","14":"5.695848","15":"2.678338","16":"39.34710","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<h1 id="collapse-패키지">2. collapse 패키지</h1>
+<ul>
+<li>기본적인 몇가지 코드를 알아보겠습니다.</li>
+</ul>
+<h2 id="기본적인-데이터-요약">기본적인 데이터 요약</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 변수의 클래스</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/small-helpers.html'>namlab</a></span><span class='op'>(</span><span class='va'>wlddev</span>, class <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 빠르고 상세한 통계 설명(생략)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/descr.html'>descr</a></span> <span class='op'>(</span> <span class='va'>wlddev</span> <span class='op'>)</span> </span>
+<span></span>
+<span><span class='co'># 깔끔한 데이터 프레임으로 변환</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span> <span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span> <span class='op'>(</span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/descr.html'>descr</a></span> <span class='op'>(</span> <span class='va'>wlddev</span> <span class='op'>)</span> <span class='op'>)</span> <span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Variable"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Class"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Label"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"country","2":"character","3":"Country Name"},{"1":"iso3c","2":"factor","3":"Country Code"},{"1":"date","2":"Date","3":"Date Recorded (Fictitious)"},{"1":"year","2":"integer","3":"Year"},{"1":"decade","2":"integer","3":"Decade"},{"1":"region","2":"factor","3":"Region"},{"1":"income","2":"factor","3":"Income Level"},{"1":"OECD","2":"logical","3":"Is OECD Member Country?"},{"1":"PCGDP","2":"numeric","3":"GDP per capita (constant 2010 US$)"},{"1":"LIFEEX","2":"numeric","3":"Life expectancy at birth, total (years)"},{"1":"GINI","2":"numeric","3":"Gini index (World Bank estimate)"},{"1":"ODA","2":"numeric","3":"Net official development assistance and official aid received (constant 2018 US$)"},{"1":"POP","2":"numeric","3":"Population, total"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Variable"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Class"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Label"],"name":[3],"type":["chr"],"align":["left"]},{"label":["N"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Ndist"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Min"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Max"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Mean"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["SD"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["Skew"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["Kurt"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["1%"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["5%"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["25%"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["50%"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["75%"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["95%"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["99%"],"name":[18],"type":["dbl"],"align":["right"]}],"data":[{"1":"country","2":"character","3":"Country Name","4":"13176","5":"216","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA","15":"NA","16":"NA","17":"NA","18":"NA","_rn_":"1"},{"1":"iso3c","2":"factor","3":"Country Code","4":"13176","5":"216","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA","15":"NA","16":"NA","17":"NA","18":"NA","_rn_":"2"},{"1":"date","2":"Date","3":"Date Recorded (Fictitious)","4":"13176","5":"61","6":"-3287","7":"18628","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA","15":"NA","16":"NA","17":"NA","18":"NA","_rn_":"3"},{"1":"year","2":"integer","3":"Year","4":"13176","5":"61","6":"1960","7":"2020","8":"1990.000","9":"17.60749","10":"-5.770900e-16","11":"1.799355","12":"1960","13":"1963","14":"1975","15":"1990","16":"2005","17":"2017","18":"2020","_rn_":"4"},{"1":"decade","2":"integer","3":"Decade","4":"13176","5":"7","6":"1960","7":"2020","8":"1985.574","9":"17.51175","10":"3.256512e-02","11":"1.791726","12":"1960","13":"1960","14":"1970","15":"1990","16":"2000","17":"2010","18":"2020","_rn_":"5"},{"1":"region","2":"factor","3":"Region","4":"13176","5":"7","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA","15":"NA","16":"NA","17":"NA","18":"NA","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 모든 열에서 변동된 데이터를 확인(생략)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/varying.html'>varying</a></span><span class='op'>(</span><span class='va'>wlddev</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 나라별로 데이터가 시변인지 여부 확인</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/varying.html'>varying</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='op'>~</span> <span class='va'>country</span>, any_group <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["iso3c"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["date"],"name":[2],"type":["lgl"],"align":["right"]},{"label":["year"],"name":[3],"type":["lgl"],"align":["right"]},{"label":["decade"],"name":[4],"type":["lgl"],"align":["right"]},{"label":["region"],"name":[5],"type":["lgl"],"align":["right"]},{"label":["income"],"name":[6],"type":["lgl"],"align":["right"]},{"label":["OECD"],"name":[7],"type":["lgl"],"align":["right"]},{"label":["PCGDP"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["LIFEEX"],"name":[9],"type":["lgl"],"align":["right"]},{"label":["GINI"],"name":[10],"type":["lgl"],"align":["right"]},{"label":["ODA"],"name":[11],"type":["lgl"],"align":["right"]},{"label":["POP"],"name":[12],"type":["lgl"],"align":["right"]}],"data":[{"1":"FALSE","2":"TRUE","3":"TRUE","4":"TRUE","5":"FALSE","6":"FALSE","7":"FALSE","8":"TRUE","9":"TRUE","10":"NA","11":"TRUE","12":"TRUE"},{"1":"FALSE","2":"TRUE","3":"TRUE","4":"TRUE","5":"FALSE","6":"FALSE","7":"FALSE","8":"TRUE","9":"TRUE","10":"TRUE","11":"TRUE","12":"TRUE"},{"1":"FALSE","2":"TRUE","3":"TRUE","4":"TRUE","5":"FALSE","6":"FALSE","7":"FALSE","8":"TRUE","9":"TRUE","10":"TRUE","11":"TRUE","12":"TRUE"},{"1":"FALSE","2":"TRUE","3":"TRUE","4":"TRUE","5":"FALSE","6":"FALSE","7":"FALSE","8":"TRUE","9":"NA","10":"NA","11":"NA","12":"TRUE"},{"1":"FALSE","2":"TRUE","3":"TRUE","4":"TRUE","5":"FALSE","6":"FALSE","7":"FALSE","8":"TRUE","9":"NA","10":"NA","11":"NA","12":"TRUE"},{"1":"FALSE","2":"TRUE","3":"TRUE","4":"TRUE","5":"FALSE","6":"FALSE","7":"FALSE","8":"TRUE","9":"TRUE","10":"TRUE","11":"TRUE","12":"TRUE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 결측치를 제외한 카운팅</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fnobs.html'>fnobs</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>wlddev</span><span class='op'>$</span><span class='va'>iso3c</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["country"],"name":[1],"type":["int"],"align":["right"]},{"label":["iso3c"],"name":[2],"type":["int"],"align":["right"]},{"label":["date"],"name":[3],"type":["int"],"align":["right"]},{"label":["year"],"name":[4],"type":["int"],"align":["right"]},{"label":["decade"],"name":[5],"type":["int"],"align":["right"]},{"label":["region"],"name":[6],"type":["int"],"align":["right"]},{"label":["income"],"name":[7],"type":["int"],"align":["right"]},{"label":["OECD"],"name":[8],"type":["int"],"align":["right"]},{"label":["PCGDP"],"name":[9],"type":["int"],"align":["right"]},{"label":["LIFEEX"],"name":[10],"type":["int"],"align":["right"]},{"label":["GINI"],"name":[11],"type":["int"],"align":["right"]},{"label":["ODA"],"name":[12],"type":["int"],"align":["right"]},{"label":["POP"],"name":[13],"type":["int"],"align":["right"]}],"data":[{"1":"61","2":"61","3":"61","4":"61","5":"61","6":"61","7":"61","8":"61","9":"32","10":"60","11":"0","12":"20","13":"60","_rn_":"ABW"},{"1":"61","2":"61","3":"61","4":"61","5":"61","6":"61","7":"61","8":"61","9":"18","10":"60","11":"0","12":"60","13":"60","_rn_":"AFG"},{"1":"61","2":"61","3":"61","4":"61","5":"61","6":"61","7":"61","8":"61","9":"40","10":"60","11":"3","12":"58","13":"60","_rn_":"AGO"},{"1":"61","2":"61","3":"61","4":"61","5":"61","6":"61","7":"61","8":"61","9":"40","10":"60","11":"9","12":"32","13":"60","_rn_":"ALB"},{"1":"61","2":"61","3":"61","4":"61","5":"61","6":"61","7":"61","8":"61","9":"50","10":"0","11":"0","12":"0","13":"60","_rn_":"AND"},{"1":"61","2":"61","3":"61","4":"61","5":"61","6":"61","7":"61","8":"61","9":"45","10":"60","11":"2","12":"45","13":"60","_rn_":"ARE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 특정 열의 기술통계량</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/qsu.html'>qsu</a></span><span class='op'>(</span><span class='va'>wlddev</span>, cols <span class='op'>=</span> <span class='fl'>9</span><span class='op'>:</span><span class='fl'>12</span>, higher <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='co'># higher 는 왜도와 첨도</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<table style="width:100%;">
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 6%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 15%" />
+<col style="width: 14%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">N</th>
+<th style="text-align: right;">Mean</th>
+<th style="text-align: right;">SD</th>
+<th style="text-align: right;">Min</th>
+<th style="text-align: right;">Max</th>
+<th style="text-align: right;">Skew</th>
+<th style="text-align: right;">Kurt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">PCGDP</td>
+<td style="text-align: right;">9470</td>
+<td style="text-align: right;">1.204878e+04</td>
+<td style="text-align: right;">1.907764e+04</td>
+<td style="text-align: right;">1.320776e+02</td>
+<td style="text-align: right;">1.960614e+05</td>
+<td style="text-align: right;">3.1276269</td>
+<td style="text-align: right;">17.115442</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LIFEEX</td>
+<td style="text-align: right;">11670</td>
+<td style="text-align: right;">6.429630e+01</td>
+<td style="text-align: right;">1.147642e+01</td>
+<td style="text-align: right;">1.890700e+01</td>
+<td style="text-align: right;">8.541707e+01</td>
+<td style="text-align: right;">-0.6747681</td>
+<td style="text-align: right;">2.671769</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GINI</td>
+<td style="text-align: right;">1744</td>
+<td style="text-align: right;">3.853412e+01</td>
+<td style="text-align: right;">9.200604e+00</td>
+<td style="text-align: right;">2.070000e+01</td>
+<td style="text-align: right;">6.580000e+01</td>
+<td style="text-align: right;">0.5960328</td>
+<td style="text-align: right;">2.532903</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ODA</td>
+<td style="text-align: right;">8608</td>
+<td style="text-align: right;">4.547201e+08</td>
+<td style="text-align: right;">8.687127e+08</td>
+<td style="text-align: right;">-9.976800e+08</td>
+<td style="text-align: right;">2.567156e+10</td>
+<td style="text-align: right;">6.9831538</td>
+<td style="text-align: right;">114.889041</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 지역별 열9:12에 따른 기술통계량</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/qsu.html'>qsu</a></span><span class='op'>(</span><span class='va'>wlddev</span>, by <span class='op'>=</span> <span class='op'>~</span><span class='va'>region</span>, cols <span class='op'>=</span> <span class='fl'>9</span><span class='op'>:</span><span class='fl'>12</span>, vlabels <span class='op'>=</span> <span class='cn'>TRUE</span>, higher <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>, , PCGDP: GDP per capita (constant 2010 US$)
+
+                               N        Mean          SD         Min
+East Asia &amp; Pacific         1467  10513.2441  14383.5507    132.0776
+Europe &amp; Central Asia       2243  25992.9618  26435.1316    366.9354
+Latin America &amp; Caribbean   1976   7628.4477   8818.5055   1005.4085
+Middle East &amp; North Africa   842  13878.4213  18419.7912    578.5996
+North America                180    48699.76  24196.2855  16405.9053
+South Asia                   382   1235.9256   1611.2232    265.9625
+Sub-Saharan Africa          2380   1840.0259   2596.0104    164.3366
+                                   Max    Skew     Kurt
+East Asia &amp; Pacific         71992.1517  1.6392   4.7419
+Europe &amp; Central Asia       196061.417  2.2022  10.1977
+Latin America &amp; Caribbean   88391.3331  4.1702  29.3739
+Middle East &amp; North Africa  116232.753  2.4178   9.7669
+North America               113236.091   0.938   2.9688
+South Asia                    8476.564  2.7874  10.3402
+Sub-Saharan Africa          20532.9523  3.1161  14.4175
+
+, , LIFEEX: Life expectancy at birth, total (years)
+
+                               N     Mean       SD      Min      Max
+East Asia &amp; Pacific         1807  65.9445  10.1633   18.907   85.078
+Europe &amp; Central Asia       3046  72.1625   5.7602   45.369  85.4171
+Latin America &amp; Caribbean   2107  68.3486   7.3768   41.762  82.1902
+Middle East &amp; North Africa  1226  66.2508   9.8306   29.919  82.8049
+North America                144  76.2867   3.5734  68.8978  82.0488
+South Asia                   480  57.5585  11.3004   32.446   78.921
+Sub-Saharan Africa          2860   51.581   8.6876   26.172  74.5146
+                               Skew    Kurt
+East Asia &amp; Pacific          -0.856  4.3125
+Europe &amp; Central Asia       -0.5594  4.0434
+Latin America &amp; Caribbean   -1.0357  3.9379
+Middle East &amp; North Africa  -0.8782  3.3054
+North America               -0.1963   1.976
+South Asia                  -0.2623  2.1147
+Sub-Saharan Africa           0.1452  2.7245
+
+, , GINI: Gini index (World Bank estimate)
+
+                              N     Mean      SD   Min   Max     Skew
+East Asia &amp; Pacific         154  37.7571  5.0318  27.8  49.1   0.3631
+Europe &amp; Central Asia       798  31.9114  4.5809  20.7  48.4   0.2989
+Latin America &amp; Caribbean   413  49.9557  5.4821  34.4  63.3  -0.0386
+Middle East &amp; North Africa   91  36.0143  5.2073    26  47.4   0.0241
+North America                49  37.4816  3.6972    31  41.5  -0.4282
+South Asia                   46  33.8804  3.9898  25.9  43.8   0.4205
+Sub-Saharan Africa          193  44.6606  8.2003  29.8  65.8   0.6598
+                              Kurt
+East Asia &amp; Pacific         2.3047
+Europe &amp; Central Asia       2.5254
+Latin America &amp; Caribbean   2.3631
+Middle East &amp; North Africa  1.9209
+North America               1.4577
+South Asia                  2.7748
+Sub-Saharan Africa          2.8451
+
+, , ODA: Net official development assistance and official aid received (constant 2018 US$)
+
+                               N            Mean              SD
+East Asia &amp; Pacific         1537      352&#39;017964      622&#39;847624
+Europe &amp; Central Asia        787      402&#39;455286      568&#39;237036
+Latin America &amp; Caribbean   1972      172&#39;880081      260&#39;781049
+Middle East &amp; North Africa  1105      732&#39;380009  1.52108993e+09
+North America                 39      468717.916     10&#39;653560.8
+South Asia                   466  1.27049955e+09  1.61492889e+09
+Sub-Saharan Africa          2702      486&#39;371750      656&#39;336230
+                                     Min             Max    Skew
+East Asia &amp; Pacific          -997&#39;679993  4.04487988e+09   2.722
+Europe &amp; Central Asia        -322&#39;070007  4.34612988e+09  3.1305
+Latin America &amp; Caribbean    -444&#39;040009  2.99568994e+09  3.3259
+Middle East &amp; North Africa   -141&#39;789993  2.56715605e+10  6.6304
+North America               -15&#39;869999.9     61&#39;509998.3  4.8602
+South Asia                   -247&#39;369995  8.75425977e+09  1.7923
+Sub-Saharan Africa          -18&#39;409999.8  1.18790801e+10  4.5456
+                               Kurt
+East Asia &amp; Pacific         11.5221
+Europe &amp; Central Asia       15.2525
+Latin America &amp; Caribbean   22.4569
+Middle East &amp; North Africa  79.2238
+North America               29.3092
+South Asia                    6.501
+Sub-Saharan Africa          48.8447</code></pre>
+</div>
+<hr />
+<h2 id="선택-부분-집합화-정렬-및-그룹화">선택, 부분 집합화, 정렬 및
+그룹화</h2>
+<h3 id="선택">선택</h3>
+<ul>
+<li><p><strong>collapse::fselect</strong>와
+<strong>dplyr::select</strong>는 유사하지만 <strong>fselect</strong>가
+x100배 정도 빠릅니다.</p></li>
+<li><p><strong>fselect</strong>는 변수 이름을 포함하는 표현식을 사용하여
+변수를 선택하는 데 사용할 수 있습니다.</p></li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># install.packages("microbenchmark")</span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/joshuaulrich/microbenchmark/'>microbenchmark</a></span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 열 선택</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>fselect</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>country</span>, <span class='va'>year</span>, <span class='va'>PCGDP</span><span class='op'>:</span><span class='va'>ODA</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 열 선택 country, year, (PCGDP:ODA) 제외</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>fselect</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='op'>-</span><span class='va'>country</span>, <span class='op'>-</span><span class='va'>year</span>, <span class='op'>-</span><span class='op'>(</span><span class='va'>PCGDP</span><span class='op'>:</span><span class='va'>ODA</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["year"],"name":[2],"type":["int"],"align":["right"]},{"label":["PCGDP"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["LIFEEX"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["GINI"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["ODA"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Afghanistan","2":"1960","3":"NA","4":"32.446","5":"NA","6":"116769997","_rn_":"1"},{"1":"Afghanistan","2":"1961","3":"NA","4":"32.962","5":"NA","6":"232080002","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["iso3c"],"name":[1],"type":["fct"],"align":["left"]},{"label":["date"],"name":[2],"type":["date"],"align":["right"]},{"label":["decade"],"name":[3],"type":["int"],"align":["right"]},{"label":["region"],"name":[4],"type":["fct"],"align":["left"]},{"label":["income"],"name":[5],"type":["fct"],"align":["left"]},{"label":["OECD"],"name":[6],"type":["lgl"],"align":["right"]},{"label":["POP"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"AFG","2":"1961-01-01","3":"1960","4":"South Asia","5":"Low income","6":"FALSE","7":"8996973","_rn_":"1"},{"1":"AFG","2":"1962-01-01","3":"1960","4":"South Asia","5":"Low income","6":"FALSE","7":"9169410","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># collapse::fselect, dplyr::select 비교</span></span>
+<span></span>
+<span><span class='va'>mb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html'>microbenchmark</a></span><span class='op'>(</span>fselect <span class='op'>=</span> <span class='fu'>collapse</span><span class='fu'>::</span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>fselect</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>country</span>, <span class='va'>year</span>, <span class='va'>PCGDP</span><span class='op'>:</span><span class='va'>ODA</span><span class='op'>)</span>,</span>
+<span>                     select <span class='op'>=</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>country</span>, <span class='va'>year</span>, <span class='va'>PCGDP</span><span class='op'>:</span><span class='va'>ODA</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>mb</span></span></code></pre>
+</div>
+<pre><code>Unit: microseconds
+    expr    min     lq     mean median      uq     max neval cld
+ fselect    6.4    9.3   19.814   19.0   25.70    81.3   100  a 
+  select 2331.6 2521.7 3296.585 2857.5 3491.15 20570.9   100   b</code></pre>
+</div>
+<hr />
+<ul>
+<li><strong>dplyr::select</strong>와 달리 <strong>fselect</strong>는
+값을 대체할 수 있습니다.또한 데이터 자체가 아닌 선택된 열에 대한 정보를
+반환할 수도 있습니다.</li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 열 로그 계산 </span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>fselect</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>PCGDP</span><span class='op'>:</span><span class='va'>POP</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>fselect</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>PCGDP</span><span class='op'>:</span><span class='va'>POP</span><span class='op'>)</span>, <span class='va'>log</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wlddev</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 삭제(생략)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>fselect</a></span> <span class='op'>(</span> <span class='va'>wlddev</span> , <span class='va'>region</span> , <span class='va'>year</span> , <span class='va'>PCGDP</span> <span class='op'>:</span> <span class='va'>POP</span> <span class='op'>)</span>  <span class='op'>&lt;-</span>  <span class='cn'>NULL</span> </span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wlddev</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>wlddev</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["iso3c"],"name":[2],"type":["fct"],"align":["left"]},{"label":["date"],"name":[3],"type":["date"],"align":["right"]},{"label":["year"],"name":[4],"type":["int"],"align":["right"]},{"label":["decade"],"name":[5],"type":["int"],"align":["right"]},{"label":["region"],"name":[6],"type":["fct"],"align":["left"]},{"label":["income"],"name":[7],"type":["fct"],"align":["left"]},{"label":["OECD"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["PCGDP"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["LIFEEX"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["GINI"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ODA"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["POP"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"Afghanistan","2":"AFG","3":"1961-01-01","4":"1960","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"3.479577","11":"NA","12":"18.57572","13":"16.01240","_rn_":"1"},{"1":"Afghanistan","2":"AFG","3":"1962-01-01","4":"1961","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"3.495355","11":"NA","12":"19.26259","13":"16.03138","_rn_":"2"},{"1":"Afghanistan","2":"AFG","3":"1963-01-01","4":"1962","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"3.510679","11":"NA","12":"18.54148","13":"16.05104","_rn_":"3"},{"1":"Afghanistan","2":"AFG","3":"1964-01-01","4":"1963","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"3.525507","11":"NA","12":"19.28660","13":"16.07134","_rn_":"4"},{"1":"Afghanistan","2":"AFG","3":"1965-01-01","4":"1964","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"3.539886","11":"NA","12":"19.50560","13":"16.09224","_rn_":"5"},{"1":"Afghanistan","2":"AFG","3":"1966-01-01","4":"1965","5":"1960","6":"South Asia","7":"Low income","8":"FALSE","9":"NA","10":"3.553861","11":"NA","12":"19.64985","13":"16.11372","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 컬럼명의 대한 정보</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>fselect</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>PCGDP</span><span class='op'>:</span><span class='va'>POP</span>, return <span class='op'>=</span> <span class='st'>"named_indices"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">PCGDP</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LIFEEX</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GINI</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ODA</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">POP</td>
+<td style="text-align: right;">13</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<h3 id="부분-집합화">부분 집합화</h3>
+<ul>
+<li><strong>fsubset</strong> 빠르고 부분적인 작업을 위해
+<strong>base::subset</strong> 패키지 의 C 함수를 사용 하는 향상된
+버전입니다.</li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 조건을 만족한 열 출력</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsubset.html'>fsubset</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>decade</span> <span class='op'>&gt;</span> <span class='fl'>1980</span>, <span class='va'>country</span>, <span class='va'>region</span>, <span class='va'>OECD</span><span class='op'>:</span><span class='va'>POP</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 조건을 만족하고 '-'표시된 제외하고 출력</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsubset.html'>fsubset</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>decade</span> <span class='op'>&gt;</span> <span class='fl'>1990</span>, <span class='op'>-</span><span class='va'>country</span>, <span class='op'>-</span><span class='va'>region</span>, <span class='op'>-</span><span class='op'>(</span><span class='va'>OECD</span><span class='op'>:</span><span class='va'>POP</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>  <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["region"],"name":[2],"type":["fct"],"align":["left"]},{"label":["OECD"],"name":[3],"type":["lgl"],"align":["right"]},{"label":["PCGDP"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["LIFEEX"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["GINI"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["ODA"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["POP"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"Afghanistan","2":"South Asia","3":"FALSE","4":"NA","5":"3.918621","6":"NA","7":"19.08357","8":"16.3342","_rn_":"1"},{"1":"Afghanistan","2":"South Asia","3":"FALSE","4":"NA","5":"3.931806","6":"NA","7":"20.43364","8":"16.4032","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["iso3c"],"name":[1],"type":["fct"],"align":["left"]},{"label":["date"],"name":[2],"type":["date"],"align":["right"]},{"label":["year"],"name":[3],"type":["int"],"align":["right"]},{"label":["decade"],"name":[4],"type":["int"],"align":["right"]},{"label":["income"],"name":[5],"type":["fct"],"align":["left"]}],"data":[{"1":"AFG","2":"2001-01-01","3":"2000","4":"2000","5":"Low income","_rn_":"1"},{"1":"AFG","2":"2002-01-01","3":"2001","4":"2000","5":"Low income","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<ul>
+<li><strong>fsubset</strong>는 기본적 계산이 가능하지만, .data.frame에
+대안으로 안전하고 빠른 함수 <strong>ss</strong>가 존재합니다.</li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsubset.html'>ss</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span> <span class='co'># fsubset(wlddev, 1:2, 1:5) 가능하지만 추천하지 않습니다.</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">country</th>
+<th style="text-align: left;">iso3c</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">year</th>
+<th style="text-align: right;">decade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">1961-01-01</td>
+<td style="text-align: right;">1960</td>
+<td style="text-align: right;">1960</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">1962-01-01</td>
+<td style="text-align: right;">1961</td>
+<td style="text-align: right;">1960</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<h3 id="정렬-및-그룹화">정렬 및 그룹화</h3>
+<ul>
+<li><p><strong>roworder</strong>는 <strong>dplyr::arrange</strong>와
+유사하게 빠르고 <strong>data.table::setorder</strong> 와 같이 “-변수”를
+내림차순 정렬로 출력합니다.</p></li>
+<li><p><strong>data.table::setorder</strong>와 대조적으로,
+<strong>roworder</strong>는 데이터 프레임을 복사본을 생성할 수 있습니다.
+하지만 복사본이 필요하지 않으면, <strong>data.table::setorder</strong>가
+더 빠릅니다.</p></li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># decade 내림차순 정렬</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/roworder.html'>roworder</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='op'>-</span><span class='va'>decade</span>, <span class='va'>region</span> <span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsubset.html'>ss</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>8</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 6%" />
+<col style="width: 12%" />
+<col style="width: 5%" />
+<col style="width: 7%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">country</th>
+<th style="text-align: left;">iso3c</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">year</th>
+<th style="text-align: right;">decade</th>
+<th style="text-align: left;">region</th>
+<th style="text-align: left;">income</th>
+<th style="text-align: left;">OECD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">American Samoa</td>
+<td style="text-align: left;">ASM</td>
+<td style="text-align: left;">2021-01-01</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: left;">East Asia &amp; Pacific</td>
+<td style="text-align: left;">Upper middle income</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Australia</td>
+<td style="text-align: left;">AUS</td>
+<td style="text-align: left;">2021-01-01</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: left;">East Asia &amp; Pacific</td>
+<td style="text-align: left;">High income</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># "ALB" 앞으로 정렬 default (pos = "front")(생략)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/roworder.html'>roworderv</a></span><span class='op'>(</span><span class='va'>wlddev</span>, neworder <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='va'>wlddev</span><span class='op'>$</span><span class='va'>iso3c</span> <span class='op'>==</span><span class='st'>"ALB"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsubset.html'>ss</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>8</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># "AFG" 뒤로 정렬</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/roworder.html'>roworderv</a></span><span class='op'>(</span><span class='va'>wlddev</span>,neworder <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='va'>wlddev</span><span class='op'>$</span><span class='va'>iso3c</span> <span class='op'>==</span><span class='st'>"AFG"</span><span class='op'>)</span>, pos <span class='op'>=</span> <span class='st'>"end"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsubset.html'>ss</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>8</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 7%" />
+<col style="width: 12%" />
+<col style="width: 5%" />
+<col style="width: 8%" />
+<col style="width: 25%" />
+<col style="width: 23%" />
+<col style="width: 7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">country</th>
+<th style="text-align: left;">iso3c</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">year</th>
+<th style="text-align: right;">decade</th>
+<th style="text-align: left;">region</th>
+<th style="text-align: left;">income</th>
+<th style="text-align: left;">OECD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Albania</td>
+<td style="text-align: left;">ALB</td>
+<td style="text-align: left;">1961-01-01</td>
+<td style="text-align: right;">1960</td>
+<td style="text-align: right;">1960</td>
+<td style="text-align: left;">Europe &amp; Central Asia</td>
+<td style="text-align: left;">Upper middle income</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Albania</td>
+<td style="text-align: left;">ALB</td>
+<td style="text-align: left;">1962-01-01</td>
+<td style="text-align: right;">1961</td>
+<td style="text-align: right;">1960</td>
+<td style="text-align: left;">Europe &amp; Central Asia</td>
+<td style="text-align: left;">Upper middle income</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 다른 행에 영향없이, 교환</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/roworder.html'>roworderv</a></span><span class='op'>(</span><span class='va'>wlddev</span>, neworder <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span><span class='op'>(</span><span class='va'>wlddev</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='va'>iso3c</span> <span class='op'>==</span> <span class='st'>"BWA"</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='va'>iso3c</span> <span class='op'>==</span><span class='st'>"AFG"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,pos <span class='op'>=</span> <span class='st'>"exchange"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsubset.html'>ss</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>8</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 7%" />
+<col style="width: 13%" />
+<col style="width: 6%" />
+<col style="width: 8%" />
+<col style="width: 22%" />
+<col style="width: 24%" />
+<col style="width: 7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">country</th>
+<th style="text-align: left;">iso3c</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">year</th>
+<th style="text-align: right;">decade</th>
+<th style="text-align: left;">region</th>
+<th style="text-align: left;">income</th>
+<th style="text-align: left;">OECD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Botswana</td>
+<td style="text-align: left;">BWA</td>
+<td style="text-align: left;">1961-01-01</td>
+<td style="text-align: right;">1960</td>
+<td style="text-align: right;">1960</td>
+<td style="text-align: left;">Sub-Saharan Africa</td>
+<td style="text-align: left;">Upper middle income</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Botswana</td>
+<td style="text-align: left;">BWA</td>
+<td style="text-align: left;">1962-01-01</td>
+<td style="text-align: right;">1961</td>
+<td style="text-align: right;">1960</td>
+<td style="text-align: left;">Sub-Saharan Africa</td>
+<td style="text-align: left;">Upper middle income</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<h3 id="새로운-열의-변환과-계산">새로운 열의 변환과 계산</h3>
+<ul>
+<li><p><strong>ftransform</strong> 새 열을 계산하거나 기존 열을 수정 및
+삭제하는 데 사용할 수 있으며 항상 전체 데이터 프레임을
+반환합니다.</p></li>
+<li><p><strong>ftransform</strong>은 base::transform 데이터 프레임 및
+목록 의 향상된 버전입니다.</p></li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 형식</span></span>
+<span><span class='co'>## ftransform(.data, ...) # .data 는 데이터프레임 또는 컬럼명</span></span>
+<span>                          <span class='co'># ... 은 columns = value로 value 값에는 다양한 결합이 가능</span></span>
+<span></span>
+<span></span>
+<span><span class='co'># 예시</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/ftransform.html'>ftransform</a></span><span class='op'>(</span><span class='va'>wlddev</span>, LIFEEX_INT <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>floor</a></span><span class='op'>(</span><span class='va'>LIFEEX</span><span class='op'>)</span>, <span class='co'># 열 추가</span></span>
+<span>                    year <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span><span class='op'>(</span><span class='va'>year</span><span class='op'>)</span>,   <span class='co'># 정수로 변환</span></span>
+<span>                    LIFEEX <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span> <span class='co'># 해당 열 삭제</span></span>
+<span></span>
+<span></span>
+<span><span class='va'>wlddev</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/ftransform.html'>ftransformv</a></span><span class='op'>(</span><span class='fl'>9</span><span class='op'>:</span><span class='fl'>12</span>, <span class='va'>log</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span> <span class='co'># ftransformv 함수를 사용하여 특정 칼럼을 변형하는 수정(생략)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["iso3c"],"name":[2],"type":["fct"],"align":["left"]},{"label":["date"],"name":[3],"type":["date"],"align":["right"]},{"label":["year"],"name":[4],"type":["int"],"align":["right"]},{"label":["decade"],"name":[5],"type":["int"],"align":["right"]},{"label":["region"],"name":[6],"type":["fct"],"align":["left"]},{"label":["income"],"name":[7],"type":["fct"],"align":["left"]},{"label":["OECD"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["PCGDP"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["GINI"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["ODA"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["POP"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["LIFEEX_INT"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"Zimbabwe","2":"ZWE","3":"2020-01-01","4":"2019","5":"2010","6":"Sub-Saharan Africa","7":"Lower middle income","8":"FALSE","9":"7.075892","10":"3.918005","11":"20.71123","12":"16.49964","13":"4","_rn_":"13175"},{"1":"Zimbabwe","2":"ZWE","3":"2021-01-01","4":"2020","5":"2020","6":"Sub-Saharan Africa","7":"Lower middle income","8":"FALSE","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","_rn_":"13176"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["iso3c"],"name":[2],"type":["fct"],"align":["left"]},{"label":["date"],"name":[3],"type":["date"],"align":["right"]},{"label":["year"],"name":[4],"type":["int"],"align":["right"]},{"label":["decade"],"name":[5],"type":["int"],"align":["right"]},{"label":["region"],"name":[6],"type":["fct"],"align":["left"]},{"label":["income"],"name":[7],"type":["fct"],"align":["left"]},{"label":["OECD"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["PCGDP"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["LIFEEX"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["GINI"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ODA"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["POP"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"Zimbabwe","2":"ZWE","3":"2020-01-01","4":"2019","5":"2010","6":"Sub-Saharan Africa","7":"Lower middle income","8":"FALSE","9":"1.956694","10":"1.41558","11":"1.365583","12":"3.030676","13":"16.49964","_rn_":"13175"},{"1":"Zimbabwe","2":"ZWE","3":"2021-01-01","4":"2020","5":"2020","6":"Sub-Saharan Africa","7":"Lower middle income","8":"FALSE","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","_rn_":"13176"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<ul>
+<li>쉼표로 구분된 column = value 표현식을 전달하는 대신 단일 리스트
+표현식(예:데이터 프레임)을 전달하여 데이터를 대량 처리할 수 있습니다.
+<strong>ftransform</strong>은 여러 단계를 포함하는 복잡한 변환에
+유용합니다.</li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>wlddev</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/ftransform.html'>ftransform</a></span><span class='op'>(</span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>num_vars</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='va'>log</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>replace_Inf</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span> <span class='co'># num_var() 수치형 데이터를 선택하고 값을 대체</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["iso3c"],"name":[2],"type":["fct"],"align":["left"]},{"label":["date"],"name":[3],"type":["date"],"align":["right"]},{"label":["year"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["decade"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["region"],"name":[6],"type":["fct"],"align":["left"]},{"label":["income"],"name":[7],"type":["fct"],"align":["left"]},{"label":["OECD"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["PCGDP"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["LIFEEX"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["GINI"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ODA"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["POP"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"Zimbabwe","2":"ZWE","3":"2020-01-01","4":"7.610358","5":"7.605890","6":"Sub-Saharan Africa","7":"Lower middle income","8":"FALSE","9":"1.956694","10":"1.41558","11":"1.365583","12":"3.030676","13":"2.803339","_rn_":"13175"},{"1":"Zimbabwe","2":"ZWE","3":"2021-01-01","4":"7.610853","5":"7.610853","6":"Sub-Saharan Africa","7":"Lower middle income","8":"FALSE","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","_rn_":"13176"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<ul>
+<li><strong>fcompute</strong>는 데이터 프레임 환경에서 새로운 칼럼을
+계산하는데 사용하고 새로운 데이터 프레임에서 계산된 열을 반환합니다.
+또한 <strong>ftransform</strong>처럼 작동하지만 데이터를 수정하거나
+추가하지 않고 변경된/계산된 열만 반환합니다.</li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/ftransform.html'>fcompute</a></span><span class='op'>(</span><span class='va'>wlddev</span>, LIFEEX_INT <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>floor</a></span><span class='op'>(</span><span class='va'>LIFEEX</span><span class='op'>)</span>, year <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span><span class='op'>(</span><span class='va'>year</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["LIFEEX_INT"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["year"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"4","2":"2019","_rn_":"13175"},{"1":"NA","2":"2020","_rn_":"13176"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<h3 id="집계">집계</h3>
+<ul>
+<li><strong>fgroup_by</strong>는 dplyr::group_by 와 유사하지만, 빠르고
+클래스에 구애받지 않습니다.’GRP’ 객체가 부착된 그룹화된 데이터 프레임을
+만듭니다.</li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 형식</span></span>
+<span></span>
+<span><span class='co'>## fgroup_by(.X, ..., sort = TRUE, decreasing = FALSE, na.last = TRUE, # .x는 데이터프레임 또는 리스트 </span></span>
+<span><span class='co'>##           return.order = sort, method = "auto")                     # ...는 열 이름, 열 시퀀스, 열을 포함하는 식, 인덱스, 논리 벡터 또는 선택 함수</span></span>
+<span>                </span>
+<span></span>
+<span><span class='co'># 예시</span></span>
+<span></span>
+<span><span class='va'>cwlddev</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/GRP.html'>fgroup_by</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>year</span>, <span class='va'>country</span>, <span class='va'>PCGDP</span><span class='op'>:</span><span class='va'>POP</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>fselect</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>decade</span>, <span class='op'>-</span><span class='va'>iso3c</span><span class='op'>)</span></span>
+<span><span class='va'>cwlddev</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["date"],"name":[2],"type":["date"],"align":["right"]},{"label":["year"],"name":[3],"type":["int"],"align":["right"]},{"label":["region"],"name":[4],"type":["fct"],"align":["left"]},{"label":["income"],"name":[5],"type":["fct"],"align":["left"]},{"label":["OECD"],"name":[6],"type":["lgl"],"align":["right"]},{"label":["PCGDP"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["LIFEEX"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["GINI"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["ODA"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["POP"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"Afghanistan","2":"1961-01-01","3":"1960","4":"South Asia","5":"Low income","6":"FALSE","7":"NA","8":"3.479577","9":"NA","10":"18.57572","11":"16.01240","_rn_":"1"},{"1":"Afghanistan","2":"1962-01-01","3":"1961","4":"South Asia","5":"Low income","6":"FALSE","7":"NA","8":"3.495355","9":"NA","10":"19.26259","11":"16.03138","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 형식</span></span>
+<span></span>
+<span><span class='co'>## fgroup_vars(X, return = "data") # X는 그룹화된 데이터 프레임</span></span>
+<span>                                   <span class='co'># return = data, 그룹화된 모든 데이터</span></span>
+<span>                                   <span class='co'># return = names, 컬럼명</span></span>
+<span>                                   <span class='co'># return = indices 인덱스</span></span>
+<span> </span>
+<span><span class='co'># 예시</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/GRP.html'>fgroup_vars</a></span><span class='op'>(</span><span class='va'>cwlddev</span>, return <span class='op'>=</span><span class='st'>"names"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">year</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">country</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PCGDP</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LIFEEX</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GINI</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ODA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">POP</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<h3 id="빠른-통계-함수">빠른 통계 함수</h3>
+<ul>
+<li><strong>fmean</strong>는 (열별) 평균을 계산하고, (선택적으로) 그룹화
+및 가중치를 계산하는 일반적인 함수입니다.</li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 데이터</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 열 평균(생략)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmean.html'>fmean</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>$</span><span class='va'>mpg</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 열별 평균(생략)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmean.html'>fmean</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># matrix 변환 (생략)</span></span>
+<span></span>
+<span><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/quick-conversion.html'>qM</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span> </span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmean.html'>fmean</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># matrix 1행 출력(생략)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmean.html'>fmean</a></span><span class='op'>(</span><span class='va'>mtcars</span>, drop <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 최대값 matrix 1행 출력(생략)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmin_fmax.html'>fmax</a></span><span class='op'>(</span><span class='va'>mtcars</span>, drop <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 합 계산</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsum.html'>fsum</a></span><span class='op'>(</span><span class='va'>mtcars</span>, TRA <span class='op'>=</span> <span class='st'>"%"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>head</span>  <span class='co'># TRA = "%" -&gt; percentages 계산</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["mpg"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["cyl"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["disp"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["drat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["wt"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["qsec"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["vs"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["am"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["gear"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["carb"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"21.0","2":"6","3":"160","4":"110","5":"3.90","6":"2.620","7":"16.46","8":"0","9":"1","10":"4","11":"4"},{"1":"21.0","2":"6","3":"160","4":"110","5":"3.90","6":"2.875","7":"17.02","8":"0","9":"1","10":"4","11":"4"},{"1":"22.8","2":"4","3":"108","4":"93","5":"3.85","6":"2.320","7":"18.61","8":"1","9":"1","10":"4","11":"1"},{"1":"21.4","2":"6","3":"258","4":"110","5":"3.08","6":"3.215","7":"19.44","8":"1","9":"0","10":"3","11":"1"},{"1":"18.7","2":"8","3":"360","4":"175","5":"3.15","6":"3.440","7":"17.02","8":"0","9":"0","10":"3","11":"2"},{"1":"18.1","2":"6","3":"225","4":"105","5":"2.76","6":"3.460","7":"20.22","8":"1","9":"0","10":"3","11":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["mpg"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["cyl"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["disp"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["drat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["wt"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["qsec"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["vs"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["am"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["gear"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["carb"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"3.266449","2":"3.030303","3":"2.167111","4":"2.343417","5":"3.388652","6":"2.544875","7":"2.881854","8":"0.000000","9":"7.692308","10":"3.389831","11":"4.444444"},{"1":"3.266449","2":"3.030303","3":"2.167111","4":"2.343417","5":"3.388652","6":"2.792564","7":"2.979901","8":"0.000000","9":"7.692308","10":"3.389831","11":"4.444444"},{"1":"3.546430","2":"2.020202","3":"1.462800","4":"1.981253","5":"3.345208","6":"2.253477","7":"3.258281","8":"7.142857","9":"7.692308","10":"3.389831","11":"1.111111"},{"1":"3.328667","2":"3.030303","3":"3.494467","4":"2.343417","5":"2.676166","6":"3.122815","7":"3.403600","8":"7.142857","9":"0.000000","10":"2.542373","11":"1.111111"},{"1":"2.908695","2":"4.040404","3":"4.876001","4":"3.728164","5":"2.736988","6":"3.341363","7":"2.979901","8":"0.000000","9":"0.000000","10":"2.542373","11":"2.222222"},{"1":"2.815368","2":"3.030303","3":"3.047500","4":"2.236898","5":"2.398123","6":"3.360789","7":"3.540164","8":"7.142857","9":"0.000000","10":"2.542373","11":"1.111111"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<ul>
+<li>가중치를 사용하거나 그룹별로 계산할 수 있습니다.</li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 가중치</span></span>
+<span></span>
+<span><span class='va'>weights</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/efficient-programming.html'>fnrow</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># fnrow는 데이터프레임에서 조금 더 빠르게 작동</span></span>
+<span><span class='va'>weights</span></span></code></pre>
+</div>
+<pre><code> [1] 1.20244005 0.78729230 0.05327661 0.90312413 1.28282523 2.49906593
+ [7] 0.33566824 1.12707962 0.43725914 1.05024743 1.15899434 0.28088461
+[13] 0.66057328 0.91779104 0.13256887 0.21365645 0.35897103 2.22500746
+[19] 1.64250817 0.80205372 0.30740393 1.12019570 0.84924632 0.84458164
+[25] 0.61090135 0.07429922 0.61268853 0.28579498 0.76370989 0.96149203
+[31] 0.43227441 1.47708702</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 가중치 평균</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmean.html'>fmean</a></span><span class='op'>(</span><span class='va'>mtcars</span>, w <span class='op'>=</span> <span class='va'>weights</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>        mpg         cyl        disp          hp        drat 
+ 21.1381478   5.9817795 208.3092929 130.9269763   3.6381940 
+         wt        qsec          vs          am        gear 
+  3.0658560  18.0864251   0.5317187   0.4286070   3.6871944 
+       carb 
+  2.5729020 </code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 가중치 중간값</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmedian.html'>fmedian</a></span><span class='op'>(</span><span class='va'>mtcars</span>, w <span class='op'>=</span> <span class='va'>weights</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>    mpg     cyl    disp      hp    drat      wt    qsec      vs 
+ 19.200   6.000 167.600 110.000   3.730   3.215  18.300   1.000 
+     am    gear    carb 
+  0.000   4.000   2.000 </code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 가중치 표준 편차</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fvar_fsd.html'>fsd</a></span><span class='op'>(</span><span class='va'>mtcars</span>, w <span class='op'>=</span> <span class='va'>weights</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>        mpg         cyl        disp          hp        drat 
+  6.0670496   1.6760666 107.6013748  62.1047958   0.6097825 
+         wt        qsec          vs          am        gear 
+  0.7768637   1.7359932   0.5087166   0.5045203   0.6811318 
+       carb 
+  1.5159005 </code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 가중치 최빈값</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmode.html'>fmode</a></span><span class='op'>(</span><span class='va'>mtcars</span>, w <span class='op'>=</span> <span class='va'>weights</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>   mpg    cyl   disp     hp   drat     wt   qsec     vs     am   gear 
+ 18.10   4.00 225.00 110.00   2.76   3.44  20.22   1.00   0.00   4.00 
+  carb 
+  2.00 </code></pre>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 그룹별 평균</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmean.html'>fmean</a></span><span class='op'>(</span><span class='va'>mtcars</span>, <span class='va'>mtcars</span><span class='op'>$</span><span class='va'>cyl</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 그룹별 평균</span></span>
+<span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmean.html'>fmean</a></span><span class='op'>(</span><span class='va'>mtcars</span>, <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>fselect</a></span><span class='op'>(</span><span class='va'>mtcars</span>, <span class='va'>cyl</span>, <span class='va'>vs</span>, <span class='va'>am</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># 2,8,9열 그룹화 평균</span></span>
+<span></span>
+<span><span class='va'>ind</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>fselect</a></span><span class='op'>(</span><span class='va'>mtcars</span>, <span class='va'>cyl</span>, <span class='va'>vs</span>, <span class='va'>am</span>, return <span class='op'>=</span> <span class='st'>"indices"</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fmean.html'>fmean</a></span><span class='op'>(</span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>get_vars</a></span><span class='op'>(</span><span class='va'>mtcars</span>, <span class='op'>-</span><span class='va'>ind</span><span class='op'>)</span>, <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>get_vars</a></span><span class='op'>(</span><span class='va'>mtcars</span>, <span class='va'>ind</span><span class='op'>)</span><span class='op'>)</span> </span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code>       mpg cyl     disp        hp     drat       wt     qsec
+4 26.66364   4 105.1364  82.63636 4.070909 2.285727 19.13727
+6 19.74286   6 183.3143 122.28571 3.585714 3.117143 17.97714
+8 15.10000   8 353.1000 209.21429 3.229286 3.999214 16.77214
+         vs        am     gear     carb
+4 0.9090909 0.7272727 4.090909 1.545455
+6 0.5714286 0.4285714 3.857143 3.428571
+8 0.0000000 0.1428571 3.285714 3.500000</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mpg"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["cyl"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["disp"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["drat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["wt"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["qsec"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["vs"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["am"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["gear"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["carb"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"26.00000","2":"4","3":"120.3000","4":"91.00000","5":"4.430000","6":"2.140000","7":"16.70000","8":"0","9":"1","10":"5.000000","11":"2.000000","_rn_":"4.0.1"},{"1":"22.90000","2":"4","3":"135.8667","4":"84.66667","5":"3.770000","6":"2.935000","7":"20.97000","8":"1","9":"0","10":"3.666667","11":"1.666667","_rn_":"4.1.0"},{"1":"28.37143","2":"4","3":"89.8000","4":"80.57143","5":"4.148571","6":"2.028286","7":"18.70000","8":"1","9":"1","10":"4.142857","11":"1.428571","_rn_":"4.1.1"},{"1":"20.56667","2":"6","3":"155.0000","4":"131.66667","5":"3.806667","6":"2.755000","7":"16.32667","8":"0","9":"1","10":"4.333333","11":"4.666667","_rn_":"6.0.1"},{"1":"19.12500","2":"6","3":"204.5500","4":"115.25000","5":"3.420000","6":"3.388750","7":"19.21500","8":"1","9":"0","10":"3.500000","11":"2.500000","_rn_":"6.1.0"},{"1":"15.05000","2":"8","3":"357.6167","4":"194.16667","5":"3.120833","6":"4.104083","7":"17.14250","8":"0","9":"0","10":"3.000000","11":"3.083333","_rn_":"8.0.0"},{"1":"15.40000","2":"8","3":"326.0000","4":"299.50000","5":"3.880000","6":"3.370000","7":"14.55000","8":"0","9":"1","10":"5.000000","11":"6.000000","_rn_":"8.0.1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mpg"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["disp"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["drat"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["wt"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["qsec"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["gear"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["carb"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"26.00000","2":"120.3000","3":"91.00000","4":"4.430000","5":"2.140000","6":"16.70000","7":"5.000000","8":"2.000000","_rn_":"4.0.1"},{"1":"22.90000","2":"135.8667","3":"84.66667","4":"3.770000","5":"2.935000","6":"20.97000","7":"3.666667","8":"1.666667","_rn_":"4.1.0"},{"1":"28.37143","2":"89.8000","3":"80.57143","4":"4.148571","5":"2.028286","6":"18.70000","7":"4.142857","8":"1.428571","_rn_":"4.1.1"},{"1":"20.56667","2":"155.0000","3":"131.66667","4":"3.806667","5":"2.755000","6":"16.32667","7":"4.333333","8":"4.666667","_rn_":"6.0.1"},{"1":"19.12500","2":"204.5500","3":"115.25000","4":"3.420000","5":"3.388750","6":"19.21500","7":"3.500000","8":"2.500000","_rn_":"6.1.0"},{"1":"15.05000","2":"357.6167","3":"194.16667","4":"3.120833","5":"4.104083","6":"17.14250","7":"3.000000","8":"3.083333","_rn_":"8.0.0"},{"1":"15.40000","2":"326.0000","3":"299.50000","4":"3.880000","5":"3.370000","6":"14.55000","7":"5.000000","8":"6.000000","_rn_":"8.0.1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<hr />
+<h1 id="벤치마킹">3. 벤치마킹</h1>
+<ul>
+<li>모든 벤치마크는 1.6GHZ Intel i5 프로세서, 16GB DDR4 RAM및 sk hynix
+sc308 ssd가 탑재된 Windows 10 노트북에서 실행됩니다.</li>
+</ul>
+<h2 id="기본-연산">기본 연산</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># qDT는 벡터나 행렬등을 데이터테이블로 변환하는 함수</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html'>microbenchmark</a></span><span class='op'>(</span><span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/quick-conversion.html'>qDT</a></span><span class='op'>(</span><span class='va'>wlddev</span><span class='op'>)</span>, <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html'>as.data.table</a></span><span class='op'>(</span><span class='va'>wlddev</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>Unit: microseconds
+                  expr   min     lq    mean median    uq    max neval
+           qDT(wlddev)   6.8   7.85  13.780  11.05  15.6   49.2   100
+ as.data.table(wlddev) 202.0 456.90 675.448 480.85 555.0 7300.2   100
+ cld
+  a 
+   b</code></pre>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 데이터 프레임에서 ss 함수를 사용하는 것이 효율적</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html'>microbenchmark</a></span><span class='op'>(</span>base <span class='op'>=</span> <span class='va'>wlddev</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>]</span>, </span>
+<span>               collapse1<span class='op'>=</span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsubset.html'>fsubset</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span>,</span>
+<span>               collapse2<span class='op'>=</span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsubset.html'>ss</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>Unit: microseconds
+      expr   min    lq    mean median     uq   max neval cld
+      base 111.6 124.8 147.781 133.90 151.70 319.0   100   c
+ collapse1  14.7  17.3  21.956  19.25  23.25  67.6   100  b 
+ collapse2   3.9   4.9   6.668   5.80   7.25  33.1   100 a  </code></pre>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># 열 결합</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html'>microbenchmark</a></span><span class='op'>(</span>base <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>wlddev</span><span class='op'>)</span>, </span>
+<span>               collapse <span class='op'>=</span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>add_vars</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>wlddev</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>Unit: microseconds
+     expr  min   lq   mean median    uq   max neval cld
+     base 43.4 45.5 57.485  52.85 56.15 217.1   100   b
+ collapse  7.4  9.0 17.496   9.70 11.35 721.0   100  a </code></pre>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># collapse 와 data.table</span></span>
+<span></span>
+<span><span class='va'>DT</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/quick-conversion.html'>qDT</a></span><span class='op'>(</span><span class='va'>wlddev</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>mb1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html'>microbenchmark</a></span><span class='op'>(</span>collapse <span class='op'>=</span> <span class='va'>DT</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/GRP.html'>gby</a></span><span class='op'>(</span><span class='va'>country</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/select_replace_vars.html'>get_vars</a></span><span class='op'>(</span><span class='fl'>9</span><span class='op'>:</span><span class='fl'>13</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>fmean</span>,    <span class='co'># gby()는 fgroup_by()의 축약</span></span>
+<span>                      data.table <span class='op'>=</span> <span class='va'>DT</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='va'>.SD</span>, <span class='va'>mean</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>, keyby <span class='op'>=</span> <span class='va'>country</span>, .SDcols <span class='op'>=</span> <span class='fl'>9</span><span class='op'>:</span><span class='fl'>13</span><span class='op'>]</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>mb1</span></span></code></pre>
+</div>
+<pre><code>Unit: microseconds
+       expr    min     lq     mean  median     uq     max neval cld
+   collapse  347.7  420.3  516.715  490.15  549.1  1849.2   100  a 
+ data.table 1612.4 1935.5 2419.792 2182.95 2538.6 13161.5   100   b</code></pre>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='va'>mb1</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="2022-07-25-collapse_files/figure-html5/unnamed-chunk-51-1.png" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># collapse 와 dplyr</span></span>
+<span></span>
+<span><span class='va'>mb2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html'>microbenchmark</a></span><span class='op'>(</span>dplyr <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>decade</span> <span class='op'>&gt;</span> <span class='fl'>1980</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>                              <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>country</span>, <span class='va'>iso3c</span>, <span class='va'>region</span>, <span class='va'>PCGDP</span><span class='op'>:</span><span class='va'>POP</span> <span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>                              <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/desc.html'>desc</a></span><span class='op'>(</span><span class='va'>country</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>                              <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>NEW <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>floor</a></span><span class='op'>(</span><span class='va'>LIFEEX</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>                              <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>country</span><span class='op'>)</span>,</span>
+<span>                      collapse <span class='op'>=</span> <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/fsubset.html'>fsubset</a></span><span class='op'>(</span><span class='va'>wlddev</span>, <span class='va'>decade</span> <span class='op'>&gt;</span> <span class='fl'>1980</span> ,<span class='va'>country</span>, <span class='va'>iso3c</span>, <span class='va'>region</span>, <span class='va'>PCGDP</span><span class='op'>:</span><span class='va'>POP</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>                                 <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/roworder.html'>roworder</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>country</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>                                 <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/ftransform.html'>ftransform</a></span><span class='op'>(</span>NEW <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>floor</a></span><span class='op'>(</span><span class='va'>LIFEEX</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>                                 <span class='fu'><a href='https://sebkrantz.github.io/collapse/reference/GRP.html'>fgroup_by</a></span><span class='op'>(</span><span class='va'>country</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>mb2</span></span></code></pre>
+</div>
+<pre><code>Unit: microseconds
+     expr     min       lq      mean   median       uq     max neval
+    dplyr 28841.9 32181.40 35826.807 34596.95 36856.10 81011.4   100
+ collapse   727.6   912.15  1318.969  1016.20  1171.15  9242.6   100
+ cld
+   b
+  a </code></pre>
+</div>
+<hr />
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='va'>mb2</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="2022-07-25-collapse_files/figure-html5/unnamed-chunk-53-1.png" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<hr />
+<h1 id="마치며">4. 마치며</h1>
+<ol type="1">
+<li><p><strong>collapse</strong>는 <strong>dplyr</strong>
+,<strong>data.table</strong> 과 유사한 기능을 가지고 더 빠른 수행 속도를
+발현할 수 있습니다.</p></li>
+<li><p><strong>‘fselect’</strong>는 <strong>‘dplyr::select’</strong>와
+다르게 데이터 값을 대체할 수 있습니다.</p></li>
+<li><p><strong>‘roworder’</strong>는
+<strong>‘data.table::setorder’</strong> 와 같이 “-변수”를 내림차순
+정렬로 출력합니다. 또한 복사본를 생성할 수 있습니다.</p></li>
+<li><p>데이터 프레임에서는 <strong>‘fsubset’</strong>보다
+<strong>‘ss’</strong> 함수를 사용하는 것이 효율적입니다.</p></li>
+<li><p><strong>‘fcompute’</strong>는 <strong>ftransform</strong> 처럼
+작동하지만 데이터를 수정하거나 추가하지 않고 변경된/계산된 열만
+반환합니다.</p></li>
+<li><p><strong>‘fmeans’</strong>은 열별 평균뿐만 아니라, 그룹별 평균과
+가중치 평균을 계산할 수 있습니다.</p></li>
+<li><p><strong>‘fnrow’</strong>는 <strong>‘nrow’</strong>와 유사하지만,
+데이터 프레임에서 빠른 속도로 수행 가능 합니다.</p></li>
+<li><p><strong>‘gby()’</strong>는 <strong>‘fgroup_by()’</strong>의
+축약형 입니다.</p></li>
+<li><p><strong>‘qDT’</strong>는 데이터 테이블로 빠르게 변환할 수 있는
+함수입니다.</p></li>
+</ol>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<!--radix_placeholder_article_footer-->
+<div class="article-footer">
+  <p class="social_footer">
+    <span class="disqus-comments">
+      <i class="fas fa-comments"></i>
+      &nbsp;
+      <span class="disqus-comment-count" data-disqus-identifier="posts/2022-07-25-collapse/">Comment on this article</span>
+    </span>
+    <span class="article-sharing">
+      Share: &nbsp;
+      <a href="https://www.facebook.com/sharer/sharer.php?s=100&amp;p[url]=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2022-07-25-collapse%2F" aria-label="share on facebook">
+        <i class="fab fa-facebook" aria-hidden="true"></i>
+      </a>
+      <a href="https://twitter.com/share?text=collapse%20%ED%8C%A8%ED%82%A4%EC%A7%80%20%EC%86%8C%EA%B0%9C&amp;url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2022-07-25-collapse%2F" aria-label="share on twitter">
+        <i class="fab fa-twitter" aria-hidden="true"></i>
+      </a>
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2022-07-25-collapse%2F&amp;title=collapse%20%ED%8C%A8%ED%82%A4%EC%A7%80%20%EC%86%8C%EA%B0%9C" aria-label="share on linkedin">
+        <i class="fab fa-linkedin" aria-hidden="true"></i>
+      </a>
+      <a href="https://plus.google.com/share?url=https%3A%2F%2Fblog.zarathu.com%2Fposts%2F2022-07-25-collapse%2F" aria-label="share on google-plus">
+        <i class="fab fa-google-plus" aria-hidden="true"></i>
+      </a>
+    </span>
+  </p>
+  <script id="dsq-count-scr" src="https://zarathu-blog.disqus.com/count.js" async></script>
+  <div id="disqus_thread" class="hidden"></div>
+  <script type="text/javascript" cookie-consent="functionality">
+var disqus_config = function () {
+  this.page.url = 'https://blog.zarathu.com/posts/2022-07-25-collapse/';
+  this.page.identifier = 'posts/2022-07-25-collapse/';
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://zarathu-blog.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+  <p>
+    <div class="subscribe"><form method='post' action='https://blogtrottr.com'>
+  <p>Enjoy this blog? Get notified of new posts via email:</p>
+  <input type='text' name='btr_email' />
+  <input type='hidden' name='btr_url'
+         value='https://blog.zarathu.com/index.xml'/>
+  <input type='hidden' name='schedule_type' value='0' />
+  <input type='submit' value='Subscribe' />
+</form></div>
+  </p>
+</div>
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom">
+  <h3 id="updates-and-corrections">Corrections</h3>
+  <p>If you see mistakes or want to suggest changes, please <a href="https://github.com/zarathucorp/blog/issues/new">create an issue</a> on the source repository.</p>
+  <h3 id="reuse">Reuse</h3>
+  <p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Source code is available at <a href="https://github.com/zarathucorp/blog">https://github.com/zarathucorp/blog</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
+  <h3 id="citation">Citation</h3>
+  <p>For attribution, please cite this work as</p>
+  <pre class="citation-appendix short">park (2022, July 25). Zarathu Blog: collapse 패키지 소개. Retrieved from https://blog.zarathu.com/posts/2022-07-25-collapse/</pre>
+  <p>BibTeX citation</p>
+  <pre class="citation-appendix long">@misc{park2022collapse,
+  author = {park, beomsu},
+  title = {Zarathu Blog: collapse 패키지 소개},
+  url = {https://blog.zarathu.com/posts/2022-07-25-collapse/},
+  year = {2022}
+}</pre>
+</div>
+<!--/radix_placeholder_appendices-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--radix_placeholder_navigation_after_body--><html><body>
+<div class="distill-site-nav distill-site-footer">
+<p>© Copyright 2019 <a href="https://www.zarathu.com">Zarathu
+Co.,Ltd</a>.</p>
+<p>Software licensed under the <a href="https://raw.githubusercontent.com/zarathucorp/blog/master/LICENSE">MIT
+License</a>.</p>
+</div>
+<!--/radix_placeholder_navigation_after_body-->
+</body></html>
+
+
+</body>
+
+</html>
