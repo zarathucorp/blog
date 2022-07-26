@@ -179,19 +179,24 @@ rmarkdown::paged_table(head(fnobs(wlddev, wlddev$iso3c)))
 
 qsu(wlddev, cols = 9:12, higher = TRUE) # higher 는 왜도와 첨도
 
-# 지역별 열9:12에 따른 기술통계량
-
-qsu(wlddev, by = ~region, cols = 9:12, vlabels = TRUE, higher = TRUE)
-
 ```
 
 ```{r,echo=FALSE}
 
 knitr::kable(qsu(wlddev, cols = 9:12, higher = TRUE))
 
-rmarkdown::paged_table(qDT(qsu(wlddev, by = ~region, cols = 9:12, vlabels = TRUE, higher = TRUE)))
+```
+
+
+
+```{r, echo=TRUE}
+
+# 지역별 열9:12에 따른 기술통계량
+
+qsu(wlddev, by = ~region, cols = 9:12, vlabels = TRUE, higher = TRUE)
 
 ```
+
 
 -------------------------------------------------
 
@@ -426,13 +431,14 @@ rmarkdown::paged_table(wlddev %>% ftransformv(9:12, log) %>% tail(2))
 ```
 
 -------------------------------------------------
+
 - 쉼표로 구분된 column = value 표현식을 전달하는 대신 단일 리스트 표현식(예:데이터 프레임)을 전달하여 데이터를 대량 처리할 수 있습니다. **ftransform**은 여러 단계를 포함하는 복잡한 변환에 유용합니다.
 
 
 ```{r, eval= FALSE, echo=TRUE}
 
 
-wlddev %>% ftransform(num_vars(.) %>% lapply(log) %>% replace_Inf) %>% tail(2) # num_var() 숫자 데이터를 선택하고 값을 대체
+wlddev %>% ftransform(num_vars(.) %>% lapply(log) %>% replace_Inf) %>% tail(2) # num_var() 수치형 데이터를 선택하고 값을 대체
 
 
 ```
@@ -444,7 +450,8 @@ rmarkdown::paged_table(wlddev %>% ftransform(num_vars(.) %>% lapply(log) %>% rep
 ```
 
 -------------------------------------------------
-- **fcompute**는 데이터 프레임 환경에서 새로운 칼럼을 계산하는데 사용하고 새로운 데이터 프레임에서 계산된 열을 반환합니다.또한 **ftransform**처럼 작동하지만 데이터를 수정하거나 추가하지 않고 변경된/계산된 열만 반환합니다.
+ 
+- **fcompute**는 데이터 프레임 환경에서 새로운 칼럼을 계산하는데 사용하고 새로운 데이터 프레임에서 계산된 열을 반환합니다. 또한 **ftransform**처럼 작동하지만 데이터를 수정하거나 추가하지 않고 변경된/계산된 열만 반환합니다.
 
 
 ```{r, eval= FALSE, echo=TRUE}
@@ -459,7 +466,10 @@ rmarkdown::paged_table(fcompute(wlddev, LIFEEX_INT = floor(LIFEEX), year = as.in
 
 ```
 
+
 -------------------------------------------------
+
+
 ### 집계
 
 
@@ -488,15 +498,18 @@ rmarkdown::paged_table(cwlddev %>% head(2))
 
 ```
 
+
 -------------------------------------------------
+
+
 ```{r, eval= FALSE, echo=TRUE}
 
 # 형식
 
-#fgroup_vars(X, return = "data") # X는 그룹화된 데이터 프레임
-                                 # return = data, 그룹화된 모든 데이터
-                                 # return = names, 컬럼명
-                                 # return = indices 인덱스
+## fgroup_vars(X, return = "data") # X는 그룹화된 데이터 프레임
+                                   # return = data, 그룹화된 모든 데이터
+                                   # return = names, 컬럼명
+                                   # return = indices 인덱스
  
 # 예시
 
@@ -509,6 +522,8 @@ fgroup_vars(cwlddev, return ="names")
 knitr::kable(fgroup_vars(cwlddev, return ="names"))
 
 ```
+
+
 -------------------------------------------------
 
 ### 빠른 통계 함수
@@ -738,4 +753,3 @@ autoplot(mb2)
 8. **'gby()'**는 **'fgroup_by()'**의 축약형 입니다.
 
 9. **'qDT'**는 데이터 테이블로 빠르게 변환할 수 있는 함수입니다.
-
