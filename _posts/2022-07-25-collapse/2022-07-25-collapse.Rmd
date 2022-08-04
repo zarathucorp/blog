@@ -1,12 +1,11 @@
 ---
 title: "collapse 패키지 소개"
-description: collapse 패키지를 소개하고 data.table, dplyr, plm 패키지들과 비교하여 파악해보겠습니다.
+description: collapse 패키지를 소개하고 data.table 패키지와 비교하여 파악해보겠습니다.
 preview: https://raw.githubusercontent.com/SebKrantz/collapse/master/misc/figures/collapse_logo_small.png
 categories:
   - R
   - COLLAPSE
   - DATA.TABLE
-  - DPLYR
 author:
   - name: beomsu park 
     url: https://github.com/qkrqjatn218
@@ -42,6 +41,7 @@ R의 고급 데이터 변환 및 통계 컴퓨팅을 위한 C/C++ 기반 패키�
 ## Setup
 
 ```{r,echo=T}
+
 ##setup
 
 #install.packages("collapse")
@@ -49,353 +49,390 @@ R의 고급 데이터 변환 및 통계 컴퓨팅을 위한 C/C++ 기반 패키�
 library(magrittr)
 library(data.table) 
 library(dplyr)
-library(ggplot2)
 library(collapse)
+library(microbenchmark)
 
 ```
 
 
 ## load file
 
-collapse 패키지에 있는 기본 예제 파일을 불러오겠습니다.
+09-15년 공단 건강검진 데이터에서 실습용으로 32명을 뽑은 자료를 이용하겠습니다.
 
-```{r, eval= FALSE, echo=TRUE}
-#load file
+```{r,eval=FALSE,echo=TRUE}
+# Exam data: 09-15
 
-head(wlddev)
-
-```
-
-```{r,echo=FALSE}
-#load file
-
-rmarkdown::paged_table(head(wlddev))
+dt <- fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv")
+df <- read.csv("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv")
 
 ```
 
-
-
-
-```{r, eval= FALSE, echo=TRUE}
-#load file
-
-head(GGDC10S)
-
-```
-
-```{r,echo=FALSE}
-#load file
-
-rmarkdown::paged_table(head(GGDC10S))
-
-```
+--------------------------------------------------------
 
 
 # 2. collapse 패키지
 
 
-- 기본적인 몇가지 코드를 알아보겠습니다.
+- 자주 사용하는 연산 위주로 **collapse**와 **data.table**을 비교하여 파악해보겠습니다.
+
+**collapse**패키지는 **dplyr**패키지와 유사한 함수들이 존재합니다.주로 **dplyr** 함수명 앞에 "f"를 붙여 쓰입니다. 예를 들면, **dplyr::select()**와 **collapse::fselect()**, **collapse::fgroup_by()**와 **dplyr::group_by()**등 기능적으로 유사한 부분이 있지만, 속도 면에서 **collapse**가 월등한 수준을 보입니다. 속도에 대한 자료는 뒷부분에서 확인할 수 있기 때문에, 우선 자주 사용하고 익숙한 **data.table**을 코드를 통해 **collapse**패키지를 알아보도록 하겠습니다.
 
 
-## 기본적인 데이터 요약
+## load
 
-```{r, eval= FALSE, echo=TRUE}
 
-# 변수의 클래스
+- **collapse**는 데이터를 불러오는 함수가 존재하지 않기 때문에, **data.table**를 이용하여 읽습니다. 
 
-namlab(wlddev, class = TRUE)
+- **fselect()**는 컬럼명을 명시하거나 인덱스를 전달하면 원하는 컬럼을 불러올 수 있습니다.
 
-# 빠르고 상세한 통계 설명(생략)
 
-descr ( wlddev ) 
+```{r, eval=FALSE, echo=TRUE}
 
-# 깔끔한 데이터 프레임으로 변환
+## data.table(Only specific column)
+dt1 <- fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv",select = c("EXMD_BZ_YYYY", "RN_INDI", "HME_YYYYMM"))
+dt2 <- fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv", select = 1:5)
+dt3 <- fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv", drop = 6:10)
 
-head ( as.data.frame ( descr ( wlddev ) ) )
+## collapse(Only specific column)
+dt4 <- fselect(fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"),EXMD_BZ_YYYY, RN_INDI, HME_YYYYMM)
+dt5 <- fselect(fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"),1:5)
+dt6 <- fselect(fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"),-(6:10)) 
+
+```
+
+
+- 예시로 **dt6**를 확인해보면, **dt3**와 마찬가지로 인덱스 6부터 10까지 제외되서 출력된 것을 볼 수 있습니다.
+
+
+```{r,eval=FALSE,echo=TRUE}
+
+dt3
 
 ```
 
 ```{r, echo=FALSE}
 
-# 변수의 클래스
-rmarkdown::paged_table(qDT(namlab(wlddev, class = TRUE)))
-
-
-# 깔끔한 데이터 프레임으로 변환
-rmarkdown::paged_table(head ( as.data.frame ( descr ( wlddev ) ) ))
-```
-
-
--------------------------------------------------
-
-
-
-```{r, eval= FALSE, echo=TRUE}
-
-# 모든 열에서 변동된 데이터를 확인(생략)
-
-varying(wlddev)
-
-# 나라별로 데이터가 시변인지 여부 확인
-
-head(varying(wlddev, ~ country, any_group = FALSE))
+rmarkdown::paged_table(fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv", drop = 6:10))
 
 ```
 
-```{r,echo=FALSE}
+```{r,eval=FALSE,echo=TRUE}
 
-# 나라별로 데이터가 시변인지 여부 확인
-rmarkdown::paged_table(qDT(head(varying(wlddev, ~ country, any_group = FALSE))))
-```
-
-
-
--------------------------------------------------
-
-
-```{r, eval= FALSE, echo=TRUE}
-
-# 결측치를 제외한 카운팅
-
-head(fnobs(wlddev, wlddev$iso3c))
+dt6
 
 ```
 
-```{r,echo=FALSE}
+```{r, echo=FALSE}
 
-rmarkdown::paged_table(head(fnobs(wlddev, wlddev$iso3c)))
-
-```
-
-
-
--------------------------------------------------
-
-
-
-``````{r, eval= FALSE, echo=TRUE}
-
-# 특정 열의 기술통계량
-
-qsu(wlddev, cols = 9:12, higher = TRUE) # higher 는 왜도와 첨도
+rmarkdown::paged_table(fselect(fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"),-(6:10)))
 
 ```
 
-```{r,echo=FALSE}
-
-knitr::kable(qsu(wlddev, cols = 9:12, higher = TRUE))
-
-```
+-------------------------------------------------------------------
 
 
+## row
 
-```{r, echo=TRUE}
-
-# 지역별 열9:12에 따른 기술통계량
-
-qsu(wlddev, by = ~region, cols = 9:12, vlabels = TRUE, higher = TRUE)
-
-```
-
-
--------------------------------------------------
-
-## 선택, 부분 집합화, 정렬 및 그룹화
-
-
-
-### 선택
 
 - **collapse::fselect**와 **dplyr::select**는 유사하지만 **fselect**가 x100배 정도 빠릅니다. 
 
-- **fselect**는 변수 이름을 포함하는 표현식을 사용하여 변수를 선택하는 데 사용할 수 있습니다.
+- **ss()**함수는 컬럼명이 아닌 인덱스로 행,열을 출력을 할 때 사용합니다. **fsubset()** 보다 빠르지만 기능이 제한적이기 떄문에 간단한 행,열 출력할 때 사용가능합니다.
 
 
-```{r, eval= FALSE, echo=TRUE}
+```{r, eval=FALSE, echo=TRUE}
 
-# install.packages("microbenchmark")
-library(microbenchmark)
+## data.table(row)
+dt[1:10]
+dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25)]
+dt[order(HME_YYYYMM)]
+dt[order(HME_YYYYMM, -HGHT)]
+dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25)][order(HGHT)]        
+dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25)] %>% .[order(HGHT)]  #same
 
-# 열 선택
-
-fselect(wlddev, country, year, PCGDP:ODA) %>% head(2)
-
-# 열 선택 country, year, (PCGDP:ODA) 제외
-
-fselect(wlddev, -country, -year, -(PCGDP:ODA)) %>% head(2)
-
-```
-
-```{r,echo=FALSE}
-
-library(microbenchmark)
-
-rmarkdown::paged_table(fselect(wlddev, country, year, PCGDP:ODA) %>% head(2))
-
-rmarkdown::paged_table(fselect(wlddev, -country, -year, -(PCGDP:ODA)) %>% head(2))
-```
--------------------------------------------------
-
-```{r, echo=TRUE}
-
-# collapse::fselect, dplyr::select 비교
-
-mb <- microbenchmark(fselect = collapse::fselect(wlddev, country, year, PCGDP:ODA),
-                     select = dplyr::select(wlddev, country, year, PCGDP:ODA))
-
-mb
+## collapse(row)                                       
+fsubset(dt, 1:10)                                                   #ss(dt,1:10)
+fsubset(dt, EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25 )               
+roworder(dt, HME_YYYYMM)                                            
+roworder(dt, HME_YYYYMM, -HGHT)
+roworder(dt, HGHT) %>% fsubset(EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25)
 
 ```
 
--------------------------------------------------
 
-- **dplyr::select**와 달리 **fselect**는 값을 대체할 수 있습니다.또한 데이터 자체가 아닌 선택된 열에 대한 정보를 반환할 수도 있습니다.
+- 예시로 두번째 코드와 다섯번째 코드를 확인해보겠습니다. 
 
 
-```{r, eval= FALSE, echo=TRUE}
+**두번째**
 
-# 열 로그 계산 
+```{r, eval=FALSE, echo=TRUE}
 
-fselect(wlddev, PCGDP:POP) <- lapply(fselect(wlddev, PCGDP:POP), log)
-head(wlddev)
-
-# 삭제(생략)
-
-fselect ( wlddev , region , year , PCGDP : POP )  <-  NULL 
-head(wlddev)
-
-rm(wlddev)
-
-```
-
-```{r,echo=FALSE}
-
-fselect(wlddev, PCGDP:POP) <- lapply(fselect(wlddev, PCGDP:POP), log)
-
-rmarkdown::paged_table(head(wlddev))
-
-```
--------------------------------------------------
-
-```{r, eval= FALSE, echo=TRUE}
-
-# 컬럼명의 대한 정보
-
-fselect(wlddev, PCGDP:POP, return = "named_indices")
-
-```
-
-```{r,echo=FALSE}
-
-knitr::kable(fselect(wlddev, PCGDP:POP, return = "named_indices"))
-
-```
--------------------------------------------------
-
-### 부분 집합화
-
-- **fsubset** 빠르고 부분적인 작업을 위해 **base::subset** 패키지 의 C 함수를 사용 하는 향상된 버전입니다.
-
-
-```{r, eval= FALSE, echo=TRUE}
-
-# 조건을 만족한 열 출력
-
-fsubset(wlddev, decade > 1980, country, region, OECD:POP) %>% head(2)
-
-# 조건을 만족하고 '-'표시된 제외하고 출력
-
-fsubset(wlddev, decade > 1990, -country, -region, -(OECD:POP)) %>%  head(2)
-
-```
-
-```{r,echo=FALSE}
-
-rmarkdown::paged_table(fsubset(wlddev, decade > 1980, country, region, OECD:POP) %>% head(2))
-
-rmarkdown::paged_table(fsubset(wlddev, decade > 1990, -country, -region, -(OECD:POP)) %>%  head(2))
-
-
-```
-
--------------------------------------------------
-
-- **fsubset**는 기본적 계산이 가능하지만, .data.frame에 대안으로 안전하고 빠른 함수 **ss**가 존재합니다.
-
-
-```{r, eval= FALSE, echo=TRUE}
-
-ss(wlddev, 1:2, 1:5) # fsubset(wlddev, 1:2, 1:5) 가능하지만 추천하지 않습니다.
-
-```
-
-```{r,echo=FALSE}
-
-knitr::kable(ss(wlddev, 1:2, 1:5))
-
-```
--------------------------------------------------
-
-### 정렬 및 그룹화
-
-
-- **roworder**는 **dplyr::arrange**와 유사하게 빠르고 **data.table::setorder** 와 같이 "-변수"를 내림차순 정렬로 출력합니다.
-
-- **data.table::setorder**와 대조적으로, **roworder**는 데이터 프레임을 복사본을 생성할 수 있습니다. 하지만 복사본이 필요하지 않으면, **data.table::setorder**가 더 빠릅니다.
-
-
-```{r, eval= FALSE, echo=TRUE}
-
-# decade 내림차순 정렬
-
-roworder(wlddev, -decade, region ) %>% ss(1:2, 1:8)
-
-```
-
-```{r,echo=FALSE}
-
-knitr::kable(roworder(wlddev, -decade, region ) %>% ss(1:2, 1:8))
-
-```
-
--------------------------------------------------
-
-```{r, eval= FALSE, echo=TRUE}
-
-# "ALB" 앞으로 정렬 default (pos = "front")(생략)
-
-roworderv(wlddev, neworder = which(wlddev$iso3c =="ALB")) %>% ss(1:2, 1:8)
-
-# "AFG" 뒤로 정렬
-
-roworderv(wlddev,neworder = which(wlddev$iso3c =="AFG"), pos = "end") %>% ss(1:2, 1:8)
-
-```
-
-```{r,echo=FALSE}
-
-knitr::kable(roworderv(wlddev,neworder = which(wlddev$iso3c =="AFG"), pos = "end") %>% ss(1:2, 1:8))
-
-```
-
--------------------------------------------------
-
-```{r, eval= FALSE, echo=TRUE}
-
-# 다른 행에 영향없이, 교환
-
-roworderv(wlddev, neworder = with(wlddev,c(which(iso3c == "BWA"),which(iso3c =="AFG"))),pos = "exchange") %>% ss(1:2, 1:8)
+fsubset(dt, EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25 ) 
 
 ```
 
 ```{r, echo=FALSE}
 
-knitr::kable(roworderv(wlddev, neworder = with(wlddev,c(which(iso3c == "BWA"),which(iso3c =="AFG"))),pos = "exchange") %>% ss(1:2, 1:8))
+dt <- fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv")
+
+rmarkdown::paged_table(fsubset(dt, EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25 ))
 
 ```
--------------------------------------------------
 
-### 새로운 열의 변환과 계산
+
+```{r, eval=FALSE, echo=TRUE}
+
+dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25)]
+
+```
+
+
+```{r, echo=FALSE}
+
+rmarkdown::paged_table(dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25)])
+
+```
+
+**다섯번째**
+
+```{r, eval=FALSE, echo=TRUE}
+
+dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25)][order(HGHT)] 
+
+```
+
+
+```{r, echo=FALSE}
+
+rmarkdown::paged_table(dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25)][order(HGHT)])
+
+```
+
+
+```{r, eval=FALSE, echo=TRUE}
+
+roworder(dt, HGHT) %>% fsubset(EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25) 
+
+```
+
+
+```{r, echo=FALSE}
+
+rmarkdown::paged_table(roworder(dt, HGHT) %>% fsubset(EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25))
+
+```
+
+
+-------------------------------------------------------------------
+
+## column
+
+
+- 열 이름을 정규식으로 선택하기 위해서는 **fselect()**가 아니라 **get_vars()** 함수를 이용해야합니다. **regex = TRUE** 정규식을 사용하겠다는 의미이고 **return = "names"** 컬럼명을 출력하겠다는 의미입니다. **get_var()**는 **fselect()**함수와 유사하지만, 수행속도가 좀 더 빠르며 벡터, 정수 형태로 값을 전달합니다.
+
+- 유의사항은 컬럼명을 리스트로 전달하면 ERROR 발생합니다.
+ 
+- **fsubset**는 빠르고 부분적인 작업을 위해 **base::subset** 패키지 의 C 함수를 사용하는 향상된 버전입니다.
+
+
+```{r, eval= FALSE, echo=TRUE}
+
+## data.table(column)
+dt[, 1:10]
+dt[, c("HGHT", "WGHT")]
+dt[, .(HGHT, WGHT)]
+dt[, .(Height = HGHT, Weight = WGHT)]   
+dt[, .(HGHT)] 
+dt[, "HGHT"]
+colvars1 <- grep("Q_", names(dt), value = T)
+dt[, ..colvars1]
+dt[, colvars1, with = FALSE]      
+dt[, .SD, .SDcols = colvars1]     
+dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25), ..colvars]
+dt[, !..colvars1]
+dt[, -..colvars1]
+dt[, .SD, .SDcols = -colvars1]
+
+## collapse(column)
+fselect(dt, 1:10)                 
+fselect(dt, c("HGHT", "WGHT"))    #get_vars(dt, 1:10)
+fselect(dt, HGHT, WGHT)           #get_vars(dt, c("HGHT", "WGHT"))
+fselect(dt, Height = HGHT, Weight = WGHT)
+fselect(dt, .(HGHT))              #ERROR
+fselect(dt, "HGHT")
+colvars2 <-get_vars(dt, "Q_", regex = TRUE, return = "names")    #regex = TRUE 정규식 사용/ return = "names" 컬럼명 출력
+fselect(dt, colvars2)                                            #fselect(dt, c(colvars))
+get_vars(dt, colvars2)                                           #get_var(dt, c(colvars))
+fsubset(dt,EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25, colvars2)
+fselect(dt, -(4:12))
+fselect(dt, -(Q_PHX_DX_STK:Q_DRK_FRQ_V09N))
+
+```
+
+
+- 예시로 같은 값을 출력하는지 확인해 보겠습니다.
+
+
+```{r}
+
+colvars1 <- grep("Q_", names(dt), value = T)
+
+qDT(colvars1)
+
+```
+
+
+```{r}
+
+colvars2 <-get_vars(dt, "Q_", regex = TRUE, return = "names")
+
+qDT(colvars2)
+
+```
+
+
+
+```{r, eval=FALSE, echo=TRUE}
+
+dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25), ..colvars1]
+
+```
+
+```{r, echo=FALSE}
+
+rmarkdown::paged_table(dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25), ..colvars1])
+
+```
+
+
+```{r, eval=FALSE, echo=TRUE}
+
+fsubset(dt,EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25, colvars2)
+
+```
+
+```{r, echo=FALSE}
+
+rmarkdown::paged_table(fsubset(dt,EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25, colvars2))
+
+```
+
+
+-------------------------------------------------------------------
+
+## Column summary
+
+
+- **fmean**는 (열별) 평균을 계산하고, (선택적으로) 그룹화 및 가중치를 계산하는 일반적인 함수입니다.
+
+- **dapply**는 데이터에 대한 정보(속성)를 잃거나 데이터의 클래스 또는 형식을 변경하지 않고 데이터의 행이나 열에 함수를 적용하는 효율적인 함수입니다.
+
+
+
+```{r, eval= FALSE, echo=TRUE}
+
+## data.tanble(Column summary)
+dt[, .(HGHT = mean(HGHT), WGHT = mean(WGHT), BMI = mean(BMI))] 
+
+dt[, lapply(.SD, mean), .SDcols = c(13, 14, 16)]
+
+#collapse(Column summary)
+fselect(dt,HGHT,WGHT,BMI) %>% fmean()     #fmean(fselect(dt,HGHT,WGHT,BMI))
+
+dapply(fselect(dt,HGHT,WGHT,BMI),fmean)
+
+```
+
+
+- 두번째 코드를 비교해보겠습니다.
+
+
+```{r, eval=FALSE, echo=TRUE}
+
+dt[, lapply(.SD, mean), .SDcols = c(13, 14, 16)]
+
+```
+
+```{r, echo=FALSE}
+
+knitr::kable(dt[, lapply(.SD, mean), .SDcols = c(13, 14, 16)])
+
+```
+
+
+```{r, eval=FALSE, echo=TRUE}
+
+dapply(fselect(dt,HGHT,WGHT,BMI),fmean)
+
+```
+
+```{r, echo=FALSE}
+
+knitr::kable(qDF(dapply(fselect(dt,HGHT,WGHT,BMI),fmean)))
+
+```
+
+
+-------------------------------------------------------------------
+
+## By
+
+
+- **collap()**는 'Fast Statistical Functions' 사용하여 각 컬럼에 여러 함수를 적용할 수 있습니다.(#Fast Statistical Functions: fsum, fprod, fmean, fmedian, fmode, fvar, fsd, fmin, fmax, fnth, ffirst, flast, fnobs, fndistinct)
+
+
+- **add_stub()** 연산을 통해 열을 추가할 수 있는 명령입니다. ""를 통해 열 이름을 설정할 수 있습니다.
+
+
+```{r, eval= FALSE, echo=TRUE}
+
+##data.table(By)
+dt[, .(HGHT = mean(HGHT), WGHT = mean(WGHT), BMI = mean(BMI)), by = EXMD_BZ_YYYY]
+dt[, .(HGHT = mean(HGHT), WGHT = mean(WGHT), BMI = mean(BMI)), by = "EXMD_BZ_YYYY"]  #same
+dt[, lapply(.SD, mean), .SDcols = c("HGHT", "WGHT", "BMI"), by = EXMD_BZ_YYYY]       #same
+dt[HGHT >= 175, .N, by= .(EXMD_BZ_YYYY, Q_SMK_YN)]        
+dt[HGHT >= 175, .N, by= c("EXMD_BZ_YYYY", "Q_SMK_YN")]                               #same
+dt[HGHT >= 175, .N, keyby= c("EXMD_BZ_YYYY", "Q_SMK_YN")]                            #same(정렬)
+
+#collapse(By)                                                  
+collap(dt, ~ EXMD_BZ_YYYY, fmean, cols = c(13,14,16))                                # ~ ≒ by
+fmean(fselect(dt,EXMD_BZ_YYYY,HGHT,WGHT,BMI), dt$EXMD_BZ_YYYY)                       #same
+add_stub(count(fsubset(dt, HGHT >= 175, EXMD_BZ_YYYY,Q_SMK_YN),EXMD_BZ_YYYY,Q_SMK_YN),"N")  #dplyr::count()
+
+```
+
+
+- 마지막 코드를 비교해보겠습니다. 결측치 값의 정렬 순서의 차이가 있지만, 같은 기능을 수행할 수 있습니다.
+
+
+```{r,eval=FALSE, echo=TRUE}
+
+dt[HGHT >= 175, .N, keyby= c("EXMD_BZ_YYYY", "Q_SMK_YN")]
+
+```
+
+```{r, echo=FALSE}
+
+rmarkdown::paged_table(dt[HGHT >= 175, .N, keyby= c("EXMD_BZ_YYYY", "Q_SMK_YN")])
+
+```
+
+
+```{r, eval=FALSE, echo=TRUE}
+
+add_stub(count(fsubset(dt, HGHT >= 175, EXMD_BZ_YYYY,Q_SMK_YN),EXMD_BZ_YYYY,Q_SMK_YN),"N")
+
+```
+
+```{r, echo=FALSE}
+
+rmarkdown::paged_table(add_stub(count(fsubset(dt, HGHT >= 175, EXMD_BZ_YYYY,Q_SMK_YN),EXMD_BZ_YYYY,Q_SMK_YN),"N"))
+
+```
+
+
+-------------------------------------------------------------------
+
+## New variable
 
 
 - **ftransform** 새 열을 계산하거나 기존 열을 수정 및 삭제하는 데 사용할 수 있으며 항상 전체 데이터 프레임을 반환합니다.
@@ -405,240 +442,171 @@ knitr::kable(roworderv(wlddev, neworder = with(wlddev,c(which(iso3c == "BWA"),wh
 
 ```{r, eval= FALSE, echo=TRUE}
 
-# 형식
-## ftransform(.data, ...) # .data 는 데이터프레임 또는 컬럼명
-                          # ... 은 columns = value로 value 값에는 다양한 결합이 가능
+## data.table(New variable)
+dt[, BMI2 := round(WGHT/(HGHT/100)^2, 1)]
 
+dt[, `:=`(BP_SYS140 = factor(as.integer(BP_SYS >= 140)), BMI25 = factor(as.integer(BMI >= 25)))]
 
-# 예시
+dt[, BMI2 := NULL]
 
-ftransform(wlddev, LIFEEX_INT = floor(LIFEEX), # 열 추가
-                    year = as.integer(year),   # 정수로 변환
-                    LIFEEX = NULL) %>% tail(2) # 해당 열 삭제
+## collapse(New variable)
+ftransform(dt, BMI2 = round(WGHT/(HGHT/100)^2, 1))
 
+ftransform(dt,BP_SYS140 = factor(as.integer(BP_SYS >= 140)),BMI25 = factor(as.integer(BMI >= 25)))
 
-wlddev %>% ftransformv(9:12, log) %>% tail(2) # ftransformv 함수를 사용하여 특정 칼럼을 변형하는 수정(생략)
-
-```
-
-```{r, echo=FALSE}
-
-rmarkdown::paged_table(ftransform(wlddev, LIFEEX_INT = floor(LIFEEX),year = as.integer(year),LIFEEX = NULL) %>% tail(2))
-
-
-rmarkdown::paged_table(wlddev %>% ftransformv(9:12, log) %>% tail(2))
+ftransform(dt, BMI2 = NULL)
 
 ```
 
--------------------------------------------------
 
-- 쉼표로 구분된 column = value 표현식을 전달하는 대신 단일 리스트 표현식(예:데이터 프레임)을 전달하여 데이터를 대량 처리할 수 있습니다. **ftransform**은 여러 단계를 포함하는 복잡한 변환에 유용합니다.
+- 첫번째와 두번째 코드를 확인해보겠습니다.
+
+
+- **data.table**
+
+
+```{r,echo=FALSE}
+
+dt <- fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv")
+
+rmarkdown::paged_table(dt[, BMI2 := round(WGHT/(HGHT/100)^2, 1)])
+
+rmarkdown::paged_table(dt[, `:=`(BP_SYS140 = factor(as.integer(BP_SYS >= 140)), BMI25 = factor(as.integer(BMI >= 25)))])
+
+rm(dt)
+```
+
+
+- **collapse**
+
+```{r,echo=FALSE}
+
+dt <- fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv")
+
+rmarkdown::paged_table(ftransform(dt, BMI2 = round(WGHT/(HGHT/100)^2, 1)))
+
+rmarkdown::paged_table(ftransform(dt,BP_SYS140 = factor(as.integer(BP_SYS >= 140)),BMI25 = factor(as.integer(BMI >= 25))))
+
+rm(dt)
+
+```
+
+
+-------------------------------------------------------------------
+
+
+## Specific symbol .N, .SD, .SDcols
+
 
 
 ```{r, eval= FALSE, echo=TRUE}
 
+## data.table(Specific symbol .N, .SD, .SDcols)
+dt[, .SD]
 
-wlddev %>% ftransform(num_vars(.) %>% lapply(log) %>% replace_Inf) %>% tail(2) # num_var() 수치형 데이터를 선택하고 값을 대체
+dt[, lapply(.SD, class)]
 
+dt[, .N, keyby = "RN_INDI"]
+
+## collapse
+fselect(dt,1:32)
+
+dapply(dt,class)
+
+add_stub(count(dt,RN_INDI),"N")
+
+```
+
+
+- 두번째 코드를 비교해보겠습니다. 비슷하지만 출력하는 형태가 다릅니다. **class()**를 사용하여 확인해보면 형태가 다른 것을 알 수 있습니다.
+
+
+```{r, eval=FALSE, echo=TRUE}
+
+dt[, lapply(.SD, class)]
 
 ```
 
 ```{r, echo=FALSE}
 
-rmarkdown::paged_table(wlddev %>% ftransform(num_vars(.) %>% lapply(log) %>% replace_Inf) %>% tail(2))
+dt <- fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv")
+
+rmarkdown::paged_table(dt[, lapply(.SD, class)])
 
 ```
 
--------------------------------------------------
- 
-- **fcompute**는 데이터 프레임 환경에서 새로운 칼럼을 계산하는데 사용하고 새로운 데이터 프레임에서 계산된 열을 반환합니다. 또한 **ftransform**처럼 작동하지만 데이터를 수정하거나 추가하지 않고 변경된/계산된 열만 반환합니다.
+
+```{r, eval=FALSE, echo=TRUE}
+
+dapply(dt,class)
+
+```
+
+```{r, echo=FALSE}
+
+rmarkdown::paged_table(qDF(dapply(dt,class)))
+
+```
+
+
+```{r,echo=TRUE}
+
+class(dt[, lapply(.SD, class)])
+
+class(dapply(dt,class))
+
+```
+
+-------------------------------------------------------------------
+
+## order
 
 
 ```{r, eval= FALSE, echo=TRUE}
 
-fcompute(wlddev, LIFEEX_INT = floor(LIFEEX), year = as.integer(year)) %>% tail(2)
+#data.table(order)
+dt[, .(HGHT=mean(HGHT), WGHT=mean(WGHT), BMI=mean(BMI)), by=EXMD_BZ_YYYY] [order(BMI)]
+
+dt[, .(HGHT=mean(HGHT), WGHT=mean(WGHT), BMI=mean(BMI)), by=EXMD_BZ_YYYY] [order(-BMI)]
+
+#collapse(order)
+fmean(fselect(dt,EXMD_BZ_YYYY,HGHT,WGHT,BMI), dt$EXMD_BZ_YYYY) %>% roworder(BMI)
+
+fmean(fselect(dt,EXMD_BZ_YYYY,HGHT,WGHT,BMI), dt$EXMD_BZ_YYYY) %>% roworder(-BMI)
+
+```
+
+
+- 첫번째 코드를 통해 **data.table**과 **collapse** 출력 결과를 확인해보겠습니다.
+
+
+```{r, eval=FALSE, echo=TRUE}
+
+dt[, .(HGHT=mean(HGHT), WGHT=mean(WGHT), BMI=mean(BMI)), by=EXMD_BZ_YYYY] [order(BMI)]
 
 ```
 
 ```{r, echo=FALSE}
 
-rmarkdown::paged_table(fcompute(wlddev, LIFEEX_INT = floor(LIFEEX), year = as.integer(year)) %>% tail(2))
+rmarkdown::paged_table(dt[, .(HGHT=mean(HGHT), WGHT=mean(WGHT), BMI=mean(BMI)), by=EXMD_BZ_YYYY] [order(BMI)])
 
 ```
 
 
--------------------------------------------------
+```{r, eval=FALSE, echo=TRUE}
 
-
-### 집계
-
-
-- **fgroup_by**는 dplyr::group_by 와 유사하지만, 빠르고 클래스에 구애받지 않습니다.'GRP' 객체가 부착된 그룹화된 데이터 프레임을 만듭니다.
-
-
-```{r, eval= FALSE, echo=TRUE}
-
-# 형식
-
-## fgroup_by(.X, ..., sort = TRUE, decreasing = FALSE, na.last = TRUE, # .x는 데이터프레임 또는 리스트 
-##           return.order = sort, method = "auto")                     # ...는 열 이름, 열 시퀀스, 열을 포함하는 식, 인덱스, 논리 벡터 또는 선택 함수
-                
-
-# 예시
-
-cwlddev <- fgroup_by(wlddev, year, country, PCGDP:POP) %>% fselect(-decade, -iso3c)
-cwlddev %>% head(2)
+fmean(fselect(dt,EXMD_BZ_YYYY,HGHT,WGHT,BMI), dt$EXMD_BZ_YYYY) %>% roworder(BMI)
 
 ```
 
 ```{r, echo=FALSE}
 
-cwlddev <- fgroup_by(wlddev, year, country, PCGDP:POP) %>% fselect(-decade, -iso3c)
-rmarkdown::paged_table(cwlddev %>% head(2))
+rmarkdown::paged_table(fmean(fselect(dt,EXMD_BZ_YYYY,HGHT,WGHT,BMI), dt$EXMD_BZ_YYYY) %>% roworder(BMI))
 
 ```
 
+-------------------------------------------------------------------
 
--------------------------------------------------
-
-
-```{r, eval= FALSE, echo=TRUE}
-
-# 형식
-
-## fgroup_vars(X, return = "data") # X는 그룹화된 데이터 프레임
-                                   # return = data, 그룹화된 모든 데이터
-                                   # return = names, 컬럼명
-                                   # return = indices 인덱스
- 
-# 예시
-
-fgroup_vars(cwlddev, return ="names")
-
-```
-
-```{r, echo=FALSE}
-
-knitr::kable(fgroup_vars(cwlddev, return ="names"))
-
-```
-
-
--------------------------------------------------
-
-### 빠른 통계 함수
-
-
-- **fmean**는 (열별) 평균을 계산하고, (선택적으로) 그룹화 및 가중치를 계산하는 일반적인 함수입니다. 
-
-
-```{r, eval= FALSE, echo=TRUE}
-
-# 데이터
-
-head(mtcars)
-
-# 열 평균(생략)
-
-fmean(mtcars$mpg)
-
-# 열별 평균(생략)
-
-fmean(mtcars)
-
-# matrix 변환 (생략)
-
-m <- qM(mtcars) 
-fmean(m)
-
-# matrix 1행 출력(생략)
-
-fmean(mtcars, drop = FALSE)
-
-# 최대값 matrix 1행 출력(생략)
-
-fmax(mtcars, drop = FALSE)
-
-# 합 계산
-
-fsum(mtcars, TRA = "%") %>% head  # TRA = "%" -> percentages 계산
-
-```
-
-```{r, echo=FALSE}
-
-# 데이터
-rmarkdown::paged_table(qDT(head(mtcars)))
-
-
-# 합 계산
-rmarkdown::paged_table(qDT(fsum(mtcars, TRA = "%") %>% head))  # TRA = "%" -> percentages 계산
-
-```
--------------------------------------------------
-
-- 가중치를 사용하거나 그룹별로 계산할 수 있습니다.
-
-
-
-```{r, echo=TRUE}
-
-# 가중치
-
-weights <- abs(rnorm(fnrow(mtcars))) # fnrow는 데이터프레임에서 조금 더 빠르게 작동
-weights
-
-# 가중치 평균
-
-fmean(mtcars, w = weights)
-
-# 가중치 중간값
-
-fmedian(mtcars, w = weights)
-
-# 가중치 표준 편차
-
-fsd(mtcars, w = weights)
-
-# 가중치 최빈값
-
-fmode(mtcars, w = weights)
-
-```
-
--------------------------------------------------
-
-```{r, eval= FALSE, echo=TRUE}
-
-# 그룹별 평균
-
-fmean(mtcars, mtcars$cyl)
-
-# 그룹별 평균
-
-fmean(mtcars, fselect(mtcars, cyl, vs, am))
-
-# 2,8,9열 그룹화 평균
-
-ind <- fselect(mtcars, cyl, vs, am, return = "indices")
-fmean(get_vars(mtcars, -ind), get_vars(mtcars, ind)) 
-
-```
-
-```{r, echo=FALSE}
-
-# 그룹별 평균(생략)
-fmean(mtcars, mtcars$cyl)
-
-# 그룹별 평균
-rmarkdown::paged_table(fmean(mtcars, fselect(mtcars, cyl, vs, am)))
-
-# 2,8,9열 그룹화 평균
-ind <- fselect(mtcars, cyl, vs, am, return = "indices")
-rmarkdown::paged_table(fmean(get_vars(mtcars, -ind), get_vars(mtcars, ind)))
-
-```
--------------------------------------------------
 
 # 3. 벤치마킹
 
@@ -646,110 +614,156 @@ rmarkdown::paged_table(fmean(get_vars(mtcars, -ind), get_vars(mtcars, ind)))
 - 모든 벤치마크는 1.6GHZ Intel i5 프로세서, 16GB DDR4 RAM및 sk hynix sc308 ssd가 탑재된 Windows 10 노트북에서 실행됩니다.
 
 
-## 기본 연산
+## 기본 행 연산
 
 
 ```{r, echo=TRUE}
 
-# qDT는 벡터나 행렬등을 데이터테이블로 변환하는 함수
+## benchmarking
+microbenchmark(data.table = dt[1:10] ,
+               collapse = fsubset(dt, 1:10))
 
-microbenchmark(qDT(wlddev), as.data.table(wlddev))
+microbenchmark(data.table = dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25)],
+               collapse = fsubset(dt, EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25 ))
+
+microbenchmark(data.table = dt[order(HME_YYYYMM, -HGHT)],
+               collapse = roworder(dt, HME_YYYYMM, -HGHT))
+
+microbenchmark(data.table = dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25)][order(HGHT)],
+               collapse = roworder(dt, HGHT) %>% fsubset(EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25))
 
 ```
 
 -------------------------------------------------
 
+## 기본 열 연산
+
+
 ```{r, echo=TRUE}
 
-# 데이터 프레임에서 ss 함수를 사용하는 것이 효율적
+## benchmarking
+microbenchmark(data.table = dt[, 1:10],
+               collapse = fselect(dt, 1:10))
 
-microbenchmark(base = wlddev[1:10, 1:10], 
-               collapse1= fsubset(wlddev, 1:10, 1:10),
-               collapse2= ss(wlddev, 1:10, 1:10))
+microbenchmark(data.table = dt[, .(Height = HGHT, Weight = WGHT)],
+               collapse = fselect(dt, Height = HGHT, Weight = WGHT))
+
+#base::grep() more faster 
+microbenchmark(data.table = colvars <- grep("Q_", names(dt), value = T),
+               collapse = colvars <-get_vars(dt, "Q_",regex = TRUE, return = "names"))
+
+microbenchmark(data.table = dt[, ..colvars],
+               collapse = get_vars(dt, colvars))
+
+microbenchmark(data.table = dt[, ..colvars],
+               collapse = fselect(dt, colvars) )
+
+microbenchmark(data.table = dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25), ..colvars],
+               collapse = fsubset(dt,EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25, colvars))
+
 
 ```
 
 -------------------------------------------------
 
+## 평균 연산
+
+
 ```{r, echo=TRUE}
 
-# 열 결합
+## benchmarking
+microbenchmark(data.table = dt[, .(mean(HGHT), mean(WGHT), mean(BMI))],
+               collapse = fmean(fselect(dt,HGHT,WGHT,BMI)))
 
-microbenchmark(base = cbind(wlddev, wlddev), 
-               collapse = add_vars(wlddev, wlddev))
+microbenchmark(data.table = dt[, .(HGHT = mean(HGHT), WGHT = mean(WGHT), BMI = mean(BMI))],
+               collaspe = fmean(fselect(dt,HGHT,WGHT,BMI)))
+
+microbenchmark(data.table = dt[, lapply(.SD, mean), .SDcols = c(13, 14, 16)],
+               collapse = dapply(fselect(dt,HGHT,WGHT,BMI),fmean))
 
 ```
 
 -------------------------------------------------
 
+## 그룹별 통계 연산
+
+
 ```{r, echo=TRUE}
 
-# collapse 와 data.table
+## benchmarking
+microbenchmark(data.table = dt[, .(HGHT = mean(HGHT), WGHT = mean(WGHT), BMI = mean(BMI)), by = EXMD_BZ_YYYY],
+               collapse.collap = collap(dt, ~ EXMD_BZ_YYYY, fmean, cols = c(13,14,16)),
+               collapse.fmean = fmean(fselect(dt,EXMD_BZ_YYYY,HGHT,WGHT,BMI), dt$EXMD_BZ_YYYY))
 
-DT <- qDT(wlddev)
+microbenchmark(data.table = dt[, lapply(.SD, mean), .SDcols = c("HGHT", "WGHT", "BMI"), by = EXMD_BZ_YYYY],
+               collapse = fmean(fselect(dt,EXMD_BZ_YYYY,HGHT,WGHT,BMI), dt$EXMD_BZ_YYYY))
 
-mb1 <- microbenchmark(collapse = DT %>% gby(country) %>% get_vars(9:13) %>% fmean,    # gby()는 fgroup_by()의 축약
-                      data.table = DT[, lapply(.SD, mean, na.rm = TRUE), keyby = country, .SDcols = 9:13])
-
-mb1
+#data.table more faster
+microbenchmark(data.table = dt[HGHT >= 175, .N, by= .(EXMD_BZ_YYYY, Q_SMK_YN)],
+               collapse = add_stub(count(fsubset(dt, HGHT >= 175, EXMD_BZ_YYYY,Q_SMK_YN),EXMD_BZ_YYYY,Q_SMK_YN),"N") )
 
 ```
 
 -------------------------------------------------
+
+## 특수 심볼
+
 
 ```{r,echo=TRUE}
 
-autoplot(mb1)
+## benchmarking
+microbenchmark(data.table = dt[, .SD],
+               collapse = fselect(dt,1:32))
+
+microbenchmark(data.table = dt[, lapply(.SD, class)],
+               collapse = dapply(dt,class))
+
+#data.table more faster
+microbenchmark(data.table = dt[, .N, keyby = "RN_INDI"],
+               collapse = add_stub(count(dt,RN_INDI),"N"))
 
 ```
 
 -------------------------------------------------
+
+## 정렬 연산
 
 
 ```{r, echo=TRUE}
 
-# collapse 와 dplyr
+## benchmarking
+microbenchmark(data.table = dt[, .(HGHT=mean(HGHT), WGHT=mean(WGHT), BMI=mean(BMI)), by=EXMD_BZ_YYYY] [order(BMI)],
+               collapse = fmean(fselect(dt,EXMD_BZ_YYYY,HGHT,WGHT,BMI), dt$EXMD_BZ_YYYY) %>% roworder(BMI))
 
-mb2 <- microbenchmark(dplyr = filter(wlddev, decade > 1980) %>% 
-                              select(country, iso3c, region, PCGDP:POP ) %>% 
-                              arrange(desc(country)) %>%
-                              mutate(NEW = floor(LIFEEX)) %>%
-                              group_by(country),
-                      collapse = fsubset(wlddev, decade > 1980 ,country, iso3c, region, PCGDP:POP) %>% 
-                                 roworder(-country) %>%
-                                 ftransform(NEW = floor(LIFEEX)) %>%
-                                 fgroup_by(country))
-
-mb2
+microbenchmark(data.table = dt[, .(HGHT=mean(HGHT), WGHT=mean(WGHT), BMI=mean(BMI)), by=EXMD_BZ_YYYY] [order(-BMI)],
+               collapse = fmean(fselect(dt,EXMD_BZ_YYYY,HGHT,WGHT,BMI), dt$EXMD_BZ_YYYY) %>% roworder(-BMI))
 
 ```
 
--------------------------------------------------
 
-```{r, echo=TRUE}
-
-autoplot(mb2)
-
-```
 
 -------------------------------------------------
+
+
+
+
 # 4. 마치며
 
 
 1. **collapse**는 **dplyr** ,**data.table** 과 유사한 기능을 가지고 더 빠른 수행 속도를 발현할 수 있습니다.
 
-2. **'fselect'**는 **'dplyr::select'**와 다르게 데이터 값을 대체할 수 있습니다.
+2. **collapse**는 데이터를 불러오는 함수가 존재하지 않기 때문에, **data.table::fread()**를 이용하여 읽습니다.
 
-3. **'roworder'**는 **'data.table::setorder'** 와 같이 "-변수"를 내림차순 정렬로 출력합니다. 또한 복사본를 생성할 수 있습니다.
+3. **get_var()**는 **fselect()**함수와 유사하지만, 수행속도가 좀 더 빠릅니다.
 
-4. 데이터 프레임에서는 **'fsubset'**보다 **'ss'** 함수를 사용하는 것이 효율적입니다.
+4. **'roworder'**는 "-변수"를 내림차순 정렬로 출력합니다.
 
-5. **'fcompute'**는 **ftransform** 처럼 작동하지만 데이터를 수정하거나 추가하지 않고 변경된/계산된 열만 반환합니다.
+5. **'fmeans'**은 열별 평균뿐만 아니라, 그룹별 평균과 가중치 평균을 계산할 수 있습니다.
 
-6. **'fmeans'**은 열별 평균뿐만 아니라, 그룹별 평균과 가중치 평균을 계산할 수 있습니다.
+6. 위에 벤치마킹에서 확인 할 수 있는 것처럼 대부분은 **collapse**패키지의 수행속도가 빠르지만 문자열을 통한 열 선택은 **base::grep()**이 조금 더 빠른 것을 확인 할 수 있습니다.
 
-7. **'fnrow'**는 **'nrow'**와 유사하지만, 데이터 프레임에서 빠른 속도로 수행 가능 합니다.
 
-8. **'gby()'**는 **'fgroup_by()'**의 축약형 입니다.
 
-9. **'qDT'**는 데이터 테이블로 빠르게 변환할 수 있는 함수입니다.
+
+
+
