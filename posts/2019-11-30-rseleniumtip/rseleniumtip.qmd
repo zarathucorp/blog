@@ -1,0 +1,46 @@
+---
+title: "RSelenium 이용 팁"
+description: "RSelenium 으로 웹크롤링을 하면서 얻은 팁을 공유합니다. 본 내용은 Zarathu가 후원하는 Shinykorea 1월 밋업에서 발표할 예정입니다." 
+image: https://1.bp.blogspot.com/-kbSvBLG6OeI/XYBHb6RN2AI/AAAAAAAAIaI/m0MlCNd8iWkNJPgTaKv5v-UADDAUQRv-gCLcBGAsYHQ/s320/1_hdbXQfve5Yfuo0qEnS8K9Q.jpeg
+categories:
+  - presentation
+  - lecture
+author:
+  - name: Jinseob Kim
+    url: https://github.com/jinseob2kim
+    affiliation: Zarathu Co.,Ltd
+    affiliation_url: https://www.zarathu.com
+date: 11-30-2019
+draft: false
+---
+
+
+[김진섭](https://github.com/jinseob2kim) 대표는 [Zarathu](https://www.zarathu.com) 가 후원하는 1월 [Shinykorea 밋업](https://github.com/shinykorea/Meetup)에 참석, [RSelenium](https://github.com/ropensci/RSelenium) 으로 웹크롤링을 하면서 얻은 팁을 공유할 예정입니다. 정리한 슬라이드를 미리 공유합니다. 
+
+
+
+## 요약
+
+웹에 로그인 후 클릭기반 데이터 다운받는 과정을 [RSelenium](https://github.com/ropensci/RSelenium) 으로 자동화 하였다.
+
+* [Selenium docker image](https://hub.docker.com/r/selenium/standalone-chrome/) 를 이용, 복잡한 설치과정 없이 Selenium 을 실행하고 다운로드 경로를 설정하였다.
+
+
+* `findElement` 와 `sendKeysToElement`, `clickElement` 를 이용, 아이디와 비번을 입력하고 로그인버튼을 클릭하였다.
+
+
+* `clickElement` 이 안될 때 `mouseMoveToLocation` 과 `click` 을 이용, 마우스로 클릭하였다.
+
+
+* 작업 팝업창을 바꾸는 `switchToWindow` 가 안될 때, `queryRD` 로 자체 함수를 만들어 작업하였다. 
+
+
+* 50개 일별 데이터 다운로드에 성공하였다. 
+
+
+
+## Slide
+
+아래 슬라이드를 보거나 [https://jinseob2kim.github.io/LectureRpackage/RSelenium](https://jinseob2kim.github.io/LectureRpackage/RSelenium) 를 클릭하면 볼 수 있다.
+
+<iframe src="https://jinseob2kim.github.io/LectureRpackage/RSelenium" width="900" height="600" style="border: none;"></iframe>

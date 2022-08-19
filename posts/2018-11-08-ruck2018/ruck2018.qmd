@@ -1,0 +1,47 @@
+---
+title: "맞춤형 의학연구 애플리케이션을 위한 개발 환경 구축"
+description: |
+  R User Conference in Korea 2018(RUCK 2018)에서 발표했던 내용입니다.
+image: ruck2018.png
+categories:
+  - presentation
+  - lecture
+  - devOps
+  - R
+  - docker
+  - shiny
+author:
+  - name: Jinseob Kim
+    url: https://github.com/jinseob2kim
+    affiliation: ANPANMAN Co.,Ltd
+    affiliation_url: https://www.anpanman.co.kr
+date: 11-08-2018
+draft: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+[김진섭](https://github.com/jinseob2kim) 대표는 11월 26일(금) 서울특별시 시민청에서 열린 [R User Conference in Korea 2018(RUCK 2018)](http://ruck2018.r-kor.org/speakers/) 에서 맞춤형 의학연구 애플리케이션 개발 환경 구축 경험에 대해 발표하였습니다. 초록과 발표 슬라이드를 공유합니다. 
+
+## Abstract
+
+맞춤형 의학통계 앱 제작을 위해 
+
+1. [Docker swarm](https://docs.docker.com/engine/swarm/) 기반의 **Rstudio & shiny server** 를  구축하고 
+
+2. 의학통계 앱에 필요한 **R** 패키지와 **Shiny Application** 들을 만들었습니다. 
+
+
+미리 Rstudio와 shiny server가 설치된 [도커(docker)](https://www.docker.com/what-docker) 이미지를 만들고 이것을 도커 스웜을 이용해 배포함으로써 서버의 종류와 갯수에 구애받지 않는  마이크로서비스 아키텍처(microservice architecture)를 구축하였으며, 동적 프록시 서버(dynamic proxy server) 프로그램인 [Traefik](https://traefik.io/) 을 이용하여  서비스가 추가될 때 마다(ex: 홈페이지, Jupyter) 이에 맞추어 https 보안이 적용된 서브도메인(subdomain) 주소를 부여하였습니다.  흔히 이용되는 의학통계 방법들을 **Shiny Application**으로 만들어 위의 환경에 배포하였으며 `DT, tableone, epiDisplay, svglite` 등의 기존 패키지와 자체적으로 개발한 패키지를 이용, 데이터 라벨(label) 정보가 적용된 논문용 테이블과 그림을 보여줄 수 있었습니다. 이번 발표에서는 이러한 개발 환경 구축 경험을 공유합니다.
+
+
+## Slide
+
+아래 슬라이드를 보거나 [https://jinseob2kim.github.io/swarm-setting/RUCK2018_JSKIM](https://jinseob2kim.github.io/swarm-setting/RUCK2018_JSKIM) 를 클릭하면 볼 수 있으며 PC 환경에 최적화되었다. 
+
+<iframe src="https://jinseob2kim.github.io/swarm-setting/RUCK2018_JSKIM" width="900" height="600" style="border: none;"></iframe>
+
+
+

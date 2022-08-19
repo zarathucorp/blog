@@ -1,0 +1,189 @@
+---
+title: "인턴십 - Django로 게시판 만들고 기능 추가하기"
+description: "숭실대학교 인턴십 프로그램을 통해 인턴으로 활동하게 된 차라투에서 1주차 동안 학습한 내용에 대해 공유합니다."
+categories: [Django]
+author:
+  - name: Siyeol Jung
+    url: https://github.com/siyeoljung
+date: 2022-01-05
+draft: false
+---
+
+
+<br>
+숭실대학교 인턴십 프로그램을 통하여 참여한 차라투에서 인턴으로 활동하며 1주차 동안 학습한 내용에 대해 공유합니다.
+<br>
+
+차라투에서는 사용자에게 여러가지 통계 웹앱을 제공하는 [Openstat](openstat.ai) 서비스를 준비중입니다.
+서비스를 이용하는 사용자 본인이 불필요한 기능을 제거하고, 본인에게 필요한 기능만을 제공받을 수 있는 기능 도입 준비 중입니다. Django를 사용하여 사용자에게 보여질 기능을 DB로 유지하며 해당 DB기반으로 사용자에게 서비스를 제공해야합니다. 이에 사용자가 직접 DB의 필드값을 수정하며 서비스를 제공받는 기능을 구현했습니다.
+<br>
+
+## __목차__
+  + Model.Boolean 값으로 화면 출력 통제   
+  + CheckBox를 활용하여 Model.BooleanField 핸들링  
+  
+<br>
+
+### __Model.Boolean 값으로 화면 출력 통제__  
+
+<br>
+
+#### **[models.py]**
+``` python
+Class Post(models.Model):
+  user_id = models.CharField(max_length = 50, default="")
+  postname = models.CharField(max_length =50)
+  content = models.TextField()
+  important = models.BooleanField(default = True)  
+```
+<br>
+
+<u> **Model 필드에 BooleanField 형식의 필드를 추가합니다.**</u>  
+이 예제에서는 important라는 필드명을 사용했지만, 필드명은 다른 이름으로 사용해도 괜찮습니다.   
+(기존 Model에 새로운 필드를 추가하는 경우, 기존 Model 속 데이터들의 필드들도 일괄적으로 변경됩니다. 새로운 필드에 값을 넣지 않을 경우, 에러가 발생하므로 Model에 새로운 필드를 추가할때는 default 값을 넣어주는것이 좋습니다.)   
+<br><br>
+
+
+#### **[views.py]**
+```python
+from .models import Post
+
+def show_important_post(request):
+    postlist = Post.objects.all()
+    return render(request,'blog/ImportantPost_Posting.html',{'postlist':postlist})
+```  
+<br>
+
+>##### __postlist = Post.objects.all()__  
+
+현재 생성된 Models의 Post를 import하고 현재 모델 Post 속에 담겨있는 모든 objects들을 postlist에 담습니다.
+<br>
+<br>
+
+>##### __retrun render(request,'blog/ImportantPost_Posting.html',{'postlist':postlist})__  
+
+{'postlist':postlist}로 {key,value} 값을 맞춰서 blog/ImportantPost_Posting.html에 넘깁니다.  
+(예시에서는 blog/ImportantPost_Posting.html에 넘겼지만 본인의 상황에 적합한 templates에 넘기면 됩니다.)
+<br>
+<br>
+<br>
+
+#### **[templates-(ImportantPost_Posting.html)]**
+```python
+{% block contents %}
+<h1>중요한 게시판 </h1>
+    {% for list in postlist %}
+        {% if list.important is True %}
+        <ul>
+            <li>
+                작성자: {{list.user_id}} 
+                <a href="/blog/showImportant/{{list.pk}}/">{{list.postname}}</a>
+            </li>
+        </ul>
+        {% endif %}
+    {%endfor%}
+    <button><a href="/blog/showImportant/new_post/">글쓰기</a></button>
+    <input type="button" value = "돌아가기" onclick = "back()">
+{% endblock %}
+
+```  
+<br>
+
+>__{{%for list in postlist%}}__  
+　　　__{%if list.important is True%}__  
+__{% endfor %}__
+
+앞서 views에서 넘겨 받은 postlist를 순회합니다. 만약 postlist에 해당하는 부분을 전부 출력하면 현재 가지고 있는 POST DB에 존재하는 모든 내용을 출력하게 됩니다. 하지만 저희는 if 문을 활용하여 DB 속 모든 객체들 중 important 필드의 값이 True 인 경우만 \<li> 태그에 넣어 화면에 출력하도록 합니다.
+<br>  
+<br>
+
+>#### __{{list.postname}}__
+
+위 예제에서는 list의 postname 필드를 출력하였지만, list의 다른 필드를 출력해도 상관없습니다.
+
+<br>
+
+---
+
+### __CheckBox활용 Model.BooleanField 핸들링__  
+
+<br>
+
+#### **[Views.py]**
+```python
+def edit_post(request,pk):
+    post = Post.objects.get(pk=pk)
+if request.method == 'POST':
+        if len(request.POST.getlist('important')) == 0:
+            important = False
+        else: important = True
+        post.postname = request.POST['postname']
+        post.content = request.POST['contents']
+        post.important = important
+        post.save()
+
+```  
+<br>
+
+>#### __post = Post.objects.get(pk=pk)__
+
+edit_post함수를 통해 request 메시지와 (pk:primary key)를 받으면 Model class인 Post에서 pk가 동일한 객체를 찾아 post에 넘겨줍니다.
+<br>
+<br>
+
+
+>#### __if len(request.POST.getlist('important'))==0__  
+　　__important = False__  
+__else: important = True__
+
+'important'값은 체크박스를 통하여 값을 넘깁니다. 만약 위 예제 코드 속 다른 코드에서 쓰이는 것처럼 <u>__post.important = request.POST['important']__</u> 형식을 사용하여 important 값을 넣으려고 시도한다면 문제가 생깁니다. 체크 박스를 체크하여 request 요청했다면 문제가 되지 않지만, 체크 박스를 체크하지 않고 값을 넘기면 MultiValueDictKeyError 문제가 발생하기에 코드를 이와 같이 수정해야 합니다.
+
+MultiValueDictKeyError를 피하기 위하여 우리는 important의 값을 list 형태로 가지고 옵니다. 만약 체크 박스를 체크했다면 list에 값이 들어있을 것이고 체크박스를 체크하지 않았다면 list에 값이 없을 것입니다. 그렇게 list의 길이를 len을 통해 측정하여 <u>길이가 0이면 False를, 길이가 0이 아니면 True</u>를 important 값에 넣어 post 필드 값을 수정하여 새롭게 save() 해줍니다.  
+
+<br>
+<br>
+
+#### **[templates-(editPost.html)]**
+```python
+{% if Post.important is True %}
+  <input type = "checkbox" name= "important" value= "True" checked> important <br>
+{% else %}
+  <input type = "checkbox" name = "important" value = "False"> important <br>
+{% endif %}
+
+```
+<br>
+Post의 필드 중 important 부분을 체크박스를 통하여 수정하는 templates의 일부를 가지고 왔습니다. 현재 Post의 important 부분이 True 이면 체크된 상태로 화면에 출력되도록 하고 False이면 체크되지 않은 상태로 화면에 출력되도록 했습니다.
+<br>
+
+<br>
+<br>
+
+
+### __출력__  
+
+<br>
+
+
+>
+important = True    |   
+---------------| -----------------
+![](./ImportantAdmin.JPG)| ![](./ImportantAdminPosting.JPG)
+
+
+<br>
+
+>
+important = False    |  
+---------------| -----------------
+![](./NotImportantAdmin.JPG)| ![](./NotImportantAdminPosting.JPG)
+
+
+상기 이미지에 보이는 것처럼 체크박스의 체크 유무가 필드값인 important로 대입되어
+important의 값에 따라 True 인 경우에는 화면에 출력되고 False인 경우에는 출력되지 않는 모습을 확인할 수 있습니다.  
+
+<br>
+
+### __결론__  
+Model의 booleanField 값을 CheckBox를 통해 제어하며 화면에 출력을 통제하는 방법에 대해 알아보았습니다.  
+해당 방법을 활용하여 User 맞춤 서비스 제공 등 다양한 방식으로 DB의 내용을 기준하여 서비스 제공에 기여할 것으로 기대됩니다.  
