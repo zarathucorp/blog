@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Chaehee Lee">
+<meta name="dcterms.date" content="2022-08-19">
+<meta name="description" content="Python으로 반응형 웹 어플리케이션을 만들수 있는 Shiny for Python을 소개합니다.">
+<title>Zarathu Blog - Shiny for Python</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script><style>html{ scroll-behavior: smooth; }</style>
+<link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="floating nav-fixed">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="../../index.html">
+    <img src="../../img/logo.png" alt=""><span class="navbar-title">Zarathu Blog</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="http://app.zarathu.com/">Applications</a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">R packages</a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
+<li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributors.html">Contributors</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+ </a>
+  </li>  
+</ul>
+<div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Shiny for Python</h1>
+                  <div>
+        <div class="description">
+          Python으로 반응형 웹 어플리케이션을 만들수 있는 Shiny for Python을 소개합니다.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Python</div>
+                <div class="quarto-category">Shiny</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Chaehee Lee </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 19, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#shiny-for-python-%EC%86%8C%EA%B0%9C" id="toc-shiny-for-python-소개" class="nav-link active" data-scroll-target="#shiny-for-python-%EC%86%8C%EA%B0%9C"> <span class="header-section-number">1</span> Shiny for python 소개</a></li>
+  <li>
+<a href="#shiny-for-python-setup" id="toc-shiny-for-python-setup" class="nav-link" data-scroll-target="#shiny-for-python-setup"> <span class="header-section-number">2</span> Shiny for Python setup</a>
+  <ul class="collapse">
+<li><a href="#python%EA%B3%BC-shiny-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0" id="toc-python과-shiny-설치하기" class="nav-link" data-scroll-target="#python%EA%B3%BC-shiny-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0"> <span class="header-section-number">2.1</span> python과 Shiny 설치하기</a></li>
+  <li><a href="#shiny-server%EC%97%90%EC%84%9C-%EC%9D%B4%EC%9A%A9%ED%95%98%EA%B8%B0" id="toc-shiny-server에서-이용하기" class="nav-link" data-scroll-target="#shiny-server%EC%97%90%EC%84%9C-%EC%9D%B4%EC%9A%A9%ED%95%98%EA%B8%B0"> <span class="header-section-number">2.2</span> Shiny Server에서 이용하기</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#shiny-for-python-%EC%82%AC%EC%9A%A9" id="toc-shiny-for-python-사용" class="nav-link" data-scroll-target="#shiny-for-python-%EC%82%AC%EC%9A%A9"> <span class="header-section-number">3</span> Shiny for Python 사용</a>
+  <ul class="collapse">
+<li><a href="#shiny-app" id="toc-shiny-app" class="nav-link" data-scroll-target="#shiny-app"> <span class="header-section-number">3.1</span> Shiny App</a></li>
+  <li><a href="#shiny-for-python%EC%9D%98-%EB%AC%B8%EB%B2%95" id="toc-shiny-for-python의-문법" class="nav-link" data-scroll-target="#shiny-for-python%EC%9D%98-%EB%AC%B8%EB%B2%95"> <span class="header-section-number">3.2</span> Shiny for Python의 문법</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#shinylive" id="toc-shinylive" class="nav-link" data-scroll-target="#shinylive"> <span class="header-section-number">4</span> Shinylive</a>
+  <ul class="collapse">
+<li><a href="#shinylive-%EB%B0%B0%ED%8F%AC" id="toc-shinylive-배포" class="nav-link" data-scroll-target="#shinylive-%EB%B0%B0%ED%8F%AC"> <span class="header-section-number">4.1</span> shinylive 배포</a></li>
+  </ul>
+</li>
+  </ul></nav>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content"><section id="shiny-for-python-소개" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> Shiny for python 소개</h1>
+<p>이제 파이썬에서도 Dash 이외에도 shiny를 사용하여 반응형 웹앱을 쉽게 구현할 수 있게 되었습니다.<br>
+아직 초기 단계라 많은 것이 구현되지는 않았고 Alpha단계이므로 API가 변경되거나 아래의 설명과 다른 점이 생길 수 있습니다. 글의 내용은 <a href="https://shiny.rstudio.com/py/">Shiny for Python</a>를 참고했습니다.</p>
+</section><section id="shiny-for-python-setup" class="level1" data-number="2"><h1 data-number="2">
+<span class="header-section-number">2</span> Shiny for Python setup</h1>
+<section id="python과-shiny-설치하기" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="python과-shiny-설치하기">
+<span class="header-section-number">2.1</span> python과 Shiny 설치하기</h2>
+<p>우선 Shiny app을 저장할 디렉토리를 만듭니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make new directory for Shiny App</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> myapp</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># change directory</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> myapp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>python은 <a href="https://www.python.org/downloads/">Python.org</a> <a href="https://www.anaconda.com/distribution/">Anaconda</a> 에서 설치할 수 있습니다.</p>
+<p>python이 설치되었다면 사용하는 디렉토리의 폴더에 python 가상 환경을 만들고 이를 활성화합니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a virtual environment in the .venv subdirectory</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv venv</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Activate the virtual environment</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>shiny 를 설치합니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install shiny</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install shiny</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="shiny-server에서-이용하기" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="shiny-server에서-이용하기">
+<span class="header-section-number">2.2</span> Shiny Server에서 이용하기</h2>
+<p>Shiny for python은 Shinyapps.io, Shiny server, shinylive와 같은 다양한 방법으로 배포될 수 있습니다. 그중 shiny server에 배포하는 방법을 소개합니다.</p>
+<p>Shiny Server는 v1.5.19 이상이 필요합니다. 만약 이전 버전을 사용하고 있다면 업데이트 합니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#shiny-server v1.4.19</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-1.5.19.995-amd64.deb</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">gdebi</span> shiny-server-1.5.19.995-amd64.deb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>shiny server에서 python 파일을 실행하기 위해 config file을 수정해야 합니다.</p>
+<p>config file 은 /etc/shiny-server/shiny-server.conf 에 위치해있습니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Edit the file /etc/shiny-server/shiny-server.conf</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> vim /etc/shiny-server/shiny-server.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>config file 을 열어 코드 상단에 python 경로를 추가합니다.</p>
+<p>예를 들어 /home/js/myapp/venv/bin/python3를 사용하고 싶다면 코드는 아래와 같습니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use system python3 to run Shiny apps</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> /home/js/myapp/venv/bin/python3<span class="kw">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Instruct Shiny Server to run applications as the user "shiny"</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">run_as</span> shiny<span class="kw">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a server that listens on port 3838</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ex">server</span> {</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">listen</span> 3838<span class="kw">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define a location at the base URL</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="ex">location</span> / {</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Host the directory of Shiny Apps stored in this directory</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="ex">site_dir</span> /srv/shiny-server<span class="kw">;</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Log all Shiny output to files in this directory</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="ex">log_dir</span> /var/log/shiny-server<span class="kw">;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># When a user visits the base URL rather than a particular application,</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># an index of the applications available in this directory will be shown.</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="ex">directory_index</span> on<span class="kw">;</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="er">}</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="shiny-for-python-사용" class="level1" data-number="3"><h1 data-number="3">
+<span class="header-section-number">3</span> Shiny for Python 사용</h1>
+<p>샤이니 앱은 크게 ui, server 부분으로 구성되어 있습니다.<br>
+ui는 사용자가 보는 화면에 해당하는 부분이며, server는 ui에서 받은 값들을 계산하는 부분입니다. 사용자가 ui에 값들을 입력하면 이들을 바탕으로 server에서 계산하고, 이 결과물을 다시 ui 부분에 출력하는 방식으로 작동합니다.</p>
+<p>간단한 예시를 통해 이를 이해하고, python의 코드가 R과 비교해 어떤 문법을 가지는지 알아보겠습니다.</p>
+<section id="shiny-app" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="shiny-app">
+<span class="header-section-number">3.1</span> Shiny App</h2>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">python</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">R</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import shiny</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shiny <span class="im">import</span> ui, render, App</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ui</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>app_ui <span class="op">=</span> ui.page_fluid(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    ui.input_slider(<span class="st">"n"</span>, <span class="st">"N"</span>, <span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">40</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    ui.output_text_verbatim(<span class="st">"txt"</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># server</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> server(<span class="bu">input</span>, output, session):</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">@output</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">@render.text</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> txt():</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"n*2 is </span><span class="sc">{</span><span class="bu">input</span><span class="sc">.</span>n() <span class="op">*</span> <span class="dv">2</span><span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># This is a shiny.App object. It must be named `app`.</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> App(app_ui, server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<iframe src="http://210.116.101.82:10003/ShinyPython/" title="example1" width="700" height="150" data-external="1">
+</iframe>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/">shiny</a></span><span class="op">)</span>
+
+<span class="co"># ui</span>
+<span class="va">ui</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html">sliderInput</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"N"</span>, <span class="fl">0</span>, <span class="fl">100</span>, <span class="fl">40</span><span class="op">)</span>,
+    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput</a></span><span class="op">(</span><span class="st">"txt"</span><span class="op">)</span>
+  <span class="op">)</span>
+
+<span class="va">server</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>,<span class="va">session</span><span class="op">)</span> <span class="op">{</span>
+     <span class="va">output</span><span class="op">$</span><span class="va">txt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html">renderText</a></span><span class="op">(</span><span class="st">"n*2 is"</span>,<span class="va">input</span><span class="op">$</span><span class="va">n</span> <span class="op">*</span> <span class="fl">2</span>,<span class="st">"}"</span><span class="op">)</span>
+  <span class="op">}</span>
+
+<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>위는 ui에서 입력 받은 값을 server에서 2를 곱해주어 계산하고 이를 ui부분에서 출력하여 보여주는 예시입니다.</p>
+<ul>
+<li><p>먼저 from shiny import *를 통해 필요한 shiny 모듈을 불러옵니다.</p></li>
+<li><p>ui의 ui.input_slider() 함수를 통해 입력값을 받습니다. 이처럼 인풋에 해당하는 부분은 ui.input_*() 함수를 통해 만들 수 있습니다. “n”은 해당 input의 이름에 해당하는 부분이며, N은 label, 0,100,40은 각각 min, max,value에 해당하는 인자입니다.</p></li>
+<li><p>입력된 인풋값을 서버에 전송하면 이를 토대로 계산하여 값을 return하고 <code>@</code>render.text 라는 decorator를 통해 텍스트 형태로 렌더링합니다.</p></li>
+<li><p>다시 ui 부분에서는 ui.output_text_verbatim() 함수를 통해 텍스트를 출력합니다. 이처럼 ui부분에서 출력할 때는 ui.output_* 함수가 사용됩니다.</p></li>
+</ul></section><section id="shiny-for-python의-문법" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="shiny-for-python의-문법">
+<span class="header-section-number">3.2</span> Shiny for Python의 문법</h2>
+<p>위의 예시를 이용하여 R과 Python의 문법을 간단하게 비교해보면 다음과 같습니다.</p>
+<table class="table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 40%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>python</th>
+<th>R</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>import shiny</td>
+<td>from shiny import *</td>
+<td>library(shiny)</td>
+</tr>
+<tr class="even">
+<td>UI</td>
+<td>app_ui = ui.page_fluid(</td>
+<td>ui = fluidPage(</td>
+</tr>
+<tr class="odd">
+<td>input</td>
+<td>&nbsp;&nbsp;ui.input_slider(“n”,“N”,0,100,40), &nbsp;&nbsp;ui.output_text_verbatim(“txt”) &nbsp; )</td>
+<td>&nbsp;&nbsp;sliderInput(“n”,“N”,0,100,40) &nbsp;&nbsp;textOutput(“txt”))</td>
+</tr>
+<tr class="even">
+<td>Server</td>
+<td>def server(in, out, session):</td>
+<td>server=function(in,out,session){</td>
+</tr>
+<tr class="odd">
+<td>decorator</td>
+<td>
+<code>@</code>output <code>@</code>render.text</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>output</td>
+<td>&nbsp;&nbsp;def txt:<br> &nbsp;&nbsp;&nbsp; return input.x()</td>
+<td>&nbsp;output<code>$</code>txt = renderText (input $ x) &nbsp;&nbsp;}</td>
+</tr>
+<tr class="odd">
+<td>app</td>
+<td>app = App(app_ui, server)</td>
+<td>shinyApp(ui, server)</td>
+</tr>
+</tbody>
+</table>
+<p>인풋에 해당하는 부분은 ui.input_<code>*</code>(), ui 부분에서 출력할 때는 ui.output_<code>*</code>()함수들을 사용합니다.<br>
+서버 부분에서 def server(input, output, session): def txt(): 와 같이 파이썬의 함수 문법을 사용합니다.</p>
+<table class="table">
+<colgroup>
+<col style="width: 38%">
+<col style="width: 38%">
+<col style="width: 23%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>python</th>
+<th>R</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td>decorater</td>
+<td>
+<code>@</code>render.text … <br><code>@</code>reactive.event() <code>@</code>reactive.Calc() …<br><code>@</code>output</td>
+<td>renderText() … <br> reactive({}) <br>output$id</td>
+</tr></tbody>
+</table>
+<p>예시의 server부분에서 <code>@</code>render.text <code>@</code>output이 사용된 것을 볼 수 있습니다. 이것은 함수를 인자로 받아 함수를 출력하는 decorator 라는 함수입니다. 보통 python 에서 여러 함수들이 부분적으로 중복될때 코드의 재사용을 용이하게 하기 위해 사용됩니다. 여기서는 그냥 함수의 일종이라고 생각하면 될 것 같습니다.</p>
+<p>R에서는 렌더링을 위해 renderPlot, renderText 같은 함수를 사용하지만 Python에서는 <code>@</code>render.text 같은 decorator를 사용합니다. 위의 예시에서는 txt() 라는 텍스트를 반환하는 함수에 <code>@</code>render.text라는 decorator가 적용됩니다. 이는 텍스트를 반환하는 함수를 리턴하는 함수로 텍스트를 렌더링해 주는 함수라고 생각할 수 있습니다.</p>
+<p>decorator는 output, module, reactivity, rendering 등 많은 부분에서 사용됩니다. 하나의 함수에 여러개가 적용될 수 있으며 <code>@</code>render.text 는 <code>@</code>output 보다 먼저 적용되어야 하는 것과 같이 순서나 parameter가 정해져 있습니다.</p>
+<table class="table">
+<thead><tr class="header">
+<th></th>
+<th>python</th>
+<th>R</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td>HTML</td>
+<td>ui.div(), ui.a()</td>
+<td>tags<code>$</code>div, tags<code>$</code>a</td>
+</tr></tbody>
+</table>
+<p>HTML 태그의 경우는 ui.tags.*() 를 통해서 사용할 수 있습니다. 예를 들어 li 태그의 경우 ui.tags.li()로 사용 가능합니다.<br>
+일반적으로 많이 사용되는 div, span, a 같은 태그들은 ui.div()와 같이 ui 서브모듈에서 직접 사용할 수 있습니다.</p>
+<table class="table">
+<thead><tr class="header">
+<th></th>
+<th>python</th>
+<th>R</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td>mutability</td>
+<td>objects can be modified</td>
+<td>objects cannot be modified</td>
+</tr></tbody>
+</table>
+<p>python으로 shiny앱을 작성할때 가변성 처리(Handling mutability)도 고려해야합니다. Python에서 문자,숫자열,튜플 같은 간단한 객체들은 변경할 수 없지만 딕셔너리,리스트 같은 대부분의 객체들은 수정할 수 있습니다.</p>
+<p>이로 인해 반응형 프로그래밍에서 문제가 발생할 수 있습니다. 즉, 프로그램의 한 부분에서 객체를 수정하면 프로그램의 다른 부분과 값이 다른 문제가 발생할 수 있습니다.</p>
+<p>이러한 문제를 해결하기 위한 몇가지 방법들이 있습니다.</p>
+<p>첫번째는 두 값이 객체를 copy해서 동일한 객체를 먼저 가리키는 것을 피하는 것입니다. a = [1,2], b = a.copy와 같이 사용하게 되면 a의 값이 바뀌어도 b는 바뀌기 이전의 값을 가리키게 됩니다. 두번째는 객체를 변경하는 연산자나 매서드를 사용하는 것입니다. 예를 들어 a = [1,2]를 a = [1,2,3]로 만들고 싶을 때 a = a+[3]보다는 a.append(3)을 사용하는것이 바람직합니다. 마지막은 변경 불가능한 객체를 사용하는 것입니다. 리스트 대신 튜플을 사용하거나 <a href="https://pypi.org/project/pyrsistent/">pyrsistent</a> 패키지의 리스트나 딕셔너리를 사용할 수 있습니다.</p>
+</section></section><section id="shinylive" class="level1" data-number="4"><h1 data-number="4">
+<span class="header-section-number">4</span> Shinylive</h1>
+<p>Shinylive는 Shiny for Python에서 사용할 수 있는 실험 단계의 모드로 앱이 브라우저에서 별도의 서버없이 실행될수 있습니다.</p>
+<p>기존에는 서버에서 파이썬과 샤이니를 실행하고, 클라이언트가 웹브라우저를 통해 접속하였습니다. 그러나 앱이 shinylive와 배포된다면 파이썬 컴퓨팅이 서버가 아닌 클라이언트의 웹 브라우저 에서 수행됩니다. 따라서 앱을 실행할 때 서버보다 클라이언트의 컴퓨팅 성능에 의존하며, 파일을 제공하는 서버는 존재하지만 파이썬과 샤이니를 실행하지는 않습니다.</p>
+<p>shinylive와 배포된 앱은 컴퓨터에 Python 또는 Shiny를 설치할 필요가 없이 URL만으로 공유 실행될수 있습니다.</p>
+<section id="shinylive-배포" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="shinylive-배포">
+<span class="header-section-number">4.1</span> shinylive 배포</h2>
+<p><a href="https://shinylive.io/py/examples/">shinylive editor</a>을 통해 간단하게 shinylive를 통해 배포해볼 수 있습니다 .</p>
+<p>이외에도 Netlify, GITHUB gist를 통해서도 가능하며 <a href="https://shiny.rstudio.com/py/docs/shinylive.html#sharing-shinylive-applications">Sharing Shinylive applications</a>를 참고할 수 있습니다.</p>
+
+
+</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lee2022,
+  author = {Chaehee Lee},
+  title = {Shiny for {Python}},
+  date = {2022-08-19},
+  url = {https://blog.zarathu.com/posts/2022-08-25-shinyforpython},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lee2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Chaehee Lee. 2022. <span>“Shiny for Python.”</span> August 19, 2022. <a href="https://blog.zarathu.com/posts/2022-08-25-shinyforpython">https://blog.zarathu.com/posts/2022-08-25-shinyforpython</a>.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp(/https:\/\/blog\.zarathu\.com/);
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+      <div class="nav-footer-center">
+        <ul class="footer-items list-unstyled">
+<li class="nav-item">
+    <a class="nav-link" href="https://www.zarathu.com">© Copyright 2019 Zarathu Co.,Ltd.</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://raw.githubusercontent.com/zarathucorp/blog/master/LICENSE">Software licensed under the MIT License.</a>
+  </li>  
+</ul>
+</div>
+  </div>
+</footer>
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
