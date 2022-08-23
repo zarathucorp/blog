@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Siyeol Jung">
+<meta name="dcterms.date" content="2022-01-20">
+<meta name="description" content="MySQL 기반 DockerContainer에서 GitHub-Repository로의 주기적인 DB 백업 구현">
+
+<title>Zarathu Blog - 인턴십 - DB 자동 백업을 위한 Docker 및 Github 활용</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="../../index.html">
+    <img src="../../img/logo.png" alt="">
+    <span class="navbar-title">Zarathu Blog</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="http://app.zarathu.com/">Applications</a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">R packages</a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributors.html">Contributors</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">인턴십 - DB 자동 백업을 위한 Docker 및 Github 활용</h1>
+                  <div>
+        <div class="description">
+          MySQL 기반 DockerContainer에서 GitHub-Repository로의 주기적인 DB 백업 구현
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">docker</div>
+                <div class="quarto-category">github</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Siyeol Jung </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 20, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#목표" id="toc-목표" class="nav-link active" data-scroll-target="#목표"><strong>목표</strong></a></li>
+  <li><a href="#목차" id="toc-목차" class="nav-link" data-scroll-target="#목차"><strong>목차</strong></a>
+  <ul class="collapse">
+  <li><a href="#ssh-key-생성-및-github-등록" id="toc-ssh-key-생성-및-github-등록" class="nav-link" data-scroll-target="#ssh-key-생성-및-github-등록"><strong>SSH-Key 생성 및 GitHub 등록</strong></a></li>
+  <li><a href="#dockerfile-작성" id="toc-dockerfile-작성" class="nav-link" data-scroll-target="#dockerfile-작성"><strong>DockerFile 작성</strong></a></li>
+  <li><a href="#cronfile-및-shell-file작성" id="toc-cronfile-및-shell-file작성" class="nav-link" data-scroll-target="#cronfile-및-shell-file작성"><strong>CronFile 및 Shell File작성</strong></a></li>
+  <li><a href="#결론" id="toc-결론" class="nav-link" data-scroll-target="#결론"><strong>결론</strong></a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>숭실대학교 인턴십 프로그램을 통하여 참여한 차라투에서 인턴으로 활동하며 3주차 동안 학습한 내용에 대해 공유합니다.</p>
+<section id="목표" class="level3">
+<h3 class="anchored" data-anchor-id="목표"><strong>목표</strong></h3>
+<p>MySQL 기반 DockerContainer에서 GitHub-Repository로의 주기적인 DB 백업 구현</p>
+<p><br></p>
+</section>
+<section id="목차" class="level2">
+<h2 class="anchored" data-anchor-id="목차"><strong>목차</strong></h2>
+<ul>
+<li>SSH-key 생성 및 GitHub 등록</li>
+<li>Dockerfile 작성</li>
+<li>CronFile 및 Shell File 작성</li>
+</ul>
+<p><br></p>
+<section id="ssh-key-생성-및-github-등록" class="level3">
+<h3 class="anchored" data-anchor-id="ssh-key-생성-및-github-등록"><strong>SSH-Key 생성 및 GitHub 등록</strong></h3>
+<p>GitHub Repository에 SSH를 통한 접근 인증을 위해서는 SSH Public Key 생성 및 등록 과정을 걸쳐야 합니다.</p>
+<section id="ssh-key-생성" class="level4">
+<h4 class="anchored" data-anchor-id="ssh-key-생성"><strong>SSH-Key 생성</strong></h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh-keygen</span> <span class="at">-t</span> rsa </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p align="center">
+</p><p><img src="./ssh-keygen.png"></p>
+<p></p>
+<p>생성된 key는 인증키(private key)의 경우 ‘/.ssh/id_rsa’에 저장되어 있고 공개 키(public key)는’/.ssh/id_rsa.pub’로 저장되어 있습니다. 저희는 공개키를 사용하기에 공개키를 복사해주세요.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> ~/.ssh/id_rsa.pub</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>위 명령어를 실행하면 공개키가 출력되는 모습을 확인하실 수 있습니다. 이제 GitHub로 이동하겠습니다.</p>
+<p><br></p>
+</section>
+<section id="github-등록" class="level4">
+<h4 class="anchored" data-anchor-id="github-등록"><strong>GitHub 등록</strong></h4>
+<p align="center">
+</p><p><img src="./settings3.png"></p>
+<p></p>
+<p align="center">
+</p><p><img src="./settings4.png"></p>
+<p></p>
+<p><br></p>
+<p>
+본인 GitHub계정에 로그인한 이후 <strong><u>Settings → SSH and GPG keys → new SSH key</u></strong>에 복사한 SSH Key를 붙여주면 됩니다. Title은 임의로 정하셔도 상관없습니다. SSH-Key 등록 이후 본격적인 진행에 앞서 앞으로의 코드에 이해를 돕고자 현재 작업하고 있는 로컬 디렉토리의 계층도를 안내하겠습니다.
+</p>
+<p align="center">
+</p><p><img src="./layer.png" class="img-fluid" width="602"></p>
+<p></p>
+<p><br></p>
+</section>
+</section>
+<section id="dockerfile-작성" class="level3">
+<h3 class="anchored" data-anchor-id="dockerfile-작성"><strong>DockerFile 작성</strong></h3>
+<p>DockerContainer를 DockerFile을 통해 만들도록 하겠습니다. 코드의 전문은 아래와 같습니다.</p>
+<p align="center">
+</p><p><img src="./dockerfile.png"></p>
+<p></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">FROM</span> mysql:8.0.27</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>생성되는 컨테이너는 MYSQL:8.0.27 이미지를 바탕으로 한다는 내용의 코드입니다</p>
+<p><br></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">RUN</span> apt-get update</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">RUN</span> apt-get install cron <span class="at">-y</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">RUN</span> apt-get install git-all <span class="at">-y</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>생성되는 컨테이너에 주기적인 백업을 위한 Cron, Git 명령어 수행을 위한 Git을 설치하는 코드입니다.</p>
+<p><br></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">RUN</span> mkdir ~/.ssh </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> /rsa/id_rsa /root/.ssh/id_rsa</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> /rsa/id_rsa.pub /root/.ssh/id_rsa.pub</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>앞서 생성한 SSH-key를 컨테이너에서 활용 가능하도록 컨테이너 생성시 .ssh폴더를 생성한 뒤 해당 키 값들을 복사하여 생성하는 코드입니다.</p>
+<p><br></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> cron /etc/cron.d/cron</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> backup.sh /etc/cron.d/backup.sh </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> cronstart.sh /etc/cron.d/cronstart.sh </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>로컬에 있는 cron, backup.sh, cronstart.sh 파일들을 복사하여 컨테이너 생성시 해당 디렉토리에 넣는 코드입니다.해당 파일의 내용은 아래에서 살펴보도록 하겠습니다.</p>
+<p><br></p>
+</section>
+<section id="cronfile-및-shell-file작성" class="level3">
+<h3 class="anchored" data-anchor-id="cronfile-및-shell-file작성"><strong>CronFile 및 Shell File작성</strong></h3>
+<p><br></p>
+<section id="cronfile-작성" class="level4">
+<h4 class="anchored" data-anchor-id="cronfile-작성"><strong>CronFile 작성</strong></h4>
+<p align="center">
+</p><p><img src="./cronfile.png"></p>
+<p></p>
+<p>앞서 컨테이너의 /etc/cron.d/cron에 복사한 cron파일입니다.<br>
+Cron을 작동시키는 시간을 맞추기 위해서 <strong><u>TZ = Asia/Seoul</u></strong>를 설정하여 현재 서울의 시간대와 일치시켰습니다.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> <span class="pp">*</span> <span class="pp">*</span> <span class="pp">*</span> <span class="pp">*</span> /etc/cron.d/backup.sh <span class="op">&gt;&gt;</span> /var/log/cron.log <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>매분 마다 /etc/cron.d/backup.sh 파일을 작동시키고, 해당 파일의 작동 결과를 /var/log/cron.log 파일에 기록할 수 있도록 설정하였습니다. Backup.sh의 내용은 아래에서 살펴보겠습니다.<br>
+(Cron 설정에 관련해서는 임의로 설정하셔도 상관없습니다.)</p>
+<p><br></p>
+</section>
+<section id="shell-파일-작성" class="level4">
+<h4 class="anchored" data-anchor-id="shell-파일-작성"><strong>Shell 파일 작성</strong></h4>
+<p align="center">
+</p><p><img src="./shell.png"></p>
+<p></p>
+<p>앞서 Cron 설정으로 일정주기 마다 실행되는 Backup.sh 파일입니다. mysqldump를 활용해서 test db를 백업한 내용을 “$FileDir/$YmdH”.sql에 저장하고 이후 Git으로 Push를 진행해준다.</p>
+<p>여기까지cron을 활용하여 GitHub에 주기적으로 백업을 진행하는 내용의 코드는 완성되었습니다. 이에 더하여 컨테이너를 실행하면 cron이 자동으로 시작되는 기능을 추가하겠습니다.<br>
+앞선 DockerFile에서 다음과 같은 코드를 확인할 수 있습니다.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ENTRYPOINT</span> [<span class="st">"/etc/cron.d/cronstart.sh"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>ENTRYPOINT는 컨테이너가 시작되었을때 스크립트 혹은 명령을 실행합니다. 위 코드에서는 /etc/cron.d/cronstart.sh 파일을 실행하는 것입니다. /etc/cron.d/cronstart.sh 파일의 내용은 아래에서 확인하겠습니다.</p>
+<p><br></p>
+</section>
+<section id="cronstart.sh" class="level4">
+<h4 class="anchored" data-anchor-id="cronstart.sh"><strong>cronstart.sh</strong></h4>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">service</span> cron start </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> /usr/local/bin/docker-entrypoint.sh mysqld</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>컨테이너가 시작되면 service cron start로 cron을 시작합니다. 이후 bash /usr/local/bin/docker-entrypoint.sh 파일에 mysqld 인자를 넘기며 실행시켜 해당 컨테이너에 mysqld를 작동시킵니다.</p>
+<p><br></p>
+<p>dockerfile을 활용하여 컨테이너를 구축하고 실제로 작동이 잘되는지 확인해보도록 하겠습니다.</p>
+<pre class="docker"><code>docker build -t test .
+docker run -i --name test test </code></pre>
+<p align="left">
+</p><p><img src="./pushclear.png"></p>
+<p></p>
+<p>컨테이너 생성과 동시에 정상적으로 DB 백업이 이루어지는 것을 확인할 수 있습니다.<br>
+<br></p>
+</section>
+</section>
+<section id="결론" class="level3">
+<h3 class="anchored" data-anchor-id="결론"><strong>결론</strong></h3>
+<p>DB의 내용을 GitHub에 주기적으로 백업하는 방식에 대해 알아보았습니다. DB의 내용을 주기적으로 자동으로 백업이 가능하다는 유의미한 결과를 보이기는 하지만 코드상 DB의 암호가 노출된다는 점 등을 미루어 보았을 때 취약점이 존재하는것 같습니다. 개선된 방향으로의 학습이 필요할것 같습니다.</p>
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{jung2022,
+  author = {Siyeol Jung},
+  title = {인턴십 - {DB} {자동} {백업을} {위한} {Docker} {및} {Github}
+    {활용}},
+  date = {2022-01-20},
+  url = {https://blog.zarathu.com/posts/2022-01-20-dbbackup},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-jung2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Siyeol Jung. 2022. <span>“인턴십 - DB 자동 백업을 위한 Docker 및 Github
+활용.”</span> January 20, 2022. <a href="https://blog.zarathu.com/posts/2022-01-20-dbbackup">https://blog.zarathu.com/posts/2022-01-20-dbbackup</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">
+        <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.zarathu.com">© Copyright 2019 Zarathu Co.,Ltd.</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://raw.githubusercontent.com/zarathucorp/blog/master/LICENSE">Software licensed under the MIT License.</a>
+  </li>  
+</ul>
+      </div>
+  </div>
+</footer>
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
