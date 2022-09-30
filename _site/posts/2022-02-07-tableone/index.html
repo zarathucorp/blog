@@ -265,23 +265,23 @@ ga('send', {
 </section><section id="creating-a-tableone" class="level1"><h1>Creating a tableone</h1>
 <p><strong>CreateTableOne()</strong> 함수를 사용하여 테이블을 만들 수 있다. <code>fread</code>를 통해 데이터를 불러와 간단한 테이블을 만들어보자. 데이터는 09-15년 공단 건강검진 데이터에서 실습용으로 32 명을 뽑은 자료이며, 자세한 내용은 <a href="https://github.com/jinseob2kim/lecture-snuhlab/raw/master/data/2%EA%B5%90%EC%8B%9C%20%ED%85%8C%EC%9D%B4%EB%B8%94%20%EC%84%B8%EB%B6%80%20%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83%20%EC%86%8C%EA%B0%9C(%EC%B5%9C%EC%8B%A0%EC%9E%90%EB%A3%8C).pdf">“data/2교시 테이블 세부 레이아웃 소개(최신자료).pdf”</a> 를 참고하자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">## Setup</span>
-
-<span class="co"># install.packages("data.table")</span>
-<span class="co"># install.packages("curl")</span>
-<span class="co"># install.packages("tableone")</span>
-
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jeroen/curl">curl</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Setup</span></span>
+<span></span>
+<span><span class="co"># install.packages("data.table")</span></span>
+<span><span class="co"># install.packages("curl")</span></span>
+<span><span class="co"># install.packages("tableone")</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jeroen/curl">curl</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Using libcurl 7.79.1 with LibreSSL/3.3.6</code></pre>
 </div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kaz-yos/tableone">tableone</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kaz-yos/tableone">tableone</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># Load file</span>
-<span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span>
-<span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="va">url</span>,header<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Load file</span></span>
+<span><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span></span>
+<span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="va">url</span>,header<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -295,8 +295,8 @@ ga('send', {
 </div>
 <p><strong>CreateTableOne()</strong> 함수를 사용해 간단한 테이블을 만들어 보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># create table1</span>
-<span class="fu"><a href="https://rdrr.io/pkg/tableone/man/CreateTableOne.html">CreateTableOne</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">dt</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># create table1</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/tableone/man/CreateTableOne.html">CreateTableOne</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">dt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -463,13 +463,13 @@ ga('send', {
 <section id="categorical-variable-conversion" class="level2"><h2 class="anchored" data-anchor-id="categorical-variable-conversion">Categorical variable conversion</h2>
 <p><strong>factorVars</strong> 인자를 사용하여 범주형 변수를 지정할 수 있다. 이때 <strong>vars</strong> 인자를 통해 전체 데이터 셋 중 테이블에 들어갈 변수를 설정할 수 있고, 지정하지 않을 시 데이터 셋의 모든 변수가 포함된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># Variables</span>
-<span class="va">myVars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"HGHT"</span>, <span class="st">"WGHT"</span>, <span class="st">"BMI"</span>, <span class="st">"HDL"</span>, <span class="st">"LDL"</span>, <span class="st">"TG"</span>, <span class="st">"SGPT"</span>, 
-            <span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span>, <span class="st">"Q_HBV_AG"</span>, <span class="st">"Q_SMK_YN"</span><span class="op">)</span>
-<span class="co"># Categorical variables</span>
-<span class="va">catVars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span>, <span class="st">"Q_HBV_AG"</span>, <span class="st">"Q_SMK_YN"</span><span class="op">)</span>
-<span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tableone/man/CreateTableOne.html">CreateTableOne</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="va">myVars</span>, factorVars <span class="op">=</span> <span class="va">catVars</span>, data <span class="op">=</span> <span class="va">dt</span><span class="op">)</span>
-<span class="va">t1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Variables</span></span>
+<span><span class="va">myVars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"HGHT"</span>, <span class="st">"WGHT"</span>, <span class="st">"BMI"</span>, <span class="st">"HDL"</span>, <span class="st">"LDL"</span>, <span class="st">"TG"</span>, <span class="st">"SGPT"</span>, </span>
+<span>            <span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span>, <span class="st">"Q_HBV_AG"</span>, <span class="st">"Q_SMK_YN"</span><span class="op">)</span></span>
+<span><span class="co"># Categorical variables</span></span>
+<span><span class="va">catVars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span>, <span class="st">"Q_HBV_AG"</span>, <span class="st">"Q_SMK_YN"</span><span class="op">)</span></span>
+<span><span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tableone/man/CreateTableOne.html">CreateTableOne</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="va">myVars</span>, factorVars <span class="op">=</span> <span class="va">catVars</span>, data <span class="op">=</span> <span class="va">dt</span><span class="op">)</span></span>
+<span><span class="va">t1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -562,12 +562,12 @@ ga('send', {
 </ul></section><section id="multiple-group-summary" class="level2"><h2 class="anchored" data-anchor-id="multiple-group-summary">Multiple group summary</h2>
 <p><strong>strata</strong> 인자를 설정하여 그룹별 연산을 할 수 있다. <strong>strata</strong>는 dplyr 패키지의 group_by() 함수와 유사하며, 그룹 연산을 할 변수를 지정하여 사용할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tableone/man/CreateTableOne.html">CreateTableOne</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dt</span>,
-                     vars <span class="op">=</span> <span class="va">myVars</span>,
-                     strata <span class="op">=</span> <span class="st">"Q_SMK_YN"</span>,
-                     factorVars <span class="op">=</span> <span class="va">catVars</span>,
-                     includeNA <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>
-<span class="va">t2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tableone/man/CreateTableOne.html">CreateTableOne</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dt</span>,</span>
+<span>                     vars <span class="op">=</span> <span class="va">myVars</span>,</span>
+<span>                     strata <span class="op">=</span> <span class="st">"Q_SMK_YN"</span>,</span>
+<span>                     factorVars <span class="op">=</span> <span class="va">catVars</span>,</span>
+<span>                     includeNA <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="va">t2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -760,7 +760,7 @@ ga('send', {
 </li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t1</span>, showAllLevels <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t1</span>, showAllLevels <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -870,7 +870,7 @@ ga('send', {
 </li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t1</span>, cramVars<span class="op">=</span><span class="st">"Q_PHX_DX_STK"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t1</span>, cramVars<span class="op">=</span><span class="st">"Q_PHX_DX_STK"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -959,7 +959,7 @@ ga('send', {
 </section><section id="nonnormal-variables" class="level2"><h2 class="anchored" data-anchor-id="nonnormal-variables">nonnormal variables</h2>
 <p>비모수통계를 사용하는 연속형 변수에는 <strong>nonnormal</strong> 옵션을 설정한다. nonnormal 설정 시 mean(sd)에서 median(IQR)로 요약값이 변경된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t1</span>, nonnormal<span class="op">=</span><span class="st">"LDL"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t1</span>, nonnormal<span class="op">=</span><span class="st">"LDL"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1048,7 +1048,7 @@ ga('send', {
 </section><section id="exact" class="level2"><h2 class="anchored" data-anchor-id="exact">exact</h2>
 <p><strong>exact</strong> 옵션을 통해 fisher-test를 진행할 범주형 변수를 설정할 수 있다. 범주형 변수는 기본적으로 chisq-test가 적용되며, exact 옵션에 fisher-test를 적용할 변수를 지정하여 사용할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t2</span>, exact<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t2</span>, exact<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1221,7 +1221,7 @@ ga('send', {
 </section><section id="smd" class="level2"><h2 class="anchored" data-anchor-id="smd">smd</h2>
 <p><strong>smd</strong> 옵션을 통해 smd(standardized mean difference)를 table1에 포함할 수 있다. default는 FALSE이고, smd=TRUE 설정 시 각 변수의 smd 값이 출력된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t2</span>, smd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t2</span>, smd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1414,7 +1414,7 @@ ga('send', {
 </section></section><section id="detailed-information-summary" class="level1"><h1>Detailed information : summary()</h1>
 <p><code>summary</code> 함수를 쓰면 누락값을 포함한 table1의 자세한 정보를 알 수 있다. 연속형 변수의 값들이 먼저 출력되며 그 다음으로 범주형 변수의 요약값이 출력된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">t1</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">t1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
      ### Summary of continuous variables ###
@@ -1454,8 +1454,8 @@ strata: Overall
 </section><section id="show-categorical-or-continuous-variable-only" class="level1"><h1>Show categorical or continuous variable only</h1>
 <p>앞에서 만든 table1에서 연속형 변수와 범주형 변수를 구분하여 출력할 수 있다. <strong>“$”</strong>를 사용하여 연속형 변수는 ConTable, 범주형 변수는 CaTable을 설정하면 해당 변수를 따로 출력할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># Categorical variables</span>
-<span class="va">t2</span><span class="op">$</span><span class="va">CatTable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Categorical variables</span></span>
+<span><span class="va">t2</span><span class="op">$</span><span class="va">CatTable</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1570,8 +1570,8 @@ strata: Overall
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># Continuous variables</span>
-<span class="va">t2</span><span class="op">$</span><span class="va">ContTable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Continuous variables</span></span>
+<span><span class="va">t2</span><span class="op">$</span><span class="va">ContTable</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1664,9 +1664,9 @@ strata: Overall
 </section><section id="export-tableone" class="level1"><h1>Export tableone</h1>
 <p><code>write.csv</code> 함수를 사용하여 table1을 csv파일로 저장할 수 있다. <strong>write.csv(x, file=“파일명”)</strong> 형식을 사용하여 csv파일로 저장한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># export table1</span>
-<span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">table1</span>, file <span class="op">=</span> <span class="st">"table1.csv"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># export table1</span></span>
+<span><span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">table1</span>, file <span class="op">=</span> <span class="st">"table1.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="마치며" class="level1"><h1>마치며</h1>
 <p>이번 강의를 정리하자.</p>

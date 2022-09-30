@@ -260,24 +260,24 @@ ga('send', {
 <p><strong>tbl_summary</strong> 함수를 이용하여 연속형 및 범주형 변수에 대한 기술 통계량을 계산하고 테이블 형태로 나타낼 수 있다.</p>
 <section id="setup" class="level2"><h2 class="anchored" data-anchor-id="setup">Setup</h2>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">## Setup</span>
-
-<span class="co"># install.packages("tidyverse")</span>
-<span class="co"># install.packages("data.table")</span>
-<span class="co"># install.packages("gtsummary")</span>
-
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ddsjoberg/gtsummary">gtsummary</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Setup</span></span>
+<span></span>
+<span><span class="co"># install.packages("tidyverse")</span></span>
+<span><span class="co"># install.packages("data.table")</span></span>
+<span><span class="co"># install.packages("gtsummary")</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ddsjoberg/gtsummary">gtsummary</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="road-file" class="level2"><h2 class="anchored" data-anchor-id="road-file">Road file</h2>
 <p>예제에 사용할 데이터를 <code>fread</code>함수를 통해 불러오자. 데이터는 09-15년 공단 건강검진 데이터에서 실습용으로 32 명을 뽑은 자료이며, 자세한 내용은 <a href="https://github.com/jinseob2kim/lecture-snuhlab/raw/master/data/2%EA%B5%90%EC%8B%9C%20%ED%85%8C%EC%9D%B4%EB%B8%94%20%EC%84%B8%EB%B6%80%20%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83%20%EC%86%8C%EA%B0%9C(%EC%B5%9C%EC%8B%A0%EC%9E%90%EB%A3%8C).pdf">“data/2교시 테이블 세부 레이아웃 소개(최신자료).pdf”</a> 를 참고하자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">## Load file</span>
-
-<span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span>
-<span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="va">url</span>, header<span class="op">=</span><span class="cn">T</span><span class="op">)</span>
-<span class="va">dt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Load file</span></span>
+<span></span>
+<span><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span></span>
+<span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="va">url</span>, header<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
+<span><span class="va">dt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -293,11 +293,11 @@ ga('send', {
 <p><strong>tbl_summary</strong> 함수를 사용하여 기본 테이블을 작성할 수 있다. 출력값으로 데이터 셋의 각 열에 대한 기술 통계량을 반환한다. 데이터 셋에 섞인 범주형 변수와 연속형 변수를 자동적으로 인식해 그에 맞는 값을 반환하며, <u>범주형 변수</u>의 기본 출력값은 n(%)이고 <u>연속형 변수</u>의 기본 출력값은 median(IQR)이다. 결측값은 테이블에 Unknown으로 출력된다.</p>
 <p><code>fread</code>를 통해 불러온 데이터에서 몇 개의 변수를 추출해 요약 테이블을 만들어보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># select variables</span>
-
-<span class="va">dt2</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_SMK_YN"</span>,
-                     <span class="st">"HGHT"</span>, <span class="st">"WGHT"</span> ,<span class="st">"TOT_CHOL"</span>, <span class="st">"TG"</span><span class="op">)</span>
-<span class="va">dt2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># select variables</span></span>
+<span></span>
+<span><span class="va">dt2</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_SMK_YN"</span>,</span>
+<span>                     <span class="st">"HGHT"</span>, <span class="st">"WGHT"</span> ,<span class="st">"TOT_CHOL"</span>, <span class="st">"TG"</span><span class="op">)</span></span>
+<span><span class="va">dt2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -311,9 +311,9 @@ ga('send', {
 </div>
 <p><code>tbl_summary</code> 함수를 통해 간단한 요약 테이블을 만들어보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># create table</span>
-
-<span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">tbl_summary</span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># create table</span></span>
+<span></span>
+<span><span class="va">dt2</span> <span class="op">%&gt;%</span> <span class="fu">tbl_summary</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="qzdsybbjkg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -827,7 +827,7 @@ ga('send', {
 <section id="by" class="level3"><h3 class="anchored" data-anchor-id="by"><strong>by</strong></h3>
 <p><code>tbl_summary</code> 함수에는 다양한 옵션이 존재한다. <strong>by</strong> 옵션을 이용하여 그룹별 통계량을 계산할 수 있다. <strong>by</strong> 옵션에 그룹별 통계를 수행할 변수를 지정하여 사용 가능하다. 다음 예시에서 연도 변수인 EXMD_BZ_YYYY를 기준으로 그룹별 통계량을 출력해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op">%&gt;%</span> <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="rtuztirtgh" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -1390,14 +1390,14 @@ ga('send', {
 </section><section id="tbl_strata" class="level3"><h3 class="anchored" data-anchor-id="tbl_strata"><strong>tbl_strata</strong></h3>
 <p>by 옵션을 통해 그룹별 통계량을 계산한 것처럼 <code>tbl_strata</code> 함수를 이용하면 <u>여러 계층</u>으로 그룹을 묶을 수 있다. <strong>tbl_strata(data, strata, .tbl_fun, …)</strong> 형식을 사용하며 strata에 그룹화할 칼럼, .tbl_fun 인자에는 출력할 <code>tbl_summary</code> formula를 지정한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">tbl_strata</span><span class="op">(</span>data <span class="op">=</span> <span class="va">dt2</span>,
-           strata <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,
-           .tbl_fun <span class="op">=</span>
-             <span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-             <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_SMK_YN</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-             <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-             <span class="fu">add_n</span><span class="op">(</span><span class="op">)</span>,
-           .header <span class="op">=</span> <span class="st">"**{strata}**, N={n}"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">tbl_strata</span><span class="op">(</span>data <span class="op">=</span> <span class="va">dt2</span>,</span>
+<span>           strata <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,</span>
+<span>           .tbl_fun <span class="op">=</span></span>
+<span>             <span class="op">~</span> <span class="va">.x</span> <span class="op">%&gt;%</span></span>
+<span>             <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_SMK_YN</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>             <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>             <span class="fu">add_n</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>           .header <span class="op">=</span> <span class="st">"**{strata}**, N={n}"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="mpipvczabm" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -2199,14 +2199,14 @@ ga('send', {
 </div>
 <p>다음은 옵션을 활용한 예시이다. 연도 변수 EXMD_BZ_YYYY의 그룹별 통계량을 출력하고, Q_SMK_YN 변수를 “smoking y/n”로 바꾸어보자. 이때 연속형 변수의 출력값을 {mean}({sd})으로, 범주형 변수의 출력값을 {n}/{N} ({p}%) 형태로 바꾸어보자. 결측값의 변수명은 “Missing”으로 수정한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">tbl_summary</span><span class="op">(</span>
-    by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,
-    statistic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{mean} ({sd})"</span>,
-                     <span class="fu">all_categorical</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{n} / {N} ({p}%)"</span><span class="op">)</span>,
-    label <span class="op">=</span> <span class="va">Q_SMK_YN</span> <span class="op">~</span> <span class="st">"smoking y/n"</span>,
-    missing_text <span class="op">=</span> <span class="st">"Missing"</span>
-  <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span></span>
+<span>    by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,</span>
+<span>    statistic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{mean} ({sd})"</span>,</span>
+<span>                     <span class="fu">all_categorical</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{n} / {N} ({p}%)"</span><span class="op">)</span>,</span>
+<span>    label <span class="op">=</span> <span class="va">Q_SMK_YN</span> <span class="op">~</span> <span class="st">"smoking y/n"</span>,</span>
+<span>    missing_text <span class="op">=</span> <span class="st">"Missing"</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="ehwulelzjv" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -2796,9 +2796,9 @@ ga('send', {
 </li>
 </ol>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">add_p</span><span class="op">(</span><span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"t.test"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"t.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="wdqcruxfof" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -3345,9 +3345,9 @@ ga('send', {
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">add_p</span><span class="op">(</span><span class="va">HGHT</span> <span class="op">~</span> <span class="st">"wilcox.test"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="va">HGHT</span> <span class="op">~</span> <span class="st">"wilcox.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="vykprjjqxw" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -3898,9 +3898,9 @@ ga('send', {
 </li>
 </ol>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">add_p</span><span class="op">(</span><span class="fu">all_categorical</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"chisq.test"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="fu">all_categorical</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"chisq.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="bkqliuxrbu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -4447,9 +4447,9 @@ ga('send', {
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">add_p</span><span class="op">(</span><span class="va">Q_SMK_YN</span> <span class="op">~</span> <span class="st">"fisher.test"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="va">Q_SMK_YN</span> <span class="op">~</span> <span class="st">"fisher.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="sdqgfbjlqd" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -4997,12 +4997,12 @@ ga('send', {
 </div>
 <p>이외에 다양한 <strong>add_()</strong>함수를 이용하여 앞에서 만든 table에 여러 통계량을 추가해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">add_overall</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">add_n</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">add_q</span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">add_overall</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_n</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_q</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="tjujjddnfd" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -5631,9 +5631,9 @@ ga('send', {
 </ul>
 <p>이번에는 두 그룹 간의 차이를 비교해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">add_difference</span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">add_difference</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="upuelpdvge" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -6240,15 +6240,15 @@ ga('send', {
 </ul>
 <p>위의 함수들을 사용하여 테이블의 디자인을 설정해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">add_n</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">modify_header</span><span class="op">(</span><span class="va">label</span> <span class="op">~</span> <span class="st">"**Variables**"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">modify_spanning_header</span><span class="op">(</span><span class="fu">all_stat_cols</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"**Year**"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">modify_footnote</span><span class="op">(</span><span class="fu">all_stat_cols</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Median(IQR) or Frequency(%)"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">modify_caption</span><span class="op">(</span><span class="st">"Table 1"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">bold_labels</span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">add_n</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">modify_header</span><span class="op">(</span><span class="va">label</span> <span class="op">~</span> <span class="st">"**Variables**"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">modify_spanning_header</span><span class="op">(</span><span class="fu">all_stat_cols</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"**Year**"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">modify_footnote</span><span class="op">(</span><span class="fu">all_stat_cols</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Median(IQR) or Frequency(%)"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">modify_caption</span><span class="op">(</span><span class="st">"Table 1"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">bold_labels</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="zfepsidbff" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -6852,18 +6852,18 @@ ga('send', {
 </section><section id="multi-line-continuous-summaries" class="level1"><h1>Multi-line Continuous Summaries</h1>
 <p>연속형 변수의 통계량은 여러 줄로 요약될 수 있다. 여러 줄에 걸쳐 연속형 변수의 요약값을 출력할 때에는 변수 type을 <strong>continuous2</strong>로 지정해 주어야 한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">MyTbl</span> <span class="op">&lt;-</span> <span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">tbl_summary</span><span class="op">(</span>
-    by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,
-    type <span class="op">=</span> <span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"continuous2"</span>,
-    statistic <span class="op">=</span> <span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"{N_nonmiss}"</span>,
-                                     <span class="st">"{median} ({p25}, {p75})"</span>,
-                                     <span class="st">"{min}, {max}"</span><span class="op">)</span>,
-    missing <span class="op">=</span> <span class="st">"no"</span>
-  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">MyTbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">MyTbl</span> <span class="op">&lt;-</span> <span class="va">dt2</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span></span>
+<span>    by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,</span>
+<span>    type <span class="op">=</span> <span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"continuous2"</span>,</span>
+<span>    statistic <span class="op">=</span> <span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"{N_nonmiss}"</span>,</span>
+<span>                                     <span class="st">"{median} ({p25}, {p75})"</span>,</span>
+<span>                                     <span class="st">"{min}, {max}"</span><span class="op">)</span>,</span>
+<span>    missing <span class="op">=</span> <span class="st">"no"</span></span>
+<span>  <span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">MyTbl</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="gpnmljzjjg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -7558,9 +7558,9 @@ ga('send', {
 </ul></section><section id="save-individual-tables" class="level1"><h1>Save individual tables</h1>
 <p><code>gtsummary</code> 패키지를 이용해 만든 table을 flextable 객체로 바꾼 후 <u>워드 파일로 저장</u>할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">MyTbl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">as_flex_table</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/save_as_docx.html">save_as_docx</a></span><span class="op">(</span><span class="va">MyTbl</span>, path <span class="op">=</span> <span class="st">"/cloud/project/table.docx"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">MyTbl</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">as_flex_table</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/save_as_docx.html">save_as_docx</a></span><span class="op">(</span><span class="va">MyTbl</span>, path <span class="op">=</span> <span class="st">"/cloud/project/table.docx"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="마치며" class="level1"><h1>마치며</h1>
 <p>이번 강의를 정리하자.</p>
