@@ -15,68 +15,60 @@ image: logo.jpeg
 number-sections: true
 ---
 
-
 ![](logo.jpeg)
 
-<https://docs.streamlit.io/library/api-reference> 를 바탕으로 정리한 글입니다. 
+<https://docs.streamlit.io/library/api-reference> 를 바탕으로 정리한 글입니다.
 
-2023년 2월 기준) *streamlit version 1.17.0* 을 기준으로 작성하였습니다. 
+2023년 2월 기준) *streamlit version 1.17.0* 을 기준으로 작성하였습니다.
 
-
-
-
-# Streamlit 소개 
-
+# Streamlit 소개
 
 언제 스트림릿을 사용해야할지 스트림릿이 타 프레임워크에 비하여 가질 수 있는 장점을 바탕으로 비교하여 보겠습니다.
 
 ![](src-1.png)
 
+1.  빠르게 개발이 가능하다 - 웹개발관련 지식이 부족해도 쉽게 웹페이지를 만들 수 있다.
 
-1. 빠르게 개발이 가능하다 - 웹개발관련 지식이 부족해도 쉽게 웹페이지를 만들 수 있다. 
+2.  파이썬에서 분석한 내용을 옮길 필요 없이 바로바로 웹에 띄울 수 있다. + ML/DL 사용가능한 라이브러리들이 많다!
 
-2. 파이썬에서 분석한 내용을 옮길 필요 없이 바로바로 웹에 띄울 수 있다. + ML/DL 사용가능한 라이브러리들이 많다!
+3.  interactive한 웹 개발이 가능하다. Dashboard 만들기 등
 
-3. interactive한 웹 개발이 가능하다. Dashboard 만들기 등 
+단점 : 스트림릿으로 구현한 웹을 바로 product로 사용하기엔 다듬어야 할 부분들이 많고, 디테일한 layout 조정등은 어려움 -\> CSS hack을 통해 조정 가능하다!
 
-단점 :  스트림릿으로 구현한 웹을 바로 product로 사용하기엔 다듬어야 할 부분들이 많고, 디테일한 layout 조정등은 어려움 -> CSS hack을 통해 조정 가능하다! 
+다른 대안 : pyscript라는 것이 인기를 끌고 있다. 하지만 아직 보완되어야 할 점이 정말 많다.
 
-다른 대안 :  pyscript라는 것이 인기를 끌고 있다. 하지만 아직 보완되어야 할 점이 정말 많다.
+(html 에서 작동하는 python) <https://github.com/pyscript/pyscript>
 
-  (html 에서 작동하는 python) <https://github.com/pyscript/pyscript>
+------------------------------------------------------------------------
 
----------------- 
+## streamlit과 shiny 예제 비교
 
-
-## streamlit과 shiny 예제 비교 
-
-- streamlit 활용 사례  
+-   streamlit 활용 사례
 
 <https://streamlit.io/gallery>
 
-
-- shiny 활용 사례 
+-   shiny 활용 사례
 
 <https://shiny.rstudio.com/gallery/>
 
 </br>
 
-
 # Streamlit 따라 해보기
 
 Streamlit에 어떤 기능이 있는지 따라 쳐보면서 확인해보자.
 
-
-## 스트림릿 설치 
+## 스트림릿 설치
 
 파이썬, 가상환경 설치와 관한 내용은 다른 게시물을 참고하시기 바랍니다.
 
 ```{terminal}
 pip install streamlit 
 ```
-파이썬 가상환경에 streamlit패키지를 설치합니다 
 
-app.py를 생성한 후 다음 과 같이 수정하여 저장합니다. 
+파이썬 가상환경에 streamlit패키지를 설치합니다
+
+app.py를 생성한 후 다음 과 같이 수정하여 저장합니다.
+
 ```{python}
 #| code-fold: false
 #| echo : true
@@ -86,25 +78,26 @@ import streamlit as st
 st.title('Hello Streamlit')
 
 ```
- 
-이후 터미널에서 
-  
+
+이후 터미널에서
+
 ```{bash}
 streamlit run app.py 
 ```
-streamlit run app.py 명렁어를 실행하면, 로컬서버로 페이지가 만들어지게 됩니다. 
+
+streamlit run app.py 명렁어를 실행하면, 로컬서버로 페이지가 만들어지게 됩니다.
 
 ![](src2-1.png)
-
 
 ## 스트림릿 기능 소개
 
 더 자세한 내용은 <https://docs.streamlit.io/library/api-reference>에서 확인하실 수 있습니다.
 
 ### 강조 문구
-1. title 
-2. header 
-3. subheader  
+
+1.  title
+2.  header
+3.  subheader
 
 ```{python}
 #| echo : true
@@ -119,22 +112,20 @@ st.subheader('this is subheader')
 
 ![](src-header.png)
 
+제목과 헤더,서브헤더를 구현할 수 있다.
 
-제목과 헤더,서브헤더를 구현할 수 있다. 
+4.  etc
 
-
-
-4. etc
-
-추가적으로  Markdown 문법을 st.markdown으로, caption, Latex Code block을 활용가능합니다 
+추가적으로 Markdown 문법을 st.markdown으로, caption, Latex Code block을 활용가능합니다
 
 </br>
 
-### layout 짜기 
+### layout 짜기
 
-페이지의 공간을 레이아웃을 통해 웹페이지를 분할할 수 있다. 
+페이지의 공간을 레이아웃을 통해 웹페이지를 분할할 수 있다.
 
-1. column 
+1.  column
+
 ```{python}
 #| echo : true
 #| output : false
@@ -166,8 +157,8 @@ col2.checkbox('this is checkbox2 in col2 ')
 
 ![](src-columns.png)
 
+2.  tab
 
-2. tab
 ```{python}
 #| echo : true
 #| output : false
@@ -187,16 +178,13 @@ with tab2:
 
 ```
 
-</br>
-다음을 실행하면 tab A 를 눌렀을 경우 hello, tab B를 눌렀을 경우 hi가 나오게 됩니다.
+</br> 다음을 실행하면 tab A 를 눌렀을 경우 hello, tab B를 눌렀을 경우 hi가 나오게 됩니다.
 
-탭의 특징으로는, 탭을 클릭과 동시에 데이터가 만들어지는 것이 아니라,탭에 표시될 데이터가 이미 만들어져 았는 것이 특징입니다. 장점이 될 수도 있고, 단점이 될 수도 있습니다. 
+탭의 특징으로는, 탭을 클릭과 동시에 데이터가 만들어지는 것이 아니라,탭에 표시될 데이터가 이미 만들어져 았는 것이 특징입니다. 장점이 될 수도 있고, 단점이 될 수도 있습니다.
 
-![](src-tab1.png)
-![](src-tab2.png)
+![](src-tab1.png) ![](src-tab2.png)
 
-
-3. sidebar 
+3.  sidebar
 
 ```{python}
 #| echo : true
@@ -211,17 +199,13 @@ st.sidebar.checkbox('체크박스에 표시될 문구')
 
 ```
 
-![](src-sidebar.png)
-![](src-sidebar2.png)
+![](src-sidebar.png) ![](src-sidebar2.png)
 
+4.  etc
 
-4. etc 
+추가적으로 Expander, Container ,Empty가 있습니다
 
-추가적으로 Expander, Container ,Empty가 있습니다 
-
-
-
-### 이미지 불러오기 
+### 이미지 불러오기
 
 ```{python}
 #| echo : true
@@ -247,6 +231,7 @@ with col2 :
 # 컬럼2에 불러온 사진 표시하기
 col2.image(zarathu_img)
 ```
+
 </br>
 
 ![](src-image.png)
@@ -257,8 +242,7 @@ col2.image(zarathu_img)
 
 이제 UI적인 부분을 전반적으로 살펴봤기 때문에, 사용자로 하여금 input을 받아 interactive하게 데이터를 보여주는 페이지를 만들어보겠습니다
 
-데이터는 사이킷런의 아이리스 데이터를 가져와 사용하도록 하겠습니다.
-</br>
+데이터는 사이킷런의 아이리스 데이터를 가져와 사용하도록 하겠습니다. </br>
 
 ```{python}
 #| code-fold: false
@@ -285,11 +269,13 @@ def mapp_species(x):
 df['species'] = df['species'].apply(mapp_species)
 print(df)
 ```
+
 </br>
 
-streamlit 에서 데이터 프레임을 보여주는 방식은 table과 dataframe 두가지를 사용할 수 있습니다. 
+streamlit 에서 데이터 프레임을 보여주는 방식은 table과 dataframe 두가지를 사용할 수 있습니다.
 
 dataframe의 head함수를 이용하여 첫 5행의 데이터에 대해 table과 dataframe으로 출력한 경우입니다.
+
 ```{python}
 #| echo : true
 #| output : false
@@ -301,13 +287,11 @@ st.dataframe(df.head())
 
 ```
 
-
 ![](src-table.png)
 
 이제 버튼을 동작시키는 방법을 배워보도록 하겠습니다.
 
-</br>
-1. Select Box 
+</br> 1. Select Box
 
 ```{python}
 #| echo : true
@@ -333,10 +317,7 @@ st.table(tmp_df.head())
 
 ```
 
-
-
 ![](src-selectbox.png)
-
 
 사용자가 sidebar에서 종을 바꿀 때마다 자동으로 해당하는 종의 테이블 정보가 불러와지게 됩니다.
 
@@ -344,8 +325,7 @@ st.table(tmp_df.head())
 
 </br>
 
-2. multi select 
-
+2.  multi select
 
 ```{python}
 #| echo : true
@@ -370,7 +350,7 @@ st.table(tmp_df)
 
 </br>
 
-3. Radio / Slider 
+3.  Radio / Slider
 
 ```{python}
 #| echo : true
@@ -410,29 +390,26 @@ if start_button:
 
 ```
 
-
 slider_range : list 형식으로 2개의 값이 저장됩니다. 양쪽 앞뒤로 두개의 값을 저장합니다.
 
-```{bash} 
+```{bash}
 slider_range[0] : 최솟값 
 slider_range[1] : 최댓값  
 ```
 
 ![](src-slider-filter.png)
 
-petal_width 컬럼값이 0에서 1.38사이인 값들로 정보를 filtering한 결과물이 표시됩니다. 
+petal_width 컬럼값이 0에서 1.38사이인 값들로 정보를 filtering한 결과물이 표시됩니다.
 
 </br>
 
-# 시각화 
+# 시각화
 
+## plotly
 
-## plotly 
+python의 시각화로 자주 이용되는 패키지는 matplotlib,seaborn,bokeh,plotly 등이 있습니다.
 
-python의 시각화로 자주 이용되는 패키지는 matplotlib,seaborn,bokeh,plotly 등이 있습니다. 
-
-스트림릿에서는 bokeh, plotly, matplotlib 등의 패키지를 통해 생성한 그림(figure)를 streamlit을 통해 웹에서 표시하는 기능을 제공합니다.
-</br>
+스트림릿에서는 bokeh, plotly, matplotlib 등의 패키지를 통해 생성한 그림(figure)를 streamlit을 통해 웹에서 표시하는 기능을 제공합니다. </br>
 
 ### st.plotly_chart
 
@@ -443,13 +420,12 @@ python의 시각화로 자주 이용되는 패키지는 matplotlib,seaborn,bokeh
 
 #st.plotly_chart(figure_or_data, use_container_width=False, theme="streamlit", **kwargs)
 ```
-</br>
-인자로 줄 수 있는 옵션들에 대해서 하나씩 설명해드리도록 하겠습니다.
 
-- figure_or_data : 첫번째 인자로 plotly로 생성한 그림의 이름이 들어가는 위치입니다.
-- use_container_width : 레이아웃으로 지정한 사이즈에 그림이 해상도를 조절해서 들어갈 것인지 (->'True') </br>
- 아니면 원래그림 크기대로 표시될 것인지 (-> 'False') 선택하는 옵션입니다.
-- theme : 스트림릿 웹에 어떻게 표시될지 테마를 설정합니다. 인자로는 "streamlit" 과 None(입력하지 않음)을 선택할 수 있습니다. 
+</br> 인자로 줄 수 있는 옵션들에 대해서 하나씩 설명해드리도록 하겠습니다.
+
+-   figure_or_data : 첫번째 인자로 plotly로 생성한 그림의 이름이 들어가는 위치입니다.
+-   use_container_width : 레이아웃으로 지정한 사이즈에 그림이 해상도를 조절해서 들어갈 것인지 (-\>'True') </br> 아니면 원래그림 크기대로 표시될 것인지 (-\> 'False') 선택하는 옵션입니다.
+-   theme : 스트림릿 웹에 어떻게 표시될지 테마를 설정합니다. 인자로는 "streamlit" 과 None(입력하지 않음)을 선택할 수 있습니다.
 
 </br>
 
@@ -483,7 +459,7 @@ with tab2:
 
 </br>
 
-## 지도표시 
+## 지도표시
 
 ```{python}
 #| echo : true
@@ -508,8 +484,7 @@ print(map_data)
 
 ```
 
-이어서 이 위도 경도 데이터를 스트림릿 웹 페이지에 지도로 나타내는 과정은 다음과 같습니다.
-</br>
+이어서 이 위도 경도 데이터를 스트림릿 웹 페이지에 지도로 나타내는 과정은 다음과 같습니다. </br>
 
 ```{python}
 #| echo : true
@@ -524,38 +499,29 @@ st.map(map_data)
 # 지도 생성 
 ```
 
+결과물
 
-결과물 
-
-![](src-map.png) 
+![](src-map.png)
 
 </br>
 
-# st.session_State / st.cache 
-</br>
-<https://docs.streamlit.io/library/api-reference/performance/st.cache> 
- 
+# st.session_State / st.cache
 
+</br> <https://docs.streamlit.io/library/api-reference/performance/st.cache>
 
-## st.session_state 세션 스테이트란? 
+## st.session_state 세션 스테이트란?
 
-**상태가 자꾸 변하는 것들을 세션스테이트에 관리해두면 바뀌는 값에 따라 내용이 바뀌는 것들을 기록할 수 있다. **
+**상태가 자꾸 변하는 것들을 세션스테이트에 관리해두면 바뀌는 값에 따라 내용이 바뀌는 것들을 기록할 수 있다.**
 
-
-** 아주 중요한 역할을 하는 기능입니다. ** 
+\*\* 아주 중요한 역할을 하는 기능입니다. \*\*
 
 ## st.session_state 활용
 
-
-![why we use sessionstate](src-whysession_state.png) 
-
-
+![why we use sessionstate](src-whysession_state.png)
 
 세션스테이트에 key값의 초기값이 없으면, 초기값을 생성하여 놓는 작업을 if문을 통해 진행합니다.
 
 세션스테이트에 사용자가 입력한 인풋에 따라서 dataframe이 재가공 되는데 이 값이 interactive하게 지정되게 하기 위해 st.session_state값으로 사용합니다.
-
-
 
 ```{python}
 #| echo : true 
@@ -583,24 +549,18 @@ st.map(map_data)
 
 ```
 
-
-
-
-## cache 란 무엇인가? 
+## cache 란 무엇인가?
 
 ![캐싱기능의 필요성](src-whatiscache.png)
-
-
 
 캐싱에 관한 간단한 개념은 주문이 들어왔을 때 우리가 만들기 시작하면 코드가 결과물을 만들어내는데 시간이 오래 걸리는 경우 유저가 결과물을 오랜시간 기달려야하는 경우가 발생합니다.
 
 따라서 만들어내는데 오래걸리는 결과물을 미리 만들어두고, 보이지 않는 곳에 캐싱하여 필요할때 찾아 꺼내는 것을 cache기능이라고 간단히 설명하도록 하겠습니다.
 
+## streamlit 에서 cache 기능 사용하기
 
-## streamlit 에서 cache 기능 사용하기 
+streamlit에서는 시간이 오래걸리는 작업: 데이터 로드 등을 할때 위에 @st.cache를 추가하여 캐싱할 수 있게 할 수 있다.
 
-
-streamlit에서는 시간이 오래걸리는 작업: 데이터 로드 등을 할때 위에 @st.cache를 추가하여 캐싱할 수 있게 할 수 있다. 
 ```{python}
 #| echo : true
 #| output : false
@@ -618,10 +578,10 @@ def load_data():
 
 큰 데이터를 로드하거나, 실행이 오래걸리는 복잡한 연산을 해야할 때 cache기능을 이용하면 용이하다.
 
-
-## 로딩상태 구현 
+## 로딩상태 구현
 
 ### st.progress
+
 ```{python}
 #| echo : true
 #| output : false
@@ -642,12 +602,12 @@ st.balloons()
 # 시간 다 되면 풍선 이펙트 보여주기 
 
 ```
+
 코드 수행 소요시간이 긴 경우, progress bar와 streamlit의 spinner를 통해서 로딩페이지를 만들 수 있다!
 
-![](src-progress.png)
-![](src-progressbar2.png)
+![](src-progress.png) ![](src-progressbar2.png)
 
-### st. spinner 사용 
+### st. spinner 사용
 
 ```{python}
 #| echo : true
@@ -662,53 +622,39 @@ with st.spinner('Wait for it...'):
 
 ```
 
-
-![](src-spinner.png)
-![](src-spinner2.png)
-
+![](src-spinner.png) ![](src-spinner2.png)
 
 # 스트림릿의 단점
 
-## 근본적 한계 
+## 근본적 한계
 
 streamlit 에서 제공하는 UI들이 대부분 예쁘지만, 디테일적으로 맘에 들지 않을 수가 있다.
 
 ![](src-css.png)
 
-예를 들어 4.87로 표시된 부분의 폰트가 맘에들지 않는다고 하자. 
-그렇다면 streamlit를 markdown을 통해서 style을 직접 수정해주어야한다. 
+예를 들어 4.87로 표시된 부분의 폰트가 맘에들지 않는다고 하자. 그렇다면 streamlit를 markdown을 통해서 style을 직접 수정해주어야한다.
 
+## 극복방안 : CSS hack
 
+이 작업을 streamlit CSS hack이라고 한다
 
-## 극복방안 : CSS hack 
-
-이 작업을 streamlit CSS hack이라고 한다 
-
-![](src-csshack.png) 
+![](src-csshack.png)
 
 브라우저에 검사기능을 이용하여 css해당하는 부분을 마크다운으로 직접 style tag를 넣어서 수정하면 된다.
 
-아래 유튜브를 통해서 더욱 자세한 내용을 배울 수 있습니다. 
+아래 유튜브를 통해서 더욱 자세한 내용을 배울 수 있습니다.
 
- <https://www.youtube.com/watch?v=gr_KyGfO_eU>
-
-
+<https://www.youtube.com/watch?v=gr_KyGfO_eU>
 
 # 소개하지 못했지만 중요한 기능
 
+-   DB를 연결하는 부분 streamlit은 다양한 DBMS 연결을 지원합니다.</br> 제공하는 tutorial을 통해 연결해보세요 </br> <https://docs.streamlit.io/knowledge-base/tutorials/databases>
 
-- DB를 연결하는 부분 
-streamlit은 다양한 DBMS 연결을 지원합니다.</br>
-제공하는 tutorial을 통해 연결해보세요 </br>
-<https://docs.streamlit.io/knowledge-base/tutorials/databases>
-
-
-- 배포하는 부분   
-streamlit을 로컬에서 말고 링크를 만들어 배포할 수 있습니다 
-<https://docs.streamlit.io/knowledge-base/tutorials/deploy>
-
+-   배포하는 부분\
+    streamlit을 로컬에서 말고 링크를 만들어 배포할 수 있습니다 <https://docs.streamlit.io/knowledge-base/tutorials/deploy>
 
 # 파이썬 streamlit을 활용한 설문조사 대시보드 제작기
+
 <iframe src="streamlit-회고.html" width="900" height="450" style="border: none;">
 
 </iframe>
