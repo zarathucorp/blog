@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.36">
+<meta name="generator" content="quarto-1.2.269">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2019-01-28">
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -137,22 +142,30 @@ ga('send', {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="../../index.html">
-    <img src="../../img/logo.png" alt=""><span class="navbar-title">Zarathu Blog</span>
-  </a>
+      <div class="navbar-brand-container">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Zarathu Blog</span>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
-    <a class="nav-link" href="../../index.html">Home</a>
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="http://app.zarathu.com/">Applications</a>
+    <a class="nav-link" href="http://app.zarathu.com/">
+ <span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">R packages</a>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R packages</span>
+    </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
 <li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/">
@@ -169,17 +182,18 @@ ga('send', {
     </ul>
 </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html">Contributors</a>
+    <a class="nav-link" href="../../contributors.html">
+ <span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/zarathucorp"><i class="bi bi-github" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img" aria-label="RSS">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
 <div id="quarto-search" class="" title="Search"></div>
@@ -223,13 +237,14 @@ ga('send', {
         <p class="date">January 28, 2019</p>
       </div>
     </div>
+    
       
     </div>
     
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
 <li><a href="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90" id="toc-시작하기-전에" class="nav-link active" data-scroll-target="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90">시작하기 전에</a></li>
@@ -252,7 +267,7 @@ ga('send', {
   <li>
 <a href="#figures" id="toc-figures" class="nav-link" data-scroll-target="#figures">Figures</a>
   <ul class="collapse">
-<li><a href="#figures-with-r" id="toc-figures-with-r" class="nav-link" data-scroll-target="#figures-with-r">Figures with <strong><span>R</span></strong></a></li>
+<li><a href="#figures-with-r" id="toc-figures-with-r" class="nav-link" data-scroll-target="#figures-with-r">Figures with <strong>R</strong></a></li>
   <li><a href="#external-figures" id="toc-external-figures" class="nav-link" data-scroll-target="#external-figures">External figures</a></li>
   </ul>
 </li>
@@ -908,42 +923,42 @@ kable(model.table, caption = model.display$first.line)
 <p>본 강의를 통해 <strong><a href="https://rmarkdown.rstudio.com/">R Markdown</a></strong>으로 기본적인 문서를 만드는 법을 알아보았다. 본 강의에서는 시간 관계상 참고문헌 다는 법을 언급하지 않았는데 궁금하다면 <a href="https://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html">Bibliographies and Citations</a><a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a>을 참고하자. 이 내용까지 숙지한다면 <strong><a href="https://rmarkdown.rstudio.com/">R Markdown</a></strong>으로 논문을 쓸 준비가 된 것이다. <strong><a href="https://rmarkdown.rstudio.com/">R Markdown</a></strong>에 대한 전반적인 내용은 아래의 <a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown Cheet Sheet</a><a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a>에 잘 요약되어 있으니 그때그떄 확인하면 좋다.</p>
 <embed src="https://drive.google.com/viewerng/%0Aviewer?embedded=true&amp;url=https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf" width="100%" height="600">
 
-</section><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 <ol>
-<li id="fn1" role="doc-endnote"><p>https://rmarkdown.rstudio.com/lesson-11.html<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>https://github.com/yihui/xaringan<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>https://github.com/rstudio/blogdown<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4" role="doc-endnote"><p>https://rstudio.github.io/distill/<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5" role="doc-endnote"><p>https://github.com/rstudio/rmarkdown<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6" role="doc-endnote"><p>https://rachaellappan.github.io/rmarkdown/<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7" role="doc-endnote"><p>https://rachaellappan.github.io/rmarkdown/<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8" role="doc-endnote"><p>https://aberdeenstudygroup.github.io/studyGroup/lessons/SG-T5-RMarkdown/Images/New_Markdown_v2.png<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9" role="doc-endnote"><p>https://rstudioblog.files.wordpress.com/2014/06/r-markdown-formats.png<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10" role="doc-endnote"><p>https://stackoverflow.com/questions/47317229/rmarkdown-knit-pdf-to-look-exactly-like-html<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn11" role="doc-endnote"><p>https://stackoverflow.com/questions/47317229/rmarkdown-knit-pdf-to-look-exactly-like-html<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn12" role="doc-endnote"><p>https://rmarkdown.rstudio.com/articles_docx.html<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn13" role="doc-endnote"><p>https://rfriend.tistory.com/311<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn14" role="doc-endnote"><p>https://richardlent.github.io/post/rstudio-as-a-research-and-writing-platform/<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn15" role="doc-endnote"><p>https://stackoverflow.com/questions/24934781/rstudio-knitr-themes<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn16" role="doc-endnote"><p>http://www.datadreaming.org/post/r-markdown-theme-gallery/<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn17" role="doc-endnote"><p>https://eranraviv.com/syntax-highlighting-style-in-rmarkdown/<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn18" role="doc-endnote"><p>https://rfriend.tistory.com/311<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn19" role="doc-endnote"><p>https://rmarkdown.rstudio.com/articles_docx.html<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn20" role="doc-endnote"><p>https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn21" role="doc-endnote"><p>https://www.latex-tutorial.com/tutorials/amsmath/<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn22" role="doc-endnote"><p>https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn23" role="doc-endnote"><p>https://rstudio.github.io/DT/<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn24" role="doc-endnote"><p>https://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn25" role="doc-endnote"><p>https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>https://rmarkdown.rstudio.com/lesson-11.html<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>https://github.com/yihui/xaringan<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>https://github.com/rstudio/blogdown<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>https://rstudio.github.io/distill/<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>https://github.com/rstudio/rmarkdown<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>https://rachaellappan.github.io/rmarkdown/<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>https://rachaellappan.github.io/rmarkdown/<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>https://aberdeenstudygroup.github.io/studyGroup/lessons/SG-T5-RMarkdown/Images/New_Markdown_v2.png<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>https://rstudioblog.files.wordpress.com/2014/06/r-markdown-formats.png<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>https://stackoverflow.com/questions/47317229/rmarkdown-knit-pdf-to-look-exactly-like-html<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>https://stackoverflow.com/questions/47317229/rmarkdown-knit-pdf-to-look-exactly-like-html<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>https://rmarkdown.rstudio.com/articles_docx.html<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>https://rfriend.tistory.com/311<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>https://richardlent.github.io/post/rstudio-as-a-research-and-writing-platform/<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>https://stackoverflow.com/questions/24934781/rstudio-knitr-themes<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>http://www.datadreaming.org/post/r-markdown-theme-gallery/<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>https://eranraviv.com/syntax-highlighting-style-in-rmarkdown/<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>https://rfriend.tistory.com/311<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>https://rmarkdown.rstudio.com/articles_docx.html<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>https://www.latex-tutorial.com/tutorials/amsmath/<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p>https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>https://rstudio.github.io/DT/<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p>https://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25"><p>https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2019,
   author = {Jinseob Kim},
   title = {R {Markdown} {기초}},
-  date = {01/28/2019},
+  date = {2019-01-28},
   url = {https://blog.zarathu.com/posts/2019-01-03-rmarkdown},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2019" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
-Jinseob Kim. 1AD–28AD. <span>“R Markdown 기초.”</span> 1AD–28AD. <a href="https://blog.zarathu.com/posts/2019-01-03-rmarkdown">https://blog.zarathu.com/posts/2019-01-03-rmarkdown</a>.
+Jinseob Kim. 2019. <span>“R Markdown 기초.”</span> January 28, 2019. <a href="https://blog.zarathu.com/posts/2019-01-03-rmarkdown">https://blog.zarathu.com/posts/2019-01-03-rmarkdown</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -985,7 +1000,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -1013,31 +1045,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
     });
   }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
