@@ -1,0 +1,460 @@
+---
+title: "likert 패키지 소개"
+description: |
+  문항별 만족/불만족을 한번에 표현하는 likert chart를 그려보자
+categories: 
+  - R
+  - Rpackage
+  - shiny
+  - plotly
+  - quarto
+aliases: 
+  - likert
+author: 
+  - name: "jinhwan kim"
+    url: https://github.com/jhk0530
+image: img/hex.png
+date: 02-05-2023
+format: html
+lang: kr
+execute: 
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+
+# 리커트 척도
+
+사용자로 부터 수집되는 데이터중 많은 부분은 설문조사를 통해 얻을 수 있으며, **제시된 문장에 얼마나 동의하는지**의 단계를 나타내는 표현하는 방법으로 [리커트 척도](https://en.wikipedia.org/wiki/Likert_scale) 라는 방법이 쓰이기도 합니다. 
+
+하나의 예시를 들면 다음과 같습니다.
+
+<hr>
+```{=html}
+<fieldset>
+  <h5>이 아티클은 읽기 쉬운 내용으로 쓰여져 있다.</h5>
+
+  <div>
+  <input type="radio" id="huey" name="drone" value="huey" checked>
+  <label for="huey">매우 그렇다</label>
+  </div>
+
+  <div>
+  <input type="radio" id="dewey" name="drone" value="dewey">
+  <label for="dewey">그런 편이다</label>
+  </div>
+  
+  <div>
+  <input type="radio" id="dewey" name="drone" value="dewey">
+  <label for="dewey">보통이다</label>
+  </div>
+  
+  <div>
+  <input type="radio" id="dewey" name="drone" value="dewey">
+  <label for="dewey">그렇지 않다</label>
+  </div>
+  
+  <div>
+  <input type="radio" id="louie" name="drone" value="louie">
+  <label for="louie">전혀 그렇지 않다</label>
+  </div>
+</fieldset>
+```
+
+<br/>
+
+이 설문을 10명에게 진행했고, 그 결과가 다음 테이블과 같다고 가정해보겠습니다.
+
+```{r}
+#| echo: false
+library(ggplot2)
+library(reactable)
+
+surv <- data.frame(
+  "읽기쉬움" = factor(c("그런 편이다", "보통이다", "매우 그렇다", "보통이다", "전혀 그렇지 않다", "그렇지 않다", "그런 편이다", "그런 편이다", "그렇지 않다", "전혀 그렇지 않다"), 
+                  levels = c('매우 그렇다', '그런 편이다','보통이다','그렇지 않다','전혀 그렇지 않다'))
+)
+
+rownames(surv) <- paste0('id', 1:10) 
+reactable(surv)
+```
+
+이렇게 **순서가 있는, 여러 카테고리의 데이터**를 어떻게 시각화 할 수 있을까요? (Likert 외에도 [NPS](https://en.wikipedia.org/wiki/Net_promoter_score)도 해당합니다.)
+
+## Barplot
+
+제일 먼저 해볼 수 있는 것은, 문항별로 개수를 보여주는 것입니다.
+
+```{r}
+#| echo: false
+#| warning: false
+library(dplyr)
+theme_set(theme_gray(base_family='NanumGothic'))
+
+surv %>% 
+    group_by(읽기쉬움) %>% 
+    summarise(count = n()) %>% 
+    ggplot(aes(x = 읽기쉬움, y = count, fill = 읽기쉬움)) + 
+    geom_bar(stat='identity', colour='black') + 
+    scale_fill_manual(values = c('#00b894','#55efc4', '#ffeaa7', '#f59f77', '#f76c5e')) + 
+    ggtitle('이 아티클은 읽기 쉬운 내용으로 쓰여져 있다.') +
+    theme(
+        legend.position = 'none',
+        axis.text = element_text(size = 15),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(size = 20, face = "bold")
+    )
+```
+
+이 방법 자체는 나쁘지는 않지만, 1개가 아닌 여러개 문항의 결과를 보여줘야 한다면 아쉬운 문제점이 생깁니다. 
+
+## Stacked Bar plot
+
+다음과 같이 데이터를 세줄 더 추가해보겠습니다. 
+
+```{r}
+#| echo: false
+
+surv <- data.frame(
+  "읽기쉬움" = factor(
+    c("그런 편이다", "보통이다", "매우 그렇다", "보통이다", "전혀 그렇지 않다", "그렇지 않다", "그런 편이다", "그런 편이다", "그렇지 않다", "전혀 그렇지 않다"),
+    levels = c('매우 그렇다', '그런 편이다','보통이다','그렇지 않다','전혀 그렇지 않다')
+  ),
+  
+  "도움이됨" = factor(
+    c("전혀 그렇지 않다", "전혀 그렇지 않다" ,"그런 편이다", "보통이다", "매우 그렇다", "전혀 그렇지 않다", "그렇지 않다", "그렇지 않다", "그렇지 않다", "전혀 그렇지 않다"),
+    levels = c('매우 그렇다', '그런 편이다','보통이다','그렇지 않다','전혀 그렇지 않다')
+  ),
+  
+  "따라하기쉬움" = factor(
+    c("그런 편이다", "그렇지 않다", "그렇지 않다", "그런 편이다", "그렇지 않다", "그런 편이다", "보통이다", "그렇지 않다", "그런 편이다", "전혀 그렇지 않다"),
+    levels = c('매우 그렇다', '그런 편이다','보통이다','그렇지 않다','전혀 그렇지 않다')
+  )
+)
+
+rownames(surv) <- paste0('id', 1:10) 
+reactable(surv)
+```
+
+이 여러개의 데이터를 표기 하는 방법은 문항을 하나의 축 (x)에, 그리고 문항의 결과들을 나머지 축(y)을 활용하여 그려야 하기 때문에 "stacked bar"를 활용하는 방법이 있습니다.
+
+<img src='img/stacked_bar_graph.png' width = 500 align>
+
+*Image from [The Data Visualisation Catalogue](https://datavizcatalogue.com/methods/stacked_bar_graph.html)*
+
+```{r}
+#| echo: false
+#| warning: false
+
+surv2 <- data.frame(
+  id = paste0('id', 1:10),
+  question = rep(c('읽기쉬움','도움이됨', '따라하기쉬움'), each = 10),
+  value = c(surv$읽기쉬움, surv$도움이됨, surv$따라하기쉬움)
+)
+
+surv2 %>% 
+    group_by(question, value) %>% 
+    summarise(count = n()) %>% 
+    ggplot(aes(x = question, y = count, fill = value)) + 
+    geom_bar(stat='identity',position = 'stack', colour='black') + 
+    scale_fill_manual(values = c('#00b894','#55efc4', '#ffeaa7', '#f59f77', '#f76c5e')) + 
+    theme(
+        axis.text = element_text(size = 15),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(size = 20, face = "bold")
+    )
+
+```
+
+문항별로 응답자 수는 같기 때문에 (`NA`는 고려하지 않습니다) 전부 높이가 동일한 결과가 나오게 됩니다.
+
+그런데 주의해야할 점으로는, 당연하게도 문항에 따라 분포가 다를 수 있습니다. "한쪽으로 몰리는" 답이 나오는 경우가 있을 수 있다는 의미입니다.
+
+위의 그림에서 보통이다는 동일하게 각각 1개씩 답변이 있음에도 불구하고 `도움이됨`의 위치는 높게 되어있어 시각적 비교에 혼선을 줄 수 있습니다.
+
+이를 위해서 아래 이미지처럼 Neutral(회색)의 위치를 고정시키고, 이를 기준으로 위 아래로 Positive / Negative를 붙여 표현하는 방법을 고려할 수 있습니다.
+
+<img src='img/diverging-bar-neutral-split.png' width = 500>
+
+*Image from [daydreamingnumbers](http://daydreamingnumbers.com/blog/4-ways-to-visualize-likert-scales/)*
+
+이러한 차트의 정확한 이름은 모르겠지만, 이 글에서는 편의상 **Likert chart**라 표현하겠습니다.
+
+# Likert chart with R
+
+이번 글에서 소개할 패키지는 이 Likert chart를 그릴 수 있게 하는 패키지 입니다.
+
+<img src='img/hex.png' width = '150'>
+
+<https://github.com/jbryer/likert>
+
+## 예시 데이터
+
+시각화 패키지의 특성상 사용자의 데이터의 형태와 패키지가 요구하는 형태가 다를 수 있어,  likert 패키지에서는 활용할 수 있는 예시데이터를 제공합니다.
+
+```{r}
+# install.package('likert')
+library(likert)
+data(pisaitems)
+head(pisaitems[,1:3])
+# str(pisaitems)
+# View(pisaitems)
+```
+
+`pisaitems` 데이터의 경우, 
+- rownames를 가지고 있으며
+- 첫 `CNT` 이후로는 전부 scale을 갖는 **factor**의 형태로 이루어져 있습니다.
+- 개수는 각 column 마다 다르며, **NA**를 포함하고 있기도 합니다. (ex: `ST36Q01`)
+
+이후 이 데이터를 `likert` 오브젝트로 변환해야 합니다.
+다만 모든 데이터를 다 사용하진 않고, `CNT` 이후의 처음 3개만 사용하겠습니다. 
+
+## likert: print
+
+```{r}
+summary(pisaitems[, 2:4])
+
+100 * 14947 / (14947 + 23515 + 20000 + 7029) # ST24Q01: Strongly disagree 
+
+ll <- likert(pisaitems[, 2:4])
+print(ll)
+```
+
+위의 `summary`와 바로 비교해보면 알 수 있듯, `likert` 를 출력했을때는 `NA`를 제외한 각 문항별 factor의 백분율을 출력합니다.
+
+## likert: summary
+
+한편 `summary` 함수를 사용하면 low와 high를 표기해주는데 이는 각각 Neutral보다 낮은 / 높은 값의 백분율 합을 표기합니다. (예시의 경우 `Strongly disagree` + `Disagree`, `Strongly agree` + `agree`) 
+
+
+```{r}
+summary(ll)
+22.82298 + 35.90570 # ST24Q01's Low
+```
+
+- 물론 문항이 4-5개가 아닌, 여러개도 가능하기 때문에 Neutral은 가운데를 기준으로 설정하지만, 사용자가 `center`를 통해 지정할 수도 있습니다.
+- `mean`과 `sd`는 크게 신경쓰지 않아도 괜찮습니다.
+
+```{r}
+summary(ll, center = 1.5)
+```
+
+## liert: Plot
+
+`likert` object는 그냥 `plot`에 넣는 것으로도 결과를 바로 만들어 낼 수 있습니다.
+
+```{r}
+plot(ll)
+```
+
+기본 `center`는 가운데, 이 경우 `2`와 `3`사이인 `2.5`를 기준으로 그려지고, 문항별 `High`, `Low`를 차트 양옆에 추가로 표기하게 됩니다.
+
+### information
+
+차트에서의 factor 별 %, high, low 는 plot.percents, plot.percent.low, plot.percent.high를 통해 설정할 수 있습니다.
+```{r}
+plot(ll, plot.percents=TRUE, plot.percent.low=FALSE, plot.percent.high=FALSE)
+```
+
+### colors
+
+기본 색상외에 `colors`를 사용하여 색상을 커스텀 할 수 있습니다. 단, 개수는 factor의 수와 동일해야합니다.
+
+```{r}
+plot(ll, colors=c('orange','darkorange','darkblue','blue'))
+```
+
+
+### center
+
+만약 위의 summary 처럼 Neutral을 바꾸고 싶다면, `center`를 통해 값을 지정하여 그릴 수 있습니다.
+
+여기서 `center`가 정수라면 해당하는 factor의 색상이 자동으로 회색으로 바뀌는 것을 확인 할 수 있습니다.
+
+```{r}
+plot(ll, center = 2)
+```
+
+### include.center
+
+차트에서 Neutral을 제외하고 그리고 싶다면 `include.center = FALSE`를 사용하여 제거할 수 있습니다. 
+
+```{r}
+plot(ll, center = 2, include.center = FALSE)
+```
+
+### centered
+
+단순히 stacked bar chart를 그리고 싶다면 `centered = FALSE`를 사용하면 됩니다.
+
+```{r}
+plot(ll, centered = FALSE)
+```
+
+### NA info (histogram)
+
+문항에서 결측치 (`NA`) 정보를 같이 표현하고 싶은 경우, `include.histogram = TRUE`를 설정하여 그릴 수 있습니다.
+
+```{r}
+summary(pisaitems[,2])
+
+100 * 1199 / 66690 # 1.79% NA
+
+plot(ll, include.histogram = TRUE)
+```
+
+### density plot
+
+`likert` 오브젝트는 `type = 'density'`를 사용하여  bar chart의 형태가 아닌 density plot으로도 표현할 수 있습니다. 
+
+```{r}
+plot(ll, type = 'density')
+
+```
+
+여러개의 density plot을 `facet`을 사용하여 하나로 겹치게 보여줄 수 있으며, 추가로 legend를 지정하는 예시입니다.
+(*구분은 잘 안가지만, fill의 색상은 미세하게 다르게 표현되어 있습니다*)
+
+```{r}
+plot(ll, type='density', facet=FALSE) + 
+  guides(
+    color = guide_legend(title="Legend with Color"),
+    fill = guide_legend(title="Legend with Fill")
+  )
+```
+
+
+### Heat map
+
+`likert` 오브젝트는 `type = 'heat'`를 사용해 heatmap으로 도 표현할 수 있습니다.
+
+```{r}
+plot(ll, type='heat')
+```
+
+
+## Group Likert
+
+한편 `likert` 오브젝트를 만들때, 사용자의 그룹을 설정해준다면 (예시데이터의 `CNT`와 같이)
+dplyr의 `group by`를 사용한 것과 유사한 결과를 낼 수 있습니다. 
+
+사용 가능한 parameter는 위와 동일합니다.
+
+```{r}
+llg <- likert(pisaitems[,2:4], grouping=pisaitems$CNT)
+print(llg) 
+```
+
+```{r}
+plot(llg, group.order=c('Mexico', 'Canada', 'United States'))
+```
+
+### Group horizontal Plot
+
+그룹을 사용하면 차트를 여러개의 그룹에 따라 구분지어 그려야 하는 만큼 `ggplot`의 `facet`처럼 차트를 나누어야 하는데, 이 과정에서 위아래가 아닌, 좌우로도 설정 할 수 있습니다.
+
+```{r}
+plot(llg, panel.arrange='h', wrap=20)
+```
+
+# Likert chart with Shiny
+
+likert는 이 아티클의 예시와 같은 1회성 코드, 혹은 이를 작성한 `quarto`와 같은 문서에서도 활용할 수 있지만 `shiny`를 통해서 다른 사람들에게 웹으로 공유할 수 있습니다.
+
+```{r}
+#| echo: false
+library(shiny)
+```
+
+단, `shinyapps.io`를 활용하여 배포 하지 않고서는 `quarto` 아티클에 shiny를 심는 것은 기술적으로 불가능 하기 때문에 shiny는 코드와 결과 이미지를 활용합니다.
+
+```{r}
+#| eval: false
+#| echo: true
+
+library(shiny)
+library(likert)
+
+ui <- fluidPage(
+  h2('shiny with Likert'),
+  hr(),
+  plotOutput(outputId = 'myLikert')
+)
+
+server <- function(input, output, session) {
+  
+  data(pisaitems)
+  ll <- likert(pisaitems[, 2:4])
+  output$myLikert = renderPlot({
+    plot(ll)
+  })
+}
+
+shinyApp(ui, server)
+```
+
+위 코드를 사용한 shiny app의 결과는 다음과 같습니다.
+
+<img src='img/shiny.png' width = 500>
+
+# Likert chart with ggplotly
+
+`ggplotly`는 ggplot과 같은 R에서 그린 그림을 `plotly` 패키지와 연동하여, 이미지를 정적인 이미지에서 동적인 이미지로 바꾸는 역할을 하는 함수입니다.
+이를 통해 hover, download, zoom 등의 액션을 사용자가 추가로 할 수 있어 shiny나 rmarkdown 등의 interactive document에서는 종종 활용하기도 합니다.
+
+`likert` 패키지 또한 마찬가지로 `ggplotly`를 통해서 정적인 이미지를 동적으로 바꿔줄 수 있습니다.
+
+```{r}
+#| warning: false
+library(plotly)
+
+ggplotly(plot(ll))
+```
+
+ggplotly는 shiny로도 동시에 연동이 가능합니다.
+
+```{r}
+#| eval: false
+#| echo: true
+
+ui <- fluidPage(
+  h2('shiny with Likert'),
+  hr(),
+  plotOutput(outputId = 'myLikert'),
+  h3("with ggplotly"),
+  plotlyOutput(outputId = 'myLikert2')
+)
+
+server <- function(input, output, session) {
+  
+  data(pisaitems)
+  ll <- likert(pisaitems[, 2:4])
+  output$myLikert = renderPlot({
+    plot(ll)
+  })
+  
+  output$myLikert2 = renderPlotly({
+    ggplotly(
+      plot(ll)
+    )
+  })
+}
+
+shinyApp(ui, server)
+
+```
+
+위 코드의 실행결과는 다음과 같습니다.
+
+<img src='img/shiny2.png' width = 500>
+
+
+# 정리
+
+- 만족도 설문조사 등에서 많이 활용되는 **"순서가 있는 카테고리형"** 답안을 표현하는 것은 다른 시각화와 살짝 결이 다르다.
+- `likert` 패키지를 활용하여 likert chart를 그릴 수 있다.
+- density plot, heatmap 등도 같이 활용 가능하며, `center`를 포함한 옵션을 설정할 수 있다.
+- `group`을 할당하여 구분 짓는 것도 가능하다.
+- `shiny`, `quarto`, `plotly`등 다른 패키지와도 연동이 가능하다.
