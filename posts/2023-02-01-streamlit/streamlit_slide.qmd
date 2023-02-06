@@ -1,0 +1,282 @@
+---
+format:
+  revealjs:
+    theme: default
+    incremental: true
+    auto-animate-easing: ease-in-out
+    auto-animate-unmatched: false
+    auto-animate-duration: 0.8
+    transition: slide
+    background-transition: fade
+    chalkboard:
+      theme: whiteboard
+      boardmarker-width: 5
+      buttons: false
+    standalone: true
+execute: 
+  freeze: true
+---
+
+# 목차 {transition="fade-in slide-out"}
+
+-   왜 이 업무를 하게 됐는지
+-   시각화와 대시보드? 
+-   스트림릿 샤이니의 차이 
+-   스트림릿 개발 과정
+
+
+## 왜 이 업무를 하게 됐는가 {chalkboard-buttons="true"}
+
+::: columns
+::: {.column width="30%"}
+![](https://img1.yna.co.kr/etc/inner/KR/2020/09/11/AKR20200911034300007_01_i_P4.jpg){fig-align="left"}
+:::
+
+::: {.column width="70%"}
+### 데이터 직군 로드맵
+
+### ![](https://blog.kakaocdn.net/dn/ceCRmG/btqIaq9Zr9o/TRLWfMsTnB4EYA6p66dSS1/img.png){height="400"}
+:::
+:::
+
+::: aside
+<https://github.com/Team-Neighborhood/I-want-to-study-Data-Science/wiki>
+:::
+
+## dashboard
+
+### KPI를 검토할 수 있는 직관적인
+
+-   반응형 -\> 그룹, 직업별 , 성별, 연령별
+-   시각화 모음
+
+# Visualization..?{transition="fade-in slide-out"}
+
+= 단순히 자료를 보여주면 끝?
+
+## Visualization
+
+<br> <br>
+
+### 정답은 없지만
+
+### 의사결정에 도움이 돼야!!
+
+### 무분별한 파이차트 이제 그만
+
+# 스트림릿 vs shiny
+
+## 공통점 {.smaller}
+
+### 장점 
+
+1. 프론트엔드 개발자가 필요없다.
+2. 백엔드 개발자가 필요없다. 데이터를 올려놓고 작업할 수 있다.
+3. 빠르게 개발할 수 있다.
+
+### 단점
+
+-  웹사이트를 이대로 퍼블리싱하기엔 디테일한 부분을 손볼 수 없고, 결국 HTML CSS 를 뜯어서 원하는 디자인을 구현해야하기 때문에 바로 제품으로 사용하기엔 좀 어렵다! 
+
+
+<br>
+
+- *반례 : 본담* 
+
+
+## 개발 난이도 {.smaller}
+
+::: panel-tabset
+### Shiny
+
+::: columns
+::: {.column width="40%"}
+<https://shiny.rstudio.com/gallery/>
+
+
+### 천하제일 샤이니 대회 
+
+<br> 
+
+샤이니로 할 수 있는것이 참 많다! 
+:::
+
+::: {.column width="60%"}
+
+### 통계학의 근본 프로그래밍은 R 
+- R 기반으로 작동하는 웹앱을 만들어주는 패키지
+
+<br>
+
+### 회귀분석, 가설검정의 근본 ->  R패키지
+
+- (주관적인 저의 생각) 샤이니도 배우긴 쉬운데.. 근소한 차이로 스트림릿이 더 쉽다!
+:::
+:::
+
+### Streamlit
+
+::: columns
+::: {.column width="40%"}
+![](https://ifh.cc/g/CGLJo1.jpg)
+:::
+
+::: {.column width="60%"}
+
+비슷비슷한데.. 
+
+결국 샤이니와 스트림릿 모두 데이터를 보여주는 껍데기다! 
+
+
+따라서 파이썬에서 데이터를 다루는 것이 익숙하면 스트림릿으로, R에서 주로 데이터를 다루면 샤이니로 
+
+### 파이썬이라는 언어 자체가 개발 난이도가 더 낮다고 생각합니다! 
+:::
+:::
+:::
+
+## streamlit skeleton code
+
+``` {.python code-line-numbers="6-8"}
+import streamlit as st
+import pandas as pd 
+st.write("""# My First app 
+             Hello *world!*""')
+df= pd.read_csv("My_data.csv")
+st.line_chart(df)
+```
+
+![](https://ifh.cc/g/Wp53Jz.png){fig-align="center"}
+
+## 왜 스트림릿을 썼는가? {auto-animate="true"}
+
+::: columns
+::: {.column width="33%"}
+개발 난이도
+:::
+
+::: {.column width="34%"}
+생태계
+:::
+
+::: {.column width="33%"}
+심미성
+:::
+:::
+
+## 왜 스트림릿을 썼는가? {auto-animate="true"}
+
+::: {style="margin-top: 200px; font-size: 3em; color: red;"}
+생태계
+:::
+
+## 파이썬의 생태계 {.smaller}
+
+-   DL/ML library
+-   Plotly
+
+::: r-stack
+![](https://blog.kakaocdn.net/dn/z56RT/btqFrDLB4Fm/rWtRKY30EwDaM2wqYqwkV0/img.jpg){.fragment width="450" height="400"}
+
+![](https://miro.medium.com/max/1200/1*-9FgQrCfkIHqmZcT0Wyr8Q.png){.fragment width="600" height="550"}
+:::
+
+
+# 개발 과정
+
+## 설문 데이터 {.smaller}
+
+<br>
+
+
+
+전공의 2000여명의 80가지 설문에 대한 응답내용이 담긴 csv 
+
+<br> 
+
+### 남자인데 생리휴가 사용
+
+### 폭력을 당하지 않았다고 응답했는데, 당한사람을 기록 등 
+
+### -> 논리적 오류를 가진 데이터 전처리
+
+### (예,아니오), (Yes,No) 등 일원화 
+
+## 전처리 과정 {.smaller}
+
+::: columns
+::: {.column width="35%"}
+![](https://ifh.cc/g/alRTR1.png)
+:::
+
+::: {.column width="65%"}
+### 찐막
+
+### 찐찐막
+
+### 찐 최종0118.csv
+
+### final 0118-2.csv
+
+<br>
+
+### 교 훈!
+
+### 버전관리의 중요성
+
+### Github를 무조건 사용하자!
+:::
+:::
+
+## 큰 틀 짜기 {.smaller}
+
+창우님이 작성한 큰 틀의 코드 안에서 세부적으로 모듈을 구현하거나,
+
+케이스를 나눠서 나와야 할 게 잘 나오게 하는 업무를 진행했습니다
+
+::: columns
+::: {.column width="50%"}
+선택 : 없음 ![](https://ifh.cc/g/g6zB7J.png){height="400"}
+:::
+
+::: {.column width="50%"}
+선택: 연차
+
+![](https://ifh.cc/g/RdNoZc.png){height="400"}
+:::
+:::
+
+## 문항에 맞게 시각화 하기
+
+### 만족도-> horizontal bar graph로 표현하였습니다
+
+::: columns
+::: {.column width="35%"}
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Plotly-logo.png/1200px-Plotly-logo.png)
+:::
+
+::: {.column width="65%"}
+![](https://ifh.cc/g/q3l9G7.png){width="400,height=700"}
+:::
+:::
+
+## 유지보수 (\~ing) {.smaller}
+
+![](https://ifh.cc/g/hOYc3y.jpg) 
+
+### mean 글씨가 거슬리네요 .. 
+
+넵!!
+
+[](https://ifh.cc/g/1TXx2S.png)
+
+## 언론에 보도된 대시보드 {.smaller}
+
+전공의들, 하루 평균 4시간 자면서 주 78시간 일해 <청년의사>
+
+![](https://cdn.docdocdoc.co.kr/news/photo/202301/3001999_3002234_4755.jpg){fig-align="center"}
+
+<http://www.docdocdoc.co.kr/news/articleView.html?idxno=3001999>
+
+
+# 감사합니다 
