@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Changwoo Lim">
-<meta name="dcterms.date" content="2023-02-01">
+<meta name="dcterms.date" content="2023-02-07">
 <meta name="description" content="Slack API를 이용하여 Python 기반 대나무숲 앱 만들기">
 
 <title>Zarathu Blog - Slack API를 이용한 대나무숲 앱 제작</title>
@@ -242,7 +242,7 @@ ga('send', {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">February 1, 2023</p>
+        <p class="date">February 7, 2023</p>
       </div>
     </div>
     
@@ -286,7 +286,7 @@ ga('send', {
 <section id="과정---api.slack.com" class="level3" data-number="1.2">
 <h3 data-number="1.2" class="anchored" data-anchor-id="과정---api.slack.com"><span class="header-section-number">1.2</span> 과정 - api.slack.com</h3>
 <p>먼저, <a href="api.slack.com">Slack API</a>에 접속하여, Create New App을 선택합니다. From Scratch를 선택한 후, App Name과 워크스페이스를 선택합니다. 저는 대나무숲 봇, Zarathu 워크스페이스를 선택했습니다.</p>
-<p><img src="img/스크린샷 2023-02-06 오전 10.31.42.png" class="img-fluid" width="250"></p>
+<p><img src="img/1.png" class="img-fluid" width="500"></p>
 <p>먼저, Incoming Webhooks에서, Incoming Webhooks를 활성화합니다.</p>
 <p>다음으로, Interactivity &amp; Shortcuts에 들어가 Interactivity를 활성화시키고, Request URL을 본인의 ngrok주소 또는 실제 주소 + “/slack/events”(바뀌면 작동하지 않습니다.)로 설정합니다.</p>
 <p>아래의 Shortcuts에서, 두 가지를 추가합니다. 한 가지는 Global로(게시글 포스팅), 다른 한 가지는 On Messages로(댓글 포스팅) 합니다. Name, Short Description, Callback ID는 적당히 작성합니다.</p>
@@ -364,7 +364,7 @@ CHANNEL_NAME=대나무숲</code></pre>
 <p>Slack API는 Decorator를 통해 각각의 Action에 따른 기능을 수행합니다. FastAPI를 사용 한 경험에 비추어 설명 해 보면, 예를 들어 <span class="citation" data-cites="app.post">(<a href="#ref-app.post" role="doc-biblioref"><strong>app.post?</strong></a>)</span>(“/”)의 경우 “/”로 post 요청을 보낸 경우에 작동하는 것 처럼, <span class="citation" data-cites="app.shortcut">(<a href="#ref-app.shortcut" role="doc-biblioref"><strong>app.shortcut?</strong></a>)</span>(“post”)는 post라는 ID의 shortcut을 실행 한 경우에 작동합니다.</p>
 <p>우리는 Modal을 이용해 게시글과 답글을 작성할 수 있도록 할 것입니다. <a href="https://app.slack.com/block-kit-builder">Slack에서는 Modal을 쉽게 생성할 수 있는 도구</a>를 제공하고 있습니다. 그 도구를 통해 Modal을 생성한 후, action_id와 text, callback_id, private_metadata 등을 수정하면 쉽게 우리가 원하는 Modal 창을 얻을 수 있습니다.</p>
 <p>저는 아래와 같이 했습니다.</p>
-<p><img src="img/스크린샷 2023-02-07 오전 2.16.25.png" class="img-fluid" width="250"></p>
+<p><img src="img/2.png" class="img-fluid" width="500"></p>
 <p>우리는 - “reply” action - “port” shortcut - “reply” shortcut 을 받은 경우 modal이 필요하므로 아래와 같은 Decorator를 작성합니다.</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">False</span>:</span>
@@ -513,6 +513,7 @@ CHANNEL_NAME=대나무숲</code></pre>
 <h3 data-number="1.4" class="anchored" data-anchor-id="후기"><span class="header-section-number">1.4</span> 후기</h3>
 <p>생각보다 Slack API Documentation이 충실하고, 회사에서 서버도 자유롭게 사용하도록 허용해주고 있어 쉽게 구현할 수 있었습니다. 실제로는 Docker를 사용하여 회사 서버에서 사용하고 있습니다. 테스트 목적으로는 <a href="ngrok">https://ngrok.com</a>을 사용하면 쉽게 테스트 할 수 있습니다.</p>
 <p>다만, 한 달 정도 대나무숲을 사용 해 본 결과 실질적으로 수십 명 정도의 조직이어야 제대로 사용할 수 있을 것이라는 생각이 들었습니다.</p>
+<p>전체 코드는 <a href="https://github.com/zarathucorp/slack-bambooforest">링크</a>에서 확인하실 수 있습니다.(글과 일부 바뀌었을 수 있음.)</p>
 
 
 </section>
