@@ -4,7 +4,9 @@ description: Python으로 반응형 웹 어플리케이션을 만들수 있는 S
 author: Chaehee Lee
 image: images.png
 date: 2022-08-19
-categories: [Python, Shiny]
+categories: 
+  - python
+  - shiny
 format: html
 toc: true
 toc-location: left
@@ -175,7 +177,7 @@ shinyApp(ui, server)
 위의 예시를 이용하여 R과 Python의 문법을 간단하게 비교해보면 다음과 같습니다.
 
 |              | python                                                                    | R                                                    |
-|------------------|-------------------------|-----------------------------|
+|-------------------|-------------------------|-----------------------------|
 | import shiny | from shiny import \*                                                      | library(shiny)                                       |
 | UI           | app_ui = ui.page_fluid(                                                   | ui = fluidPage(                                      |
 | input        |   ui.input_slider("n","N",0,100,40),   ui.output_text_verbatim("txt")   ) |   sliderInput("n","N",0,100,40)   textOutput("txt")) |
@@ -188,7 +190,7 @@ shinyApp(ui, server)
 서버 부분에서 def server(input, output, session): def txt(): 와 같이 파이썬의 함수 문법을 사용합니다.
 
 |           | python                                                                           | R                                                   |
-|---------------------------|---------------------------|------------------|
+|---------------------------|---------------------------|-------------------|
 | decorater | `@`render.text ... <br/>`@`reactive.event() `@`reactive.Calc() ...<br/>`@`output | renderText() ... <br/> reactive({}) <br/>output\$id |
 
 예시의 server부분에서 `@`render.text `@`output이 사용된 것을 볼 수 있습니다. 이것은 함수를 인자로 받아 함수를 출력하는 decorator 라는 함수입니다. 보통 python 에서 여러 함수들이 부분적으로 중복될때 코드의 재사용을 용이하게 하기 위해 사용됩니다. 여기서는 그냥 함수의 일종이라고 생각하면 될 것 같습니다.
@@ -229,4 +231,3 @@ shinylive와 배포된 앱은 컴퓨터에 Python 또는 Shiny를 설치할 필�
 [shinylive editor](https://shinylive.io/py/examples/)을 통해 간단하게 shinylive를 통해 배포해볼 수 있습니다 .
 
 이외에도 Netlify, GITHUB gist를 통해서도 가능하며 [Sharing Shinylive applications](https://shiny.rstudio.com/py/docs/shinylive.html#sharing-shinylive-applications)를 참고할 수 있습니다.
-
