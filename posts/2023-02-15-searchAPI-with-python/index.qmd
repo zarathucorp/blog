@@ -20,117 +20,86 @@ jupyter: python3
 number-sections: true
 ---
 
+# Task의 목적
 
-
-# Task의 목적 
-
-
-<img src= 'img/GND.png' width = 800>
-
+<img src="img/GND.png" width="800"/>
 
 이번 태스크의 목적은 바로 구글, 네이버, 다음 API를 모두 이용하여 검색결과를 DB화 시키는 작업입니다.
 
-사용자로 부터 query와 크롤링 원하는 검색 글 수를 인풋으로 입력받아서, API로 부터 제공받은 데이터를 가공하여 새로운 데이터프레임으로 만드는 작업을 수행합니다. 
-데이터 프레임의 컬럼은  
+사용자로 부터 query와 크롤링 원하는 검색 글 수를 인풋으로 입력받아서, API로 부터 제공받은 데이터를 가공하여 새로운 데이터프레임으로 만드는 작업을 수행합니다. 데이터 프레임의 컬럼은
 
+\[Title\] - 글 제목, \[Link\] - 글 링크 , \[Description\] - 글 미리보기 내용, \[Search engine\] - 검색결과를 제공한 포털 (naver,google,daumkakao), \[search_date\] -글을 검색한 날짜
 
-[Title] - 글 제목, [Link] - 글 링크 , [Description] - 글 미리보기 내용, [Search engine] - 검색결과를 제공한 포털 (naver,google,daumkakao), [search_date] -글을 검색한 날짜 
+입니다.
 
-입니다. 
+전체 JupyterNoteBook Source Code
 
+<https://github.com/zarathucorp/blog/blob/master/posts/2023-02-15-searchAPI-with-python/Custom_Search_Zarathu.ipynb>
 
-전체 JupyterNoteBook Source Code  
-
-<https://github.com/zarathucorp/blog/blob/master/posts/2023-02-15-searchAPI-with-python/Custom_Search_Zarathu.ipynb>  
-
-<img src= 'img/final_data.png' width= 1000>
-
-
-
-
+<img src="img/final_data.png" width="1000"/>
 
 ## 왜 크롤링을 하지 않았는지
 
-흔히 동적 크롤러로 Selenium을 많이 활용합니다. 하지만 이런 크롤링에는 기업의 자산인 데이터 자산을 침해한다는 문제점이 있습니다. 이와 관련하여 부동산 정보 플랫폼 직방의 데이터를 크롤링한 경위로 스타트업 방픽은 소송에서 얻은 데이터를 폐기하고, 직방에 2000만원을 지급하도록 2월 3일에 판결을 내려졌습니다. 따라서 홈페이지를 통해 정보가 공개됐다고 하더라도, 이런 타 사이트에 대한 데이터 베이스를 수집하는 행위는 위험하다고 생각합니다. 따라서 크롤링을 해야한다면 해도 되는지 확인을 하고 하거나, 개발자를 위한 도구로 제공된 API가 먼저 있는지 없는지 검토를 하는 것이 안전해 보입니다. (특히 얻은 데이터로 수익을 창출하는 경우는 더 더욱) 
+흔히 동적 크롤러로 Selenium을 많이 활용합니다. 하지만 이런 크롤링에는 기업의 자산인 데이터 자산을 침해한다는 문제점이 있습니다. 이와 관련하여 부동산 정보 플랫폼 직방의 데이터를 크롤링한 경위로 스타트업 방픽은 소송에서 얻은 데이터를 폐기하고, 직방에 2000만원을 지급하도록 2월 3일에 판결을 내려졌습니다. 따라서 홈페이지를 통해 정보가 공개됐다고 하더라도, 이런 타 사이트에 대한 데이터 베이스를 수집하는 행위는 위험하다고 생각합니다. 따라서 크롤링을 해야한다면 해도 되는지 확인을 하고 하거나, 개발자를 위한 도구로 제공된 API가 먼저 있는지 없는지 검토를 하는 것이 안전해 보입니다. (특히 얻은 데이터로 수익을 창출하는 경우는 더 더욱)
 
-<img src= 'img/dangerous_crawling.png' width = 800>
-
+<img src="img/dangerous_crawling.png" width="800"/>
 
 <https://www.joongang.co.kr/article/25139935#home>
 
-
-
-
 ## API란?
 
+API란 무엇인지 위키백과의 설명을 통하면, "API(application programming interface 애플리케이션 프로그래밍 인터페이스\[\*\], 응용 프로그램 프로그래밍 인터페이스)는 컴퓨터나 컴퓨터 프로그램 사이의 연결이다. 일종의 소프트웨어 인터페이스이며 다른 종류의 소프트웨어에 서비스를 제공한다"라고 설명하고 있습니다. 즉 컴퓨터끼리 연결하고 소통하는 방식인데, 주로 우리가 API를 연결해서 쓸 때는 클라이언트와 서버를 연결하여 원하는 요청을 처리하는 것이 보통입니다. 오늘 이 글에서 사용할 API는 REST API라고 합니다. API와 구별되는 REST API의 특징으로는 API를 이용할 때 규칙이 정해져 있다는 특징이 있습니다.
 
-API란 무엇인지 위키백과의 설명을 통하면, "API(application programming interface 애플리케이션 프로그래밍 인터페이스[*], 응용 프로그램 프로그래밍 인터페이스)는 컴퓨터나 컴퓨터 프로그램 사이의 연결이다. 일종의 소프트웨어 인터페이스이며 다른 종류의 소프트웨어에 서비스를 제공한다"라고 설명하고 있습니다. 즉 컴퓨터끼리 연결하고 소통하는 방식인데, 
-주로 우리가 API를 연결해서 쓸 때는 클라이언트와 서버를 연결하여 원하는 요청을 처리하는 것이 보통입니다. 오늘 이 글에서 사용할 API는 REST API라고 합니다. API와 구별되는 REST API의 특징으로는 API를 이용할 때 규칙이 정해져 있다는 특징이 있습니다. 
+URL을 통해 소통할 방법을 서버와 클라이언트 사이에 주고 받는다. 그때 어떤 자원에 대해 어떤 행위를 요청받을지 URL에 명시를 해주는 것이 원칙입니다.
 
-
-URL을 통해 소통할 방법을 서버와 클라이언트 사이에 주고 받는다. 그때 어떤 자원에 대해 어떤 행위를 요청받을지 URL에 명시를 해주는 것이 원칙입니다. 
-
-- GET : 리소스 생성 
-- POST: 조회 
-- PUT : 수정 
-- DELETE: 삭제
+-   GET : 리소스 생성
+-   POST: 조회
+-   PUT : 수정
+-   DELETE: 삭제
 
 등이 있고, 서버는 요청에 대해 상태코드로 응답합니다
 
 상태코드에 따라 정상과 비정상적으로 처리했는지 response 개체를 받아옵니다.
 
+-   200: 정상
+-   400: 비정상
 
-- 200: 정상
-- 400: 비정상 
-
-
-
-<img src= 'img/how_api_works.png' width = 800>
-
-
-
-
-
+<img src="img/how_api_works.png" width="800"/>
 
 # 구글 API 사용법
 
-
 API를 통해 서버로 부터 응답을 받기 위해선 api key가 필요합니다. 구글에서는 검색한 내용을 반환시켜주는 API로 custom_search_engine cse를 사용해서 검색 결과를 가져올 수 있습니다. (일일 100개의 쿼리제한이 걸려있습니다.)
 
+구글 API 키 발급받는 방법은 아래 링크를 참조하세요
 
-구글 API 키 발급받는 방법은 아래 링크를 참조하세요 
+-   <https://gomgomi.tistory.com/3>
 
-- <https://gomgomi.tistory.com/3> 
+------------------------------------------------------------------------
 
-
-----
-
-구글 CSE 공식문서를 참고하여 작성하였습니다. 
-
+구글 CSE 공식문서를 참고하여 작성하였습니다.
 
 <https://developers.google.com/custom-search/v1/using_rest?hl=ko>
 
+예시코드로
 
-예시코드로 
 ```{terminal}
 GET https://www.googleapis.com/customsearch/v1?key=INSERT_YOUR_API_KEY&cx=017576662512468239146:omuauf_lfve&q=lectures
 ```
 
 이런 코드가 적혀있는 것을 알 수 있습니다. 이것은 터미널에서 리눅스 명령어로 앞에 curl을 호출해서 url로 부터 응답을 받아오는 코드를 의미합니다
 
-자세히 보시면 중간에 key=INSERT_YOUR_API_KEY로 발급받은 키가 들어가는 자리이고, cx= google_search_engine의 id값이 들어갑니다. 또 &q= query로 검색할 검색어를 입력하는 것을 알 수 있습니다. 
+자세히 보시면 중간에 key=INSERT_YOUR_API_KEY로 발급받은 키가 들어가는 자리이고, cx= google_search_engine의 id값이 들어갑니다. 또 &q= query로 검색할 검색어를 입력하는 것을 알 수 있습니다.
 
-이외에도 request 요청을 할 때 다양한 인자들을 줄 수 있습니다. 
+이외에도 request 요청을 할 때 다양한 인자들을 줄 수 있습니다.
 
-
-더욱 자세한 인자들을 모두 소개하는 것은 한계가 있으니 링크를 통하여  <https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list?hl=ko&apix_params=%7B%22cx%22%3A%22sadasda%22%2C%22q%22%3A%22react%22%2C%22start%22%3A1%7D> 확인하시기 바랍니다. 
-
+더욱 자세한 인자들을 모두 소개하는 것은 한계가 있으니 링크를 통하여 <https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list?hl=ko&apix_params=%7B%22cx%22%3A%22sadasda%22%2C%22q%22%3A%22react%22%2C%22start%22%3A1%7D> 확인하시기 바랍니다.
 
 파이썬에서는 curl이라는 명령어가 없습니다. 따라서 우리는 url에 대한 응답을 요청하고 받아오기 위해서 python의 패키지인 urllib와 requests를 활용해야합니다.
 
-curl에 대한 명렁어는 파이썬에서 requests 패키지와 urllib을 통해서 요청할 수 있습니다.  
+curl에 대한 명렁어는 파이썬에서 requests 패키지와 urllib을 통해서 요청할 수 있습니다.
 
-요청을 보내는 코드는 아래와 같습니다. 
+요청을 보내는 코드는 아래와 같습니다.
+
 ```{python}
 import requests
 
@@ -147,28 +116,19 @@ response = requests.get(url).json()
 
 ```
 
-
-이렇게 요청하는 url을 우리는 작성하면 얻는 response를 한번 확인해 보겠습니다. 
+이렇게 요청하는 url을 우리는 작성하면 얻는 response를 한번 확인해 보겠습니다.
 
 <https://developers.google.com/custom-search/v1/reference/rest/v1/Search?hl=ko> 응답에 대한 양식에 대한 링크이며 응답을 테스트 해볼 수 있습니다.
 
+이때 우리는 응답에 대해서 response 객체로 JSON 형식의 데이터를 반환하는 것을 알 수 있습니다. JSON 형식의 데이터는 key-value로 이루어진 딕셔너리 형태의 데이터 타입으로, value 값을 얻기 위해 get 메서드를 많이 사용합니다.
 
+이렇게 서버로 부터 응답해온 결과 중 우리가 원하는 정보를 추출해서, 데이터프레임에 담아내는 것이 목적입니다. response 객체 중, items의 키값을 통해 요청한 결과물들이 담겨 있는 것을 확인했습니다.
 
-이때 우리는 응답에 대해서 response 객체로 JSON 형식의 데이터를 반환하는 것을 알 수 있습니다. JSON 형식의 데이터는 key-value로 이루어진 딕셔너리 형태의 데이터 타입으로, value 값을 얻기 위해 get 메서드를 많이 사용합니다. 
+<img src="img/response_google.png" width="800"/>
 
-이렇게 서버로 부터 응답해온 결과 중 우리가 원하는 정보를 추출해서, 데이터프레임에 담아내는 것이 목적입니다. response 객체 중, items의 키값을 통해 요청한 결과물들이 담겨 있는 것을 확인했습니다. 
+## 구글 크롤링 코드 전체
 
-
-<img src= 'img/response_google.png' width = 800>
-
-
-
-
-## 구글 크롤링 코드 전체 
-
-응답받은 response 이 코드에선 data로 변수명을 저장했습니다. 
-이 객체에 접근해서 우리의 목표에 맞게 데이터에 접근해서 한 줄 한 줄 데이터 프레임에 입력하여 저장하는 작업을 하겠습니다. 
-
+응답받은 response 이 코드에선 data로 변수명을 저장했습니다. 이 객체에 접근해서 우리의 목표에 맞게 데이터에 접근해서 한 줄 한 줄 데이터 프레임에 입력하여 저장하는 작업을 하겠습니다.
 
 ### url에 내용의 신뢰도가 낮은 사이트의 검색결과는 저장하지 않도록 예외처리를 합니다. (선택사항)
 
@@ -176,9 +136,7 @@ response = requests.get(url).json()
 Trash_Link = ["tistory", "kin", "youtube", "blog", "book", "news", "dcinside", "fmkorea", "ruliweb", "theqoo", "clien", "mlbpark", "instiz", "todayhumor"] 
 ```
 
-url 링크에, 
-티스토리, 지식인,유튜브, 블로그,책,뉴스,디시인사이드,에펨코리아,루리엡,더쿠,클리앙,엠엘비파크,인스티즈,오늘의유머의 검색결과는 제거하도록 했습니다.
-
+url 링크에, 티스토리, 지식인,유튜브, 블로그,책,뉴스,디시인사이드,에펨코리아,루리엡,더쿠,클리앙,엠엘비파크,인스티즈,오늘의유머의 검색결과는 제거하도록 했습니다.
 
 ```{python}
 
@@ -246,25 +204,21 @@ def Google_API(query, wanted_row):
 
 ```
 
-link를 입력 받을 때 try except구문을 활용하여 예외처리를 하였습니다.이를 자세히 설명하게 되면, 특정 키워드로 검색했을 때 나오는 검색결과가 충분하지 않는 경우 response객체에 items 값이 null이 되게 됩니다. 따라서 이후의 작업들이 문제가 생기게 되는데, 이를 try except 구문을 통해 처리했습니다. 
+link를 입력 받을 때 try except구문을 활용하여 예외처리를 하였습니다.이를 자세히 설명하게 되면, 특정 키워드로 검색했을 때 나오는 검색결과가 충분하지 않는 경우 response객체에 items 값이 null이 되게 됩니다. 따라서 이후의 작업들이 문제가 생기게 되는데, 이를 try except 구문을 통해 처리했습니다.
 
-
-# 네이버 검색 API 사용법 
+# 네이버 검색 API 사용법
 
 네이버 API 키를 발급받는 방법은 아래를 참고하세요.
 
 일 허용 한도 25000건을 제공합니다 더 많은 요청을 보내기 위해선 제휴를 신청해야합니다.
 
-- <https://zerosecu.tistory.com/18>
+-   <https://zerosecu.tistory.com/18>
 
+네이버 웹문서 검색 API 공식문서
 
-네이버 웹문서 검색 API 공식문서 
+<https://developers.naver.com/docs/serviceapi/search/web/web.md#%EC%9B%B9%EB%AC%B8%EC%84%9C>
 
-
-<https://developers.naver.com/docs/serviceapi/search/web/web.md#%EC%9B%B9%EB%AC%B8%EC%84%9C> 
-
-
-## 네이버 크롤링 코드 
+## 네이버 크롤링 코드
 
 ```{python}
 
@@ -335,38 +289,25 @@ def Naver_API(query,wanted_row):
 
 ```
 
-큰 흐름은 구글에서 작성한 코드와 유사합니다. 
+큰 흐름은 구글에서 작성한 코드와 유사합니다.
 
-먼저 네이버 클라이언트 ID와 KEY값을 변수로 넣어줍니다. 경우에 따라 자기 혼자 쓰는 건 상관없겠지만 , 보통 키를 저렇게 코드에 보이게 노출하는 것 보다는 INPUT을 통해 보이지 않게 입력하는 것이 좋을 것 같습니다.  그리고 구글에서는 URL에 서비스 요청할 정보와 요청자의 신원을 확인할 수 있는 정보들을 모두 입력했습니다. 네이버에서는 조금 다르게 URL에 넣는 인자로는 어떤 검색결과를 받을지 표시하고, 몇 건이 출력될지 등 파라미터를 줘서 코드를 작성할 수 있습니다. 또 URL에 통해 사용자를 키값 정보를 같이 담지 않고 요청에 헤더를 추가하여 그곳에 담아 요청합니다.
+먼저 네이버 클라이언트 ID와 KEY값을 변수로 넣어줍니다. 경우에 따라 자기 혼자 쓰는 건 상관없겠지만 , 보통 키를 저렇게 코드에 보이게 노출하는 것 보다는 INPUT을 통해 보이지 않게 입력하는 것이 좋을 것 같습니다. 그리고 구글에서는 URL에 서비스 요청할 정보와 요청자의 신원을 확인할 수 있는 정보들을 모두 입력했습니다. 네이버에서는 조금 다르게 URL에 넣는 인자로는 어떤 검색결과를 받을지 표시하고, 몇 건이 출력될지 등 파라미터를 줘서 코드를 작성할 수 있습니다. 또 URL에 통해 사용자를 키값 정보를 같이 담지 않고 요청에 헤더를 추가하여 그곳에 담아 요청합니다.
 
-이후는 이전과 동일하게 네이버 웹문서 검색 API가 제공하는 JSON 데이터 형식을 보고 필요한 키-밸류값에 접근하여 데이터를 수집한 뒤 데이터프레임을 반환합니다. 
+이후는 이전과 동일하게 네이버 웹문서 검색 API가 제공하는 JSON 데이터 형식을 보고 필요한 키-밸류값에 접근하여 데이터를 수집한 뒤 데이터프레임을 반환합니다.
 
-구글에서는 요청에 대한 응답(response) items에 데이터가 불용어와 html문법의 태그로 돼있는 것들이 나와있지 않았지만, 네이버에서 보낸 응답에는 불용어가 많이 섞여있어서 그것을 제거하기 위해 re 패키지의 정규식을 이용하여 글자만 남기도록 했습니다. 
-
-
-
-
+구글에서는 요청에 대한 응답(response) items에 데이터가 불용어와 html문법의 태그로 돼있는 것들이 나와있지 않았지만, 네이버에서 보낸 응답에는 불용어가 많이 섞여있어서 그것을 제거하기 위해 re 패키지의 정규식을 이용하여 글자만 남기도록 했습니다.
 
 # 다음 검색 API 사용법
 
-카카오 API 키 발급받는 방법은 해당 링크름 참조하세요 
+카카오 API 키 발급받는 방법은 해당 링크름 참조하세요
 
--  <https://kadosholy.tistory.com/25>
+-   <https://kadosholy.tistory.com/25>
 
+다음 검색 API 공식문서
 
+<https://developers.kakao.com/docs/latest/ko/daum-search/dev-guide>
 
-다음 검색 API 공식문서 
-
-
-<https://developers.kakao.com/docs/latest/ko/daum-search/dev-guide> 
-
-
-
-
-
-## 다음 API 활용 파이썬 코드 
-
-
+## 다음 API 활용 파이썬 코드
 
 ```{python}
 
@@ -434,13 +375,11 @@ def Daum_API(query,wanted_row):
 
 ```
 
-
-카카오 API는 요청을 하면 보내주는 response 중 우리가 원하는 내용을 구글과 네이버는 items에 내용들이 담겨있었습니다. 카카오 다음검색 api는 보낸 응답에 documents라는 키값에 저장돼있음을 문서를 통해 확인할 수 있습니다. 문서를 통해 확인할 수 있고, 보통 api를 제공하는 사이트에서 테스트해볼 수 있어 입력물과 결과물의 형식을 요청해보지 않아도 확인가능합니다. 
-조금 다른 점이라면 이번에는 카카오 api에서 담겨있는 내용 중 작성일자를 Document-datetime에 저장돼있어서 검색 기간을 설정할 수 있는 기능을 구현했습니다. 
+카카오 API는 요청을 하면 보내주는 response 중 우리가 원하는 내용을 구글과 네이버는 items에 내용들이 담겨있었습니다. 카카오 다음검색 api는 보낸 응답에 documents라는 키값에 저장돼있음을 문서를 통해 확인할 수 있습니다. 문서를 통해 확인할 수 있고, 보통 api를 제공하는 사이트에서 테스트해볼 수 있어 입력물과 결과물의 형식을 요청해보지 않아도 확인가능합니다. 조금 다른 점이라면 이번에는 카카오 api에서 담겨있는 내용 중 작성일자를 Document-datetime에 저장돼있어서 검색 기간을 설정할 수 있는 기능을 구현했습니다.
 
 이렇게 나온 결과물에서 한번 더 필터링하는 것도 있을 수 있지만, 애초에 검색식을 이용하여 검색결과로 반환해야할 데이터를 줄일 수 있는데, 기간검색은 검색식으로 제어가 되지 않았습니다.
 
-# 최종 코드 
+# 최종 코드
 
 ```{python}
 
@@ -476,28 +415,18 @@ def final(query,wanted_row=100):
 
 ```
 
+# 개발 후기
 
-
-
-
-
-# 개발 후기 
-
-역시 데이터 분석가의 업무 중 가장 시간이 오래걸리는 것은 전처리가 아닐까 싶습니다. 이 API를 호출하는 과정을 통해서 API에 어떻게 요청하고 응답의 형태를 고려해서
-원하는 데이터를 저장하기 위해 어떤 코드를 작성해야하는지 알게됐습니다.
-
+역시 데이터 분석가의 업무 중 가장 시간이 오래걸리는 것은 전처리가 아닐까 싶습니다. 이 API를 호출하는 과정을 통해서 API에 어떻게 요청하고 응답의 형태를 고려해서 원하는 데이터를 저장하기 위해 어떤 코드를 작성해야하는지 알게됐습니다.
 
 저는 컴퓨터공학 비전공자로 먼저 API라는 것이 이름을 들으면 잘 모르는 것이였어서 두려운 마음이 컸었습니다. 하지만 이번에 실제로 사용을해보니, API 기술의 무엇인지와 이것이 왜 필요한지에 대해서 알게 됐고, 어떤 원리로 동작하는지 알 수 있어서 좋았습니다. 하지만 본문의 내용에서 RESTful한 API, API에 대해서 설명이 깊이있지 못하여 조금 아쉬움이 남습니다.
 
+또 이렇게 앞으로 API를 직접 만들일이 생긴다면, FAST API를 통해 만들 수 있다는 것을 알게됐고 추후에 그 쪽에 대해서도 나중에 더 깊게 공부해보고 싶어졌습니다.
 
-또 이렇게 앞으로 API를 직접 만들일이 생긴다면, FAST API를 통해 만들 수 있다는 것을 알게됐고 추후에 그 쪽에 대해서도 나중에 더 깊게 공부해보고 싶어졌습니다. 
-
-
-그리고 검색API마다 결국 기본적으로 타이틀과 url ,설명들을 제공하고 있어서 검색 API들이 검색 포털 별로 데이터 규격을 쉽게 맞출 수 있어서 좋았습니다. 공식문서를 정독하는 것이 다른 개발의 과정에서도 중요하지만 특히 API를 사용하는데 있어서 가장 중요한 역할을 한다는 것을 느꼈습니다. 
-
+그리고 검색API마다 결국 기본적으로 타이틀과 url ,설명들을 제공하고 있어서 검색 API들이 검색 포털 별로 데이터 규격을 쉽게 맞출 수 있어서 좋았습니다. 공식문서를 정독하는 것이 다른 개발의 과정에서도 중요하지만 특히 API를 사용하는데 있어서 가장 중요한 역할을 한다는 것을 느꼈습니다.
 
 모든 소스코드는 차라투 깃허브에 같이 포스팅 해놓았고 아래 링크에서 확인 가능합니다.
 
-Source Code  
+Source Code
 
-<https://github.com/zarathucorp/blog/blob/master/posts/2023-02-15-searchAPI-with-python/Custom_Search_Zarathu.ipynb> 
+<https://github.com/zarathucorp/blog/blob/master/posts/2023-02-15-searchAPI-with-python/Custom_Search_Zarathu.ipynb>
