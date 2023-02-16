@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.335">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Yujin Lee">
 <meta name="dcterms.date" content="2022-02-04">
@@ -289,7 +289,13 @@ ga('send', {
 </nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><section id="시작하기-전에" class="level1"><h1>시작하기 전에</h1>
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="시작하기-전에" class="level1"><h1>시작하기 전에</h1>
 <p>본 자료에서는 데이터 셋의 변수를 하나의 테이블로 요약하는 방법에 대해 알아볼 것이다. <strong>gtsummary</strong> 패키지를 이용하면 효율적으로 논문에 들어갈 table1을 만들 수 있다. <strong>gtsummary</strong> 패키지에 관한 기본 개념 및 함수들을 예제를 통해 다루어 보자.</p>
 </section><section id="요약-테이블-만들기" class="level1"><h1>요약 테이블 만들기</h1>
 <p><strong>tbl_summary</strong> 함수를 이용하여 연속형 및 범주형 변수에 대한 기술 통계량을 계산하고 테이블 형태로 나타낼 수 있다.</p>
@@ -348,7 +354,7 @@ ga('send', {
 <div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># create table</span></span>
 <span></span>
-<span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">tbl_summary</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="qzdsybbjkg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -862,7 +868,7 @@ ga('send', {
 <section id="by" class="level3"><h3 class="anchored" data-anchor-id="by"><strong>by</strong></h3>
 <p><code>tbl_summary</code> 함수에는 다양한 옵션이 존재한다. <strong>by</strong> 옵션을 이용하여 그룹별 통계량을 계산할 수 있다. <strong>by</strong> 옵션에 그룹별 통계를 수행할 변수를 지정하여 사용 가능하다. 다음 예시에서 연도 변수인 EXMD_BZ_YYYY를 기준으로 그룹별 통계량을 출력해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="rtuztirtgh" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -1425,13 +1431,13 @@ ga('send', {
 </section><section id="tbl_strata" class="level3"><h3 class="anchored" data-anchor-id="tbl_strata"><strong>tbl_strata</strong></h3>
 <p>by 옵션을 통해 그룹별 통계량을 계산한 것처럼 <code>tbl_strata</code> 함수를 이용하면 <u>여러 계층</u>으로 그룹을 묶을 수 있다. <strong>tbl_strata(data, strata, .tbl_fun, …)</strong> 형식을 사용하며 strata에 그룹화할 칼럼, .tbl_fun 인자에는 출력할 <code>tbl_summary</code> formula를 지정한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_strata.html">tbl_strata</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dt2</span>,</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">tbl_strata</span><span class="op">(</span>data <span class="op">=</span> <span class="va">dt2</span>,</span>
 <span>           strata <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,</span>
 <span>           .tbl_fun <span class="op">=</span></span>
 <span>             <span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>             <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_SMK_YN</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>             <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>             <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_n.html">add_n</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>             <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_SMK_YN</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>             <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>             <span class="fu">add_n</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>           .header <span class="op">=</span> <span class="st">"**{strata}**, N={n}"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
@@ -2050,37 +2056,43 @@ ga('send', {
 <td class="gt_row gt_center">160 (155, 166)</td>
 <td class="gt_row gt_center">166 (164, 174)</td>
 <td class="gt_row gt_center">170 (165, 175)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">236</td>
 <td class="gt_row gt_center">160 (156, 166)</td>
 <td class="gt_row gt_center">168 (164, 173)</td>
 <td class="gt_row gt_center">172 (165, 176)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">223</td>
 <td class="gt_row gt_center">159 (155, 166)</td>
 <td class="gt_row gt_center">170 (166, 174)</td>
 <td class="gt_row gt_center">172 (169, 177)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">234</td>
 <td class="gt_row gt_center">161 (156, 167)</td>
 <td class="gt_row gt_center">169 (165, 172)</td>
 <td class="gt_row gt_center">172 (166, 177)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">243</td>
 <td class="gt_row gt_center">160 (156, 165)</td>
 <td class="gt_row gt_center">170 (166, 172)</td>
 <td class="gt_row gt_center">171 (167, 174)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">254</td>
 <td class="gt_row gt_center">160 (155, 165)</td>
 <td class="gt_row gt_center">169 (165, 174)</td>
 <td class="gt_row gt_center">173 (168, 177)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">240</td>
 <td class="gt_row gt_center">161 (155, 166)</td>
 <td class="gt_row gt_center">170 (164, 173)</td>
 <td class="gt_row gt_center">173 (169, 177)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center"></td>
 </tr>
 <tr>
 <td class="gt_row gt_left">WGHT</td>
@@ -2088,37 +2100,43 @@ ga('send', {
 <td class="gt_row gt_center">59 (52, 67)</td>
 <td class="gt_row gt_center">68 (61, 74)</td>
 <td class="gt_row gt_center">71 (62, 77)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">236</td>
 <td class="gt_row gt_center">60 (54, 67)</td>
 <td class="gt_row gt_center">70 (66, 77)</td>
 <td class="gt_row gt_center">70 (62, 78)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">223</td>
 <td class="gt_row gt_center">60 (53, 67)</td>
 <td class="gt_row gt_center">69 (64, 75)</td>
 <td class="gt_row gt_center">72 (64, 79)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">234</td>
 <td class="gt_row gt_center">61 (54, 69)</td>
 <td class="gt_row gt_center">70 (63, 77)</td>
 <td class="gt_row gt_center">72 (64, 80)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">243</td>
 <td class="gt_row gt_center">59 (53, 69)</td>
 <td class="gt_row gt_center">68 (63, 73)</td>
 <td class="gt_row gt_center">69 (62, 75)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">254</td>
 <td class="gt_row gt_center">59 (53, 66)</td>
 <td class="gt_row gt_center">69 (62, 76)</td>
 <td class="gt_row gt_center">72 (64, 79)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">240</td>
 <td class="gt_row gt_center">61 (54, 69)</td>
 <td class="gt_row gt_center">70 (63, 79)</td>
 <td class="gt_row gt_center">74 (62, 84)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center"></td>
 </tr>
 <tr>
 <td class="gt_row gt_left">TOT_CHOL</td>
@@ -2164,17 +2182,20 @@ ga('send', {
 <td class="gt_row gt_center">87 (59, 125)</td>
 <td class="gt_row gt_center">130 (79, 189)</td>
 <td class="gt_row gt_center">139 (100, 173)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">236</td>
 <td class="gt_row gt_center">86 (64, 133)</td>
 <td class="gt_row gt_center">113 (78, 176)</td>
 <td class="gt_row gt_center">142 (101, 230)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">223</td>
 <td class="gt_row gt_center">93 (67, 129)</td>
 <td class="gt_row gt_center">129 (78, 194)</td>
 <td class="gt_row gt_center">148 (91, 200)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center">
+</td>
 <td class="gt_row gt_center">234</td>
 <td class="gt_row gt_center">94 (65, 133)</td>
 <td class="gt_row gt_center">130 (91, 188)</td>
@@ -2194,7 +2215,7 @@ ga('send', {
 <td class="gt_row gt_center">98 (64, 145)</td>
 <td class="gt_row gt_center">125 (97, 255)</td>
 <td class="gt_row gt_center">150 (90, 248)</td>
-<td class="gt_row gt_center">&lt;0.001</td>
+<td class="gt_row gt_center"></td>
 </tr>
 </tbody>
 <tfoot class="gt_footnotes">
@@ -2235,10 +2256,10 @@ ga('send', {
 <p>다음은 옵션을 활용한 예시이다. 연도 변수 EXMD_BZ_YYYY의 그룹별 통계량을 출력하고, Q_SMK_YN 변수를 “smoking y/n”로 바꾸어보자. 이때 연속형 변수의 출력값을 {mean}({sd})으로, 범주형 변수의 출력값을 {n}/{N} ({p}%) 형태로 바꾸어보자. 결측값의 변수명은 “Missing”으로 수정한다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span></span>
 <span>    by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,</span>
-<span>    statistic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_continuous</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{mean} ({sd})"</span>,</span>
-<span>                     <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_categorical</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{n} / {N} ({p}%)"</span><span class="op">)</span>,</span>
+<span>    statistic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{mean} ({sd})"</span>,</span>
+<span>                     <span class="fu">all_categorical</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{n} / {N} ({p}%)"</span><span class="op">)</span>,</span>
 <span>    label <span class="op">=</span> <span class="va">Q_SMK_YN</span> <span class="op">~</span> <span class="st">"smoking y/n"</span>,</span>
 <span>    missing_text <span class="op">=</span> <span class="st">"Missing"</span></span>
 <span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2832,8 +2853,8 @@ ga('send', {
 </ol>
 <div class="cell">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_continuous</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"t.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"t.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="wdqcruxfof" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -3381,8 +3402,8 @@ ga('send', {
 </div>
 <div class="cell">
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="va">HGHT</span> <span class="op">~</span> <span class="st">"wilcox.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="va">HGHT</span> <span class="op">~</span> <span class="st">"wilcox.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="vykprjjqxw" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -3934,8 +3955,8 @@ ga('send', {
 </ol>
 <div class="cell">
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_categorical</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"chisq.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="fu">all_categorical</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"chisq.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="bkqliuxrbu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -4483,8 +4504,8 @@ ga('send', {
 </div>
 <div class="cell">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span> <span class="op">~</span> <span class="st">"fisher.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="va">Q_SMK_YN</span> <span class="op">~</span> <span class="st">"fisher.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="sdqgfbjlqd" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -5033,11 +5054,11 @@ ga('send', {
 <p>이외에 다양한 <strong>add_()</strong>함수를 이용하여 앞에서 만든 table에 여러 통계량을 추가해보자.</p>
 <div class="cell">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html">add_overall</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_n.html">add_n</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_q.html">add_q</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">add_overall</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_n</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_q</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="tjujjddnfd" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -5667,8 +5688,8 @@ ga('send', {
 <p>이번에는 두 그룹 간의 차이를 비교해보자.</p>
 <div class="cell">
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_difference.html">add_difference</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">add_difference</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="upuelpdvge" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -6276,14 +6297,14 @@ ga('send', {
 <p>위의 함수들을 사용하여 테이블의 디자인을 설정해보자.</p>
 <div class="cell">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_n.html">add_n</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html">modify_header</a></span><span class="op">(</span><span class="va">label</span> <span class="op">~</span> <span class="st">"**Variables**"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html">modify_spanning_header</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_stat_cols</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"**Year**"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html">modify_footnote</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_stat_cols</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Median(IQR) or Frequency(%)"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html">modify_caption</a></span><span class="op">(</span><span class="st">"Table 1"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/bold_italicize_labels_levels.html">bold_labels</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">add_n</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">modify_header</span><span class="op">(</span><span class="va">label</span> <span class="op">~</span> <span class="st">"**Variables**"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">modify_spanning_header</span><span class="op">(</span><span class="fu">all_stat_cols</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"**Year**"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">modify_footnote</span><span class="op">(</span><span class="fu">all_stat_cols</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Median(IQR) or Frequency(%)"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">modify_caption</span><span class="op">(</span><span class="st">"Table 1"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">bold_labels</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div id="zfepsidbff" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -6888,15 +6909,15 @@ ga('send', {
 <p>연속형 변수의 통계량은 여러 줄로 요약될 수 있다. 여러 줄에 걸쳐 연속형 변수의 요약값을 출력할 때에는 변수 type을 <strong>continuous2</strong>로 지정해 주어야 한다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">MyTbl</span> <span class="op">&lt;-</span> <span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span></span>
 <span>    by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,</span>
-<span>    type <span class="op">=</span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_continuous</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"continuous2"</span>,</span>
-<span>    statistic <span class="op">=</span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_continuous</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"{N_nonmiss}"</span>,</span>
+<span>    type <span class="op">=</span> <span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"continuous2"</span>,</span>
+<span>    statistic <span class="op">=</span> <span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"{N_nonmiss}"</span>,</span>
 <span>                                     <span class="st">"{median} ({p25}, {p75})"</span>,</span>
 <span>                                     <span class="st">"{min}, {max}"</span><span class="op">)</span>,</span>
 <span>    missing <span class="op">=</span> <span class="st">"no"</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">MyTbl</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -7594,7 +7615,7 @@ ga('send', {
 <p><code>gtsummary</code> 패키지를 이용해 만든 table을 flextable 객체로 바꾼 후 <u>워드 파일로 저장</u>할 수 있다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">MyTbl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/as_flex_table.html">as_flex_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">as_flex_table</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/save_as_docx.html">save_as_docx</a></span><span class="op">(</span><span class="va">MyTbl</span>, path <span class="op">=</span> <span class="st">"/cloud/project/table.docx"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="마치며" class="level1"><h1>마치며</h1>
@@ -7603,7 +7624,7 @@ ga('send', {
 <li><p><strong>gtsummary</strong> 패키지의 <strong><code>tbl_summary</code></strong> 함수를 사용하여 요약 통계량 테이블을 작성할 수 있다.</p></li>
 <li><p><strong><code>tbl_summary</code></strong> 함수에는 다양한 옵션이 존재하며 <strong>by</strong> 옵션을 통해 그룹별 통계량을 계산할 수 있다.</p></li>
 <li><p><strong><code>tbl_strata</code></strong> 함수를 사용하여 여러 계층별 통계량을 계산할 수 있다.</p></li>
-<li><p><strong><code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p()</a></code></strong> 함수를 사용하여 수행할 test를 지정하고 p-value를 추가할 수 있다. 이외에도 다양한 함수를 통해 테이블에 통계량을 추가하고 디자인을 설정할 수 있다.</p></li>
+<li><p><strong><code>add_p()</code></strong> 함수를 사용하여 수행할 test를 지정하고 p-value를 추가할 수 있다. 이외에도 다양한 함수를 통해 테이블에 통계량을 추가하고 디자인을 설정할 수 있다.</p></li>
 <li><p><strong>gtsummary</strong> 패키지로 만든 table을 워드 파일로 저장할 수 있다.</p></li>
 </ol>
 
