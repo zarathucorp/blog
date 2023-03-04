@@ -1803,7 +1803,7 @@
     "href": "contributors.html",
     "title": "Contributors",
     "section": "",
-    "text": "Below is a list of contributors to this blog.\n\n\n\nName\nRole\n\n\n\n\nJinseob Kim\nFounder & Lead Supporter\n\n\nChangwoo Lim\nMarketer\n\n\nHyunjun Ko\nDeveloper\n\n\nhyunki Lee\nDeveloper\n\n\nSiyeol Jung\nIntern\n\n\nYujin Lee\nIntern\n\n\nYumin Kim\nData analyst\n\n\n\n\n\n\n\nCitationBibTeX citation:@online{untitled,\n  author = {},\n  title = {Contributors},\n  url = {https://blog.zarathu.com/posts/2023-02-14-shiny.likert/contributors.html},\n  langid = {en}\n}\nFor attribution, please cite this work as:\n“Contributors.” n.d. https://blog.zarathu.com/posts/2023-02-14-shiny.likert/contributors.html."
+    "text": "Below is a list of contributors to this blog.\n\n\n\nName\nRole\n\n\n\n\nJinseob Kim\nFounder & Lead Supporter\n\n\nChangwoo Lim\nMarketer\n\n\nHyunjun Ko\nDeveloper\n\n\nhyunki Lee\nDeveloper\n\n\nSiyeol Jung\nIntern\n\n\nYujin Lee\nIntern\n\n\nYumin Kim\nData analyst\n\n\n\n\n\n\n\nCitationBibTeX citation:@online{untitled,\n  author = {},\n  title = {Contributors},\n  url = {https://blog.zarathu.com/posts/2022-02-07-tableone/contributors.html},\n  langid = {en}\n}\nFor attribution, please cite this work as:\n“Contributors.” n.d. https://blog.zarathu.com/posts/2022-02-07-tableone/contributors.html."
   },
   {
     "objectID": "README.html",
@@ -1909,5 +1909,215 @@
     "title": "R 활용 의학연구지원",
     "section": "Slide",
     "text": "Slide\n아래 슬라이드를 보거나 https://jinseob2kim.github.io/lecture-general/microbiome 를 클릭하면 볼 수 있다."
+  },
+  {
+    "objectID": "posts/2022-02-07-tableone/index.html",
+    "href": "posts/2022-02-07-tableone/index.html",
+    "title": "tableone 패키지 소개",
+    "section": "",
+    "text": "본 자료는 데이터셋의 변수를 하나의 테이블로 요약하는 방법에 대해 알아볼 것이다. tableone 패키지를 이용하면 효율적으로 논문에 들어갈 table1을 만들 수 있다."
+  },
+  {
+    "objectID": "posts/2022-02-07-tableone/index.html#categorical-variable-conversion",
+    "href": "posts/2022-02-07-tableone/index.html#categorical-variable-conversion",
+    "title": "tableone 패키지 소개",
+    "section": "Categorical variable conversion",
+    "text": "Categorical variable conversion\nfactorVars 인자를 사용하여 범주형 변수를 지정할 수 있다. 이때 vars 인자를 통해 전체 데이터 셋 중 테이블에 들어갈 변수를 설정할 수 있고, 지정하지 않을 시 데이터 셋의 모든 변수가 포함된다.\n\n# Variables\nmyVars <- c(\"HGHT\", \"WGHT\", \"BMI\", \"HDL\", \"LDL\", \"TG\", \"SGPT\", \n            \"Q_PHX_DX_STK\", \"Q_PHX_DX_HTDZ\", \"Q_HBV_AG\", \"Q_SMK_YN\")\n# Categorical variables\ncatVars <- c(\"Q_PHX_DX_STK\", \"Q_PHX_DX_HTDZ\", \"Q_HBV_AG\", \"Q_SMK_YN\")\nt1 <- CreateTableOne(vars = myVars, factorVars = catVars, data = dt)\nt1\n\n\n\n\n\n\nOverall\n\n\n\nn\n1644\n\n\nHGHT (mean (SD))\n164.55 (9.19)\n\n\nWGHT (mean (SD))\n65.10 (12.53)\n\n\nBMI (mean (SD))\n23.92 (3.38)\n\n\nHDL (mean (SD))\n55.90 (19.47)\n\n\nLDL (mean (SD))\n118.69 (201.99)\n\n\nTG (mean (SD))\n134.90 (104.75)\n\n\nSGPT (mean (SD))\n25.98 (27.18)\n\n\nQ_PHX_DX_STK = 1 (%)\n12 ( 1.1)\n\n\nQ_PHX_DX_HTDZ = 1 (%)\n26 ( 2.4)\n\n\nQ_HBV_AG (%)\n\n\n\n1\n77 ( 4.7)\n\n\n2\n1102 (67.1)\n\n\n3\n463 (28.2)\n\n\nQ_SMK_YN (%)\n\n\n\n1\n995 (60.6)\n\n\n2\n256 (15.6)\n\n\n3\n391 (23.8)\n\n\n\n\n\n\n범주형 변수로 설정한 컬럼의 요약값이 mean(sd)에서 n(percentage)로 바뀐 것을 볼 수 있다.\n두 개의 범주가 있는 범주형 변수의 경우, 두 번째 범주의 요약값만 출력된다. 예를 들어 0과 1의 범주가 있을 때, 범주1의 개수와 백분율이 출력된다. 이는 옵션 설정을 통해 전체 범주의 요약값을 출력하도록 변경할 수 있다.\n3개 이상의 범주가 있을 때에는 모든 범주의 값이 요약되며, 백분율은 누락된 값을 제외한 후 계산된다."
+  },
+  {
+    "objectID": "posts/2022-02-07-tableone/index.html#multiple-group-summary",
+    "href": "posts/2022-02-07-tableone/index.html#multiple-group-summary",
+    "title": "tableone 패키지 소개",
+    "section": "Multiple group summary",
+    "text": "Multiple group summary\nstrata 인자를 설정하여 그룹별 연산을 할 수 있다. strata는 dplyr 패키지의 group_by() 함수와 유사하며, 그룹 연산을 할 변수를 지정하여 사용할 수 있다.\n\nt2 <- CreateTableOne(data = dt,\n                     vars = myVars,\n                     strata = \"Q_SMK_YN\",\n                     factorVars = catVars,\n                     includeNA = F)\nt2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1\n2\n3\np\ntest\n\n\n\nn\n995\n256\n391\n\n\n\n\nHGHT (mean (SD))\n160.67 (8.34)\n168.83 (6.45)\n171.61 (7.09)\n<0.001\n\n\n\nWGHT (mean (SD))\n61.17 (11.08)\n70.09 (10.72)\n71.76 (13.07)\n<0.001\n\n\n\nBMI (mean (SD))\n23.63 (3.39)\n24.52 (2.93)\n24.27 (3.54)\n<0.001\n\n\n\nHDL (mean (SD))\n57.83 (14.08)\n53.91 (36.73)\n52.37 (13.54)\n<0.001\n\n\n\nLDL (mean (SD))\n112.26 (32.81)\n147.52 (505.27)\n116.34 (56.89)\n0.046\n\n\n\nTG (mean (SD))\n114.05 (76.97)\n162.89 (126.51)\n169.24 (133.28)\n<0.001\n\n\n\nSGPT (mean (SD))\n23.33 (28.42)\n28.61 (20.62)\n31.00 (26.96)\n<0.001\n\n\n\nQ_PHX_DX_STK = 1 (%)\n11 ( 1.8)\n1 ( 0.5)\n0 ( 0.0)\n0.051\n\n\n\nQ_PHX_DX_HTDZ = 1 (%)\n18 ( 2.9)\n5 ( 2.6)\n3 ( 1.1)\n0.287\n\n\n\nQ_HBV_AG (%)\n\n\n\n0.193\n\n\n\n1\n40 ( 4.0)\n19 ( 7.5)\n17 ( 4.3)\n\n\n\n\n2\n679 ( 68.3)\n164 ( 64.3)\n259 ( 66.2)\n\n\n\n\n3\n275 ( 27.7)\n72 ( 28.2)\n115 ( 29.4)\n\n\n\n\nQ_SMK_YN (%)\n\n\n\n<0.001\n\n\n\n1\n995 (100.0)\n0 ( 0.0)\n0 ( 0.0)\n\n\n\n\n2\n0 ( 0.0)\n256 (100.0)\n0 ( 0.0)\n\n\n\n\n3\n0 ( 0.0)\n0 ( 0.0)\n391 (100.0)\n\n\n\n\n\n\n\n\n연속형 변수의 경우, 기본적으로 one-way ANOVA test가 적용되며 nonnormal일 경우 옵션 설정을 통해 Kruskal–Wallis one-way ANOVA test를 적용할 수 있다.\n범주형 변수의 경우, 기본적으로 chisq-test가 적용되며 print 함수의 exact 옵션 설정을 통해 fisher-test를 적용할 수 있다."
+  },
+  {
+    "objectID": "posts/2022-02-07-tableone/index.html#showing-all-levels",
+    "href": "posts/2022-02-07-tableone/index.html#showing-all-levels",
+    "title": "tableone 패키지 소개",
+    "section": "Showing all levels",
+    "text": "Showing all levels\n범주형 변수에서 모든 범주의 요약값을 확인하려면 ShowAllLevels 또는 cramVars 옵션을 사용한다. ShowAllLevels = T 를 설정하거나 cramVars 옵션에 원하는 변수명을 지정하여 사용할 수 있다.\n\n1.use showAllLevels\n\n\n\nprint(t1, showAllLevels = T)\n\n\n\n\n\n\nlevel\nOverall\n\n\n\nn\n\n1644\n\n\nHGHT (mean (SD))\n\n164.55 (9.19)\n\n\nWGHT (mean (SD))\n\n65.10 (12.53)\n\n\nBMI (mean (SD))\n\n23.92 (3.38)\n\n\nHDL (mean (SD))\n\n55.90 (19.47)\n\n\nLDL (mean (SD))\n\n118.69 (201.99)\n\n\nTG (mean (SD))\n\n134.90 (104.75)\n\n\nSGPT (mean (SD))\n\n25.98 (27.18)\n\n\nQ_PHX_DX_STK (%)\n0\n1059 (98.9)\n\n\n\n1\n12 ( 1.1)\n\n\nQ_PHX_DX_HTDZ (%)\n0\n1052 (97.6)\n\n\n\n1\n26 ( 2.4)\n\n\nQ_HBV_AG (%)\n1\n77 ( 4.7)\n\n\n\n2\n1102 (67.1)\n\n\n\n3\n463 (28.2)\n\n\nQ_SMK_YN (%)\n1\n995 (60.6)\n\n\n\n2\n256 (15.6)\n\n\n\n3\n391 (23.8)\n\n\n\n\n\n\n2.use cramVars\n\n\n\nprint(t1, cramVars=\"Q_PHX_DX_STK\")\n\n\n\n\n\n\nOverall\n\n\n\nn\n1644\n\n\nHGHT (mean (SD))\n164.55 (9.19)\n\n\nWGHT (mean (SD))\n65.10 (12.53)\n\n\nBMI (mean (SD))\n23.92 (3.38)\n\n\nHDL (mean (SD))\n55.90 (19.47)\n\n\nLDL (mean (SD))\n118.69 (201.99)\n\n\nTG (mean (SD))\n134.90 (104.75)\n\n\nSGPT (mean (SD))\n25.98 (27.18)\n\n\nQ_PHX_DX_STK = 0/1 (%)\n1059/12 (98.9/1.1)\n\n\nQ_PHX_DX_HTDZ = 1 (%)\n26 ( 2.4)\n\n\nQ_HBV_AG (%)\n\n\n\n1\n77 ( 4.7)\n\n\n2\n1102 (67.1)\n\n\n3\n463 (28.2)\n\n\nQ_SMK_YN (%)\n\n\n\n1\n995 (60.6)\n\n\n2\n256 (15.6)\n\n\n3\n391 (23.8)"
+  },
+  {
+    "objectID": "posts/2022-02-07-tableone/index.html#nonnormal-variables",
+    "href": "posts/2022-02-07-tableone/index.html#nonnormal-variables",
+    "title": "tableone 패키지 소개",
+    "section": "nonnormal variables",
+    "text": "nonnormal variables\n비모수통계를 사용하는 연속형 변수에는 nonnormal 옵션을 설정한다. nonnormal 설정 시 mean(sd)에서 median(IQR)로 요약값이 변경된다.\n\nprint(t1, nonnormal=\"LDL\")\n\n\n\n\n\n\nOverall\n\n\n\nn\n1644\n\n\nHGHT (mean (SD))\n164.55 (9.19)\n\n\nWGHT (mean (SD))\n65.10 (12.53)\n\n\nBMI (mean (SD))\n23.92 (3.38)\n\n\nHDL (mean (SD))\n55.90 (19.47)\n\n\nLDL (median [IQR])\n112.00 [90.00, 134.00]\n\n\nTG (mean (SD))\n134.90 (104.75)\n\n\nSGPT (mean (SD))\n25.98 (27.18)\n\n\nQ_PHX_DX_STK = 1 (%)\n12 ( 1.1)\n\n\nQ_PHX_DX_HTDZ = 1 (%)\n26 ( 2.4)\n\n\nQ_HBV_AG (%)\n\n\n\n1\n77 ( 4.7)\n\n\n2\n1102 (67.1)\n\n\n3\n463 (28.2)\n\n\nQ_SMK_YN (%)\n\n\n\n1\n995 (60.6)\n\n\n2\n256 (15.6)\n\n\n3\n391 (23.8)"
+  },
+  {
+    "objectID": "posts/2022-02-07-tableone/index.html#exact",
+    "href": "posts/2022-02-07-tableone/index.html#exact",
+    "title": "tableone 패키지 소개",
+    "section": "exact",
+    "text": "exact\nexact 옵션을 통해 fisher-test를 진행할 범주형 변수를 설정할 수 있다. 범주형 변수는 기본적으로 chisq-test가 적용되며, exact 옵션에 fisher-test를 적용할 변수를 지정하여 사용할 수 있다.\n\nprint(t2, exact=c(\"Q_PHX_DX_STK\", \"Q_PHX_DX_HTDZ\"))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1\n2\n3\np\ntest\n\n\n\nn\n995\n256\n391\n\n\n\n\nHGHT (mean (SD))\n160.67 (8.34)\n168.83 (6.45)\n171.61 (7.09)\n<0.001\n\n\n\nWGHT (mean (SD))\n61.17 (11.08)\n70.09 (10.72)\n71.76 (13.07)\n<0.001\n\n\n\nBMI (mean (SD))\n23.63 (3.39)\n24.52 (2.93)\n24.27 (3.54)\n<0.001\n\n\n\nHDL (mean (SD))\n57.83 (14.08)\n53.91 (36.73)\n52.37 (13.54)\n<0.001\n\n\n\nLDL (mean (SD))\n112.26 (32.81)\n147.52 (505.27)\n116.34 (56.89)\n0.046\n\n\n\nTG (mean (SD))\n114.05 (76.97)\n162.89 (126.51)\n169.24 (133.28)\n<0.001\n\n\n\nSGPT (mean (SD))\n23.33 (28.42)\n28.61 (20.62)\n31.00 (26.96)\n<0.001\n\n\n\nQ_PHX_DX_STK = 1 (%)\n11 ( 1.8)\n1 ( 0.5)\n0 ( 0.0)\n0.045\nexact\n\n\nQ_PHX_DX_HTDZ = 1 (%)\n18 ( 2.9)\n5 ( 2.6)\n3 ( 1.1)\n0.281\nexact\n\n\nQ_HBV_AG (%)\n\n\n\n0.193\n\n\n\n1\n40 ( 4.0)\n19 ( 7.5)\n17 ( 4.3)\n\n\n\n\n2\n679 ( 68.3)\n164 ( 64.3)\n259 ( 66.2)\n\n\n\n\n3\n275 ( 27.7)\n72 ( 28.2)\n115 ( 29.4)\n\n\n\n\nQ_SMK_YN (%)\n\n\n\n<0.001\n\n\n\n1\n995 (100.0)\n0 ( 0.0)\n0 ( 0.0)\n\n\n\n\n2\n0 ( 0.0)\n256 (100.0)\n0 ( 0.0)\n\n\n\n\n3\n0 ( 0.0)\n0 ( 0.0)\n391 (100.0)"
+  },
+  {
+    "objectID": "posts/2022-02-07-tableone/index.html#smd",
+    "href": "posts/2022-02-07-tableone/index.html#smd",
+    "title": "tableone 패키지 소개",
+    "section": "smd",
+    "text": "smd\nsmd 옵션을 통해 smd(standardized mean difference)를 table1에 포함할 수 있다. default는 FALSE이고, smd=TRUE 설정 시 각 변수의 smd 값이 출력된다.\n\nprint(t2, smd = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1\n2\n3\np\ntest\nSMD\n\n\n\nn\n995\n256\n391\n\n\n\n\n\nHGHT (mean (SD))\n160.67 (8.34)\n168.83 (6.45)\n171.61 (7.09)\n<0.001\n\n0.972\n\n\nWGHT (mean (SD))\n61.17 (11.08)\n70.09 (10.72)\n71.76 (13.07)\n<0.001\n\n0.611\n\n\nBMI (mean (SD))\n23.63 (3.39)\n24.52 (2.93)\n24.27 (3.54)\n<0.001\n\n0.181\n\n\nHDL (mean (SD))\n57.83 (14.08)\n53.91 (36.73)\n52.37 (13.54)\n<0.001\n\n0.197\n\n\nLDL (mean (SD))\n112.26 (32.81)\n147.52 (505.27)\n116.34 (56.89)\n0.046\n\n0.091\n\n\nTG (mean (SD))\n114.05 (76.97)\n162.89 (126.51)\n169.24 (133.28)\n<0.001\n\n0.341\n\n\nSGPT (mean (SD))\n23.33 (28.42)\n28.61 (20.62)\n31.00 (26.96)\n<0.001\n\n0.196\n\n\nQ_PHX_DX_STK = 1 (%)\n11 ( 1.8)\n1 ( 0.5)\n0 ( 0.0)\n0.051\n\n0.137\n\n\nQ_PHX_DX_HTDZ = 1 (%)\n18 ( 2.9)\n5 ( 2.6)\n3 ( 1.1)\n0.287\n\n0.084\n\n\nQ_HBV_AG (%)\n\n\n\n0.193\n\n0.109\n\n\n1\n40 ( 4.0)\n19 ( 7.5)\n17 ( 4.3)\n\n\n\n\n\n2\n679 ( 68.3)\n164 ( 64.3)\n259 ( 66.2)\n\n\n\n\n\n3\n275 ( 27.7)\n72 ( 28.2)\n115 ( 29.4)\n\n\n\n\n\nQ_SMK_YN (%)\n\n\n\n<0.001\n\nNaN\n\n\n1\n995 (100.0)\n0 ( 0.0)\n0 ( 0.0)\n\n\n\n\n\n2\n0 ( 0.0)\n256 (100.0)\n0 ( 0.0)\n\n\n\n\n\n3\n0 ( 0.0)\n0 ( 0.0)\n391 (100.0)"
+  },
+  {
+    "objectID": "posts/2018-11-08-ruck2018/index.html",
+    "href": "posts/2018-11-08-ruck2018/index.html",
+    "title": "맞춤형 의학연구 애플리케이션을 위한 개발 환경 구축",
+    "section": "",
+    "text": "김진섭 대표는 11월 26일(금) 서울특별시 시민청에서 열린 R User Conference in Korea 2018(RUCK 2018) 에서 맞춤형 의학연구 애플리케이션 개발 환경 구축 경험에 대해 발표하였습니다. 초록과 발표 슬라이드를 공유합니다."
+  },
+  {
+    "objectID": "posts/2018-11-08-ruck2018/index.html#abstract",
+    "href": "posts/2018-11-08-ruck2018/index.html#abstract",
+    "title": "맞춤형 의학연구 애플리케이션을 위한 개발 환경 구축",
+    "section": "Abstract",
+    "text": "Abstract\n맞춤형 의학통계 앱 제작을 위해\n\nDocker swarm 기반의 Rstudio & shiny server 를 구축하고\n의학통계 앱에 필요한 R 패키지와 Shiny Application 들을 만들었습니다.\n\n미리 Rstudio와 shiny server가 설치된 도커(docker) 이미지를 만들고 이것을 도커 스웜을 이용해 배포함으로써 서버의 종류와 갯수에 구애받지 않는 마이크로서비스 아키텍처(microservice architecture)를 구축하였으며, 동적 프록시 서버(dynamic proxy server) 프로그램인 Traefik 을 이용하여 서비스가 추가될 때 마다(ex: 홈페이지, Jupyter) 이에 맞추어 https 보안이 적용된 서브도메인(subdomain) 주소를 부여하였습니다. 흔히 이용되는 의학통계 방법들을 Shiny Application으로 만들어 위의 환경에 배포하였으며 DT, tableone, epiDisplay, svglite 등의 기존 패키지와 자체적으로 개발한 패키지를 이용, 데이터 라벨(label) 정보가 적용된 논문용 테이블과 그림을 보여줄 수 있었습니다. 이번 발표에서는 이러한 개발 환경 구축 경험을 공유합니다."
+  },
+  {
+    "objectID": "posts/2018-11-08-ruck2018/index.html#slide",
+    "href": "posts/2018-11-08-ruck2018/index.html#slide",
+    "title": "맞춤형 의학연구 애플리케이션을 위한 개발 환경 구축",
+    "section": "Slide",
+    "text": "Slide\n아래 슬라이드를 보거나 https://jinseob2kim.github.io/swarm-setting/RUCK2018_JSKIM 를 클릭하면 볼 수 있으며 PC 환경에 최적화되었다."
+  },
+  {
+    "objectID": "posts/2018-11-08-medianorratio/index.html",
+    "href": "posts/2018-11-08-medianorratio/index.html",
+    "title": "New Scale Measure of Heritability in Binary Trait Using Median Odds Ratio: Median OR Ratio",
+    "section": "",
+    "text": "본 연구는 김진섭 대표가 계획했던 연구로, 결과적으로 학술지 게재에 실패했다는 것을 미리 알려드립니다."
+  },
+  {
+    "objectID": "posts/2018-11-08-medianorratio/index.html#abstract",
+    "href": "posts/2018-11-08-medianorratio/index.html#abstract",
+    "title": "New Scale Measure of Heritability in Binary Trait Using Median Odds Ratio: Median OR Ratio",
+    "section": "Abstract",
+    "text": "Abstract\nHeritability는 trait의 유전적인 측면을 정량적으로 설명하는 지표로 genetic study에서 흔히 쓰이는 지표이다. \\(Y\\)가 continuous variable일 때는 Intraclass Correlation Coeffcient(ICC) 혹은 Variance Partition Coefficients(VPC)의 형태로 heritability를 간단히 표시할 수 있으나, binary trait에는 이를 그대로 적용할 수 없다. 이에 liability threshold model 등의 다양한 approximation 방법이 이용되고 있으나 결과 해석의 어려움이 문제로 지적되고 있다. 한편 binary trait의 경우 sibling recurrence risk ratio(\\(\\lambda_s\\))가 유전적인 부분을 표현하는 직관적인 지표로 쓰이고 있으나 prevalence값이 필요하고 covariate 보정이 안되는 한계점이 있다. 이에 저자는 binary multilevel study에서 이용되는 Median Odds Ratio(MOR)을 이용하여 binary trait의 유전적인 정도를 평가하는 편하고 직관적인 지표인 Median OR Ratio(\\(\\text{MORR}_{SU}\\))을 제안하였으며 Healthy Twin Study, Korea의 hypertriglycemia trait에 적용하여 간단하며 직관적으로 유전적인 정도를 측정할 수 있었다. 이 지표가 binary trait에서 유전적인 정도를 표현하는 새로운 지표로서 heritability나 \\(\\lambda_s\\)를 보완할 수 있을 것으로 확신한다."
+  },
+  {
+    "objectID": "posts/2018-11-08-medianorratio/index.html#introduction",
+    "href": "posts/2018-11-08-medianorratio/index.html#introduction",
+    "title": "New Scale Measure of Heritability in Binary Trait Using Median Odds Ratio: Median OR Ratio",
+    "section": "Introduction",
+    "text": "Introduction\nHeritability는 continuous trait에서 polygenic effect가 설명할 수 있는 정도를 측정하는 지표로 전체 분산 중 polygenic effect가 설명하는 비율(the portion of phenotypic variance in a population attributable to additive genetic factors)로 정의되며, trait의 정규분포 가정이 깨지지 않는다면 mixed effect model 등을 이용하여 쉽게 구할 수 있다.(Manolio et al. 2009; Vattikuti 2012). Mixed effect model의 결과에서 polygenic effect의 분산과 residual의 분산이 추정되고 이를 통해 전체분산과 polygenic effect가 설명하는 분율을 계산하는 것인데 이는 Intraclass Correlation Coeffcient(ICC) 또는 Variance Partition Coefficients(VPC)의 형태이며, mixed effect model을 이용함으로서 covariate(age, sex, etc..)들을 보정할 수 있는 장점이 있다.\n그러나 binary trait일 때는 이 방법으로 heritability를 계산할 수가 없다. 보통 질병에 걸릴 확률 \\(p\\)가 Logistic distribution을 따른다고 가정하고 logistic regression model을 이용하게 되는데 이 때, Continuous variable에서 한 것처럼 추정된 variance of polygenic effect의 분산은 probability의 logit function의 scale에서 계산된 것이며, 전체분산은 probability scale에서 계산이 되기 때문에 이를 단순하게 분자, 분모로 하여 계산할 수 없다(Browne et al. 2005). binary trait에서 heritability를 구하는 방법으로는 first order Taylor series expansion을 이용하여 logit함수에 대한 회귀식을 \\(Y\\)에 대한 회귀식으로 approximation하여 linearisation 하는 방법, simulation을 이용하는 방법, latent variable을 이용하는 방법 등이 제시되어 있는데 이들 방법은 근본적으로 근사값의 계산이라는 한계점이 있으며, 해석을 어떻게 해야 되는지도 문제가 된다(Browne et al. 2005; Bonnet 2016; Vigre et al. 2004; Davies et al. 2015; Tenesa and Haley 2013).\nbinary trait에서 유전적인 정도를 표현하는 또다른 방법으로 recurrence risk ratio라는 것이 있는데, 이 중 흔히 이용되는 것은 sibling recurrence risk ratio(\\(\\lambda_s\\))로 일반 인구집단의 prevalence에 비해 affected people의 sibling 집단에서의 prevalence가 몇배나 더 높은지를 표현하며 직관적으로 이해할 수 있는 지표라는 장점이 있다(Rybicki and Elston 2000). 그러나 이 값은 일반 인구 집단에서의 prevalence를 정확히 측정해야 한다는 부담을 갖고 있으며 ascertainment bias에 민감하며, polygenic effect의 변화없이 common environmental factor의 영향에 의해서도 변화할 수 있다는 문제점이 있다(S.-W. Guo 1998, 2002; S.-W. Guo 2000).\n한편 binary trait의 multilevel analysis에서 group level의 효과를 쉽게 이해하기 위해 Median Odds Ratio(MOR)라는 개념이 제시되었는데, 이것의 정의는 “the median value of the odds ratio between the group at highest risk and the group at lowest risk when randomly picking out two groups”이다(Merlo et al. 2006). MOR은 group변수의 분산만을 이용하여 쉽게 계산될 수 있으며 OR scale이기 때문에 이해하기도 쉬운데, 1보다 클수록 group effect가 크고 1에 가까울수록 group effect가 없다고 해석할 수 있다(Larsen et al. 2000; Larsen and Merlo 2005; Merlo et al. 2006).\n이에 저자는 multilevel logistic regression에서 이용하였던 MOR의 개념을 이용하여 binary trait의 유전적인 정도를 측정하는 새로운 지표인 Median OR Ratio between Sibling Pairs and Unrelated Pairs(\\(\\text{MORR}_{SU}\\))을 소개할 것이다. 본 지표는 sibling pairs끼리의 OR에 비해 unrelated pairs끼리의 OR의 값이 대략적으로(median) 얼마나 높은가를 나타내며, 유전적인 부분이 전혀 없는 질병이라면 sibling pair에서나 unrelated pair에서의 OR이 같게 되어 \\(\\text{MORR}_{SU}\\)의 값은 1이 된다. 반면에 이 값이 크면 클수록 sibling pair끼리의 질병발생 양상이 unrelated pair끼리의 그것보다 비슷해지고 이는 유전적인 부분이 큰 질병임을 뜻한다. 본 지표는 hierarchial generalized linear model(HGLM)를 통하여 계산할 수 있으며, covariates를 보정할 수 있다는 heritability의 장점과 쉽게 해석되는 \\(\\lambda_s\\)의 장점을 동시에 갖고 있다. 반대로 말하면 직관적인 해석이 어려운 heritability의 단점과 prevalence 정보가 필요하며 covariate보정이 어려운 \\(\\lambda_s\\)의 단점을 보완하였다고도 할 수 있다. (Lee and Nelder 1996). 본 연구에서는 \\(\\text{MORR}_{SU}\\)의 개념을 소개한 후 실제 데이터인 Healthy twin study, Korea의 hypertriglycemia trait에 적용하여 유전적인 부분을 해석해 볼 것이다(SUNG et al. 2006).\nMethod\nBreif review of Meidan OR\n먼저 MOR에 대해 간략하게 요약하여 설명하겠다(Larsen et al. 2000).\n\\(Y_{ij}\\)를 \\(j\\)th group의 \\(i\\)th individual의 health status라 하고(case: 1, control: 0), \\(X_{ij}\\)를 vector of covariates, \\(G_j\\)를 \\(j\\)th group의 effect라 정의하자. 이 때 multilevel logistic regression의 formula를 mixed effect model로 표시하면 다음과 같다.\n\\[\n\\begin{aligned}\n\\text{Logit}[Pr(Y_{ij}=1|X_{ij},G_j)]=\\beta_0+X_{ij}'\\beta_1+G_j\n\\end{aligned}\n\\]\n(\\(\\beta_0\\): intercept, \\(\\beta_1\\): vector of fixed regression coefficients, \\(G_j\\): random intercept \\(G_j\\sim \\text{iid  } N(0,V_g)\\))\n이 때 Conditional Odds는\n\\[\n\\begin{aligned}\n\\text{Odds}[Pr(Y_{ij}=1|X_{ij},G_j)]=\\exp{(\\beta_0)}\\exp{(X_{ij}'\\beta_1)}\\exp{(G_j)}\n\\end{aligned}\n\\]\n로 표현할 수 있으며 X가 고정되어 있을 때 임의로 뽑은 \\(j\\)th Group과 \\(k\\)th Group의 Odds ratio는\n\\[\n\\begin{aligned}\n\\frac{\\text{Odds}[Pr(Y_{ij}=1|X,G_j)]}{{\\text{Odds}[Pr(Y_{ik}=1|X,G_k)]}}=\\exp{(G_j-G_k)}\n\\end{aligned}\n\\]\n가 되고 Odds가 큰그룹을 Odds가 작은 그룹과 비교한다면 \\(\\text{OR}=\\exp{|G_j-G_k|}\\)이다. 이제 \\((G_j-G_k)\\sim N(0,2V_g)\\) 임을 이용하여 이것의 중앙값(median)을 계산하면\n\\[\n\\begin{aligned}\n\\text{MOR} = \\exp{(\\sqrt{2V_g}\\times \\Phi^{-1}{(0.75)})}\\simeq \\exp{(0.95\\sqrt{V_g})}\n\\end{aligned}\n\\]\n이 되고 이를 MOR로 정의한다. MOR은 VPC와 다르게 오직 group variable의 분산인 \\(V_g\\)만 가지고 계산될 수 있어 그 자체값과 95% 신뢰구간을 간단히 계산할 수 있으며, MOR\\(=1\\) 이라면 group variable의 effect가 없다고 해석할 수 있고 MOR이 커질수록 group variable의 effect가 크다고 해석할 수 있다.\nFormula’s of \\(\\text{MORR}_{SU}\\)\n\n이제 \\(\\text{MORR}_{SU}\\)의 수식을 유도하여 보자. \\(Y_{i}\\)를 \\(i\\)th individual의 health status라 하고(case: 1, control: 0, \\(1\\le i \\le n\\)), \\(X_{i}\\)를 vector of covariates, \\(G_i\\)를 \\(i\\)th individual의 polygenic effect라 정의하자. 이제 polygenic model을 수식으로 나타내면 다음과 같다.\n\\[\n\\begin{aligned}\n\\text{Logit}[Pr(Y_{i}=1|X_{i},G_i)]=\\beta_0+X_{i}'\\beta_1+G_i\n\\end{aligned}\n\\]\n(\\(\\beta_0\\): intercept, \\(\\beta_1\\): vector of fixed regression coefficients, \\(G_i\\): polygenic effect of \\(i\\)th individual)\n한편 \\(G_i\\)들의 vector를 \\(G=(G_1,G_2,\\cdots,G_n)'\\)이라 하면, \\(G\\sim N(0,V_p\\Sigma)\\) 이 된다(\\(\\Sigma\\): genetic relationship matrix, \\(V_p\\): variance of polygenic effect).\n이제 Conditional Odds를 계산해보면\n\\[\n\\begin{aligned}\n\\text{Odds}[Pr(Y_{i}=1|X_{i},G_i)]=\\exp{(\\beta_0)}\\exp{(X_{i}'\\beta_1)}\\exp{(G_i)}\n\\end{aligned}\n\\]\n로 표현할 수 있으며 임의로 뽑은 \\(i\\)th individual과 \\(j\\)th individual의 Odds ratio는 \\(X\\)가 같을 때 다음과 같이 표현된다.\n\\[\n\\begin{aligned}\n\\frac{\\text{Odds}[Pr(Y_{i}=1|X,G_i)]}{{\\text{Odds}[Pr(Y_{j}=1|X,G_j)]}}=\\exp{(G_i-G_j)}\n\\end{aligned}\n\\]\n이제 두 가지 경우를 생각하자.\n\n\\(i\\)와 \\(j\\)를 unrelated individuals에서 뽑았을 경우이다. 이 때는 앞서 MOR과 마찬가지로 \\((G_i-G_j) \\sim N(0,2V_g)\\)가 된다.\n\\(i\\),\\(j\\)를 sibling pair에서 뽑았다면, 즉 \\(i\\)와 \\(j\\)가 항상 sibling이라면 \\(Cov(G_i,G_j)=\\frac{1}{2}V_g\\) 이므로, \\((G_i-G_j) \\sim N(0,V_g)\\)가 된다.\n\n이제 unrelated individual과 sibling을 한 쌍씩 뽑아 각각 \\(G_i, G_j\\)와 \\(G_k, G_l\\)이라고 하면 Odds Ratio의 비인 OR Ratio(ORR)를 다음과 같이 정의한다.\n\\[\n\\begin{aligned}\n\\text{ORR}_{SU}=\\frac{\\text{OR}_{unrelated}}{\\text{OR}_{sibling}}=\\frac{\\exp{|G_i-G_j|}}{\\exp{|G_k-G_l|}} =  \\exp{(|G_i-G_j|-|G_k-G_l|)}\n\\end{aligned}\n\\]\n\\(|G_i-G_j|-|G_k-G_l|\\)는 \\(|N(0,2V_g)| - |N(0, V_g)|\\) 의 분포를 따르는 것을 이용하여 median값을 계산하면 약 \\(0.2453\\times \\sqrt{V_p}\\)이고 최종지표인 Median OR Ratio(MORR)은 아래와 같다(Appendix).\n\\[\n\\begin{aligned}\n\\text{MORR}_{SU}= \\exp{(0.2453\\times \\sqrt{V_p})}\n\\end{aligned}\n\\]\n즉 sibling pair들에서의 polygenic effect의 OR과 unrelated에서의 polygenic effect의 그것을 비교한 지표이며 범위는 1부터 무한대까지이다. \\(\\text{MORR}_{SU}\\)가 1이면 unrelated pair에서의 질병발생 양상의 차이가 sibling pair에서의 그것과 같게 되어 유전적인 부분이 전혀 없다고 해석할 수 있다. 값이 커질수록 sibling pair끼리는 unrelated pair끼리보다 질병발생 양상이 비슷하다고 볼 수 있으며 이는 곧 유전적인 부분이 큰 것으로 이해할 수 있다."
+  },
+  {
+    "objectID": "posts/2018-11-08-medianorratio/index.html#apply-to-real-data",
+    "href": "posts/2018-11-08-medianorratio/index.html#apply-to-real-data",
+    "title": "New Scale Measure of Heritability in Binary Trait Using Median Odds Ratio: Median OR Ratio",
+    "section": "Apply to Real Data",
+    "text": "Apply to Real Data\nHealthy Twin Study, Korea의 데이터에 본 지표를 적용하였다(SUNG et al. 2006). 가족-쌍둥이 구조로 이루어진 3,461명의 사람 중 지질검사와 음주, 흡연 정보가 있는 2,729명을 대상으로 150이상을 case, 150미만을 control로 정의하였으며 아무것도 보정하지 않은 Null model(Model 1), 성별과 연령을 보정한 모형(Model 2), 그리고 성별, 연령, 음주, 흡연력을 보정한 모형(Model 3)에 대해서 각각의 \\(V_p\\)값과 그에 따른 \\(\\text{MORR}_{SU}\\)값을 제시하였다(Table 1). 분석은 R 3.5.1버전에서 hglm package를 이용하였다(Ronnegard, Shen, and Alam 2010).\n\n\n\nVariance parameter, heritablity and MORR of polygenic effect\n\n\n\n\n\n\n\n\nModel 1 (95%CI)\nModel 2 (95%CI)\nModel 3 (95%CI)\n\n\n\n\\(V_p\\)\n0.59 (0.49-0.71)\n0.68 (0.57-0.81)\n0.66 (0.55-0.79)\n\n\nHeritablity\n0.15 (0.13-0.18)\n0.17 (0.15-0.2)\n0.17 (0.14-0.19)\n\n\n\\(\\text{MORR}_{su}\\)\n1.16 (1.13-1.19)\n1.18 (1.15-1.22)\n1.18 (1.14-1.21)\n\n\n\n\n\n(Heritability: Intraclass correlation coefficients(\\(\\frac{V_p}{V_p+\\frac{\\pi^2}{3}}\\)), Model 1: no covariate, Model 2: age & sex as covariates, Model 3: age, sex and alcohol/smoking status as covariates)\nModel 2를 살펴보면 age와 sex의 effect를 보정하고 난 후의 \\(V_p\\)값은 0.59(95% CI: 0.49-0.71)이고 이에 해당하는 \\(\\text{MORR}_{su}\\)의 값은 1.18(95% CI: 1.15-1.22)였으며 이는 sibling pair의 OR에 비해 unrelated pair의 OR의 값이 대략적으로 18% 더 높다고 해석할 수 있다. 한편 Null model(Model 1)의 \\(\\text{MORR}_{su}\\)의 값은 1.16(95% CI: 1.13-1.19)이며 age, sex, smoling status를 보정했을 때(Model 3)는 1.18(95% CI: 1.14-1.21)로 세 Model의 결과는 비슷했다. 이는 age, sex, alcohol, smoking status 보정 여부에 크게 상관없이 hypertriglycemia에 일정한 유전적인 영향이 존재함을 의미한다."
+  },
+  {
+    "objectID": "posts/2018-11-08-medianorratio/index.html#conclusion",
+    "href": "posts/2018-11-08-medianorratio/index.html#conclusion",
+    "title": "New Scale Measure of Heritability in Binary Trait Using Median Odds Ratio: Median OR Ratio",
+    "section": "Conclusion",
+    "text": "Conclusion\n저자가 제시한 \\(\\text{MORR}_{su}\\)의 개념을 이용하여 binary trait의 유전적인 정도를 직관적으로 설명할 수 있었다. 이는 해석이 어려운 heritability의 단점을 극복하였다는 의미가 있다. 또한 age, sex 등 다양한 covariates의 효과를 보정한 후의 유전적인 부분을 설명할 수 있고, 인구집단의 prevalence를 측정할 필요가 없다는 점에서 \\(\\lambda_s\\)의 단점을 보완한 지표라 할 수 있다.\n향후 heritability와 \\(\\lambda_s\\) 각각의 장점은 살리고 단점은 보완한 이 지표가 binary trait의 polygenic effect를 직관적으로 설명하는 방법으로 널리 쓰이길 기대한다."
+  },
+  {
+    "objectID": "posts/2018-11-08-medianorratio/index.html#appendix",
+    "href": "posts/2018-11-08-medianorratio/index.html#appendix",
+    "title": "New Scale Measure of Heritability in Binary Trait Using Median Odds Ratio: Median OR Ratio",
+    "section": "Appendix",
+    "text": "Appendix\nCalculate MORR\n\\(|N(0,2V_p)| - |N(0, V_p)|\\)의 median을 \\(M\\)이라 하자. R의 distr package를 이용하면 아래와 같이 \\(V_g\\)값들에 따른 \\(M\\)값을 쉽게 계산할 수 있다(Ruckdeschel and Kohl 2014).\n\n\n\n\n\\(V_p, \\sqrt{V_p}\\) vs Median value of \\(|N(0,2V_p)| - |N(0, V_p)|\\)\n\n\n\n\n이 그래프의 직선의 기울기가 바로 0.2453이고 따라서 \\(\\text{MORR}_{SU}= \\exp{(0.2453\\times \\sqrt{V_p})}\\)가 된다.\nCompare to Other Measures\n\n\n\n\nRelationship between \\(h^2\\) and \\(\\text{MORR}_{SU}\\)"
+  },
+  {
+    "objectID": "posts/2021-01-22-covidmodel-seoul/index.html",
+    "href": "posts/2021-01-22-covidmodel-seoul/index.html",
+    "title": "코로나 수리모델링: 서울시 감염병연구센터 자문",
+    "section": "",
+    "text": "김진섭 대표는 Zarathu 가 후원하는 2월 Shinykorea 밋업에 참석, 서울시 감염병연구센터 자문으로 코로나 수리모델링을 수행한 경험을 공유할 예정입니다. 슬라이드를 미리 공유합니다."
+  },
+  {
+    "objectID": "posts/2021-01-22-covidmodel-seoul/index.html#요약",
+    "href": "posts/2021-01-22-covidmodel-seoul/index.html#요약",
+    "title": "코로나 수리모델링: 서울시 감염병연구센터 자문",
+    "section": "요약",
+    "text": "요약\n\n대표적인 감염병 모형은 SIR/SEIR 이고, 초기값과 parameter(예: 감염률)가 주어진 미분방정식으로 표현.\n확진자수 등 실제 데이터를 활용, parameter 들을 추정.\nSEIR 에 서울시 확진자수를 적용, 시간에 따라 변화하는 감염률을 계산함.\nParameter와 그 파생지표의 범위를 제한하고 신뢰구간을 계산하기 위해, 베이지안통계 이용 예정."
+  },
+  {
+    "objectID": "posts/2021-01-22-covidmodel-seoul/index.html#slide",
+    "href": "posts/2021-01-22-covidmodel-seoul/index.html#slide",
+    "title": "코로나 수리모델링: 서울시 감염병연구센터 자문",
+    "section": "Slide",
+    "text": "Slide\n아래 슬라이드를 보거나 https://jinseob2kim.github.io/covidmodel-seoul/modelling/ 를 클릭하면 볼 수 있다."
+  },
+  {
+    "objectID": "posts/2021-07-11-kstartup/index.html",
+    "href": "posts/2021-07-11-kstartup/index.html",
+    "title": "창업지원사업 도전기",
+    "section": "",
+    "text": "김진섭 대표는 차라투 가 후원하는 7월 Shinykorea 밋업에 참석, 창업지원사업 도전경험을 공유할 예정입니다. 정리한 슬라이드를 미리 공유합니다."
+  },
+  {
+    "objectID": "posts/2021-07-11-kstartup/index.html#요약",
+    "href": "posts/2021-07-11-kstartup/index.html#요약",
+    "title": "창업지원사업 도전기",
+    "section": "요약",
+    "text": "요약\n4전 5기만에 창업지원사업(비대면스타트업육성사업) 선정(1.4억)\n\n비대면 의료 분야: 블록체인 기반 의료데이터 입력, 관리, 분석 플랫폼\n\n18년초 창업전, 지도교수, 대학원동료와 함께 창업선도대학 선정(6천만)\n\n서울대학교: 블록체인 기반 유전체 빅데이터 플랫폼\n\n심평원 공모전 선정: 맞춤형 의학연구웹\n창업 후 주요사업 광탈, 작은 사업 선정\n\n20년 초기창업패키지, 추경(비대면), 추경2차, 21년 초기창업패키지 4연속 서류탈락\n비대면바우처(400만원), 클라우드 지원사업(720만원) 선정\n벤처기업인증: 혁신성장유형\n\n21년 공개소프트웨어 기반 창업기업 선정, 선릉역 오피스 6개월 지원."
+  },
+  {
+    "objectID": "posts/2021-07-11-kstartup/index.html#slide",
+    "href": "posts/2021-07-11-kstartup/index.html#slide",
+    "title": "창업지원사업 도전기",
+    "section": "Slide",
+    "text": "Slide\n아래 슬라이드를 보거나 https://jinseob2kim.github.io/lecture-general/kstartup 를 클릭하면 볼 수 있다."
+  },
+  {
+    "objectID": "posts/2018-09-25-welcome/index.html",
+    "href": "posts/2018-09-25-welcome/index.html",
+    "title": "Welcome",
+    "section": "",
+    "text": "Anpanman의 블로그를 만들었습니다.\n\n\n\n\nDiamond Prices\n\n\n\n\nCross reference 연습입니다.\nFootnote 연습입니다.1\n\n\nFootnotes\n\nThis will become a hover-able footnote↩︎\nCitationBibTeX citation:@online{kim2018,\n  author = {Jinseob Kim},\n  title = {Welcome},\n  date = {2018-09-25},\n  url = {https://blog.zarathu.com/posts/2018-09-25-welcome},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nJinseob Kim. 2018. “Welcome.” September 25, 2018. https://blog.zarathu.com/posts/2018-09-25-welcome."
+  },
+  {
+    "objectID": "posts/2022-03-19-statreview/index.html",
+    "href": "posts/2022-03-19-statreview/index.html",
+    "title": "Reviewer들을 위한 의학통계",
+    "section": "",
+    "text": "김진섭 대표는 4월 8일(금) 제18차 대한이식학회 춘계학술대회 심포지엄에서 “리뷰어들을 위한 의학통계” 주제로 발표 예정입니다. 슬라이드를 미리 공유합니다."
+  },
+  {
+    "objectID": "posts/2022-03-19-statreview/index.html#요약",
+    "href": "posts/2022-03-19-statreview/index.html#요약",
+    "title": "Reviewer들을 위한 의학통계",
+    "section": "요약",
+    "text": "요약\nTable 1\n\n연속변수 2그룹: 정규분포 t-test, 아니면 Wilcox-test\n연속변수 3그룹이상: 정규분포 ANOVA, 아니면 Kruskal–Wallis ANOVA\n범주형 변수: 샘플수 충분하면 Chisq-test, 아니면 Fisher-test\n\n회귀분석\n\nUnivariate, multivariate 같이 보여주기, Subgroup 분석 추천\nStepwise selection 비추천: 예측모형 목적 아님, 임상맥락 고려X\n\n생존분석\n\nKaplan-meier 그림선 겹치면 안됨: Time stratification 필요\n보정할 변수가 Index time 이후면 안됨: Time-dependent covariate 필요\nPropensity score 매칭 후 pair 고려한 stratified cox 는 필수아님\n\n국민건강영양조사\n\n표본추출정보를 고려한 통계분석: Survey table1/GLM/Cox"
+  },
+  {
+    "objectID": "posts/2022-03-19-statreview/index.html#slide",
+    "href": "posts/2022-03-19-statreview/index.html#slide",
+    "title": "Reviewer들을 위한 의학통계",
+    "section": "Slide",
+    "text": "Slide\n아래 슬라이드를 보거나 https://jinseob2kim.github.io/lecture-general/statreview 를 클릭하면 볼 수 있다."
+  },
+  {
+    "objectID": "posts/2019-05-20-godelincompleteness/index.html",
+    "href": "posts/2019-05-20-godelincompleteness/index.html",
+    "title": "괴델의 불완전성 정리",
+    "section": "",
+    "text": "김진섭 대표는 5월 30일(목) 제주대학교 경영정보학과 산업·직무 특화 전문가 특강에 참석, 괴델(Kurt Gödel)의 불완전성 정리가 나온 배경을 소개하고 증명의 핵심 아이디어를 수학과 메타수학(meta-mathematics), 괴델수(Gödel number), 그리고 메타수학의 수학화 3가지로 나누어 설명할 예정입니다. 정리한 슬라이드와 강의록을 미리 공유합니다. 초청해주신 현정석 교수님께 감사드립니다."
+  },
+  {
+    "objectID": "posts/2019-05-20-godelincompleteness/index.html#요약",
+    "href": "posts/2019-05-20-godelincompleteness/index.html#요약",
+    "title": "괴델의 불완전성 정리",
+    "section": "요약",
+    "text": "요약\n\n18/19 세기 미적분학, 해석학의 발전으로, 수학은 점점 기존의 직관과 상식에서 벗어나 추상화되면서 많은 문제점들이 생겼다.\n특히 무한의 개념을 엄밀하게 다룰 필요성이 있었는데, 칸토어(Georg Cantor)는 집합론의 논법으로 무한을 엄밀하게 정의하고 그것들의 크기를 비교하였다.\n20세기 수학자들은 집합론을 이용, 수학의 기초를 구성하고 모순이 없는 수학체계를 만들 수 있다는 꿈으로 부풀어 있었으나, 러셀의 역설(Bertrand Russel’s paradox)로 대표되는 “자기언급의 역설”은 집합론의 기초를 위태롭게 하였다.\n힐베르트(David Hilbert)는 “자기언급의 역설” 은 수학의 명제와 메타수학(meta-mathematics)의 명제를 구분하지 않아 일어나는 것으로 판단하였으며, 이를 잘 구분하는 공리계를 세심하게 설계할 수만 있다면 모순없는 수학체계를 만들 수 있다고 보았다.\n그러나 괴델(Kurt Gödel)은 이 부분을 파고들어 메타수학의 명제를 수학의 명제로 바꾸는 괴델수(Gödel number) 라는 독창적인 아이디어를 제안, 메타수학의 명제를 수학 체계로 갖고 온 후 자기언급의 역설을 보여주었다. 즉, “자기언급의 역설” 을 피하기 위해 아무리 세심하게 공리계를 설계해도 그것을 피할 수는 없다는 것을 증명하였으며, 이것이 불완전성 정리이다.\n불완전성 정리로 인해 “참이지만 증명불가능한 명제가 존재” 하고 나아가 “수학의 무모순성을 수학 자체적으로는 증명할 수 없음” 이 증명되어 모순없는 완전한 수학체계의 꿈은 결국 산산조각이 난다.\n불완전성 정리를 인간 이성의 한계로만 해석하고 실의에 빠지지 말자. 어떤 기계보다도 더 복잡하고 정교한 인간의 정신구조와 능력을 긍정하며 창조적 이성의 힘을 인정할 때이다."
+  },
+  {
+    "objectID": "posts/2019-05-20-godelincompleteness/index.html#slide",
+    "href": "posts/2019-05-20-godelincompleteness/index.html#slide",
+    "title": "괴델의 불완전성 정리",
+    "section": "Slide",
+    "text": "Slide\n아래 슬라이드를 보거나 https://jinseob2kim.github.io/LectureGodel/ 를 클릭하면 볼 수 있다."
+  },
+  {
+    "objectID": "posts/2019-05-20-godelincompleteness/index.html#강의록",
+    "href": "posts/2019-05-20-godelincompleteness/index.html#강의록",
+    "title": "괴델의 불완전성 정리",
+    "section": "강의록",
+    "text": "강의록\n본 강의록은 과거 https://jinseob2kim.github.io/godel.html 에 정리했던 내용을 약간만 수정하였습니다.\n서론\n괴델의 불완전성 정리에 대한 많은 책들이 시중에 출판되어 있다. 허나 대부분이 역사와 증명의 의미에 치중되어 있고 실제 증명의 아이디어를 설명한 책은 거의 없으며, 있다고 하더라도 외국 서적을 번역하면서 난해한 표현이 많이 나와 이해하기가 어렵다. 이에 본 글에서는 불완전성 정리 증명의 핵심적인 아이디어를 크게 수학(mathematics)과 메타수학(meta-mathematics), 괴델수(Gödel number), 메타수학의 수학화의 3가지로 나누어 설명하겠다. 본 글이 불완전성정리의 아름다움을 느끼는 데 도움이 되길 바란다.\n수학(mathematics)과 메타수학(meta-mathematics)\n보통 불완전성 정리에 대한 책들에서는 간략하게 증명의 개요만 언급하는데 그것은 아래와 같다.\n\\[G: G는 \\:증명불가능하다.\\]\n만약 \\(G\\)가 증명 가능하다면 그것은 참이고, 내용은 “\\(G\\)는 증명 불가능하다.” 므로 모순이다. 따라서 \\(G\\)는 증명 불가능하며, \\(G\\)의 내용은 “\\(G\\)가 증명 불가능하다”는 것이므로 참이다. 따라서 \\(G\\)는 참이지만 증명불가능한 명제라는 것이다. 이 설명을 보고 고개를 끄덕 인 후 증명이 끝난 것 아닌가? 라는 생각을 할 수도 있을 것이다. 그러나 명제 내부에 명제 자신을 언급한 순환논리부분을 해결하지 않으면 안되고 사실 불완전성정리의 핵심부분도 이 부분이며 수학의 명제와 메타수학의 명제를 구분하는 것이 이해의 시작이 된다.\n수학 명제와 메타수학 명제의 차이점\n아주 간단한 수학 명제 하나를 살펴보자.\n\\[1+1=2\\]\n이 표현은 수학에 속한 표현이다. 이제 다음 명제를 살펴보면\n\\[\"1+1=2\"는 \\:수학\\: 명제이다.\\]\n이 진술은 앞에 나온 수학명제에 대해 무엇인가를 주장하고 있으며 따라서 수학이 아니라 메타수학의 명제라고 할 수 있다. 비슷하게 “\\(x\\)는 변수이다”, “\\(x=1\\)은 방정식이다” 들도 수학 명제가 아니라 메타수학의 명제이다. 수학과 메타수학을 구별하는 것은 몇 번을 강조해도 지나치지 않은데 이 구별에 소홀한 것이 수많은 역설이 만들어지는 이유이기 때문이다. 힐베르트를 포함한 당시의 수학자들은 이를 잘 구별하면 역설을 제거할 수 있다고 보았다. 이제 다시 처음 식을 살펴보자. \\(G\\)가 수학명제라면 “\\(G\\)는 증명불가능하다” 는 수학의 명제가 아니라 메타수학의 명제이므로, 이것이 수학명제인 \\(G\\)가 될 수는 없다. 따라서 자기언급의 역설은 발생하지 않는다.\n그러나 괴델은 이 부분을 파고들어 메타수학의 명제를 수학의 명제로 바꾸는 괴델수(Gödel number) 라는 독창적인 아이디어를 제안, 메타수학의 명제를 수학 체계로 갖고 온 후 자기언급의 역설을 보여주었다. 괴델수부터 차근차근 알아보도록 하자.\n괴델수(Gödel number)\n괴델수는 모든 기호, 변수, 명제, 명제묶음(증명)들에 유일한 숫자를 부여하는 것인데 몇가지 예를 들어보면 다음과 같다.\n\n상항기호\n\n기호\n괴델수\n의미\n\n\n\n\\(\\sim\\)\n1\n아니다\n\n\n\\(\\vee\\)\n2\n또는\n\n\n\\(\\supset\\)\n3\n\n\\(\\cdots\\)라면 \\(\\cdots\\)다\n\n\n\\(\\exists\\)\n4\n\n\\(\\cdots\\)이 존재한다\n\n\n\\(=\\)\n5\n같다\n\n\n0\n6\n영(0)\n\n\ns\n7\n바로 다음 수\n\n\n(\n8\n왼쪽 괄호\n\n\n)\n9\n오른쪽 괄호\n\n\n,\n10\n쉼표\n\n\n\\(+\\)\n11\n더하기\n\n\n\\(\\times\\)\n12\n곱하기\n\n\n\n위의 표에 나와있는 기호들을 상항기호라고 하며, 이와 대응되는 개념은 변항(variable)기호인데 숫자 변항, 문장 변항, 술어 변항으로 나눌 수 있다. 숫자 변항에는 12보다 큰 소수, 문장 변항에는 12보다 큰 소수의 제곱수, 술어변항에는 12보다 큰 소수의 세제곱수를 부여하게 되며 예는 아래의 표와 같다.\n\n변항기호\n\n\n변항\n괴델수\n대입 예\n\n\n\n숫자변항\n\\(x\\)\n13\n0\n\n\n\n\\(y\\)\n17\n\\(s0\\)\n\n\n\n\\(z\\)\n19\n\\(y\\)\n\n\n문장변항\n\\(p\\)\n\\(13^2\\)\n\\(0=0\\)\n\n\n\n\\(q\\)\n\\(17^2\\)\n(\\(\\exists\\) x)(\\(x=sy\\)): \\(y\\)의 다음 수 \\(x\\)가 존재한다.\n\n\n\n\\(r\\)\n\\(19^2\\)\n\\(p\\supset q\\)\n\n\n술어변항\n\\(P\\)\n\\(13^3\\)\n\n\\(P(x)\\): \\(x\\)는 소수이다.\n\n\n\n\\(Q\\)\n\\(17^3\\)\n\n\n\n\n\\(R\\)\n\\(19^3\\)\n\n\n\n\n이제 문장 (\\(\\exists x\\))(\\(x=sy\\)) 를 살펴보자. 이것은 \\(y\\) 다음 수가 존재한다고 읽으며, 기본기호 하나하나의 괴델수를 살펴보면 8, 4, 13, 9, 8, 13, 5, 7, 17, 9이고 문장 전체의 괴델수는 다음과 같이 소수를 이용하여 표현한다.\n\\[2^8 \\times 3^4 \\times 5^{13} \\times 7^9 \\times 11^8 \\times 13^{13} \\times 17^5 \\times 19^7 \\times 23^{17} \\times 29^9\\]\n마찬가지로 증명에 대해서도 괴델수를 부여할 수 있는데 예를들어 증명이 두 서술로 되어 있고 각 서술의 괴델수가 \\(m\\)과 \\(n\\)이라면 증명의 괴델수는 \\(2^m \\times 3^n\\) 으로 표현한다. 이런식으로 모든 수학적 표현에 대해서 겹치지 않고 유일하게 괴델수를 부여할 수 있다. 한가지 예를 더 들면 괴델수 243,000,000은 \\(2^6 \\times 3^5 \\times 5^6\\)으로 소인수분해 되며 지수부분인 6,5,6은 각각 0, \\(=\\), 0에 대응되므로 결국 \\(0=0\\)이라는 수학명제를 나타내게 된다.\n메타수학의 수학화\n괴델은 괴델수를 이용하여 메타수학의 명제를 수학의 명제로 바꾸는 데 성공하였는데 간단한 예를 들어보겠다.\n\\[\\sim(0=0)\\]\n는 “0은 0이 아니다.” 라는 단순한 수학 명제인 반면\n\\[\\text{수학 명제} \"\\sim(0=0)\" \\text{의 첫 번째 기호는 틸드}(\\sim) \\text{이다}.\\]\n는 수학명제가 아니라 메타수학의 명제이다. 그런데 이 메타수학의 명제는 적당한 과정을 거치면 수학명제로 바꿀 수 있다. 편의상 \\(\"\\sim(0=0)\"\\)의 괴델수를 \\(a\\)라고 하고 위의 상항기호 표에서 \\(\"\\sim\"\\)의 괴델수가 1임을 기억하자. 그렇다면 첫 번째 기호가 \\(\"\\sim\"\\)이라는 것은 곧 \\(a\\)를 소인수분해했을 때 제일 작은 소수인 2의 지수가 1임을 의미하게 되고 메타수학의 명제는\n\\[2 \\text{는 } a \\text{의 인수이지만, } 2^2 \\text{ 은 } a \\text{의 인수가 아니다}.\\]\n와 같이 수학명제로 바뀌게 된다. 기호로 표현하기 위해 표현을 바꾸면 “\\(y=z\\times 2\\)인 \\(z\\)가 존재하고, \\(y=z\\times 2 \\times 2\\)인 \\(z\\)는 존재하지 않는다.” 가 되며 실제로 이를 기호로 표현하면 다음과 같다.\n\\[(\\exists z) (sss\\cdots sss0=z\\times ss0) \\cdot \\sim(\\exists z) (sss\\cdots sss0=z\\times (ss0 \\times ss0))\\]\n(\\(sss\\cdots sss0\\)에서 \\(s\\)는 정확히 \\(a\\)번 나타난다.) 이와 비슷한 방법으로 모든 메타수학의 명제를 괴델수를 이용하여 수학의 명제로 바꿀 수 있다.\n불완전성 정리\n이제 불완전성 정리를 천천히 이해해보자. Dem/dem과 Sub/sub의 개념을 정의한 후 증명의 핵심 아이디어로 들어가 보겠다.\nDem\ndem은 증명을 뜻하는 demonstration의 약자로 dem(\\(x\\), \\(z\\))은\n\\[\\text{괴델수 } x \\text{를 가진 문장묶음이 괴델수 } z \\text{를 가진 명제의 증명이다}.\\]\n의 축약표현으로 정의한다. 예를 들어 “피타고라스 정리 증명”의 괴델수가 \\(m\\)이고 “피타고라스 정리”의 괴델수가 \\(n\\)이라면 dem(\\(m\\), \\(n\\))이라고 쓸 수 있는 것이다. 한편, Dem(\\(x\\), \\(z\\))은 \\(x\\)와 \\(z\\)의 관계 dem을 형식적 표기법으로 표현하는 형식문으로 정의한다.\nSub\nSub은 치환 혹은 대입을 의미하며 소문자로 표현한 sub(\\(x\\),17,\\(x\\))는\n\\[\\text{괴델수 } x \\text{를 가진 문장에 등장하는} \\textbf{ 변수 } y \\textbf{들에 전부 숫자 } x \\textbf{를 대입} \\text{해서 만들어진 명제의 괴델수}\\]\n로 정의한다(17은 \\(y\\)의 괴델수임을 기억하자). 한 편, \\(s\\)를 대문자로 표시한 Sub(\\(x\\),17,\\(x\\))는\n\\[\\text{괴델수가 아닌 }\\textbf{명제 그 자체}\\]\n로 정의한다. 이해를 돕기 위해 \\(2^8 \\times 3^4 \\times 5^{13} \\times 7^9 \\times 11^8 \\times 13^{13} \\times 17^5 \\times 19^7 \\times 23^{17} \\times 29^9\\) 를 다시 살펴보겠다. (\\(\\exists x\\))(\\(x=sy\\)) 는 앞서 설명했듯이 “\\(y\\) 다음 수가 존재한다” 고 읽을 수 있으며, 그 괴델수를 \\(k\\)라 하면\n\\[k=2^8 \\times 3^4 \\times 5^{13} \\times 7^9 \\times 11^8 \\times 13^{13} \\times 17^5 \\times 19^7 \\times 23^{17} \\times 29^9\\]\n가 된다. 이제 \\(y\\)대신 \\(k\\)를 대입한다면 수정된 명제는 (\\(\\exists x\\))(\\(x=sss \\cdots sss0\\))이 되고(\\(s\\)는 \\(k+1\\)번 연속됨), \\(s\\)의 괴델수가 7임을 고려하면 \\(k\\)를 대입한 명제의 괴델수는 \\(y\\)부분에 해당되는 \\(23^{17}\\)부터 \\(s\\)로 바뀌어 아래의 식과 같이 된다.\n\\[2^8 \\times 3^4 \\times 5^{13} \\times 7^9 \\times 11^8 \\times 13^{13} \\times 17^5 \\times 19^7 \\times 23^{7} \\times 29^7 \\times 31^7 \\times 37^7 \\times \\cdots (P_{k+10})^9\\]\n(\\(P_{k+10}\\): \\(k+10\\)번 째 소수)\n얼핏 보기에 문장의 괴델수를 문장 그 자체에 대입한다는 것이 순환논리같은 느낌을 주는데 이것이 바로 괴델의 핵심적인 아이디어 중 하나이다. 이제부터 본격적인 증명의 내용으로 들어가기로 하자.\n불완전성 정리\n불완전성 정리의 증명은 “괴델수 \\(z\\)를 가진 명제는 증명불가능하다”라는 메타수학의 명제를 수학의 명제로 바꾼 후, 이 명제의 특별한 경우가 증명될 수 없다는 것을 보이는것으로 이루어진다. 이제 다음의 형식문을 살펴보자.\n\\[\\sim(\\exists x)\\text{Dem}(x,\\text{Sub}(y, 17, y))\\]\n이 수학의 형식문은 “Sub(\\(y\\) ,17, \\(y\\)) 의 증명은 존재하지 않는다, 즉 증명불가능하다”는 메타수학적 의미를 갖는다. 이 형식문의 괴델수를 \\(n\\)이라 하고, 형식문에 포함된 변수 \\(y\\)를 숫자 \\(n\\)으로 바꾼 형식문 \\(G\\)를 살펴보자.\n\\[\\text{G}: \\sim(\\exists x)\\text{Dem}(x,\\text{Sub}(n, 17, n))\\]\n\\(G\\)는 변수가 포함되어 있지 않으므로 수학명제이며, 이것의 메타수학적 의미를 살펴보면 “괴델수 sub(\\(n\\), 17, \\(n\\))을 가진 명제는 증명 불가능하다.”이다. \\(G\\)의 괴델수를 \\(g\\)라고 하고 \\(g\\)는 어떤 숫자일지 생각해보자. 놀랍게도 \\(g=\\text{sub}(n, 17, n)\\)임을 알 수 있다. \\(G\\)는 괴델수 \\(n\\)을 가진 형식문에서 \\(y\\)에 숫자 \\(n\\)을 대입하여 만든 명제이므로, 이것의 괴델수 \\(g\\)는 정확히 sub(\\(n\\), 17, \\(n\\))의 정의와 일치하게 된다. 이제 \\(G\\)의 메타수학적 의미를 다시 살펴보면 “괴델 수 \\(g\\)를 가진 명제는 증명 불가능하다.”이고 즉, “\\(G\\)는 증명 불가능하다”는 의미가 된다. 맨 처음으로 돌아가면, \\(G\\)는 참이지만 증명 불가능한 명제가 되어 불완전성의 정리가 증명된다.\n마치며\n필자는 고등학생때부터 괴델의 불완전성정리를 이해해보려고 괴델의 논문원본도 찾아보고 여러 교양서적을 많이 읽어보았었다. 그러나 논문을 다 보는것은 이해하기가 어렵고 교양서적은 겉핥기식으로만 나와있어서 최근까지도 증명의 핵심을 이해하지 못했었는데 출판사 승산에서 나온 괴델의 증명을 읽으면서 한층 이해수준을 올릴 수 있었다. 이 책은 외국서적을 번역한 것으로 번역하면서 생소한 단어와 표현들이 많이나와 읽기가 어려운 부분이 있어 이번기회에 잘 풀어서 설명해볼 목적으로 글을 쓰게 되었다. 본 글이 논문과 교양서적 사이에서 가교 역할을 하여 불완전성 정리를 이해하는데 도움이 되길 기대한다.\n참고문헌\n\n괴델, 에셔, 바흐 : 영원한 황금 노끈 / 지은이: 더글러스 호프스태터 ; 옮긴이: 박여성, 안병서\n(호프스태터가 서문을 쓰고 개정한) 괴델의 증명 / 지은이: 어니스트 네이글, 제임스 뉴먼 ; 옮긴이: 곽강제, 고중숙\n괴델 불완전성 정리 / 지은이: 요시나가 요시마사 ; 옮긴이: 임승원"
   }
 ]
