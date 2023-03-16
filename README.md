@@ -11,43 +11,44 @@ Zarathu Official Blog - <https://blog.zarathu.com>
 3. Rstudio에서 **blog/zarathucorp.Rproj**을 열기
 4. **blog/posts**로 이동
 5. 아티클을 담을 디렉토리 **생성**, 이때 형식은 `YYYY-MM-DD-TITLE` (다른 예시 참조)
-6. 생성한 디렉토리로 이동 후 `index.qmd` 생성
-7. YAML 작성 예시 
+6. 생성한 디렉토리로 이동 후 `index.qmd` 생성 
+7. YAML 작성 예시 (render 에러가 날 경우 **Indent**, **tab** 확인)
 
 ```{YAML}
 ---
-title: "likert 패키지 소개"
-description: |  
-	문항별 만족/불만족을 한번에 표현하는 likert chart를 그려보자
-categories:   
-	- R  
-	- Rpackage  
-	- shiny  
-	- plotly  
-	- quarto
-aliases:   
-  - likert
-author:   
-	- name: "jinhwan kim"    
-		url: https://github.com/jhk0530
-
-image: img/hex.png
-date: 02-05-2023
+title: "pkgdown을 활용한 R 패키지 문서화"
+description: | 
+  R 패키지를 다른 사람들도 잘 활용할 수 있게 설명해주는 웹사이트를 pkgdown을 사용하여 만들어보자
+categories:
+  - R
+  - Rpackage
+  - pkgdown
+  - githubpage
+  - documentation
+  - website
+aliases:
+  - pkgdown.html
+author:
+  name: "Jinhwan Kim"
+  email: jinhwan@zarathu.com
+  url: https://github.com/jhk0530
+image: img/logo.png
+date: 2023-03-15
 format: html
 lang: kr
-execute:   
-	freeze: true
+execute:
+  freeze: true
 draft: false
 license: CC BY-NC
 ---
-
 ```
 
 8. 아티클을 `index.qmd`에 이어서 작성 후 **Knit**
-9. 로컬에 **Commit**
-10. zarathucorp/blog에 **Pull Request** 생성
-11. 검토 후 **Merge**
-12. 끝
+9. 이때 이미지는 디렉토리내의 `/img`를 활용하길 권장
+10. 로컬에 **Commit**
+11. zarathucorp/blog에 **Pull Request** 생성
+12. 검토 후 **Merge**
+13. 끝
 
 ## 아티클에 revealjs (quarto 슬라이드) 올리는 방법
 
