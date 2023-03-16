@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="kr" xml:lang="kr"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Jinhwan Kim">
+<meta name="dcterms.date" content="2023-03-17">
+<meta name="description" content="R 패키지를 다른 사람들도 잘 활용할 수 있게 설명해주는 웹사이트를 pkgdown을 사용하여 만들어보자">
+<title>Zarathu Blog - pkgdown을 활용한 R 패키지 문서화</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "일치 없음",
+    "search-matching-documents-text": "일치된 문서",
+    "search-copy-link-title": "검색 링크 복사",
+    "search-hide-matches-text": "추가 검색 결과 숨기기",
+    "search-more-match-text": "추가 검색결과",
+    "search-more-matches-text": "추가 검색결과",
+    "search-clear-button-title": "제거",
+    "search-detached-cancel-button-title": "취소",
+    "search-submit-button-title": "검색"
+  }
+}</script><script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script><style>html{ scroll-behavior: smooth; }</style>
+<link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="floating nav-fixed">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Zarathu Blog</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="http://app.zarathu.com/">
+ <span class="menu-text">Applications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R packages</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
+<li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributors.html">
+ <span class="menu-text">Contributors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Partners</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
+<li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+<div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">pkgdown을 활용한 R 패키지 문서화</h1>
+                  <div>
+        <div class="description">
+          <p>R 패키지를 다른 사람들도 잘 활용할 수 있게 설명해주는 웹사이트를 pkgdown을 사용하여 만들어보자</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">Rpackage</div>
+                <div class="quarto-category">pkgdown</div>
+                <div class="quarto-category">githubpage</div>
+                <div class="quarto-category">documentation</div>
+                <div class="quarto-category">website</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">저자</div>
+      <div class="quarto-title-meta-contents">
+               <p>Jinhwan Kim </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">공개</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 17, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">목차</h2>
+   
+  <ul>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li>
+<a href="#pkgdown%EC%9D%B4%EB%9E%80" id="toc-pkgdown이란" class="nav-link" data-scroll-target="#pkgdown%EC%9D%B4%EB%9E%80">pkgdown이란</a>
+  <ul>
+<li>
+<a href="#pkgdown-%EC%84%A4%EC%B9%98-%EB%B0%8F-%ED%99%98%EA%B2%BD-%EC%84%A4%EC%A0%95" id="toc-pkgdown-설치-및-환경-설정" class="nav-link" data-scroll-target="#pkgdown-%EC%84%A4%EC%B9%98-%EB%B0%8F-%ED%99%98%EA%B2%BD-%EC%84%A4%EC%A0%95">pkgdown 설치 및 환경 설정</a>
+  <ul class="collapse">
+<li><a href="#pkgdown.tutorial" id="toc-pkgdown.tutorial" class="nav-link" data-scroll-target="#pkgdown.tutorial">pkgdown.tutorial</a></li>
+  <li><a href="#build_site" id="toc-build_site" class="nav-link" data-scroll-target="#build_site">build_site</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#pkgdown%EC%9D%98-%EA%B5%AC%EC%84%B1-%EC%9A%94%EC%86%8C" id="toc-pkgdown의-구성-요소" class="nav-link" data-scroll-target="#pkgdown%EC%9D%98-%EA%B5%AC%EC%84%B1-%EC%9A%94%EC%86%8C">pkgdown의 구성 요소</a>
+  <ul class="collapse">
+<li>
+<a href="#yml" id="toc-yml" class="nav-link" data-scroll-target="#yml">_yml</a>
+  <ul class="collapse">
+<li><a href="#template-lv0" id="toc-template-lv0" class="nav-link" data-scroll-target="#template-lv0">1. template (lv0)</a></li>
+  <li><a href="#navbar-lv0" id="toc-navbar-lv0" class="nav-link" data-scroll-target="#navbar-lv0">2. navbar (lv0)</a></li>
+  <li><a href="#intro" id="toc-intro" class="nav-link" data-scroll-target="#intro">2-1. intro</a></li>
+  <li><a href="#reference" id="toc-reference" class="nav-link" data-scroll-target="#reference">2-2. reference</a></li>
+  <li><a href="#articles" id="toc-articles" class="nav-link" data-scroll-target="#articles">2-3. articles</a></li>
+  <li><a href="#components-navbar-lv1" id="toc-components-navbar-lv1" class="nav-link" data-scroll-target="#components-navbar-lv1">3. components (navbar &gt; lv1)</a></li>
+  <li><a href="#footer-lv0" id="toc-footer-lv0" class="nav-link" data-scroll-target="#footer-lv0">4. footer (lv0)</a></li>
+  <li><a href="#description" id="toc-description" class="nav-link" data-scroll-target="#description">5. DESCRIPTION</a></li>
+  </ul>
+</li>
+  </ul>
+</li>
+  <li><a href="#%EB%A9%94%EC%9D%B8-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%B6%94%EA%B0%80" id="toc-메인-페이지-추가" class="nav-link" data-scroll-target="#%EB%A9%94%EC%9D%B8-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%B6%94%EA%B0%80">메인 페이지 추가</a></li>
+  </ul>
+</li>
+  <li><a href="#%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8-%EB%B9%8C%EB%93%9C-%EB%B0%B0%ED%8F%AC" id="toc-웹사이트-빌드-배포" class="nav-link" data-scroll-target="#%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8-%EB%B9%8C%EB%93%9C-%EB%B0%B0%ED%8F%AC">웹사이트 빌드 &amp; 배포</a></li>
+  <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">마치며</a></li>
+  </ul></nav>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="introduction" class="level1"><h1>Introduction</h1>
+<p><img src="img/logo.png" width="150px"></p>
+<p>R 패키지를 개발할 때, 개발 자체도 힘들지만, 패키지를 잘 설명하는 <strong>문서화</strong> 역시 매우 중요합니다.</p>
+<p>아무리 좋은 기능을 개발해두었어도, 어떤 기능이 있는지, 어떤 방식으로 사용할 수 있는지… 등을 작성해 두지 않으면 (코드를 열어보기 전까진 모르기 때문에) 패키지를 사용하려는 사람들로부터 사랑받기 어렵습니다.</p>
+<p>특히나, 패키지를 설치해서 <code>?</code> 를 통해 확인할 수 있는 것과, 설치 하기 전에 깃헙의 패키지 리포지토리에서 확인할 수 있는 것은 꽤 차이가 큽니다.</p>
+<p>하지만 문서화와 이 결과물을 웹페이지로 만드는 것은 많은 시간과 노력이 필요한 작업입니다.</p>
+<p>이런 문제를 해결하기 위해 <code>pkgdown</code>이라는 R 패키지가 등장했습니다. 이번 글에서는 <code>pkgdown</code>을 사용하여 R 패키지를 문서화하는 페이지를 만드는 방법을 소개합니다.</p>
+<hr></section><section id="pkgdown이란" class="level1"><h1>pkgdown이란</h1>
+<blockquote class="blockquote">
+<p>pkgdown is designed to make it quick and easy to build a website for your package.</p>
+</blockquote>
+<p>공식 홈페이지의 설명에 따르면, <code>pkgdown</code>은 패키지를 위한 웹사이트를 쉽고 빠르게 제작하게 합니다.</p>
+<p>혹은 <strong>pkg</strong> + (Rmark)<strong>down</strong> 으로 이해하는 것도 개인적으로는 괜찮다고 생각합니다.</p>
+<p>그렇다면 <strong>패키지를 위한 웹사이트</strong>는 어떤 것을 의미할까요?</p>
+<p>이를 알기 위해 <code>pkgdown</code>의 결과물 예시를 하나 소개해보겠습니다.</p>
+<p><code>pkgdown</code>을 사용한 R 패키지의 좋은 예시는 (당연히) <code>tidyverse</code>에서 확인할 수 있습니다.</p>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="img/dplyr1.png" width="600px"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="img/dplyr2.png" width="600px"></p>
+</div>
+</div>
+</div>
+<p>많은 R 패키지가 위의 이미지처럼 <code>pkgdown</code>을 사용한 <a href="https://dplyr.tidyverse.org/" target="_blank"> 웹페이지</a>를 제공하는 것은 아니지만, 유사한 기능을 제공하는 R 패키지들이 여러 종류가 있다면 그 중에서 <strong>설명이 잘 되어있는 패키지</strong>를 사용하게 되는 것은 사용자의 입장에서 자연스러운 일입니다.</p>
+<p>패키지를 개발하는 사람의 입장으로 한번 생각해보면 어떨까요?</p>
+<ul>
+<li><p>R 패키지를 만드는 것도 익숙해지기 전까진 꽤나 많은 리소스를 필요로 하는데</p></li>
+<li><p>R 패키지를 설명하는 웹사이트까지 만들려고 한다면, (심지어 R 외에도 웹 개발 관련 지식이 필요한데!) 너무 피곤한 하루가 될 것입니다.</p></li>
+</ul>
+<p>그런데 만약 <code>pkgdown</code>을 사용한다면 <strong>Rmarkdown</strong>만으로도 충분히 피곤한 하루를 피할 수 있습니다.</p>
+<p><code>pkgdown</code>은 R 패키지의 소스코드(<code>.R</code>)와 메타데이터(<code>.yml</code>)를 기반으로 웹페이지를 생성하며, 이를 통해 사용자들이 패키지의 <strong>함수</strong>와 <strong>데이터셋</strong>, 그리고 <strong>함수</strong>와 사용 방법, <strong>아티클</strong>등을 쉽게 이해할 수 있습니다. (이 과정중에서 <code>roxygen2</code>를 활용하기도 합니다.)</p>
+<p>그리고 최종적으로, 만든 웹페이지를 <code>Github</code>을 활용하여 (<code>Github Pages</code>) 온라인에 공유 할 수 있습니다.</p>
+<p><em>단, 공유는 pkgdown의 기능은 아니고, 공유할 수 있는 형태의 결과물을 만드는 것이 pkgdown의 역할이라고 보면 좋습니다.</em></p>
+<p>오늘 만들 결과물은 패키지 <a href="https://github.com/jhk0530/pkgdown.tutorial/" target="_blank">링크</a>와 이 <a href="https://jhk0530.github.io/pkgdown.tutorial/" target="_blank">링크</a>에서 확인할 수 있습니다.</p>
+<section id="pkgdown-설치-및-환경-설정" class="level2"><h2 class="anchored" data-anchor-id="pkgdown-설치-및-환경-설정">pkgdown 설치 및 환경 설정</h2>
+<p>위에서 서술한 것처럼 pkgdown 또한 하나의 R package이기 때문에 설치를 해야합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># install.packages('pkgdown') CRAN version</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'r-lib/pkgdown'</span><span class="op">)</span> <span class="co"># Github version</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pkgdown.r-lib.org">pkgdown</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org">usethis</a></span><span class="op">)</span> </span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>pkgdown</code>은 패키지의 웹페이지를 만드는 역할을 하기 때문에 <code>pkgdown</code>의 <strong>“대상이 되는”</strong> R 패키지로 <code>pkgdown.tutorial</code>이라는 간단한 패키지를 먼저 만들었습니다. (위 링크 참조)</p>
+<section id="pkgdown.tutorial" class="level3"><h3 class="anchored" data-anchor-id="pkgdown.tutorial">pkgdown.tutorial</h3>
+<blockquote class="blockquote">
+<p>💡 <code>ttest</code>와 <code>ttest2</code>는 동일한 내용의 함수이며, <code>roxygen2</code>의 효과를 보기 위해 비교용도로 사용합니다.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># ttest.R (= ttest2.R)</span></span>
+<span><span class="va">ttest</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">alternative</span> <span class="op">=</span> <span class="st">'two.sided'</span>, </span>
+<span>                  <span class="va">mu</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">paired</span> <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">var.equal</span> <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                  <span class="va">conf.level</span> <span class="op">=</span> <span class="fl">0.95</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">alternative</span>, <span class="va">mu</span>, <span class="va">paired</span>, <span class="va">var.equal</span>, <span class="va">conf.level</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>패키지에 <code>ttest</code>와 <code>ttest2</code>라는 함수를 만들고 패키지 빌드 직후의 구성 상태는 아래와 같습니다.</p>
+<pre><code>/pkgdown.tutorial
+  - .gitignore
+  - .Rbuildignore
+  - DESCRIPTION
+  - NAMESPACE
+  - pkgdown.tutorial.Rproj
+  - /R
+    - ttest.R
+    - ttest2.R</code></pre>
+<p>이후 <code>pkgdown.tutorial</code>의 작업 디렉토리에서 (.Rproj를 열어) <code><a href="https://usethis.r-lib.org/reference/use_pkgdown.html">usethis::use_pkgdown()</a></code>을 실행합니다.</p>
+<p>그 결과 아래 이미지처럼 <code>_pkgdown.yml</code>이라는 파일이 생기는 것을 확인 할 수 있습니다.</p>
+<p><img src="img/pkgdown1.png" width="600px"></p>
+<blockquote class="blockquote">
+<p>💡 <code>.gitignore</code>에서 <code>docs</code>를 삭제해주세요.</p>
+</blockquote>
+</section><section id="build_site" class="level3"><h3 class="anchored" data-anchor-id="build_site">build_site</h3>
+<p><code>pkgdown</code>의 핵심 코드를 하나만 고르라면 <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code>입니다.</p>
+<p>이는 현재 작업된 내용들을 기반으로 <strong>웹사이트를 만드는 역할을 하는 함수</strong>입니다.</p>
+<p>바로 실행해보면 아래와 같은 결과를 확인할 수 있습니다.</p>
+<blockquote class="blockquote">
+<p>💡 <code><a href="https://pkgdown.r-lib.org">library(pkgdown)</a></code>을 실행했다면 앞의 <code>pkgdown::</code>은 붙이지 않아도 좋습니다</p>
+</blockquote>
+<p><img src="img/pkgdown2.png" width="600px"></p>
+</section></section><section id="pkgdown의-구성-요소" class="level2"><h2 class="anchored" data-anchor-id="pkgdown의-구성-요소">pkgdown의 구성 요소</h2>
+<p><code>pkgdown</code>에서 웹페이지 제작을 위해 제공하는 주요 요소들을 소개하겠습니다.</p>
+<section id="yml" class="level3"><h3 class="anchored" data-anchor-id="yml">_yml</h3>
+<p><code>_pkgdown.yml</code>은 보여지는 웹사이트를 구성하는 파일입니다.</p>
+<blockquote class="blockquote">
+<p>💡 yml은 들여쓰기 (indent)를 깐깐하게 사용하기 때문에 에러가 난다면 이를 확인해보는 것이 좋습니다.</p>
+<p>들여쓰기를 하나도 하지 않은 (처음 <code>url</code>과 같은 위치) 경우를 <strong>lv0</strong>이라 표현합니다.</p>
+</blockquote>
+<section id="template-lv0" class="level4"><h4 class="anchored" data-anchor-id="template-lv0">1. template (lv0)</h4>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">template</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bootstrap</span><span class="kw">:</span><span class="at"> </span><span class="dv">5</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bootswatch</span><span class="kw">:</span><span class="at"> flatly </span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>처럼 변경하여 웹사이트의 테마를 바꿀 수 있습니다. 아래의 예시에서는 <code>flatly</code>를 사용했습니다.</p>
+<p><img src="img/pkgdown2.png" width="600px"></p>
+<p>theme에서 사용할 수 있는 옵션은 bootswatch의 <a href="https://bootswatch.com/">theme</a>를 소문자로 입력한 값이며, 필요한 경우 <a href="https://rstudio.github.io/bslib/articles/bslib.html"><code>bslib</code></a> 옵션을 활용하여 더 자세한 커스터마이즈를 할 수 있습니다.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">template</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bootstrap</span><span class="kw">:</span><span class="at"> </span><span class="dv">5</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bslib</span><span class="kw">:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">bg</span><span class="kw">:</span><span class="at"> </span><span class="st">"#202123"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">fg</span><span class="kw">:</span><span class="at"> </span><span class="st">"#B8BCC2"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">primary</span><span class="kw">:</span><span class="at"> </span><span class="st">"#306cc9"</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="navbar-lv0" class="level4"><h4 class="anchored" data-anchor-id="navbar-lv0">2. navbar (lv0)</h4>
+<p><code>navbar</code>는 웹페이지 윗부분의 네비게이션 바 구성을 설정할 수 있는 옵션입니다.</p>
+<p>만약 yml의 내용을</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">navbar</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">structure</span><span class="kw">:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">left</span><span class="kw">:</span><span class="at">  </span><span class="kw">[</span><span class="at">intro</span><span class="kw">,</span><span class="at"> reference</span><span class="kw">,</span><span class="at"> articles</span><span class="kw">,</span><span class="at"> tutorials</span><span class="kw">,</span><span class="at"> news</span><span class="kw">]</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">right</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">search</span><span class="kw">,</span><span class="at"> github</span><span class="kw">]</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>처럼 작성한다면</p>
+<ul>
+<li>
+<code>navbar</code>의 <strong>왼쪽정렬</strong>로 <code>intro</code>, <code>reference</code>., <code>articles</code>, <code>tutorials</code>, <code>news</code>
+</li>
+<li>
+<strong>오른쪽 정렬</strong>로 <code>search</code>, <code>github</code>를 배치할 수 있습니다.</li>
+</ul>
+<p>위의 예시에서 표기된 기본 제공되는 구성요소의 설명은 이러합니다.</p>
+<ul>
+<li>
+<code>intro</code>: <strong>Get Started</strong> 페이지</li>
+<li>
+<code>reference</code>: R패키지의 함수(예시의 <code>ttest</code>) 기능 설명</li>
+<li>
+<code>articles</code>: 추가로 만든 rmd 아티클 파일</li>
+<li>
+<code>tutorials</code>: 튜토리얼 (개인적으로는 헷갈리니 <code>articles</code>로의 사용을 권장합니다)</li>
+<li>
+<code>news</code>: NEWS.md 설명</li>
+<li>
+<code>search</code>: 웹페이지의 검색창</li>
+<li>
+<code>github</code>: 패키지를 담고 있는 깃헙 리포지토리 링크 (패키지 <code>DESCRIPTION</code> 에서 설정)</li>
+</ul></section><section id="intro" class="level4"><h4 class="anchored" data-anchor-id="intro">2-1. intro</h4>
+<p><strong>Get Started</strong> 페이지는 패키지와 동일한 이름을 갖는 rmd(예시는 <code>pkgdown.tutorial.rmd</code>)로 아티클을 추가해야만 합니다.</p>
+<p>아티클을 추가하는 것에 대해서는 아래에서 자세하게 다루겠습니다. (<em>지금은 아래 코드를 실행만 하면 됩니다.</em>)</p>
+<blockquote class="blockquote">
+<p>💡 usethis::use_article(“pkgdown.tutorial”, “intro”)</p>
+</blockquote>
+</section><section id="reference" class="level4"><h4 class="anchored" data-anchor-id="reference">2-2. reference</h4>
+<p><strong>ttest.R</strong>에서 <code>roxygen2</code>를 활용하여 함수 description을 만들고 나면 그 결과가 reference에 나타납니다. (<code>/man</code> 디렉토리에 <code>.rd</code> 파일을 생성합니다.)</p>
+<p><code>roxygen2</code>에서 사용 가능한 태그의 종류는 다양하며, 보통은 <code>@import</code>, <code>@export</code>, <code>@title</code>, <code>@description</code>, <code>@details</code>, <code>@param</code>, <code>@returns</code>, <code>@examples</code> 정도가 <a href="https://roxygen2.r-lib.org/articles/rd.html">권장</a>됩니다.</p>
+<p>앞서 만들었던 <strong>ttest.R</strong>에 아래 내용을 코드의 맨 위에 추가한 다음, <code>CTRL/CMD + SHIFT + D</code>를 통해 일부 내용만 reference를 만들어 보겠습니다. (<strong>ttest2.R</strong>은 비교용)</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @title ttest</span></span>
+<span><span class="co">#' @description run t test</span></span>
+<span><span class="co">#' @details</span></span>
+<span><span class="co">#' alternative = "greater" is the alternative that x has a larger mean than y. For the one-sample case: that the mean is positive.</span></span>
+<span><span class="co">#' If paired is TRUE then both x and y must be specified and they must be the same length. </span></span>
+<span><span class="co">#' Missing values are silently removed (in pairs if paired is TRUE). </span></span>
+<span><span class="co">#' If var.equal is TRUE then the pooled estimate of the variance is used. </span></span>
+<span><span class="co">#' By default, if var.equal is FALSE then the variance is estimated separately </span></span>
+<span><span class="co">#' for both groups and the Welch modification to the degrees of freedom is used.</span></span>
+<span><span class="co">#' If the input data are effectively constant (compared to the larger of the two means) </span></span>
+<span><span class="co">#' an error is generated.</span></span>
+<span><span class="co">#' @param x a (non-empty) numeric vector of data values.</span></span>
+<span><span class="co">#' @param y an optional (non-empty) numeric vector of data values.</span></span>
+<span><span class="co">#' @returns A list with class "htest" containing the following components:</span></span>
+<span><span class="co">#' @examples t.test(1:10, y = c(7:20))      # P = .00001855</span></span>
+<span><span class="co">#' @export</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이후 <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code>를 실행하면 아래 이미지처럼 reference 페이지가 navbar에 생성 되는 것을 확인할 수 있습니다.</p>
+<p><img src="img/pkgdown3.png" width="600px"></p>
+</section><section id="articles" class="level4"><h4 class="anchored" data-anchor-id="articles">2-3. articles</h4>
+<p><code>usethis::use_article(&lt;ARTICLENAME&gt;, &lt;PAGETITLE&gt;)</code>의 형태로 사용 할 수 있습니다.</p>
+<blockquote class="blockquote">
+<p>💡 여기서 <strong>ARTICLENAME</strong>에는 숫자, 문자 그리고 <code>-</code>와 <code>_</code> 만 활용할 수 있습니다. (소문자를 권장합니다)</p>
+</blockquote>
+<p><code>usethis::use_article("using-ttest", "perform t-test")</code> 코드를 실행하면 <code>using-ttest.Rmd</code>라는 파일이 생성되며 <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">build_site()</a></code>를 통해 그 결과를 반영 할 수 있습니다.</p>
+<p><img src="img/pkgdown4.png" width="600px"></p>
+</section><section id="components-navbar-lv1" class="level4"><h4 class="anchored" data-anchor-id="components-navbar-lv1">3. components (navbar &gt; lv1)</h4>
+<p>navbar에서 소개 되지 않은, 기본 제공 되지 않는 구성요소는 아래처럼 작성하여 사용할 수 있습니다.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">navbar</span><span class="kw">:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at"> </span><span class="fu">components</span><span class="kw">:</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">   </span><span class="fu">articles</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">text</span><span class="kw">:</span><span class="at"> Articles</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">menu</span><span class="kw">:</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> Category A</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> Title A1</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">href</span><span class="kw">:</span><span class="at"> articles/a1.html</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> Title A2</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">href</span><span class="kw">:</span><span class="at"> articles/a2.html</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> -------</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> </span><span class="st">"Category B"</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> Article B1</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">href</span><span class="kw">:</span><span class="at"> articles/b1.html</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이는 이렇게 해석할 수 있습니다.</p>
+<p>Articles라는 (<strong>text:</strong>) 메뉴의 하위 구성요소로</p>
+<ul>
+<li>Category A (그룹)</li>
+<li>Title A1 (a1.rmd에서 생성)</li>
+<li>Title A2 (a2.rmd에서 생성)</li>
+<li>구분선 (——)</li>
+<li>Category B (그룹)</li>
+<li>Article B1 (b1.rmd에서 생성)</li>
+</ul>
+<blockquote class="blockquote">
+<p>💡 usethis::use_article(“a1”,“A1 article”)…로 a1,a2,b1 아티클을 추가하세요</p>
+</blockquote>
+</section><section id="footer-lv0" class="level4"><h4 class="anchored" data-anchor-id="footer-lv0">4. footer (lv0)</h4>
+<p>크게 중요한 것은 아니지만, 모든 페이지에 공통으로 나타날 수 있게 하는 역할을 합니다.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">footer</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">structure</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">left</span><span class="kw">:</span><span class="at"> developed_by</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">right</span><span class="kw">:</span><span class="at"> built_with</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="img/pkgdown5.png" width="600px"></p>
+</section><section id="description" class="level4"><h4 class="anchored" data-anchor-id="description">5. DESCRIPTION</h4>
+<p>자세한 설명은 <a href="https://r-pkgs.org/description.html">링크</a>를 참조하세요.</p>
+<p>원래는 패키지 개발을 하면서 채워졌어야 하지만, <code>pkgdown.tutorial</code>에서는 미처 채워지지 못한 부분들로 아래와 같이 채우겠습니다.</p>
+<blockquote class="blockquote">
+<p>💡 먼저 usethis::use_mit_license()등을 통해 라이센스를 설정하고, 그 다음 DESCRIPTION을 채우는 것을 권장합니다.</p>
+</blockquote>
+<div class="sourceCode" id="cb10"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Package</span><span class="kw">:</span><span class="at"> pkgdown.tutorial</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Title</span><span class="kw">:</span><span class="at"> tutorial pkgdown</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Version</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.0.1</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Authors@R</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="at">    person("Jinhwan", "Kim", , "jinhwan@zarathu.com", role = c("aut", "cre"))</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">Description</span><span class="kw">:</span><span class="at"> contains base ttest function </span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">License</span><span class="kw">:</span><span class="at"> MIT + file LICENSE</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">Encoding</span><span class="kw">:</span><span class="at"> UTF-8</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">Roxygen</span><span class="kw">:</span><span class="at"> list(markdown = TRUE)</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">RoxygenNote</span><span class="kw">:</span><span class="at"> </span><span class="fl">7.2.3</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">Suggests</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="at">    rmarkdown</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="fu">URL</span><span class="kw">:</span><span class="at"> https://github.com/jhk0530/pkgdown.tutorial</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>URL</code>을 추가 한 것에 유의하세요 (navbar의 <strong>github 버튼</strong>에 사용됩니다)</p>
+<p><img src="img/pkgdown6.png" width="600px"></p>
+<ul>
+<li>오른쪽의 <code>Links</code>, <code>License</code>, <code>Developers</code> 등이 채워졌음을 확인할 수 있습니다.</li>
+</ul></section></section></section><section id="메인-페이지-추가" class="level2"><h2 class="anchored" data-anchor-id="메인-페이지-추가">메인 페이지 추가</h2>
+<p>여기까지 잘 따라왔다면, 패키지의 구조는 아래 이미지와 같습니다.</p>
+<p><img src="img/pkgdown7.png" width="600px"></p>
+<p>이제 <code><a href="https://usethis.r-lib.org/reference/use_readme_rmd.html">usethis::use_readme_md()</a></code>를 사용하여 README.MD를 추가하여 메인 페이지를 만들어줍니다.</p>
+<p><em>github repository를 만들면서, add readme를 통해 만들었어도 상관 없지만, 위 함수를 사용하면 최소 템플릿을 만들어 주기 때문에 조금 더 편리할 수 있습니다.</em></p>
+<blockquote class="blockquote">
+<p>💡 rmd를 선호한다면 <code><a href="https://usethis.r-lib.org/reference/use_readme_rmd.html">usethis::use_readme_rmd()</a></code>를 사용해도 좋습니다.</p>
+</blockquote>
+<p>최종 결과는 아래 이미지와 같습니다.</p>
+<p><img src="img/pkgdown8.png" width="600px"></p>
+<p>단, 지금은 주소창이 <code>https://</code>로 시작하지 않는, 작업자의 pc에서만 확인 할 수 있는 형태라는 것을 확인해야합니다.</p>
+<hr></section></section><section id="웹사이트-빌드-배포" class="level1"><h1>웹사이트 빌드 &amp; 배포</h1>
+<p><code>pkgdown</code>을 활용해서 만든 웹사이트를 github을 이용해 배포 하는 방법을 공유하겠습니다.</p>
+<p>예시에서는 패키지를 먼저 만들고 <a href="https://github.com/jhk0530/pkgdown.tutorial/">github repo</a>를 만들었기 때문에 github desktop에서 -&gt; <strong>add existing repository</strong>를 통해 github에 올렸습니다. (private 가 아닌 public)</p>
+<p>깃헙에 올린 이후 <strong>settings</strong> -&gt; <strong>pages</strong> 로 이동합니다.</p>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="img/settings.png" width="600px"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="img/pages.png" width="600px"></p>
+</div>
+</div>
+</div>
+<p>이후 <strong>Branch</strong>에서 <strong>main</strong>, <strong>/docs</strong>를 선택한뒤 <strong>save</strong>를 클릭합니다.</p>
+<p><img src="img/docs.png" width="600px"></p>
+<p>이제 github에서는 <code>pkgdown</code>이 <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">build_site()</a></code>로 <strong>/docs</strong>에 만든 html 파일들을 github page로 배포하는 작업을 시작합니다.</p>
+<blockquote class="blockquote">
+<p>💡 페이지 반영에는 시간이 걸리기 때문에 몇분이 지난 후 새로고침을 해야 합니다.</p>
+</blockquote>
+<p>몇 분 후, 아래 이미지처럼 페이지 URL 주소가 나타나면 <code>pkgdown</code>으로 만든 웹페이지를 누구나 확인 할 수 있습니다.</p>
+<p><img src="img/pages.png" width="600px"></p>
+<p>마지막으로 리포지토리의 about (오른쪽 톱니바퀴)에서 website에 주소를 입력하면 끝입니다.</p>
+<p><img src="img/about.png" width="600px"></p>
+</section><section id="마치며" class="level1"><h1>마치며</h1>
+<p>이번 글에서는 <strong>Rmarkdown</strong> 기반으로, R 패키지 문서화 / 웹페이지 제작하는 R 패키지인 <code>pkgdown</code>과 이를 github을 이용해서 배포 하는 방법을 소개했습니다. <code>pkgdown</code>을 사용하면 많은 리소스를 절약하면서도, 멋진 웹사이트를 만들어 낼 수 있습니다.</p>
+<p>글에서는 아주 간단한 예시만을 다뤘지만, 여러 R 패키지를 사용하다보면 pkgdown을 이렇게도 쓸 수 있구나… 라는 생각이 드는 경우가 많습니다.</p>
+<p>추후에 여러분이 <code>pkgdown</code>을 사용하여 좋은 문서를 만들 수 있기를 기대하며 글을 마치겠습니다.</p>
+<blockquote class="blockquote">
+<p>💡 pkgdown 관련 도움이 필요한 경우, 저희 zarathu로 문의주세요 !</p>
+</blockquote>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">라이센스</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/deed.kr">https://creativecommons.org/licenses/by-nc/4.0/deed.kr</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">인용</h2><div><div class="quarto-appendix-secondary-label">BibTeX 인용:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+  author = {Jinhwan Kim},
+  title = {pkgdown을 활용한 R 패키지 문서화},
+  date = {2023-03-17},
+  url = {https://blog.zarathu.com/posts/2023-03-17-pkgdown},
+  langid = {kr}
+}
+</code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">인용방법</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Jinhwan Kim. 2023. <span>“pkgdown을 활용한 R 패키지 문서화.”</span>
+March 17, 2023. <a href="https://blog.zarathu.com/posts/2023-03-17-pkgdown">https://blog.zarathu.com/posts/2023-03-17-pkgdown</a>.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "복사완료!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "복사완료!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Powered by <a href="https://quarto.org">Quarto</a>.</div>   
+      <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+  </div>
+</footer>
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
