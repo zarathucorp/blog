@@ -598,22 +598,22 @@ Attaching package: 'likert'</code></pre>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://jason.bryer.org/likert">likert</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html">h2</a></span><span class="op">(</span><span class="st">'shiny with Likert'</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html">hr</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/plotOutput.html">plotOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">'myLikert'</span><span class="op">)</span></span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html">h2</a></span><span class="op">(</span><span class="st">'shiny with Likert'</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html">hr</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">plotOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">'myLikert'</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">pisaitems</span><span class="op">)</span></span>
 <span>  <span class="va">ll</span> <span class="op">&lt;-</span> <span class="fu">likert</span><span class="op">(</span><span class="va">pisaitems</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
-<span>  <span class="va">output</span><span class="op">$</span><span class="va">myLikert</span> <span class="op">=</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/renderPlot.html">renderPlot</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">myLikert</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>위 코드를 사용한 shiny app의 결과는 다음과 같습니다.</p>
 <p><img src="img/shiny.png" width="500"></p>
@@ -631,11 +631,11 @@ Attaching package: 'likert'</code></pre>
 </div>
 <p>ggplotly는 shiny로도 동시에 연동이 가능합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html">h2</a></span><span class="op">(</span><span class="st">'shiny with Likert'</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html">hr</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/plotOutput.html">plotOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">'myLikert'</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html">h3</a></span><span class="op">(</span><span class="st">"with ggplotly"</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html">h2</a></span><span class="op">(</span><span class="st">'shiny with Likert'</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html">hr</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">plotOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">'myLikert'</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html">h3</a></span><span class="op">(</span><span class="st">"with ggplotly"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/plotly-shiny.html">plotlyOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">'myLikert2'</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -643,7 +643,7 @@ Attaching package: 'likert'</code></pre>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">pisaitems</span><span class="op">)</span></span>
 <span>  <span class="va">ll</span> <span class="op">&lt;-</span> <span class="fu">likert</span><span class="op">(</span><span class="va">pisaitems</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
-<span>  <span class="va">output</span><span class="op">$</span><span class="va">myLikert</span> <span class="op">=</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/renderPlot.html">renderPlot</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">myLikert</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span>  </span>
@@ -654,7 +654,7 @@ Attaching package: 'likert'</code></pre>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>위 코드의 실행결과는 다음과 같습니다.</p>
 <p><img src="img/shiny2.png" width="500"></p>
