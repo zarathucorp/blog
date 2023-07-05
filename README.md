@@ -35,7 +35,6 @@ author:
 image: img/logo.png
 date: 2023-03-15
 format: html
-lang: kr
 execute:
   freeze: true
 draft: false
