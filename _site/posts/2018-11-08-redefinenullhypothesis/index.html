@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.189">
+<meta name="generator" content="quarto-1.3.433">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2018-11-08">
@@ -17,14 +17,15 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -38,8 +39,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
@@ -73,7 +73,8 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script><script type="text/javascript">
 
@@ -88,7 +89,7 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script><style>html{ scroll-behavior: smooth; }</style>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
 </head>
 <body class="floating nav-fixed">
 
@@ -102,67 +103,76 @@ ga('send', {
     <span class="navbar-title">Zarathu Blog</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
-    <a class="nav-link" href="../../index.html">Home</a>
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="http://app.zarathu.com/">Applications</a>
+    <a class="nav-link" href="http://app.zarathu.com/" rel="" target="_blank">
+ <span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">R packages</a>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">R packages</span>
+    </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
 <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" rel="" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" rel="" target="_blank">
  <span class="dropdown-text">jskm</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" rel="" target="_blank">
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html">Contributors</a>
+    <a class="nav-link" href="../../contributors.html" rel="" target="">
+ <span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">Partners</a>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Partners</span>
+    </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
 <li>
-    <a class="dropdown-item" href="https://www.r-bloggers.com/">
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" rel="" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/shinykorea/">
+    <a class="dropdown-item" href="https://github.com/shinykorea/" rel="" target="_blank">
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/zarathucorp"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/zarathucorp" rel="" target="_blank"><i class="bi bi-github" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img" aria-label="RSS">
+    <a class="nav-link" href="../../index.xml" rel="" target="_blank"><i class="bi bi-rss" role="img" aria-label="RSS">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
-<div id="quarto-search" class="" title="Search"></div>
+<div class="quarto-navbar-tools">
+</div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
@@ -186,7 +196,7 @@ ga('send', {
     <div class="quarto-title-meta-heading">Affiliation</div>
     
       <div class="quarto-title-meta-contents">
-      <a href="https://github.com/jinseob2kim">Jinseob Kim</a> 
+      <p class="author"><a href="https://github.com/jinseob2kim">Jinseob Kim</a> </p>
     </div>
       <div class="quarto-title-meta-contents">
           <p class="affiliation">
@@ -204,13 +214,14 @@ ga('send', {
         <p class="date">November 8, 2018</p>
       </div>
     </div>
+    
       
     </div>
     
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
 <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract</a></li>
@@ -242,7 +253,9 @@ ga('send', {
 </li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
   </ul></nav>
-</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
@@ -270,8 +283,7 @@ ga('send', {
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="figures/fig1-1.png" class="img-fluid figure-img" width="2100"></p>
-<p></p><figcaption class="figure-caption">Null hypothesis with uncertainty: <span class="math inline">\(\mu_0=0\)</span></figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Null hypothesis with uncertainty: <span class="math inline">\(\mu_0=0\)</span></figcaption></figure>
 </div>
 </div>
 </div>
@@ -286,8 +298,7 @@ ga('send', {
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="figures/fig2-1.png" class="img-fluid figure-img" width="2100"></p>
-<p></p><figcaption class="figure-caption"><span class="math inline">\(p\)</span> and <span class="math inline">\(p_{c\sigma}\)</span>-values according uncertainty and sample size</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption"><span class="math inline">\(p\)</span> and <span class="math inline">\(p_{c\sigma}\)</span>-values according uncertainty and sample size</figcaption></figure>
 </div>
 </div>
 </div>
@@ -298,8 +309,7 @@ ga('send', {
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="figures/fig3-1.png" class="img-fluid figure-img" width="2100"></p>
-<p></p><figcaption class="figure-caption"><span class="math inline">\(p_{c\sigma}\)</span> according to effect size, sample size and uncertainty of null hypothesis</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption"><span class="math inline">\(p_{c\sigma}\)</span> according to effect size, sample size and uncertainty of null hypothesis</figcaption></figure>
 </div>
 </div>
 </div>
@@ -329,8 +339,7 @@ n_{c\sigma} &amp;= \dfrac{1}{1/n-c^2}
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="figures/fig4-1.png" class="img-fluid figure-img" width="2100"></p>
-<p></p><figcaption class="figure-caption">Required sample size according effect size in some uncertainty scenarios: <span class="math inline">\(\alpha=0.05\)</span>, <span class="math inline">\(1-\beta=0.8\)</span></figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Required sample size according effect size in some uncertainty scenarios: <span class="math inline">\(\alpha=0.05\)</span>, <span class="math inline">\(1-\beta=0.8\)</span></figcaption></figure>
 </div>
 </div>
 </div>
@@ -371,8 +380,7 @@ n_{c\sigma} &amp;= \dfrac{1}{1/n-c^2}
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="figures/fig5-1.png" class="img-fluid figure-img" width="2100"></p>
-<p></p><figcaption class="figure-caption">Number of hypotheses(<span class="math inline">\(m\)</span>) and required <span class="math inline">\(p\)</span>-values(<span class="math inline">\(p_{\text{req}}\)</span>): bonferroni correction vs uncertainty control(<span class="math inline">\(b=0.069\)</span>, <span class="math inline">\(c=0.01\)</span></figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Number of hypotheses(<span class="math inline">\(m\)</span>) and required <span class="math inline">\(p\)</span>-values(<span class="math inline">\(p_{\text{req}}\)</span>): bonferroni correction vs uncertainty control(<span class="math inline">\(b=0.069\)</span>, <span class="math inline">\(c=0.01\)</span></figcaption></figure>
 </div>
 </div>
 </div>
@@ -382,20 +390,16 @@ n_{c\sigma} &amp;= \dfrac{1}{1/n-c^2}
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="figures/fig6-1.png" class="img-fluid figure-img" width="2100"></p>
-<p></p><figcaption class="figure-caption">Number of hypotheses(<span class="math inline">\(m\)</span>) and <span class="math inline">\(p_{c_m}\)</span> by effect size(<span class="math inline">\(d\)</span>): uncertainty control</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Number of hypotheses(<span class="math inline">\(m\)</span>) and <span class="math inline">\(p_{c_m}\)</span> by effect size(<span class="math inline">\(d\)</span>): uncertainty control</figcaption></figure>
 </div>
 </div>
 </div>
 <p>In Figure @ref(fig:fig6), when applying <span class="math inline">\(c=0.01\)</span> and <span class="math inline">\(b=0.069\)</span>, the result with an effect size of <span class="math inline">\(0.5\)</span> and <span class="math inline">\(p_{c_{m\sigma}}=5\times 10^{-5}\)</span> is hardly affected by the increase in the number of hypotheses; however, the result with an the effect size of <span class="math inline">\(0.05\)</span> cannot gain significance when the number of hypotheses increases to <span class="math inline">\(10^6\)</span> even if the initial <span class="math inline">\(p_{c_{m\sigma}}\)</span>-value is same as above.</p>
-<div class="cell" data-layout-align="center">
-
-</div>
 </section><section id="some-scenarios-compare-with-bonferroni-correction-false-discovery-ratefdr" class="level3"><h3 class="anchored" data-anchor-id="some-scenarios-compare-with-bonferroni-correction-false-discovery-ratefdr">Some scenarios: compare with bonferroni correction, false discovery rate(FDR)</h3>
 <p>몇 가지 시나리오를 설정하여 uncertainty correction 방법을 흔히 이용하는 multiple comparison 방법인 bonferroni correction, FDR control과 비교해보겠다<span class="citation" data-cites="benjamini1995controlling">(<a href="#ref-benjamini1995controlling" role="doc-biblioref">Benjamini and Hochberg 1995</a>)</span>. <span class="math inline">\(10^6\)</span>개의 귀무가설 중 1% 즉, 10000개가 실제로 참인 가설이고 그 effect size는 <span class="math inline">\(d\)</span>라고 가정하자. 통계적 유의성은 <span class="math inline">\(d\)</span>와 sample size <span class="math inline">\(N\)</span>, 그리고 multiple comparison 방법에 따라 달라지게 되며 이론상의 결과와 데이터를 생성해서 simulation한 결과를 Table 1,2에 정리하였다. FWER와 FDR control의 기준은 모두 0.05이며 simulation 때 FDR control은 Benjamini-Hochberg Procedure를 이용하였다<span class="citation" data-cites="benjamini1995controlling">(<a href="#ref-benjamini1995controlling" role="doc-biblioref">Benjamini and Hochberg 1995</a>)</span>.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <caption>The number of false positive/negative results among <span class="math inline">\(10^6\)</span> hypotheses(1% true) with some scenarios</caption>
 <colgroup>
 <col style="width: 9%">
@@ -683,119 +687,67 @@ n_{c\sigma} &amp;= \dfrac{1}{1/n-c^2}
 
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-alexopoulos2010introduction" class="csl-entry" role="doc-biblioentry">
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-alexopoulos2010introduction" class="csl-entry" role="listitem">
 Alexopoulos, EC. 2010. <span>“Introduction to Multivariate Regression Analysis.”</span> <em>Hippokratia</em> 14 (Suppl 1): 23–28. <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3049417/">http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3049417/</a>.
 </div>
-<div id="ref-Altman2015" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Altman2015" class="csl-entry" role="listitem">
 Altman, Naomi, and Martin Krzywinski. 2015. <span>“Simple Linear Regression.”</span> <em>Nature Methods</em> 12 (October): 999 EP–. <a href="http://dx.doi.org/10.1038/nmeth.3627">http://dx.doi.org/10.1038/nmeth.3627</a>.
 </div>
-<div id="ref-anderson2000null" class="csl-entry" role="doc-biblioentry">
+<div id="ref-anderson2000null" class="csl-entry" role="listitem">
 Anderson, David R., Kenneth P. Burnham, and William L. Thompson. 2000. <span>“Null Hypothesis Testing: Problems, Prevalence, and an Alternative.”</span> <em>The Journal of Wildlife Management</em> 64 (4): 912–23. <a href="http://www.jstor.org/stable/3803199">http://www.jstor.org/stable/3803199</a>.
 </div>
-<div id="ref-armstrong2014use" class="csl-entry" role="doc-biblioentry">
+<div id="ref-armstrong2014use" class="csl-entry" role="listitem">
 Armstrong, Richard A. 2014. <span>“When to Use the Bonferroni Correction.”</span> <em>Ophthalmic and Physiological Optics</em> 34 (5): 502–8. <a href="https://doi.org/10.1111/opo.12131">https://doi.org/10.1111/opo.12131</a>.
 </div>
-<div id="ref-Benjamin2018" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Benjamin2018" class="csl-entry" role="listitem">
 Benjamin, Daniel J., James O. Berger, Magnus Johannesson, Brian A. Nosek, E.-J. Wagenmakers, Richard Berk, Kenneth A. Bollen, et al. 2018. <span>“Redefine Statistical Significance.”</span> <em>Nature Human Behaviour</em> 2 (1): 6–10. <a href="https://doi.org/10.1038/s41562-017-0189-z">https://doi.org/10.1038/s41562-017-0189-z</a>.
 </div>
-<div id="ref-benjamini1995controlling" class="csl-entry" role="doc-biblioentry">
+<div id="ref-benjamini1995controlling" class="csl-entry" role="listitem">
 Benjamini, Yoav, and Yosef Hochberg. 1995. <span>“Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.”</span> <em>Journal of the Royal Statistical Society. Series B (Methodological)</em>, 289–300.
 </div>
-<div id="ref-goffey2005art" class="csl-entry" role="doc-biblioentry">
+<div id="ref-goffey2005art" class="csl-entry" role="listitem">
 Goffey, A. 2005. <span>“The Art of Always Being Right: Thirty-Eight Ways to Win When You Are Defeated.”</span> CO CENTRAL BOOKS, 99 WALLIS RD, LONDON E9 5LN, ENGLAND.
 </div>
-<div id="ref-jama20181536" class="csl-entry" role="doc-biblioentry">
+<div id="ref-jama20181536" class="csl-entry" role="listitem">
 JA, Ioannidis. 2018. <span>“The Proposal to Lower p Value Thresholds to .005.”</span> <em>JAMA</em>. <a href="https://doi.org/10.1001/jama.2018.1536">https://doi.org/10.1001/jama.2018.1536</a>.
 </div>
-<div id="ref-jannot2015p" class="csl-entry" role="doc-biblioentry">
+<div id="ref-jannot2015p" class="csl-entry" role="listitem">
 Jannot, Anne-Sophie, Georg Ehret, and Thomas Perneger. 2015. <span>“P&lt; 5<span class="math inline">\(\times\)</span> 10- 8 Has Emerged as a Standard of Statistical Significance for Genome-Wide Association Studies.”</span> <em>Journal of Clinical Epidemiology</em> 68 (4): 460–65.
 </div>
-<div id="ref-kim2015t" class="csl-entry" role="doc-biblioentry">
+<div id="ref-kim2015t" class="csl-entry" role="listitem">
 Kim, Tae Kyun. 2015. <span>“T Test as a Parametric Statistic.”</span> <em>Korean J Anesthesiol</em> 68 (6): 540–46. <a href="http://synapse.koreamed.org/DOIx.php?id=10.4097%2Fkjae.2015.68.6.540">http://synapse.koreamed.org/DOIx.php?id=10.4097%2Fkjae.2015.68.6.540</a>.
 </div>
-<div id="ref-murphy2007conjugate" class="csl-entry" role="doc-biblioentry">
+<div id="ref-murphy2007conjugate" class="csl-entry" role="listitem">
 Murphy, Kevin P. 2007. <span>“Conjugate Bayesian Analysis of the Gaussian Distribution.”</span> Techincal report.
 </div>
-<div id="ref-nelder1972generalized" class="csl-entry" role="doc-biblioentry">
+<div id="ref-nelder1972generalized" class="csl-entry" role="listitem">
 Nelder, J. A., and R. W. M. Wedderburn. 1972. <span>“Generalized Linear Models.”</span> <em>Journal of the Royal Statistical Society. Series A (General)</em> 135 (3): 370–84. <a href="http://www.jstor.org/stable/2344614">http://www.jstor.org/stable/2344614</a>.
 </div>
-<div id="ref-noordzij2011sample" class="csl-entry" role="doc-biblioentry">
+<div id="ref-noordzij2011sample" class="csl-entry" role="listitem">
 Noordzij, M., F. W. Dekker, C. Zoccali, and K. J. Jager. 2011. <span>“Sample Size Calculations.”</span> <em>Nephron Clinical Practice</em> 118 (4): c319–23. <a href="https://www.karger.com/DOI/10.1159/000322830">https://www.karger.com/DOI/10.1159/000322830</a>.
 </div>
-<div id="ref-sullivan2012using" class="csl-entry" role="doc-biblioentry">
+<div id="ref-sullivan2012using" class="csl-entry" role="listitem">
 Sullivan, Gail M, and Richard Feinn. 2012. <span>“Using Effect Size—or Why the p Value Is Not Enough.”</span> <em>Journal of Graduate Medical Education</em> 4 (3): 279–82.
 </div>
-<div id="ref-ronald2016asa" class="csl-entry" role="doc-biblioentry">
+<div id="ref-ronald2016asa" class="csl-entry" role="listitem">
 Wasserstein, Ronald L., and Nicole A. Lazar. 2016. <span>“The ASA’s Statement on p-Values: Context, Process, and Purpose.”</span> <em>The American Statistician</em> 70 (2): 129–33. <a href="https://doi.org/10.1080/00031305.2016.1154108">https://doi.org/10.1080/00031305.2016.1154108</a>.
 </div>
-<div id="ref-wedderburn1974quasi" class="csl-entry" role="doc-biblioentry">
+<div id="ref-wedderburn1974quasi" class="csl-entry" role="listitem">
 Wedderburn, R. W. M. 1974. <span>“Quasi-Likelihood Functions, Generalized Linear Models, and the Gauss-Newton Method.”</span> <em>Biometrika</em> 61 (3): 439–47. <a href="http://www.jstor.org/stable/2334725">http://www.jstor.org/stable/2334725</a>.
 </div>
-<div id="ref-2528399" class="csl-entry" role="doc-biblioentry">
-Yates, F. 1964. <span>“Sir Ronald Fisher and the Design of Experiments.”</span> <em>Biometrics</em> 20 (2): 307–21. <a href="http://www.jstor.org/stable/2528399">http://www.jstor.org/stable/2528399</a>.
-</div>
-<div id="ref-alexopoulos2010introduction" class="csl-entry" role="doc-biblioentry">
-Alexopoulos, EC. 2010. <span>“Introduction to Multivariate Regression Analysis.”</span> <em>Hippokratia</em> 14 (Suppl 1): 23–28. <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3049417/">http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3049417/</a>.
-</div>
-<div id="ref-Altman2015" class="csl-entry" role="doc-biblioentry">
-Altman, Naomi, and Martin Krzywinski. 2015. <span>“Simple Linear Regression.”</span> <em>Nature Methods</em> 12 (October): 999 EP–. <a href="http://dx.doi.org/10.1038/nmeth.3627">http://dx.doi.org/10.1038/nmeth.3627</a>.
-</div>
-<div id="ref-anderson2000null" class="csl-entry" role="doc-biblioentry">
-Anderson, David R., Kenneth P. Burnham, and William L. Thompson. 2000. <span>“Null Hypothesis Testing: Problems, Prevalence, and an Alternative.”</span> <em>The Journal of Wildlife Management</em> 64 (4): 912–23. <a href="http://www.jstor.org/stable/3803199">http://www.jstor.org/stable/3803199</a>.
-</div>
-<div id="ref-armstrong2014use" class="csl-entry" role="doc-biblioentry">
-Armstrong, Richard A. 2014. <span>“When to Use the Bonferroni Correction.”</span> <em>Ophthalmic and Physiological Optics</em> 34 (5): 502–8. <a href="https://doi.org/10.1111/opo.12131">https://doi.org/10.1111/opo.12131</a>.
-</div>
-<div id="ref-Benjamin2018" class="csl-entry" role="doc-biblioentry">
-Benjamin, Daniel J., James O. Berger, Magnus Johannesson, Brian A. Nosek, E.-J. Wagenmakers, Richard Berk, Kenneth A. Bollen, et al. 2018. <span>“Redefine Statistical Significance.”</span> <em>Nature Human Behaviour</em> 2 (1): 6–10. <a href="https://doi.org/10.1038/s41562-017-0189-z">https://doi.org/10.1038/s41562-017-0189-z</a>.
-</div>
-<div id="ref-benjamini1995controlling" class="csl-entry" role="doc-biblioentry">
-Benjamini, Yoav, and Yosef Hochberg. 1995. <span>“Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.”</span> <em>Journal of the Royal Statistical Society. Series B (Methodological)</em>, 289–300.
-</div>
-<div id="ref-goffey2005art" class="csl-entry" role="doc-biblioentry">
-Goffey, A. 2005. <span>“The Art of Always Being Right: Thirty-Eight Ways to Win When You Are Defeated.”</span> CO CENTRAL BOOKS, 99 WALLIS RD, LONDON E9 5LN, ENGLAND.
-</div>
-<div id="ref-jama20181536" class="csl-entry" role="doc-biblioentry">
-JA, Ioannidis. 2018. <span>“The Proposal to Lower p Value Thresholds to .005.”</span> <em>JAMA</em>. <a href="https://doi.org/10.1001/jama.2018.1536">https://doi.org/10.1001/jama.2018.1536</a>.
-</div>
-<div id="ref-jannot2015p" class="csl-entry" role="doc-biblioentry">
-Jannot, Anne-Sophie, Georg Ehret, and Thomas Perneger. 2015. <span>“P&lt; 5<span class="math inline">\(\times\)</span> 10- 8 Has Emerged as a Standard of Statistical Significance for Genome-Wide Association Studies.”</span> <em>Journal of Clinical Epidemiology</em> 68 (4): 460–65.
-</div>
-<div id="ref-kim2015t" class="csl-entry" role="doc-biblioentry">
-Kim, Tae Kyun. 2015. <span>“T Test as a Parametric Statistic.”</span> <em>Korean J Anesthesiol</em> 68 (6): 540–46. <a href="http://synapse.koreamed.org/DOIx.php?id=10.4097%2Fkjae.2015.68.6.540">http://synapse.koreamed.org/DOIx.php?id=10.4097%2Fkjae.2015.68.6.540</a>.
-</div>
-<div id="ref-murphy2007conjugate" class="csl-entry" role="doc-biblioentry">
-Murphy, Kevin P. 2007. <span>“Conjugate Bayesian Analysis of the Gaussian Distribution.”</span> Techincal report.
-</div>
-<div id="ref-nelder1972generalized" class="csl-entry" role="doc-biblioentry">
-Nelder, J. A., and R. W. M. Wedderburn. 1972. <span>“Generalized Linear Models.”</span> <em>Journal of the Royal Statistical Society. Series A (General)</em> 135 (3): 370–84. <a href="http://www.jstor.org/stable/2344614">http://www.jstor.org/stable/2344614</a>.
-</div>
-<div id="ref-noordzij2011sample" class="csl-entry" role="doc-biblioentry">
-Noordzij, M., F. W. Dekker, C. Zoccali, and K. J. Jager. 2011. <span>“Sample Size Calculations.”</span> <em>Nephron Clinical Practice</em> 118 (4): c319–23. <a href="https://www.karger.com/DOI/10.1159/000322830">https://www.karger.com/DOI/10.1159/000322830</a>.
-</div>
-<div id="ref-sullivan2012using" class="csl-entry" role="doc-biblioentry">
-Sullivan, Gail M, and Richard Feinn. 2012. <span>“Using Effect Size—or Why the p Value Is Not Enough.”</span> <em>Journal of Graduate Medical Education</em> 4 (3): 279–82.
-</div>
-<div id="ref-ronald2016asa" class="csl-entry" role="doc-biblioentry">
-Wasserstein, Ronald L., and Nicole A. Lazar. 2016. <span>“The ASA’s Statement on p-Values: Context, Process, and Purpose.”</span> <em>The American Statistician</em> 70 (2): 129–33. <a href="https://doi.org/10.1080/00031305.2016.1154108">https://doi.org/10.1080/00031305.2016.1154108</a>.
-</div>
-<div id="ref-wedderburn1974quasi" class="csl-entry" role="doc-biblioentry">
-Wedderburn, R. W. M. 1974. <span>“Quasi-Likelihood Functions, Generalized Linear Models, and the Gauss-Newton Method.”</span> <em>Biometrika</em> 61 (3): 439–47. <a href="http://www.jstor.org/stable/2334725">http://www.jstor.org/stable/2334725</a>.
-</div>
-<div id="ref-2528399" class="csl-entry" role="doc-biblioentry">
+<div id="ref-2528399" class="csl-entry" role="listitem">
 Yates, F. 1964. <span>“Sir Ronald Fisher and the Design of Experiments.”</span> <em>Biometrics</em> 20 (2): 307–21. <a href="http://www.jstor.org/stable/2528399">http://www.jstor.org/stable/2528399</a>.
 </div>
 </div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2018,
-  author = {Jinseob Kim},
-  editor = {},
+  author = {Kim, Jinseob},
   title = {Redefine {Null} {Hypothesis}},
   date = {2018-11-08},
   url = {https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2018" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
-Jinseob Kim. 2018. <span>“Redefine Null Hypothesis.”</span> November 8,
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2018" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Jinseob. 2018. <span>“Redefine Null Hypothesis.”</span> November 8,
 2018. <a href="https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis">https://blog.zarathu.com/posts/2018-11-08-redefinenullhypothesis</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -824,9 +776,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -838,7 +804,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -874,24 +857,128 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
@@ -899,7 +986,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">Powered by <a href="https://quarto.org">Quarto</a>.</div>   
-      <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+    <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
   </div>
 </footer>
 

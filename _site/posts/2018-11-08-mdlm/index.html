@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.189">
+<meta name="generator" content="quarto-1.3.433">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2018-11-08">
@@ -17,14 +17,15 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -38,8 +39,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
@@ -73,7 +73,8 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script><script type="text/javascript">
 
@@ -88,7 +89,7 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script><style>html{ scroll-behavior: smooth; }</style>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
 </head>
 <body class="floating nav-fixed">
 
@@ -102,67 +103,76 @@ ga('send', {
     <span class="navbar-title">Zarathu Blog</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
-    <a class="nav-link" href="../../index.html">Home</a>
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="http://app.zarathu.com/">Applications</a>
+    <a class="nav-link" href="http://app.zarathu.com/" rel="" target="_blank">
+ <span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">R packages</a>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">R packages</span>
+    </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
 <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" rel="" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" rel="" target="_blank">
  <span class="dropdown-text">jskm</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" rel="" target="_blank">
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html">Contributors</a>
+    <a class="nav-link" href="../../contributors.html" rel="" target="">
+ <span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">Partners</a>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Partners</span>
+    </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
 <li>
-    <a class="dropdown-item" href="https://www.r-bloggers.com/">
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" rel="" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/shinykorea/">
+    <a class="dropdown-item" href="https://github.com/shinykorea/" rel="" target="_blank">
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/zarathucorp"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/zarathucorp" rel="" target="_blank"><i class="bi bi-github" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img" aria-label="RSS">
+    <a class="nav-link" href="../../index.xml" rel="" target="_blank"><i class="bi bi-rss" role="img" aria-label="RSS">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
-<div id="quarto-search" class="" title="Search"></div>
+<div class="quarto-navbar-tools">
+</div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
@@ -187,7 +197,7 @@ ga('send', {
     <div class="quarto-title-meta-heading">Affiliation</div>
     
       <div class="quarto-title-meta-contents">
-      <a href="https://github.com/jinseob2kim">Jinseob Kim</a> 
+      <p class="author"><a href="https://github.com/jinseob2kim">Jinseob Kim</a> </p>
     </div>
       <div class="quarto-title-meta-contents">
           <p class="affiliation">
@@ -205,13 +215,14 @@ ga('send', {
         <p class="date">November 8, 2018</p>
       </div>
     </div>
+    
       
     </div>
     
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
 <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract</a></li>
@@ -242,7 +253,9 @@ ga('send', {
   <li><a href="#apply-to-real-data" id="toc-apply-to-real-data" class="nav-link" data-scroll-target="#apply-to-real-data">Apply to Real data</a></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
   </ul></nav>
-</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
@@ -271,8 +284,7 @@ ga('send', {
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/fig1-1.png" class="img-fluid figure-img" width="2100"></p>
-<p></p><figcaption class="figure-caption">MDLM with 2 variables, 2 dimensions</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">MDLM with 2 variables, 2 dimensions</figcaption></figure>
 </div>
 </div>
 </div>
@@ -351,15 +363,12 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 </ol>
 <p>모형비교는 Root Mean Square Error(RMSE)와 Akaike Information Criterion(AIC)을 이용하였으며 GAM의 경우는 effective degree of freedom(edf)를 AIC 계산에 활용하였다<span class="citation" data-cites="wood2001mgcv">(<a href="#ref-wood2001mgcv" role="doc-biblioref">Wood 2001</a>)</span>.</p>
 <p>편의상 <span class="math inline">\(X_1\)</span>과 <span class="math inline">\(X_2\)</span>는 각각 1부터 10까지의 자연수를 갖는 것으로 가정하였으며 따라서 샘플수는 100이다. 모든 계산은 <code>R</code> 3.5.1의 <strong>optim</strong>, <strong>constrOptim</strong> 함수를 이용하였다.</p>
-<div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-1_db185a69f300b04a435c1108e1449125">
-
-</div>
 <section id="scenario-1-y-x_1-x_2" class="level3"><h3 class="anchored" data-anchor-id="scenario-1-y-x_1-x_2">Scenario 1: <span class="math inline">\(Y = X_1 + X_2\)</span>
 </h3>
 <p><span class="math inline">\(Y \sim N(X_1 + X_2, 1)\)</span> 로 샘플링해 데이터를 생성하였으며 100회의 시뮬레이션을 수행해 RMSE와 AIC를 비교하였다(Table 1).</p>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-2_dee16e67635156cb7b8bd6805692e973">
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <caption>Results: <span class="math inline">\(Y = X_1 + X_2\)</span>
 </caption>
 <colgroup>
@@ -413,7 +422,7 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 <p>이번엔 <span class="math inline">\(Y \sim N(\sqrt{X_1^2 + X_2^2}, 1)\)</span>로 샘플링해 데이터를 생성하여 마찬가지로 100회의 시뮬레이션을 수행하였다(Table 2).</p>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-3_157395649aee94b50a2e8adfea09e7b0">
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <caption>Results: <span class="math inline">\(Y^2 = X_1^2 + X_2^2\)</span>
 </caption>
 <colgroup>
@@ -467,7 +476,7 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 <p>마지막으로 Scenario2를 일반화한 경우를 시뮬레이션하였다. <span class="math inline">\(\beta\)</span>들은 -5~5, <span class="math inline">\(g_{12}\)</span>는 -1~1의 값을 임의로 선택하여 <span class="math inline">\(\boldsymbol{\vec{Y}} = (\beta_{01} + \beta_1X_1)\boldsymbol{\vec{g}}_1 + (\beta_{02} + \beta_2X_2)\boldsymbol{\vec{g}}_2\)</span>를 만족하는 <span class="math inline">\(Y\)</span>를 샘플링하였다. 즉, <span class="math inline">\(Y \sim N(\sqrt{(\beta_{01} + \beta_1X_1)^2 + (\beta_{02} + \beta_2X_2)^2 + 2g_{12}(\beta_{01} + \beta_1X_1)(\beta_{02} + \beta_2X_2)}, 1)\)</span>로 샘플링해 데이터를 생성하여 마찬가지로 100회의 시뮬레이션을 수행하였다(Table 3).</p>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-4_b342e71553491a6dc56d63f44b9f152e">
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <caption>Results: <span class="math inline">\(\boldsymbol{\vec{Y}} = (\beta_{01} + \beta_1X_1)\boldsymbol{\vec{g}}_1 + (\beta_{02} + \beta_2X_2)\boldsymbol{\vec{g}}_2\)</span>
 </caption>
 <colgroup>
@@ -521,19 +530,12 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 <p><span class="math display">\[\boldsymbol{\vec{\text{log(LOS)}}} = \beta_{00}\boldsymbol{\vec{g_{1}}} + (\beta_{01}+ \beta_1\cdot \text{MAP})\boldsymbol{\vec{g_{2}}}\]</span></p>
 <p>즉 log(LOS)를 intercept와 MAP의 독립된 2차원으로 바라보는 관점으로 스칼라로 표현한 모형은 아래와 같다.</p>
 <p><span class="math display">\[(\text{log(LOS)})^2 = \beta_{00}^2 + (\beta_{01}+ \beta_1\cdot \text{MAP})^2\]</span></p>
-<div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-5_3b678179dc33f295476e966eeffe6a7c">
-
-</div>
-<div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-6_0d169e6fd1f7b51a44b3f6d4c51cf0bf">
-
-</div>
 <p>MDLM을 이용하여 Intercept와 MAP의 2차원공간으로 log(LOS)를 <span class="math inline">\(\text{log(LOS)}^2 = 2.3669^2 + (-2.4276 + 0.0295\cdot\text{MAP})^2\)</span>의 모형으로 추정할 수 있었고 AIC값은 <span class="math inline">\(2413\)</span>였다. 이것은 선형모형으로 추정한 <span class="math inline">\(\text{log(LOS)} = 2.2624 + 0.0027 \cdot \text{MAP}\)</span>(AIC <span class="math inline">\(2434\)</span>), quadratic항을 추가한 <span class="math inline">\(\text{log(LOS)} = 3.3742 -0.0246 \cdot \text{MAP} + 2\times 10^{-4} \cdot \text{MAP}^2\)</span>(AIC <span class="math inline">\(2414\)</span>)보다 좋은 추정 결과이다(Figure @ref(fig:fig2)). 또한 U shape의 cutoff값을 <span class="math inline">\(\dfrac{2.4276}{0.0295} = 82.29\)</span>로 간단히 계산할 수 있었다.</p>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/fig2_fb6b6e4ac2b8e62c3567e690648233e8">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/fig2-1.png" class="img-fluid figure-img" width="2100"></p>
-<p></p><figcaption class="figure-caption">Relation between mean arterial pressure(mmHg) and length of stay day(log scale)</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Relation between mean arterial pressure(mmHg) and length of stay day(log scale)</figcaption></figure>
 </div>
 </div>
 </div>
@@ -572,139 +574,78 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-buja1989linear" class="csl-entry" role="doc-biblioentry">
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-buja1989linear" class="csl-entry" role="listitem">
 Buja, Andreas, Trevor Hastie, and Robert Tibshirani. 1989. <span>“Linear Smoothers and Additive Models.”</span> <em>The Annals of Statistics</em> 17 (2): 453–510. <a href="http://www.jstor.org/stable/2241560">http://www.jstor.org/stable/2241560</a>.
 </div>
-<div id="ref-byrd1995limited" class="csl-entry" role="doc-biblioentry">
+<div id="ref-byrd1995limited" class="csl-entry" role="listitem">
 Byrd, Richard H., Peihuang Lu, Jorge Nocedal, and Ciyou Zhu. 1995. <span>“A Limited Memory Algorithm for Bound Constrained Optimization.”</span> <em><span>SIAM</span> Journal on Scientific Computing</em> 16 (5): 1190–1208. <a href="https://doi.org/10.1137/0916069">https://doi.org/10.1137/0916069</a>.
 </div>
-<div id="ref-calabrese2001u" class="csl-entry" role="doc-biblioentry">
+<div id="ref-calabrese2001u" class="csl-entry" role="listitem">
 Calabrese, Edward J, and Linda A Baldwin. 2001. <span>“U-Shaped Dose-Responses in Biology, Toxicology, and Public Health.”</span> <em>Annual Review of Public Health</em> 22 (1): 15–33. <a href="https://doi.org/10.1146/annurev.publhealth.22.1.15">https://doi.org/10.1146/annurev.publhealth.22.1.15</a>.
 </div>
-<div id="ref-coles2001einstein" class="csl-entry" role="doc-biblioentry">
+<div id="ref-coles2001einstein" class="csl-entry" role="listitem">
 Coles, P. 2001. <span>“<span class="nocase">Einstein, Eddington and the 1919 Eclipse</span>.”</span> In <em>Historical Development of Modern Cosmology</em>, edited by V. J. Martı́nez, V. Trimble, and M. J. Pons-Borderı́a, 252:21. Astronomical Society of the Pacific Conference Series.
 </div>
-<div id="ref-dauphin2014identifying" class="csl-entry" role="doc-biblioentry">
+<div id="ref-dauphin2014identifying" class="csl-entry" role="listitem">
 Dauphin, Yann N, Razvan Pascanu, Caglar Gulcehre, Kyunghyun Cho, Surya Ganguli, and Yoshua Bengio. 2014. <span>“Identifying and Attacking the Saddle Point Problem in High-Dimensional Non-Convex Optimization.”</span> In <em>Advances in Neural Information Processing Systems 27</em>, edited by Z. Ghahramani, M. Welling, C. Cortes, N. D. Lawrence, and K. Q. Weinberger, 2933–41. Curran Associates, Inc. <a href="http://papers.nips.cc/paper/5486-identifying-and-attacking-the-saddle-point-problem-in-high-dimensional-non-convex-optimization.pdf">http://papers.nips.cc/paper/5486-identifying-and-attacking-the-saddle-point-problem-in-high-dimensional-non-convex-optimization.pdf</a>.
 </div>
-<div id="ref-de2009depression" class="csl-entry" role="doc-biblioentry">
+<div id="ref-de2009depression" class="csl-entry" role="listitem">
 de Wit, Leonore M, Annemieke van Straten, Marieke van Herten, Brenda WJH Penninx, and Pim Cuijpers. 2009. <span>“Depression and Body Mass Index, a u-Shaped Association.”</span> <em><span>BMC</span> Public Health</em> 9 (1). <a href="https://doi.org/10.1186/1471-2458-9-14">https://doi.org/10.1186/1471-2458-9-14</a>.
 </div>
-<div id="ref-dirac1928quantum" class="csl-entry" role="doc-biblioentry">
+<div id="ref-dirac1928quantum" class="csl-entry" role="listitem">
 Dirac, P. A. M. 1928. <span>“The Quantum Theory of the Electron.”</span> <em>Proceedings of the Royal Society A: Mathematical, Physical and Engineering Sciences</em> 117 (778): 610–24. <a href="https://doi.org/10.1098/rspa.1928.0023">https://doi.org/10.1098/rspa.1928.0023</a>.
 </div>
-<div id="ref-Dov__1991" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Dov__1991" class="csl-entry" role="listitem">
 Dovi, V. G., O. Paladino, and A. P. Reverberi. 1991. <span>“Some Remarks on the Use of the Inverse Hessian Matrix of the Likelihood Function in the Estimation of Statistical Properties of Parameters.”</span> <em>Applied Mathematics Letters</em> 4 (1): 87–90. <a href="https://doi.org/10.1016/0893-9659(91)90129-j">https://doi.org/10.1016/0893-9659(91)90129-j</a>.
 </div>
-<div id="ref-fletcher1964function" class="csl-entry" role="doc-biblioentry">
+<div id="ref-fletcher1964function" class="csl-entry" role="listitem">
 Fletcher, R. 1964. <span>“Function Minimization by Conjugate Gradients.”</span> <em>The Computer Journal</em> 7 (2): 149–54. <a href="https://doi.org/10.1093/comjnl/7.2.149">https://doi.org/10.1093/comjnl/7.2.149</a>.
 </div>
-<div id="ref-hornik1989multilayer" class="csl-entry" role="doc-biblioentry">
+<div id="ref-hornik1989multilayer" class="csl-entry" role="listitem">
 Hornik, Kurt, Maxwell Stinchcombe, and Halbert White. 1989. <span>“Multilayer Feedforward Networks Are Universal Approximators.”</span> <em>Neural Networks</em> 2 (5): 359–66. <a href="https://doi.org/10.1016/0893-6080(89)90020-8">https://doi.org/10.1016/0893-6080(89)90020-8</a>.
 </div>
-<div id="ref-jagodzinski1981testing" class="csl-entry" role="doc-biblioentry">
+<div id="ref-jagodzinski1981testing" class="csl-entry" role="listitem">
 Jagodzinski, Wolfgang, and Erich Weede. 1981. <span>“Testing Curvilinear Propositions by Polynomial Regression with Particular Reference to the Interpretation of Standardized Solutions.”</span> <em>Quality and Quantity</em> 15 (5). <a href="https://doi.org/10.1007/bf00190412">https://doi.org/10.1007/bf00190412</a>.
 </div>
-<div id="ref-knutson2006u" class="csl-entry" role="doc-biblioentry">
+<div id="ref-knutson2006u" class="csl-entry" role="listitem">
 Knutson, Kristen L, and Fred W Turek. 2006. <span>“The u-Shaped Association Between Sleep and Health: The 2 Peaks Do Not Mean the Same Thing.”</span> <em>Sleep</em> 29 (7): 878–79. <a href="https://doi.org/10.1093/sleep/29.7.878">https://doi.org/10.1093/sleep/29.7.878</a>.
 </div>
-<div id="ref-nelder1965simplex" class="csl-entry" role="doc-biblioentry">
+<div id="ref-nelder1965simplex" class="csl-entry" role="listitem">
 Nelder, J. A., and R. Mead. 1965. <span>“A Simplex Method for Function Minimization.”</span> <em>The Computer Journal</em> 7 (4): 308–13. <a href="https://doi.org/10.1093/comjnl/7.4.308">https://doi.org/10.1093/comjnl/7.4.308</a>.
 </div>
-<div id="ref-pan2002selecting" class="csl-entry" role="doc-biblioentry">
+<div id="ref-pan2002selecting" class="csl-entry" role="listitem">
 Pan, Wei, and John E. Connett. 2002. <span>“SELECTING THE WORKING CORRELATION STRUCTURE IN GENERALIZED ESTIMATING EQUATIONS WITH APPLICATION TO THE LUNG HEALTH STUDY.”</span> <em>Statistica Sinica</em> 12 (2): 475–90. <a href="http://www.jstor.org/stable/24306972">http://www.jstor.org/stable/24306972</a>.
 </div>
-<div id="ref-power1998u" class="csl-entry" role="doc-biblioentry">
+<div id="ref-power1998u" class="csl-entry" role="listitem">
 Power, Chris, Bryan Rodgers, and Steven Hope. 1998. <span>“U-Shaped Relation for Alcohol Consumption and Health in Early Adulthood and Implications for Mortality.”</span> <em>The Lancet</em> 352 (9131): 877. <a href="https://doi.org/10.1016/s0140-6736(98)23937-7">https://doi.org/10.1016/s0140-6736(98)23937-7</a>.
 </div>
-<div id="ref-rios2013derivative" class="csl-entry" role="doc-biblioentry">
+<div id="ref-rios2013derivative" class="csl-entry" role="listitem">
 Rios, Luis Miguel, and Nikolaos V. Sahinidis. 2013. <span>“Derivative-Free Optimization: A Review of Algorithms and Comparison of Software Implementations.”</span> <em>Journal of Global Optimization</em> 56 (3): 1247–93. <a href="https://doi.org/10.1007/s10898-012-9951-y">https://doi.org/10.1007/s10898-012-9951-y</a>.
 </div>
-<div id="ref-schneider2010linear" class="csl-entry" role="doc-biblioentry">
+<div id="ref-schneider2010linear" class="csl-entry" role="listitem">
 Schneider, Astrid, Gerhard Hommel, and Maria Blettner. 2010. <span>“<span>Linear Regression Analysis</span>.”</span> <em>Dtsch Arztebl International</em> 107 (44): 776–82. <a href="https://doi.org/10.3238/arztebl.2010.0776">https://doi.org/10.3238/arztebl.2010.0776</a>.
 </div>
-<div id="ref-deTraubenberg2009" class="csl-entry" role="doc-biblioentry">
+<div id="ref-deTraubenberg2009" class="csl-entry" role="listitem">
 Traubenberg, Michel Rausch de. 2009. <span>“Clifford Algebras in Physics.”</span> <em>Advances in Applied Clifford Algebras</em> 19 (3): 869. <a href="https://doi.org/10.1007/s00006-009-0191-2">https://doi.org/10.1007/s00006-009-0191-2</a>.
 </div>
-<div id="ref-verlinde2011origin" class="csl-entry" role="doc-biblioentry">
+<div id="ref-verlinde2011origin" class="csl-entry" role="listitem">
 Verlinde, Erik. 2011. <span>“On the Origin of Gravity and the Laws of Newton.”</span> <em>Journal of High Energy Physics</em> 2011 (4): 29. <a href="https://doi.org/10.1007/JHEP04(2011)029">https://doi.org/10.1007/JHEP04(2011)029</a>.
 </div>
-<div id="ref-wood2001mgcv" class="csl-entry" role="doc-biblioentry">
-Wood, Simon N. 2001. <span>“Mgcv: <span>GAM</span>s and Generalized Ridge Regression for <span>R</span>.”</span> <em>R News</em> 1 (2): 20–25. <a href="http://CRAN.R-project.org/doc/Rnews/">http://CRAN.R-project.org/doc/Rnews/</a>.
-</div>
-<div id="ref-buja1989linear" class="csl-entry" role="doc-biblioentry">
-Buja, Andreas, Trevor Hastie, and Robert Tibshirani. 1989. <span>“Linear Smoothers and Additive Models.”</span> <em>The Annals of Statistics</em> 17 (2): 453–510. <a href="http://www.jstor.org/stable/2241560">http://www.jstor.org/stable/2241560</a>.
-</div>
-<div id="ref-byrd1995limited" class="csl-entry" role="doc-biblioentry">
-Byrd, Richard H., Peihuang Lu, Jorge Nocedal, and Ciyou Zhu. 1995. <span>“A Limited Memory Algorithm for Bound Constrained Optimization.”</span> <em><span>SIAM</span> Journal on Scientific Computing</em> 16 (5): 1190–1208. <a href="https://doi.org/10.1137/0916069">https://doi.org/10.1137/0916069</a>.
-</div>
-<div id="ref-calabrese2001u" class="csl-entry" role="doc-biblioentry">
-Calabrese, Edward J, and Linda A Baldwin. 2001. <span>“U-Shaped Dose-Responses in Biology, Toxicology, and Public Health.”</span> <em>Annual Review of Public Health</em> 22 (1): 15–33. <a href="https://doi.org/10.1146/annurev.publhealth.22.1.15">https://doi.org/10.1146/annurev.publhealth.22.1.15</a>.
-</div>
-<div id="ref-coles2001einstein" class="csl-entry" role="doc-biblioentry">
-Coles, P. 2001. <span>“<span class="nocase">Einstein, Eddington and the 1919 Eclipse</span>.”</span> In <em>Historical Development of Modern Cosmology</em>, edited by V. J. Martı́nez, V. Trimble, and M. J. Pons-Borderı́a, 252:21. Astronomical Society of the Pacific Conference Series.
-</div>
-<div id="ref-dauphin2014identifying" class="csl-entry" role="doc-biblioentry">
-Dauphin, Yann N, Razvan Pascanu, Caglar Gulcehre, Kyunghyun Cho, Surya Ganguli, and Yoshua Bengio. 2014. <span>“Identifying and Attacking the Saddle Point Problem in High-Dimensional Non-Convex Optimization.”</span> In <em>Advances in Neural Information Processing Systems 27</em>, edited by Z. Ghahramani, M. Welling, C. Cortes, N. D. Lawrence, and K. Q. Weinberger, 2933–41. Curran Associates, Inc. <a href="http://papers.nips.cc/paper/5486-identifying-and-attacking-the-saddle-point-problem-in-high-dimensional-non-convex-optimization.pdf">http://papers.nips.cc/paper/5486-identifying-and-attacking-the-saddle-point-problem-in-high-dimensional-non-convex-optimization.pdf</a>.
-</div>
-<div id="ref-de2009depression" class="csl-entry" role="doc-biblioentry">
-de Wit, Leonore M, Annemieke van Straten, Marieke van Herten, Brenda WJH Penninx, and Pim Cuijpers. 2009. <span>“Depression and Body Mass Index, a u-Shaped Association.”</span> <em><span>BMC</span> Public Health</em> 9 (1). <a href="https://doi.org/10.1186/1471-2458-9-14">https://doi.org/10.1186/1471-2458-9-14</a>.
-</div>
-<div id="ref-dirac1928quantum" class="csl-entry" role="doc-biblioentry">
-Dirac, P. A. M. 1928. <span>“The Quantum Theory of the Electron.”</span> <em>Proceedings of the Royal Society A: Mathematical, Physical and Engineering Sciences</em> 117 (778): 610–24. <a href="https://doi.org/10.1098/rspa.1928.0023">https://doi.org/10.1098/rspa.1928.0023</a>.
-</div>
-<div id="ref-Dov__1991" class="csl-entry" role="doc-biblioentry">
-Dovi, V. G., O. Paladino, and A. P. Reverberi. 1991. <span>“Some Remarks on the Use of the Inverse Hessian Matrix of the Likelihood Function in the Estimation of Statistical Properties of Parameters.”</span> <em>Applied Mathematics Letters</em> 4 (1): 87–90. <a href="https://doi.org/10.1016/0893-9659(91)90129-j">https://doi.org/10.1016/0893-9659(91)90129-j</a>.
-</div>
-<div id="ref-fletcher1964function" class="csl-entry" role="doc-biblioentry">
-Fletcher, R. 1964. <span>“Function Minimization by Conjugate Gradients.”</span> <em>The Computer Journal</em> 7 (2): 149–54. <a href="https://doi.org/10.1093/comjnl/7.2.149">https://doi.org/10.1093/comjnl/7.2.149</a>.
-</div>
-<div id="ref-hornik1989multilayer" class="csl-entry" role="doc-biblioentry">
-Hornik, Kurt, Maxwell Stinchcombe, and Halbert White. 1989. <span>“Multilayer Feedforward Networks Are Universal Approximators.”</span> <em>Neural Networks</em> 2 (5): 359–66. <a href="https://doi.org/10.1016/0893-6080(89)90020-8">https://doi.org/10.1016/0893-6080(89)90020-8</a>.
-</div>
-<div id="ref-jagodzinski1981testing" class="csl-entry" role="doc-biblioentry">
-Jagodzinski, Wolfgang, and Erich Weede. 1981. <span>“Testing Curvilinear Propositions by Polynomial Regression with Particular Reference to the Interpretation of Standardized Solutions.”</span> <em>Quality and Quantity</em> 15 (5). <a href="https://doi.org/10.1007/bf00190412">https://doi.org/10.1007/bf00190412</a>.
-</div>
-<div id="ref-knutson2006u" class="csl-entry" role="doc-biblioentry">
-Knutson, Kristen L, and Fred W Turek. 2006. <span>“The u-Shaped Association Between Sleep and Health: The 2 Peaks Do Not Mean the Same Thing.”</span> <em>Sleep</em> 29 (7): 878–79. <a href="https://doi.org/10.1093/sleep/29.7.878">https://doi.org/10.1093/sleep/29.7.878</a>.
-</div>
-<div id="ref-nelder1965simplex" class="csl-entry" role="doc-biblioentry">
-Nelder, J. A., and R. Mead. 1965. <span>“A Simplex Method for Function Minimization.”</span> <em>The Computer Journal</em> 7 (4): 308–13. <a href="https://doi.org/10.1093/comjnl/7.4.308">https://doi.org/10.1093/comjnl/7.4.308</a>.
-</div>
-<div id="ref-pan2002selecting" class="csl-entry" role="doc-biblioentry">
-Pan, Wei, and John E. Connett. 2002. <span>“SELECTING THE WORKING CORRELATION STRUCTURE IN GENERALIZED ESTIMATING EQUATIONS WITH APPLICATION TO THE LUNG HEALTH STUDY.”</span> <em>Statistica Sinica</em> 12 (2): 475–90. <a href="http://www.jstor.org/stable/24306972">http://www.jstor.org/stable/24306972</a>.
-</div>
-<div id="ref-power1998u" class="csl-entry" role="doc-biblioentry">
-Power, Chris, Bryan Rodgers, and Steven Hope. 1998. <span>“U-Shaped Relation for Alcohol Consumption and Health in Early Adulthood and Implications for Mortality.”</span> <em>The Lancet</em> 352 (9131): 877. <a href="https://doi.org/10.1016/s0140-6736(98)23937-7">https://doi.org/10.1016/s0140-6736(98)23937-7</a>.
-</div>
-<div id="ref-rios2013derivative" class="csl-entry" role="doc-biblioentry">
-Rios, Luis Miguel, and Nikolaos V. Sahinidis. 2013. <span>“Derivative-Free Optimization: A Review of Algorithms and Comparison of Software Implementations.”</span> <em>Journal of Global Optimization</em> 56 (3): 1247–93. <a href="https://doi.org/10.1007/s10898-012-9951-y">https://doi.org/10.1007/s10898-012-9951-y</a>.
-</div>
-<div id="ref-schneider2010linear" class="csl-entry" role="doc-biblioentry">
-Schneider, Astrid, Gerhard Hommel, and Maria Blettner. 2010. <span>“<span>Linear Regression Analysis</span>.”</span> <em>Dtsch Arztebl International</em> 107 (44): 776–82. <a href="https://doi.org/10.3238/arztebl.2010.0776">https://doi.org/10.3238/arztebl.2010.0776</a>.
-</div>
-<div id="ref-deTraubenberg2009" class="csl-entry" role="doc-biblioentry">
-Traubenberg, Michel Rausch de. 2009. <span>“Clifford Algebras in Physics.”</span> <em>Advances in Applied Clifford Algebras</em> 19 (3): 869. <a href="https://doi.org/10.1007/s00006-009-0191-2">https://doi.org/10.1007/s00006-009-0191-2</a>.
-</div>
-<div id="ref-verlinde2011origin" class="csl-entry" role="doc-biblioentry">
-Verlinde, Erik. 2011. <span>“On the Origin of Gravity and the Laws of Newton.”</span> <em>Journal of High Energy Physics</em> 2011 (4): 29. <a href="https://doi.org/10.1007/JHEP04(2011)029">https://doi.org/10.1007/JHEP04(2011)029</a>.
-</div>
-<div id="ref-wood2001mgcv" class="csl-entry" role="doc-biblioentry">
+<div id="ref-wood2001mgcv" class="csl-entry" role="listitem">
 Wood, Simon N. 2001. <span>“Mgcv: <span>GAM</span>s and Generalized Ridge Regression for <span>R</span>.”</span> <em>R News</em> 1 (2): 20–25. <a href="http://CRAN.R-project.org/doc/Rnews/">http://CRAN.R-project.org/doc/Rnews/</a>.
 </div>
 </div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2018,
-  author = {Jinseob Kim},
-  editor = {},
+  author = {Kim, Jinseob},
   title = {선형모형의 {다차원공간으로의} {확장} {(Linear} {Model} in
     {Multidimensional} {Space)}},
   date = {2018-11-08},
   url = {https://blog.zarathu.com/posts/2018-11-08-mdlm},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2018" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
-Jinseob Kim. 2018. <span>“선형모형의 다차원공간으로의 확장 (Linear Model
-in Multidimensional Space).”</span> November 8, 2018. <a href="https://blog.zarathu.com/posts/2018-11-08-mdlm">https://blog.zarathu.com/posts/2018-11-08-mdlm</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2018" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Jinseob. 2018. <span>“선형모형의 다차원공간으로의 확장 (Linear
+Model in Multidimensional Space).”</span> November 8, 2018. <a href="https://blog.zarathu.com/posts/2018-11-08-mdlm">https://blog.zarathu.com/posts/2018-11-08-mdlm</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -732,9 +673,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -746,7 +701,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -782,24 +754,128 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
@@ -807,7 +883,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">Powered by <a href="https://quarto.org">Quarto</a>.</div>   
-      <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+    <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
   </div>
 </footer>
 

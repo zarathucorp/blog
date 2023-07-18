@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.189">
+<meta name="generator" content="quarto-1.3.433">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2019-01-23">
@@ -17,9 +17,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -46,43 +47,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -117,7 +88,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script><script type="text/javascript">
 
@@ -133,10 +105,10 @@ ga('send', {
 });
 </script><style>html{ scroll-behavior: smooth; }</style>
 <link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="../../site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><link href="../../site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="../../site_libs/datatables-binding-0.24/datatables.js"></script><script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><link href="../../site_libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="../../site_libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet">
-<script src="../../site_libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script><link href="../../site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="../../site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script><link href="../../site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="../../site_libs/datatables-binding-0.28/datatables.js"></script><script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><link href="../../site_libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="../../site_libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="../../site_libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script><link href="../../site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
 <script src="../../site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script><link rel="stylesheet" href="../../styles.css">
 </head>
 <body class="floating nav-fixed">
@@ -151,67 +123,76 @@ ga('send', {
     <span class="navbar-title">Zarathu Blog</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
-    <a class="nav-link" href="../../index.html">Home</a>
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="http://app.zarathu.com/">Applications</a>
+    <a class="nav-link" href="http://app.zarathu.com/" rel="" target="_blank">
+ <span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">R packages</a>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">R packages</span>
+    </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
 <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" rel="" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" rel="" target="_blank">
  <span class="dropdown-text">jskm</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" rel="" target="_blank">
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html">Contributors</a>
+    <a class="nav-link" href="../../contributors.html" rel="" target="">
+ <span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">Partners</a>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Partners</span>
+    </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
 <li>
-    <a class="dropdown-item" href="https://www.r-bloggers.com/">
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" rel="" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/shinykorea/">
+    <a class="dropdown-item" href="https://github.com/shinykorea/" rel="" target="_blank">
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/zarathucorp"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/zarathucorp" rel="" target="_blank"><i class="bi bi-github" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img" aria-label="RSS">
+    <a class="nav-link" href="../../index.xml" rel="" target="_blank"><i class="bi bi-rss" role="img" aria-label="RSS">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
-<div id="quarto-search" class="" title="Search"></div>
+<div class="quarto-navbar-tools">
+</div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
@@ -237,7 +218,7 @@ ga('send', {
     <div class="quarto-title-meta-heading">Affiliation</div>
     
       <div class="quarto-title-meta-contents">
-      <a href="https://github.com/jinseob2kim">Jinseob Kim</a> 
+      <p class="author"><a href="https://github.com/jinseob2kim">Jinseob Kim</a> </p>
     </div>
       <div class="quarto-title-meta-contents">
           <p class="affiliation">
@@ -255,13 +236,14 @@ ga('send', {
         <p class="date">January 23, 2019</p>
       </div>
     </div>
+    
       
     </div>
     
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
 <li><a href="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90" id="toc-시작하기-전에" class="nav-link active" data-scroll-target="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90">시작하기 전에</a></li>
@@ -287,7 +269,9 @@ ga('send', {
 </li>
   <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">마치며</a></li>
   </ul></nav>
-</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
@@ -352,8 +336,7 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://csgillespie.github.io/efficientR/_main_files/figure-html/readr-vs-base-1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">파일 읽기 함수 비교<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">파일 읽기 함수 비교<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></figcaption></figure>
 </div>
 </div>
 </div>
@@ -427,8 +410,8 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="htmlwidget-2b52473bfdf2bbd1ff81" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2b52473bfdf2bbd1ff81">{"x":{"filter":"none","vertical":false,"data":[["(Intercept)","Age","Weight","BMI"],[-4.36616648735745,0.0330615812253359,0.028028141912714,-0.000934964241043447],[0.936611859251076,0.00819946396426053,0.00878658665116582,0.000704571781955318],[-4.66166047785118,4.03216373282977,3.18987827986596,-1.32699643242701],[3.13668345796219e-06,5.52656602105397e-05,0.00142332727935862,0.184509862804168]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Estimate<\/th>\n      <th>Std. Error<\/th>\n      <th>z value<\/th>\n      <th>Pr(&gt;|z|)<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"pageLength":10,"dom":"<t>","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e7650cf30989a2dced9a" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e7650cf30989a2dced9a">{"x":{"filter":"none","vertical":false,"data":[["(Intercept)","Age","Weight","BMI"],[-4.366166487357449,0.03306158122533585,0.02802814191271405,-0.0009349642410434475],[0.9366118592510762,0.008199463964260526,0.008786586651165827,0.0007045717819553176],[-4.661660477851175,4.032163732829764,3.189878279865959,-1.32699643242701],[3.136683457962203e-06,5.526566021054035e-05,0.001423327279358601,0.1845098628041678]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Estimate<\/th>\n      <th>Std. Error<\/th>\n      <th>z value<\/th>\n      <th>Pr(&gt;|z|)<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"pageLength":10,"dom":"<t>","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>다음은 <code>%&gt;%</code> 를 이용한 코딩이다.</p>
@@ -442,8 +425,8 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="htmlwidget-235fd7b9feb57d2e909f" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-235fd7b9feb57d2e909f">{"x":{"filter":"none","vertical":false,"data":[["(Intercept)","Age","Weight","BMI"],[-4.36616648735745,0.0330615812253359,0.028028141912714,-0.000934964241043447],[0.936611859251076,0.00819946396426053,0.00878658665116582,0.000704571781955318],[-4.66166047785118,4.03216373282977,3.18987827986596,-1.32699643242701],[3.13668345796219e-06,5.52656602105397e-05,0.00142332727935862,0.184509862804168]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Estimate<\/th>\n      <th>Std. Error<\/th>\n      <th>z value<\/th>\n      <th>Pr(&gt;|z|)<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"pageLength":10,"dom":"<t>","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-40406cc413e4bf998fbf" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-40406cc413e4bf998fbf">{"x":{"filter":"none","vertical":false,"data":[["(Intercept)","Age","Weight","BMI"],[-4.366166487357449,0.03306158122533585,0.02802814191271405,-0.0009349642410434475],[0.9366118592510762,0.008199463964260526,0.008786586651165827,0.0007045717819553176],[-4.661660477851175,4.032163732829764,3.189878279865959,-1.32699643242701],[3.136683457962203e-06,5.526566021054035e-05,0.001423327279358601,0.1845098628041678]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Estimate<\/th>\n      <th>Std. Error<\/th>\n      <th>z value<\/th>\n      <th>Pr(&gt;|z|)<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"pageLength":10,"dom":"<t>","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p><code>%&gt;%</code> 연산자로 쓴 코드는 읽기 쉬운 것은 물론 불필요한 중간변수(<code>b</code>, <code>model</code>, <code>summ.model</code>)가 없어 깔끔하고 메모리의 낭비도 없다. 딱 하나 주의할 점은 코드를 내려쓸 때 <strong>각 줄은 반드시 <code>%&gt;%</code>로 끝나야 한다</strong>는 점이다. 예를 들어 아래의 코드를 실행하면 맨 윗줄만 실행되는 것을 확인할 수 있다.</p>
@@ -1046,6 +1029,11 @@ Coefficients:
 </div>
 </section></section><section id="마치며" class="level2"><h2 class="anchored" data-anchor-id="마치며">마치며</h2>
 <p>지금까지 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 생태계에서 몇 가지 패키지를 이용해 데이터를 다루는 방법을 살펴보았다. 앞서 말했듯이 이 생태계에서 가장 중요한 것은 <code>%&gt;%</code> 연산자를 이용하여 의식의 흐름대로 코딩을 수행하는 것이며, 이후 나머지 내용을 하나씩 적용해나가면 어느 순간 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 없이 살 수 없는(?) 자신을 발견하게 될 것이다. 본 글에서 다루지 않은 내용인 <code>long</code>, <code>short</code> 포맷을 다루는 <a href="https://tidyr.tidyverse.org/"><strong>tidyr</strong></a>, 문자열을 다루는 <a href="https://stringr.tidyverse.org/"><strong>stringr</strong></a>, <code>factor</code>를 다루는 <a href="https://forcats.tidyverse.org/"><strong>forcats</strong></a>, 날짜를 다루는 <a href="https://lubridate.tidyverse.org/"><strong>lubridate</strong></a> 그리고 모델을 다루는 <a href="https://modelr.tidyverse.org/"><strong>modelr</strong></a>과 <a href="https://broom.tidyverse.org/"><strong>broom</strong></a> 등은 <a href="https://r4ds.had.co.nz/">R for Data Science</a>[^8]와 <a href="https://www.rstudio.com/resources/cheatsheets/">Rstudio cheetsheet</a>[^9]를 참고하기 바란다. 다음번에는 빠른 속도가 장점인 <a href="https://github.com/Rdatatable/data.table/wiki"><strong>data.table</strong></a>를 다시 한번 정리해 볼 생각이다.</p>
+<!--
+[^5]: https://r4ds.had.co.nz/
+
+[^6]: https://www.rstudio.com/resources/cheatsheets/
+-->
 
 
 </section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
@@ -1056,15 +1044,14 @@ Coefficients:
 <li id="fn4"><p>https://www.jumpingrivers.com/blog/the-trouble-with-tibbles/<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>https://jinseob2kim.github.io/radv1.html#faster_for-loop<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2019,
-  author = {Jinseob Kim},
-  editor = {},
+  author = {Kim, Jinseob},
   title = {R {데이터} {매니지먼트:} Tidyverse},
   date = {2019-01-23},
   url = {https://blog.zarathu.com/posts/2019-01-03-rdatamanagement},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2019" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
-Jinseob Kim. 2019. <span>“R 데이터 매니지먼트: Tidyverse.”</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2019" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Jinseob. 2019. <span>“R 데이터 매니지먼트: Tidyverse.”</span>
 January 23, 2019. <a href="https://blog.zarathu.com/posts/2019-01-03-rdatamanagement">https://blog.zarathu.com/posts/2019-01-03-rdatamanagement</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -1093,9 +1080,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1107,7 +1108,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -1143,24 +1161,128 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
@@ -1168,7 +1290,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">Powered by <a href="https://quarto.org">Quarto</a>.</div>   
-      <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+    <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
   </div>
 </footer>
 

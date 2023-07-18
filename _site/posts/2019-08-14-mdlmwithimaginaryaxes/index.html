@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.189">
+<meta name="generator" content="quarto-1.3.433">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2019-08-14">
@@ -17,14 +17,15 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -38,8 +39,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
@@ -73,7 +73,8 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script><script type="text/javascript">
 
@@ -88,7 +89,7 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script><style>html{ scroll-behavior: smooth; }</style>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
 </head>
 <body class="floating nav-fixed">
 
@@ -102,67 +103,76 @@ ga('send', {
     <span class="navbar-title">Zarathu Blog</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
-    <a class="nav-link" href="../../index.html">Home</a>
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="http://app.zarathu.com/">Applications</a>
+    <a class="nav-link" href="http://app.zarathu.com/" rel="" target="_blank">
+ <span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">R packages</a>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">R packages</span>
+    </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
 <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" rel="" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" rel="" target="_blank">
  <span class="dropdown-text">jskm</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" rel="" target="_blank">
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html">Contributors</a>
+    <a class="nav-link" href="../../contributors.html" rel="" target="">
+ <span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">Partners</a>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Partners</span>
+    </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
 <li>
-    <a class="dropdown-item" href="https://www.r-bloggers.com/">
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" rel="" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/shinykorea/">
+    <a class="dropdown-item" href="https://github.com/shinykorea/" rel="" target="_blank">
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/zarathucorp"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/zarathucorp" rel="" target="_blank"><i class="bi bi-github" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img" aria-label="RSS">
+    <a class="nav-link" href="../../index.xml" rel="" target="_blank"><i class="bi bi-rss" role="img" aria-label="RSS">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
-<div id="quarto-search" class="" title="Search"></div>
+<div class="quarto-navbar-tools">
+</div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
@@ -187,7 +197,7 @@ ga('send', {
     <div class="quarto-title-meta-heading">Affiliation</div>
     
       <div class="quarto-title-meta-contents">
-      <a href="https://github.com/jinseob2kim">Jinseob Kim</a> 
+      <p class="author"><a href="https://github.com/jinseob2kim">Jinseob Kim</a> </p>
     </div>
       <div class="quarto-title-meta-contents">
           <p class="affiliation">
@@ -205,13 +215,14 @@ ga('send', {
         <p class="date">August 14, 2019</p>
       </div>
     </div>
+    
       
     </div>
     
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
 <li><a href="#%EC%8B%9C%EC%9E%91%ED%95%98%EB%A9%B4%EC%84%9C" id="toc-시작하면서" class="nav-link active" data-scroll-target="#%EC%8B%9C%EC%9E%91%ED%95%98%EB%A9%B4%EC%84%9C">시작하면서</a></li>
@@ -239,7 +250,9 @@ ga('send', {
 </li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
   </ul></nav>
-</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
@@ -259,8 +272,7 @@ ga('send', {
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/f1-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Expressable relationship in conventional linear model and MDVLM</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Expressable relationship in conventional linear model and MDVLM</figcaption></figure>
 </div>
 </div>
 </div>
@@ -271,8 +283,7 @@ ga('send', {
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="1056"></p>
-<p></p><figcaption class="figure-caption">Relation between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(Y\)</span> by <span class="math inline">\(X_1\)</span>: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span></figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Relation between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(Y\)</span> by <span class="math inline">\(X_1\)</span>: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span></figcaption></figure>
 </div>
 </div>
 </div>
@@ -291,8 +302,7 @@ ga('send', {
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="1056"></p>
-<p></p><figcaption class="figure-caption">Relation between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(Y\)</span> by <span class="math inline">\(X_1\)</span>: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span></figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Relation between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(Y\)</span> by <span class="math inline">\(X_1\)</span>: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span></figcaption></figure>
 </div>
 </div>
 </div>
@@ -356,14 +366,13 @@ SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">MDVLM in <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>: Dependency and MSE</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">MDVLM in <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>: Dependency and MSE</figcaption></figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-4_3f4872d63d777fe6cde78f8c911f461b">
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <caption>Result comparison: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>
 </caption>
 <colgroup>
@@ -398,14 +407,13 @@ SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">MDVLM in <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>: Dependency and MSE</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">MDVLM in <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>: Dependency and MSE</figcaption></figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-6_ad63ac7cb8f1016306d4dbd3ef44f751">
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <caption>Result comparison: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>
 </caption>
 <colgroup>
@@ -441,53 +449,34 @@ SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
 
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-byrd1995limited" class="csl-entry" role="doc-biblioentry">
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-byrd1995limited" class="csl-entry" role="listitem">
 Byrd, Richard H, Peihuang Lu, Jorge Nocedal, and Ciyou Zhu. 1995. <span>“A Limited Memory Algorithm for Bound Constrained Optimization.”</span> <em>SIAM Journal on Scientific Computing</em> 16 (5): 1190–1208.
 </div>
-<div id="ref-corry1997hermann" class="csl-entry" role="doc-biblioentry">
+<div id="ref-corry1997hermann" class="csl-entry" role="listitem">
 Corry, Leo. 1997. <span>“Hermann Minkowski and the Postulate of Relativity.”</span> <em>Archive for History of Exact Sciences</em> 51 (4): 273–314.
 </div>
-<div id="ref-fletcher1964function" class="csl-entry" role="doc-biblioentry">
+<div id="ref-fletcher1964function" class="csl-entry" role="listitem">
 Fletcher, Reeves, and Colin M Reeves. 1964. <span>“Function Minimization by Conjugate Gradients.”</span> <em>The Computer Journal</em> 7 (2): 149–54.
 </div>
-<div id="ref-jkim2017MDVLM" class="csl-entry" role="doc-biblioentry">
+<div id="ref-jkim2017MDVLM" class="csl-entry" role="listitem">
 Jinseob Kim, Joohon Sung. 2017. <span>“Multidimensional Vectorized Linear Model: Linear Model in Multidimensional Vector Space.”</span> <em>Unpublish</em>.
 </div>
-<div id="ref-kulkarni1981proper" class="csl-entry" role="doc-biblioentry">
+<div id="ref-kulkarni1981proper" class="csl-entry" role="listitem">
 Kulkarni, Ravi S. 1981. <span>“Proper Actions and Pseudo—Riemannian Space Forms.”</span> <em>Advances in Mathematics</em> 40 (1): 10–51.
 </div>
-<div id="ref-nelder1965simplex" class="csl-entry" role="doc-biblioentry">
-Nelder, John A, and Roger Mead. 1965. <span>“A Simplex Method for Function Minimization.”</span> <em>The Computer Journal</em> 7 (4): 308–13.
-</div>
-<div id="ref-byrd1995limited" class="csl-entry" role="doc-biblioentry">
-Byrd, Richard H, Peihuang Lu, Jorge Nocedal, and Ciyou Zhu. 1995. <span>“A Limited Memory Algorithm for Bound Constrained Optimization.”</span> <em>SIAM Journal on Scientific Computing</em> 16 (5): 1190–1208.
-</div>
-<div id="ref-corry1997hermann" class="csl-entry" role="doc-biblioentry">
-Corry, Leo. 1997. <span>“Hermann Minkowski and the Postulate of Relativity.”</span> <em>Archive for History of Exact Sciences</em> 51 (4): 273–314.
-</div>
-<div id="ref-fletcher1964function" class="csl-entry" role="doc-biblioentry">
-Fletcher, Reeves, and Colin M Reeves. 1964. <span>“Function Minimization by Conjugate Gradients.”</span> <em>The Computer Journal</em> 7 (2): 149–54.
-</div>
-<div id="ref-jkim2017MDVLM" class="csl-entry" role="doc-biblioentry">
-Jinseob Kim, Joohon Sung. 2017. <span>“Multidimensional Vectorized Linear Model: Linear Model in Multidimensional Vector Space.”</span> <em>Unpublish</em>.
-</div>
-<div id="ref-kulkarni1981proper" class="csl-entry" role="doc-biblioentry">
-Kulkarni, Ravi S. 1981. <span>“Proper Actions and Pseudo—Riemannian Space Forms.”</span> <em>Advances in Mathematics</em> 40 (1): 10–51.
-</div>
-<div id="ref-nelder1965simplex" class="csl-entry" role="doc-biblioentry">
+<div id="ref-nelder1965simplex" class="csl-entry" role="listitem">
 Nelder, John A, and Roger Mead. 1965. <span>“A Simplex Method for Function Minimization.”</span> <em>The Computer Journal</em> 7 (4): 308–13.
 </div>
 </div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2019,
-  author = {Jinseob Kim},
-  editor = {},
+  author = {Kim, Jinseob},
   title = {선형모형의 {다차원공간으로의} {확장(2):} {허수축} {도입}},
   date = {2019-08-14},
   url = {https://blog.zarathu.com/posts/2019-08-14-mdlmwithimaginaryaxes},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2019" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
-Jinseob Kim. 2019. <span>“선형모형의 다차원공간으로의 확장(2): 허수축
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2019" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Jinseob. 2019. <span>“선형모형의 다차원공간으로의 확장(2): 허수축
 도입.”</span> August 14, 2019. <a href="https://blog.zarathu.com/posts/2019-08-14-mdlmwithimaginaryaxes">https://blog.zarathu.com/posts/2019-08-14-mdlmwithimaginaryaxes</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -516,9 +505,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -530,7 +533,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -566,24 +586,128 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
@@ -591,7 +715,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">Powered by <a href="https://quarto.org">Quarto</a>.</div>   
-      <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+    <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
   </div>
 </footer>
 

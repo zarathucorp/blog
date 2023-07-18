@@ -16,7 +16,6 @@ author:
 image: img/hex.png
 date: 02-05-2023
 format: html
-lang: kr
 execute: 
   freeze: true
 draft: false
@@ -69,6 +68,9 @@ license: CC BY-NC
 #| echo: false
 library(ggplot2)
 library(reactable)
+library(plyr)
+library(grid)
+library(likert)
 
 surv <- data.frame(
   "읽기쉬움" = factor(c("그런 편이다", "보통이다", "매우 그렇다", "보통이다", "전혀 그렇지 않다", "그렇지 않다", "그런 편이다", "그런 편이다", "그렇지 않다", "전혀 그렇지 않다"), 
@@ -255,7 +257,7 @@ plot(ll)
 
 차트에서의 factor 별 %, high, low 는 plot.percents, plot.percent.low, plot.percent.high를 통해 설정할 수 있습니다.
 ```{r}
-plot(ll, plot.percents=TRUE, plot.percent.low=FALSE, plot.percent.high=FALSE)
+plot(ll, plot.percents = TRUE, plot.percent.low = FALSE, plot.percent.high = FALSE)
 ```
 
 ### colors

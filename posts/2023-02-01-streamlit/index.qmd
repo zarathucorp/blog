@@ -74,6 +74,8 @@ app.py를 생성한 후 다음 과 같이 수정하여 저장합니다.
 #| code-fold: false
 #| echo : true
 #| output : false
+#| eval: false
+
 import streamlit as st
 
 st.title('Hello Streamlit')
@@ -103,6 +105,8 @@ streamlit run app.py 명렁어를 실행하면, 로컬서버로 페이지가 만
 ```{python}
 #| echo : true
 #| output : false
+#| eval: false
+
 import streamlit as st
 
 st.title('this is title')
@@ -130,6 +134,8 @@ st.subheader('this is subheader')
 ```{python}
 #| echo : true
 #| output : false
+#| eval: false
+
 import streamlit as st
 
 col1,col2 = st.columns([2,3])
@@ -163,6 +169,8 @@ col2.checkbox('this is checkbox2 in col2 ')
 ```{python}
 #| echo : true
 #| output : false
+#| eval: false
+
 import streamlit as st
 
 # 탭 생성 : 첫번째 탭의 이름은 Tab A 로, Tab B로 표시합니다. 
@@ -190,6 +198,8 @@ with tab2:
 ```{python}
 #| echo : true
 #| output : false
+#| eval: false
+
 import streamlit as st
 
 #st.sidebar는 
@@ -211,6 +221,8 @@ st.sidebar.checkbox('체크박스에 표시될 문구')
 ```{python}
 #| echo : true
 #| output : false
+#| eval: false
+
 import streamlit as st
 from PIL import Image
 
@@ -247,12 +259,15 @@ col2.image(zarathu_img)
 
 ```{python}
 #| code-fold: false
+#| eval: false
+#| echo: true
+#| output : false
+
 import numpy as np
 import pandas as pd 
 from sklearn.datasets import load_iris 
 import matplotlib.pyplot as plt
 import streamlit as st
-
 
 iris_dataset = load_iris()
 
@@ -265,7 +280,6 @@ species_dict = {0 :'setosa', 1 :'versicolor', 2 :'virginica'}
 
 def mapp_species(x):
   return species_dict[x]
-
 
 df['species'] = df['species'].apply(mapp_species)
 print(df)
@@ -280,6 +294,8 @@ dataframe의 head함수를 이용하여 첫 5행의 데이터에 대해 table과
 ```{python}
 #| echo : true
 #| output : false
+#| eval: false
+
 st.subheader('this is table')
 st.table(df.head())
 
@@ -297,7 +313,7 @@ st.dataframe(df.head())
 ```{python}
 #| echo : true
 #| output : false
-
+#| eval: false
 
 # 사이드바에 select box를 활용하여 종을 선택한 다음 그에 해당하는 행만 추출하여 데이터프레임을 만들고자합니다.
 st.sidebar.title('Iris Species🌸')
@@ -311,10 +327,6 @@ select_species = st.sidebar.selectbox(
 tmp_df = df[df['species']== select_species]
 # 선택한 종의 맨 처음 5행을 보여줍니다 
 st.table(tmp_df.head())
-
-
-
-
 
 ```
 
@@ -331,6 +343,7 @@ st.table(tmp_df.head())
 ```{python}
 #| echo : true
 #| output : false
+#| eval: false
 
 # 여러개 선택할 수 있을 때는 multiselect를 이용하실 수 있습니다 
 # return : list
@@ -356,7 +369,7 @@ st.table(tmp_df)
 ```{python}
 #| echo : true
 #| output : false
-
+#| eval: false
 
 # 라디오에 선택한 내용을 radio select변수에 담습니다
 radio_select =st.sidebar.radio(
@@ -417,7 +430,7 @@ python의 시각화로 자주 이용되는 패키지는 matplotlib,seaborn,bokeh
 ```{python}
 #| echo : true
 #| output : false
-
+#| eval: false
 
 #st.plotly_chart(figure_or_data, use_container_width=False, theme="streamlit", **kwargs)
 ```
@@ -433,6 +446,7 @@ python의 시각화로 자주 이용되는 패키지는 matplotlib,seaborn,bokeh
 ```{python}
 #| echo : true
 #| output : false
+#| eval: false
 
 import plotly.express as px
 
@@ -467,6 +481,7 @@ with tab2:
 ```{python}
 #| echo : true
 #| output : true
+#| eval: false
 import numpy as np
 import pandas as pd 
 
@@ -492,7 +507,7 @@ print(map_data)
 ```{python}
 #| echo : true
 #| output : false
-
+#| eval: false
 
 st.code('st.map(map_data)')
 # 웹사이트에 어떤 코드인지 표시해주기 
@@ -529,6 +544,7 @@ st.map(map_data)
 ```{python}
 #| echo : true 
 #| output : false
+#| eval: false
 
 # 예시코드 
 # import streamlit as st
@@ -562,11 +578,12 @@ st.map(map_data)
 
 ## streamlit 에서 cache 기능 사용하기
 
-streamlit에서는 시간이 오래걸리는 작업: 데이터 로드 등을 할때 위에 @st.cache를 추가하여 캐싱할 수 있게 할 수 있다.
+streamlit에서는 시간이 오래걸리는 작업: 데이터 로드 등을 할때 위에 `@st.cache`를 추가하여 캐싱할 수 있게 할 수 있다.
 
 ```{python}
 #| echo : true
 #| output : false
+#| eval: false
 import streamlit as st
 import pandas as pd 
 
@@ -575,7 +592,6 @@ file_path = '~~~filepath'
 def load_data():
   data = pd.read_csv(file_path)
   return data
-
 
 ```
 
@@ -587,6 +603,7 @@ def load_data():
 
 ```{python}
 #| echo : true
+#| eval: false
 #| output : false
 import time 
 
@@ -614,6 +631,7 @@ st.balloons()
 
 ```{python}
 #| echo : true
+#| eval: false
 #| output : false
 
 #방법2  st.spinner 사용 
