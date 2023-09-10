@@ -68,7 +68,7 @@ const loadShiny = async () => {
   
   // TODO
   const registration = await navigator.serviceWorker
-  .register('/posts/httpuv-serviceworker.js', { scope: '/posts/' });
+  .register('/posts/2023-09-10-wasm2/httpuv-serviceworker.js', { scope: '/posts/2023-09-10-wasm2' });
   
   navigator.serviceWorker.getRegistration()
   .then((registration) => {
