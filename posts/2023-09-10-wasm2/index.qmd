@@ -1,0 +1,102 @@
+---
+title: "web assembly를 이용하여 웹페이지에서 Shiny App 활용하기"
+description: | 
+  webR이라는 기술을 활용하여 별도의 웹 서버를 사용하지 않고도 유저의 웹 브라우저(크롬)에서 Shiny App을 사용할 수 있게 하는 방법을 소개합니다.
+categories:
+  - R
+  - webR
+  - shiny
+  - wasm
+  - github page
+  - quarto
+aliases:
+  - wasm2.html
+author:
+  name: "Jinhwan Kim"
+  email: jinhwan@zarathu.com
+  url: https://github.com/jhk0530
+image: img/webR.png
+fig_width: 400
+date: 2023-09-09
+format: html
+execute:
+  freeze: true
+draft: true
+license: CC BY-NC
+---
+
+## 개요
+
+이번 글은 <a href ='https://blog.zarathu.com/posts/2023-09-09-wasm/' target= '_blank">이전 글</a>에이어 정적 페이지에서 shiny application을 `webR`로 제공하는 방법에 대해 소개합니다.
+
+## webR (R)과 shiny의 차이
+
+webR을 사용하기 위해 R과 Shiny의 차이점중 한가지를 짚고 넘어가는 것이 좋습니다.
+
+R은 한번에 하나의 코드만 실행 가능합니다. 즉, 새로운 코드를 실행하기 위해서는 **이전의 연산이 종료**된 상태여야 합니다.
+
+그런데 Shiny는 (app.R이라는) **코드를 실행**한 상태에서 사용자로부터 입력을 받고, 이를 통해 새로운 계산을 진행합니다.
+
+<p style="text-align: center;">
+  <img src='img/runapp.png' width = '100%' text-align ='center'></img>    
+</p>
+
+이는 webR과 유사하게 shiny에서 ( 로컬에 ) 별도의 `server`를 만들고, 브라우저의 입력값과 계산된 출력 값을 서버와 주고 받으면서 `ui`로 보내주는 과정을 거칩니다.
+
+그래서 webR과 Shiny를 이어주려면 아래 그림처럼 또 하나의 브라우저 (**service worker**)를 만든다고 이해하는 것이 편합니다.
+
+<p style="text-align: center;">
+  <img src='img/webr.png' width = '100%' text-align ='center'></img>    
+</p>
+
+Shiny를 사용자의 브라우저에서 실행시키면 얻을 수 있는 장점과 단점은 webR의 장단점과 대체로 유사합니다.
+
+그러나 `service worker`라는 추가 개념이 등장했고, 이로 인한 **Cross-Origin Isolation**이라는 새로운 문제점이 발생합니다.
+
+## Cross-Origin Isolation
+
+Shiny를 정적 페이지에서 제공하기 위해 Cross-Origin Isolation의 정확한 개념을 이해할 필요는 없지만, 설명을 하면 다음과 같습니다.
+
+service worker는 별도의 프로세스를 위해 외부에서 (자체 실행을 위한) 파일을 다운로드 받고 이를 사용합니다.
+
+그런데 최근의 웹페이지에서는 보안 이슈로 인해 (검증되지 않은) 외부의 파일을 실행하는 것을 정책적으로 막고 있습니다.
+
+이를 위해 정적 페이지를 제공하는 서비스 (github, netlify, wordpress 등)에서 외부 파일의 실행을 허용하는 설정을 해야합니다.
+
+차라투 블로그가 사용하는 github page를 위해서는 <a href='https://github.com/josephrocca/clip-image-sorter/blob/main/enable-threads.js' target = "_blank"> enable-thread.js </a>라는 스크립트를 실행해야합니다.
+
+마찬가지로 Quarto를 활용해 웹페이지를 만들고, Shiny에서 기본으로 제공하는 `01_hello` 심도록 하겠습니다.
+
+## Quarto 페이지의 구성
+
+```{.html}
+<!-- 1. scripts -->
+<script src = 'enable-threads.js'></script>
+
+<!-- 2. button & iframe -->
+<button class="btn btn-success btn-sm" type="button" style="background-color: dodgerblue" id="statusButton">
+  <i class="fas fa-spinner fa-spin"></i>Loading webR...
+</button>
+<div id="iframeContainer"></div>
+
+<!-- 3. webR & shiny-->
+<script type="module" src='loadshiny.js'></script>
+```
+
+<!-- scripts -->
+```{=html}
+<script src = 'enable-threads.js'></script>
+```
+
+<!-- button & iframe -->
+```{=html}
+<button class="btn btn-success btn-sm" type="button" style="background-color: dodgerblue" id="statusButton">
+  <i class="fas fa-spinner fa-spin"></i>Loading webR...
+</button>
+<div id="iframeContainer"></div>
+```
+
+<!-- webR & shiny-->
+```{=html}
+<script type="module" src='loadshiny.js'></script>
+```
