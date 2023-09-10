@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jinhwan Kim">
-<meta name="dcterms.date" content="2023-09-09">
+<meta name="dcterms.date" content="2023-09-10">
 <meta name="description" content="webR이라는 기술을 활용하여 별도의 웹 서버를 사용하지 않고도 유저의 웹 브라우저(크롬)에서 Shiny App을 사용할 수 있게 하는 방법을 소개합니다.">
 
 <title>Zarathu Blog - web assembly를 이용하여 웹페이지에서 Shiny App 활용하기</title>
@@ -240,7 +240,7 @@ ga('send', {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">September 9, 2023</p>
+        <p class="date">September 10, 2023</p>
       </div>
     </div>
     
@@ -259,7 +259,8 @@ ga('send', {
   <li><a href="#webr-r과-shiny의-차이" id="toc-webr-r과-shiny의-차이" class="nav-link" data-scroll-target="#webr-r과-shiny의-차이">webR (R)과 shiny의 차이</a></li>
   <li><a href="#cross-origin-isolation" id="toc-cross-origin-isolation" class="nav-link" data-scroll-target="#cross-origin-isolation">Cross-Origin Isolation</a></li>
   <li><a href="#quarto-페이지의-구성" id="toc-quarto-페이지의-구성" class="nav-link" data-scroll-target="#quarto-페이지의-구성">Quarto 페이지의 구성</a></li>
-  <li><a href="#결과" id="toc-결과" class="nav-link" data-scroll-target="#결과">결과</a></li>
+  <li><a href="#실제-webr-shiny-결과" id="toc-실제-webr-shiny-결과" class="nav-link" data-scroll-target="#실제-webr-shiny-결과">실제 webR + shiny 결과</a></li>
+  <li><a href="#정리" id="toc-정리" class="nav-link" data-scroll-target="#정리">정리</a></li>
   </ul>
 </nav>
 </nav>
@@ -343,10 +344,19 @@ ga('send', {
 <li><p>service worker를 적용할 범위: <code>httpuv-serviceworker.js</code>를 등록하고, <code>index.html</code>을 담고 있는 디렉토리를 scope에 저장합니다.</p></li>
 </ol>
 <p>마지막으로 디렉토리 구조는 다음과 같습니다.</p>
-<p>/2023-09-10-wasm2 - enable-threads.js - index.qmd - index.html - loadshiny.js - httpuv-serviceworker.js</p>
+<ul>
+<li>2023-09-10-wasm2
+<ul>
+<li>enable-threads.js</li>
+<li>index.qmd</li>
+<li>index.html</li>
+<li>loadshiny.js</li>
+<li>httpuv-serviceworker.js</li>
+</ul></li>
+</ul>
 </section>
-<section id="결과" class="level2">
-<h2 class="anchored" data-anchor-id="결과">결과</h2>
+<section id="실제-webr-shiny-결과" class="level2">
+<h2 class="anchored" data-anchor-id="실제-webr-shiny-결과">실제 webR + shiny 결과</h2>
 <!-- scripts -->
 <script src="httpuv-serviceworker.js"></script>
 <script src="enable-threads.js"></script>
@@ -357,6 +367,35 @@ ga('send', {
 <div id="iframeContainer"></div>
 <!-- webR & shiny-->
 <script type="module" src="loadshiny.js"></script>
+</section>
+<section id="정리" class="level2">
+<h2 class="anchored" data-anchor-id="정리">정리</h2>
+<p>단순히 webR을 심는 것보다 shiny를 심는 것은 3가지 이유에서 조금 더 복잡합니다.</p>
+<ol type="1">
+<li>service worker 의 구성 및 연결</li>
+<li>shiny app의 실행을 위한 shiny 패키지를 webR에 설치</li>
+<li>실제 정적 페이지에 배포하기 전까지 로컬 PC 에서는 shiny 결과를 확인할 수 없음</li>
+</ol>
+<p>또한 이전의 webR과 마찬가지로 단순한 shiny app만 webR로 구현이 가능합니다.</p>
+<p>가벼운 (특히 shiny 교육) 용도로는 shiny app을 별도의 서버를 구성하지 않고도 정적 페이지로 사용자에게 제공할 수 있다는 점은 꽤 흥미롭고, (수초의 시간이 더 필요하긴 하지만) 여전히 개선할 수 있는 부분이 존재합니다.</p>
+<p>다만 R과 quarto를 넘어서 javascript를 포함한 웹 개발 지식과 service worker 구성을 위한 네트워크와 인프라 구성에 대한 경험이 없다면 많은 시행착오가 필요하기도 합니다.</p>
+<p>이 webR에 대해 <a href="https://appsilon.com/bringing-webr-into-shiny/">appsilon</a>은 초창기 기술인 만큼 아쉬운 점도 있지만 동적 페이지에서 제공되는 shiny app을 대체할 기술이라기보단, 상호간에 보조할 수 있는 방법이라고 평가했습니다.</p>
+<hr>
+<p>이전 글과 이번 글을 통해서 webR과 shiny를 정적페이지로 사용자에게 제공하는 방법을 알아보았습니다.</p>
+<p>배경 지식이 없다면 한번에 이해하긴 어렵고, 이렇게 사용할 수 도 있다는 것만 기억하셔도 충분합니다.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🤗 Let’s talk
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>차라투에서는 R과 Shiny에 대한 컨설팅을 제공합니다. 진행중인 프로젝트 관련하여 도움이 필요하시다면 jinhwan@zarathu.com 으로 알려주세요!</p>
+</div>
+</div>
 
 
 </section>
@@ -365,13 +404,13 @@ ga('send', {
   author = {Kim, Jinhwan},
   title = {Web {assembly를} {이용하여} {웹페이지에서} {Shiny} {App}
     {활용하기}},
-  date = {2023-09-09},
+  date = {2023-09-10},
   url = {https://blog.zarathu.com/posts/2023-09-10-wasm2},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas" role="listitem">
 Kim, Jinhwan. 2023. <span>“Web Assembly를 이용하여 웹페이지에서 Shiny
-App 활용하기.”</span> September 9, 2023. <a href="https://blog.zarathu.com/posts/2023-09-10-wasm2">https://blog.zarathu.com/posts/2023-09-10-wasm2</a>.
+App 활용하기.”</span> September 10, 2023. <a href="https://blog.zarathu.com/posts/2023-09-10-wasm2">https://blog.zarathu.com/posts/2023-09-10-wasm2</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
