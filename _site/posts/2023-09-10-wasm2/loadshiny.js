@@ -3,7 +3,7 @@ import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
 const webR = new WebR();
 
 // TODO
-const shinyScriptURL = 'https://raw.githubusercontent.com/rstudio/shiny/main/inst/examples/01_hello/app.R';
+const shinyScriptURL = 'https://raw.githubusercontent.com/zarathucorp/blog/master/posts/2023-09-10-wasm2/app.R';
 const shinyScriptName = 'app.R';
 
 let webSocketHandleCounter = 0;
