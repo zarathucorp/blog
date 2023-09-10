@@ -1,4 +1,4 @@
-import { WebR } from 'webR.mjs';
+import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
 
 const webR = new WebR();
 
