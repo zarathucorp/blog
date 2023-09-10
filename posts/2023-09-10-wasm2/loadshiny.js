@@ -70,14 +70,6 @@ const loadShiny = async () => {
   const registration = await navigator.serviceWorker
   .register('/posts/2023-09-10-wasm2/httpuv-serviceworker.js', { scope: '/posts/2023-09-10-wasm2/' });
   
-  // .register('/webR/httpuv-serviceworker.js', { scope: '/webR/' }); WORK
-  
-  // /posts/2023-09-10-wasm2 -> Error
-  
-  // /posts -> The path of the provided scope ('/posts') is not under the max scope allowed ('/posts/2023-09-10-wasm2/'). Adjust the scope, move the Service Worker script, or use the Service-Worker-Allowed HTTP header to allow the scope.
-  
-  
-  
   navigator.serviceWorker.getRegistration()
   .then((registration) => {
     const scope = registration.scope;

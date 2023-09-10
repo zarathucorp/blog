@@ -69,13 +69,20 @@ service worker는 별도의 프로세스를 위해 외부에서 (자체 실행�
 
 ## Quarto 페이지의 구성
 
-```{=html}
-<script src='httpuv-serviceworker.js'></script>
-```
+Shiny를 정적페이지로 제공하는 quarto page에는 3가지가 필요합니다.
+
+1. Javascript 파일: 
+- service worker를 만들기 위한 `httpuv-serviceworker.js` (from <a href='https://github.com/georgestagg/shiny-standalone-webr-demo' target = '_blank'>Inspired from Here</a>)
+- (github blog 기준) Cross origin isolation을 풀기 위한 `enable-threads.js` 
+
+2. Button & iframe: shiny는 webR에 비해 조금 더 로딩이 필요하기 때문에 진행 상태를 보여줄 버튼과, shiny app을 심을 iframe이 필요합니다.
+
+3. Javascript 파일: webR을 준비하고, iframe에 Shiny를 심는 `loadshiny.js`
 
 ```{.html}
 <!-- 1. scripts -->
-<script src = 'enable-threads.js'></script>
+<script src='httpuv-serviceworker.js'></script>
+<script src='enable-threads.js'></script>
 
 <!-- 2. button & iframe -->
 <button class="btn btn-success btn-sm" type="button" style="background-color: dodgerblue" id="statusButton">
@@ -87,9 +94,27 @@ service worker는 별도의 프로세스를 위해 외부에서 (자체 실행�
 <script type="module" src='loadshiny.js'></script>
 ```
 
+추가적으로 `loadshiny.js`의 두 부분을 커스텀 해야합니다. (**TODO**로 표기)
+
+1. 임베드할 shiny app을 담고 있는 url 코드 (app.R): 이 글의 경우 차라투 블로그의 github에 (공개 된) 있는 <a href = 'https://github.com/zarathucorp/blog/blob/master/posts/2023-09-10-wasm2/app.R' target = "_blank">코드</a>를 사용합니다. 
+
+2. service worker를 적용할 범위: `httpuv-serviceworker.js`를 등록하고, `index.html`을 담고 있는 디렉토리를 scope에 저장합니다. 
+
+마지막으로 디렉토리 구조는 다음과 같습니다.
+
+/2023-09-10-wasm2
+- enable-threads.js
+- index.qmd
+- index.html
+- loadshiny.js
+- httpuv-serviceworker.js
+
+## 결과 
+
 <!-- scripts -->
 ```{=html}
-<script src = 'enable-threads.js'></script>
+<script src='httpuv-serviceworker.js'></script>
+<script src='enable-threads.js'></script>
 ```
 
 <!-- button & iframe -->

@@ -259,6 +259,7 @@ ga('send', {
   <li><a href="#webr-r과-shiny의-차이" id="toc-webr-r과-shiny의-차이" class="nav-link" data-scroll-target="#webr-r과-shiny의-차이">webR (R)과 shiny의 차이</a></li>
   <li><a href="#cross-origin-isolation" id="toc-cross-origin-isolation" class="nav-link" data-scroll-target="#cross-origin-isolation">Cross-Origin Isolation</a></li>
   <li><a href="#quarto-페이지의-구성" id="toc-quarto-페이지의-구성" class="nav-link" data-scroll-target="#quarto-페이지의-구성">Quarto 페이지의 구성</a></li>
+  <li><a href="#결과" id="toc-결과" class="nav-link" data-scroll-target="#결과">결과</a></li>
   </ul>
 </nav>
 </nav>
@@ -312,19 +313,42 @@ ga('send', {
 </section>
 <section id="quarto-페이지의-구성" class="level2">
 <h2 class="anchored" data-anchor-id="quarto-페이지의-구성">Quarto 페이지의 구성</h2>
-<script src="httpuv-serviceworker.js"></script>
+<p>Shiny를 정적페이지로 제공하는 quarto page에는 3가지가 필요합니다.</p>
+<ol type="1">
+<li>Javascript 파일:</li>
+</ol>
+<ul>
+<li>service worker를 만들기 위한 <code>httpuv-serviceworker.js</code> (from <a href="https://github.com/georgestagg/shiny-standalone-webr-demo" target="_blank">Inspired from Here</a>)</li>
+<li>(github blog 기준) Cross origin isolation을 풀기 위한 <code>enable-threads.js</code></li>
+</ul>
+<ol start="2" type="1">
+<li><p>Button &amp; iframe: shiny는 webR에 비해 조금 더 로딩이 필요하기 때문에 진행 상태를 보여줄 버튼과, shiny app을 심을 iframe이 필요합니다.</p></li>
+<li><p>Javascript 파일: webR을 준비하고, iframe에 Shiny를 심는 <code>loadshiny.js</code></p></li>
+</ol>
 <div class="sourceCode" id="cb1"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- 1. scripts --&gt;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span> <span class="er">src</span> <span class="ot">=</span> <span class="st">'enable-threads.js'</span><span class="kw">&gt;&lt;/script&gt;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- 2. button &amp; iframe --&gt;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;button</span> <span class="er">class</span><span class="ot">=</span><span class="st">"btn btn-success btn-sm"</span> <span class="er">type</span><span class="ot">=</span><span class="st">"button"</span> <span class="er">style</span><span class="ot">=</span><span class="st">"background-color: dodgerblue"</span> <span class="er">id</span><span class="ot">=</span><span class="st">"statusButton"</span><span class="kw">&gt;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;i</span> <span class="er">class</span><span class="ot">=</span><span class="st">"fas fa-spinner fa-spin"</span><span class="kw">&gt;&lt;/i&gt;</span>Loading webR...</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/button&gt;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"iframeContainer"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- 3. webR &amp; shiny--&gt;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">"module"</span> <span class="er">src</span><span class="ot">=</span><span class="st">'loadshiny.js'</span><span class="kw">&gt;&lt;/script&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span> <span class="er">src</span><span class="ot">=</span><span class="st">'httpuv-serviceworker.js'</span><span class="kw">&gt;&lt;/script&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span> <span class="er">src</span><span class="ot">=</span><span class="st">'enable-threads.js'</span><span class="kw">&gt;&lt;/script&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- 2. button &amp; iframe --&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;button</span> <span class="er">class</span><span class="ot">=</span><span class="st">"btn btn-success btn-sm"</span> <span class="er">type</span><span class="ot">=</span><span class="st">"button"</span> <span class="er">style</span><span class="ot">=</span><span class="st">"background-color: dodgerblue"</span> <span class="er">id</span><span class="ot">=</span><span class="st">"statusButton"</span><span class="kw">&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;i</span> <span class="er">class</span><span class="ot">=</span><span class="st">"fas fa-spinner fa-spin"</span><span class="kw">&gt;&lt;/i&gt;</span>Loading webR...</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/button&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"iframeContainer"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- 3. webR &amp; shiny--&gt;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">"module"</span> <span class="er">src</span><span class="ot">=</span><span class="st">'loadshiny.js'</span><span class="kw">&gt;&lt;/script&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>추가적으로 <code>loadshiny.js</code>의 두 부분을 커스텀 해야합니다. (<strong>TODO</strong>로 표기)</p>
+<ol type="1">
+<li><p>임베드할 shiny app을 담고 있는 url 코드 (app.R): 이 글의 경우 차라투 블로그의 github에 (공개 된) 있는 <a href="https://github.com/zarathucorp/blog/blob/master/posts/2023-09-10-wasm2/app.R" target="_blank">코드</a>를 사용합니다.</p></li>
+<li><p>service worker를 적용할 범위: <code>httpuv-serviceworker.js</code>를 등록하고, <code>index.html</code>을 담고 있는 디렉토리를 scope에 저장합니다.</p></li>
+</ol>
+<p>마지막으로 디렉토리 구조는 다음과 같습니다.</p>
+<p>/2023-09-10-wasm2 - enable-threads.js - index.qmd - index.html - loadshiny.js - httpuv-serviceworker.js</p>
+</section>
+<section id="결과" class="level2">
+<h2 class="anchored" data-anchor-id="결과">결과</h2>
 <!-- scripts -->
+<script src="httpuv-serviceworker.js"></script>
 <script src="enable-threads.js"></script>
 <!-- button & iframe -->
 <button class="btn btn-success btn-sm" type="button" style="background-color: dodgerblue" id="statusButton">
