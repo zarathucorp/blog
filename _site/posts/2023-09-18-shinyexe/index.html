@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jinhwan Kim">
+<meta name="dcterms.date" content="2023-09-18">
+<meta name="description" content="electron forge라는 기술을 활용하여 사용자의 PC에서 R과 Rstudio를 설치하지 않고도 Shiny App을 사용할 수 있게 하는 (exe) 프로그램을 만드는 방법을 소개합니다. 단, 개발 과정은 OS에 따라 조금씩 다르며, windows를 기준으로 합니다.">
+
+<title>Zarathu Blog - electron forge를 활용하여 Standalone Shiny Application 제작하기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Zarathu Blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" rel="" target="_blank">
+ <span class="menu-text">Applications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">R packages</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" rel="" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" rel="" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" rel="" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributors.html" rel="" target="">
+ <span class="menu-text">Contributors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Partners</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" rel="" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" rel="" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" rel="" target="_blank"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" rel="" target="_blank"><i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">electron forge를 활용하여 Standalone Shiny Application 제작하기</h1>
+                  <div>
+        <div class="description">
+          <p>electron forge라는 기술을 활용하여 사용자의 PC에서 R과 Rstudio를 설치하지 않고도 Shiny App을 사용할 수 있게 하는 (exe) 프로그램을 만드는 방법을 소개합니다. 단, 개발 과정은 OS에 따라 조금씩 다르며, windows를 기준으로 합니다.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">electron forge</div>
+                <div class="quarto-category">shiny</div>
+                <div class="quarto-category">quarto</div>
+                <div class="quarto-category">standalone</div>
+                <div class="quarto-category">exe</div>
+                <div class="quarto-category">windows</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/jhk0530">Jinhwan Kim</a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">September 18, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#개요" id="toc-개요" class="nav-link active" data-scroll-target="#개요">개요</a></li>
+  <li><a href="#standalone-app" id="toc-standalone-app" class="nav-link" data-scroll-target="#standalone-app">Standalone App</a></li>
+  <li><a href="#electron" id="toc-electron" class="nav-link" data-scroll-target="#electron">Electron</a></li>
+  <li><a href="#개발-준비" id="toc-개발-준비" class="nav-link" data-scroll-target="#개발-준비">개발 준비</a>
+  <ul class="collapse">
+  <li><a href="#node.js-설치" id="toc-node.js-설치" class="nav-link" data-scroll-target="#node.js-설치">1. </a><a href="https://nodejs.org/ko" target="_blank" class="nav-link" data-scroll-target="https\://nodejs.org/ko">node.js</a> 설치</li>
+  <li><a href="#electron-forge-설치" id="toc-electron-forge-설치" class="nav-link" data-scroll-target="#electron-forge-설치">2. electron-forge 설치</a></li>
+  <li><a href="#템플릿-포크-클론" id="toc-템플릿-포크-클론" class="nav-link" data-scroll-target="#템플릿-포크-클론">3. 템플릿 포크 / 클론</a></li>
+  <li><a href="#r-project-열기" id="toc-r-project-열기" class="nav-link" data-scroll-target="#r-project-열기">4. R project 열기</a></li>
+  </ul></li>
+  <li><a href="#electron-app-만들기" id="toc-electron-app-만들기" class="nav-link" data-scroll-target="#electron-app-만들기">Electron App 만들기</a>
+  <ul class="collapse">
+  <li><a href="#electron-app-템플릿을-설치" id="toc-electron-app-템플릿을-설치" class="nav-link" data-scroll-target="#electron-app-템플릿을-설치">1. electron app 템플릿을 설치</a></li>
+  <li><a href="#github-템플릿의-파일을-myapp으로-이동" id="toc-github-템플릿의-파일을-myapp으로-이동" class="nav-link" data-scroll-target="#github-템플릿의-파일을-myapp으로-이동">2. github 템플릿의 파일을 myApp으로 이동</a></li>
+  <li><a href="#standalone-r-설치" id="toc-standalone-r-설치" class="nav-link" data-scroll-target="#standalone-r-설치">3. Standalone R 설치</a></li>
+  <li><a href="#shiny-패키지-설치" id="toc-shiny-패키지-설치" class="nav-link" data-scroll-target="#shiny-패키지-설치">4. Shiny 패키지 설치</a></li>
+  <li><a href="#node-패키지-설치" id="toc-node-패키지-설치" class="nav-link" data-scroll-target="#node-패키지-설치">5. node 패키지 설치</a></li>
+  </ul></li>
+  <li><a href="#shiny-실행-및-패키징" id="toc-shiny-실행-및-패키징" class="nav-link" data-scroll-target="#shiny-실행-및-패키징">Shiny 실행 및 패키징</a></li>
+  <li><a href="#정리" id="toc-정리" class="nav-link" data-scroll-target="#정리">정리</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script>
+
+
+
+
+<section id="개요" class="level2">
+<h2 class="anchored" data-anchor-id="개요">개요</h2>
+<p>이번 글에서는 R Shiny 앱을 별도의 설치나 외부 연결 없이 폐쇄 환경에서도 실행할 수 있는 (Standalone) <strong>exe</strong> 파일로 패키징하는 과정을 소개합니다.</p>
+</section>
+<section id="standalone-app" class="level2">
+<h2 class="anchored" data-anchor-id="standalone-app">Standalone App</h2>
+<p>먼저 글의 맥락을 더 효과적으로 전달하기 위해 <strong>Standalone App</strong>에 대해 간단히 정의해보겠습니다.</p>
+<p><em>An app that can run independently without any external help.</em></p>
+<p>즉, 외부에 의존하지 않고 독립적으로 실행 가능한 앱으로 정의하고 싶은데요.</p>
+<p>여기서 <strong>외부</strong>에는 보통 Shiny를 실행하기 위해 쓰이는 웹 브라우저(크롬)가 포함될 수 있습니다.</p>
+<p>한편, R과 Rstudio 또한 Shiny를 실행하기 위해서 (로컬에서) 필요한 <strong>외부</strong>로 볼 수 있습니다.</p>
+<p>이러한 외부의 도움을 받지 않고, 다운로드 이후 압축만 풀어서 바로 실행할 수 있는 것을 Standalone App이라고 하며, 이러한 예시에는 (아는 사람은 아는 ㅎㅎ) <strong>피카츄 배구.exe</strong>가 있습니다.</p>
+<p style="text-align: center;">
+<img src="img/pikachu.png" width="100%" text-align="center">
+</p>
+<p><em>출처: https://gbworld.tistory.com/1362</em></p>
+<p>이후 내용에서 소개되는 Shiny를 standalone app으로 만드는 것은 일반적인 R Shiny 개발과는 상당히 다르고 동시에 복잡합니다.</p>
+<p>그렇다면 Standalone app으로 만드는 것은 Shiny를 사용자에게 제공하는 다른 방법들과 어떤 차이점이 있을까요?</p>
+<p style="text-align: center;">
+<img src="img/flow.png" width="100%" text-align="center">
+</p>
+<p>이에는 여러가지를 생각해 볼 수 있지만 크게 2가지의 차이점이 있습니다.</p>
+<ol type="1">
+<li>사용자 경험</li>
+</ol>
+<p>electron으로 만들어진 <strong>Standalone App은 Shiny를 제공하는 서버와의 네트워크 연결이 불필요</strong>합니다. Shiny를 사용하기 위해 브라우저를 열고 특정 URL에 접속하는 대신 설치된 프로그램을 실행하는 것으로 충분합니다.</p>
+<p>이로 인해 네트워크와의 데이터를 주고 받는 과정에 리소스가 쓰이지 않고, 사용자의 (로컬 PC) 자원을 활용하기 때문에 살짝 더 좋은 퍼포먼스를 보일 수 있습니다.</p>
+<ol start="2" type="1">
+<li>폐쇄성 환경</li>
+</ol>
+<p>또한 네트워크가 연결되지 않는다는 점은 <strong>shiny에 입력하는 값이 사용자의 PC 외부로 나가지 않고, 동시에 외부의 리소스가 PC에 들어오지 않는다</strong>는 이야기이기도 합니다.</p>
+<p>그렇기 때문에 금융이나 병원등 망분리 / 폐쇄 되어 있는 개발 환경에서도 Shiny를 실행할 수 있고 더 뛰어난 보안성을 가지게 됩니다. (단, Shiny가 계산을 위해 외부의 API 같은 자원을 사용하려면 네트워크 연결이 필요합니다)</p>
+</section>
+<section id="electron" class="level2">
+<h2 class="anchored" data-anchor-id="electron">Electron</h2>
+<p>Electron (정확히는 <a href="https://www.electronjs.org/" target="_blank">electron.js</a>) 은 크로미움 (크롬)과 node.js를 활용하여 html과 css, js 같은 웹 개발 결과물 (shiny가 이에 포함됩니다) 을 임베디드 형태로 만들 수 있는 프레임워크입니다.</p>
+<p style="text-align: center;">
+<img src="img/electron.png" width="100%" text-align="center">
+</p>
+<p>Standalone App을 만들기 위해서 electron의 기술적인 원리를 이해할 필요는 없지만, 흐름을 표현하면 아래와 같습니다.</p>
+<p style="text-align: center;">
+<img src="img/electron-shiny.webp" width="100%" text-align="center">
+</p>
+<p>이 기술을 활용하여 shiny로 standalone app을 만들려는 시도는 꽤 오래 전부터 있었고, 2020년에 공유된 <a href="https://www.r-bloggers.com/2020/10/turn-a-shiny-application-into-a-tablet-or-desktop-app/" target="_blank">Turn a shiny application into a tablet or desktop app</a> 아티클도 있지만, 관련된 자료들이 2022년을 마지막으로 아카이브되어 업데이트 되지 않았기 때문에 최신의 내용을 반영한 업데이트가 필요했습니다.</p>
+<p>차라투에서는 연구를 통해 기존의 내용 중 일부를 최적화하고, 최근 내용들을 반영한 뒤, <a href="https://github.com/zarathucorp/shiny-electron-template-windows-2023" target="_blank">Windows</a>와 <a href="https://github.com/zarathucorp/shiny-electron-template-m1-2023" target="_blank">M1 Mac</a> 2개의 OS에서 Standalone App을 개발하여 분리 환경에서 Shiny를 사용해야 하는 (공공기관을 포함한) 고객에게 제공하였고, 이후 개발에 활용할 수 있는 템플릿과 가이드를 제공하고 있습니다.</p>
+<p><em>국내에는 윈도우 사용자가 더 많기 때문에, 이번 글에서는 윈도우를 기준으로 방법을 소개합니다.</em></p>
+</section>
+<section id="개발-준비" class="level2">
+<h2 class="anchored" data-anchor-id="개발-준비">개발 준비</h2>
+<p>Standalone shiny app을 개발하기 위해 shiny 개발에 필요한 R과 Rstudio 외에 추가 설치가 필요합니다.</p>
+<section id="node.js-설치" class="level3">
+<h3 class="anchored" data-anchor-id="node.js-설치">1. <a href="https://nodejs.org/ko" target="_blank">node.js</a> 설치</h3>
+<p><em>글이 작성되는 23년 9월을 기준으로, LTS인 18.17.1 버전을 설치합니다.</em></p>
+<p style="text-align: center;">
+<img src="img/node.png" width="100%" text-align="center">
+</p>
+<p>이제 Rstudio를 <strong>관리자 권한으로 실행</strong>합니다. (아이콘을 오른쪽 클릭 후 선택)</p>
+<p>정상적으로 설치가 되었다면 Rstudio의 터미널에서 <code>node -v</code>, <code>npm -v</code>를 실행하여 설치 버전을 확인할 수 있습니다.</p>
+</section>
+<section id="electron-forge-설치" class="level3">
+<h3 class="anchored" data-anchor-id="electron-forge-설치">2. electron-forge 설치</h3>
+<p><code>electron-forge</code>는 electron을 조금 더 쉽게 사용할 수 있게 하는 패키지라고 생각하셔도 좋습니다.</p>
+<p>이는 npm을 사용해 (R의 <code>install.packages</code>와 유사) 설치할 수 있으며, 마찬가지로 Rstudio의 터미널에서 아래의 명령어를 입력하여 설치합니다.</p>
+<p><code>npm i -g @electron-forge/cli</code></p>
+</section>
+<section id="템플릿-포크-클론" class="level3">
+<h3 class="anchored" data-anchor-id="템플릿-포크-클론">3. 템플릿 포크 / 클론</h3>
+<p>차라투 github에서 제공하는 템플릿을 자신의 계정에 포크 후, 클론하여 로컬 PC에 다운로드 받습니다.</p>
+<p><a href="https://github.com/zarathucorp/shiny-electron-template-windows-2023" class="uri">https://github.com/zarathucorp/shiny-electron-template-windows-2023</a></p>
+<div class="columns" style="text-align: center;">
+<div class="column">
+<p style="text-align: center;">
+<img src="img/fork.png" width="100%" text-align="center">
+</p>
+</div><div class="column">
+<p style="text-align: center;">
+<img src="img/clone.png" width="100%" text-align="center">
+</p>
+</div>
+</div>
+</section>
+<section id="r-project-열기" class="level3">
+<h3 class="anchored" data-anchor-id="r-project-열기">4. R project 열기</h3>
+<p>템플릿 폴더의 <strong>shiny-elecgtron-template-windows-2023.Rproj</strong>를 Rstudio에서 실행합니다.</p>
+<p>이제 Rstudio 터미널의 작업 디렉토리가 해당 프로젝트의 위치로 변경됩니다.</p>
+</section>
+</section>
+<section id="electron-app-만들기" class="level2">
+<h2 class="anchored" data-anchor-id="electron-app-만들기">Electron App 만들기</h2>
+<section id="electron-app-템플릿을-설치" class="level3">
+<h3 class="anchored" data-anchor-id="electron-app-템플릿을-설치">1. electron app 템플릿을 설치</h3>
+<p>Rstudio의 터미널에서 <code>npx create-electron-app myApp</code>을 실행하여 템플릿을 설치합니다.</p>
+<p>이때 <code>myApp</code>이 Standalone App의 이름이 되며 <code>app</code>을 제외한 다른 이름으로 변경할 수 있습니다.</p>
+<p>정상적으로 실행되었다면 디렉토리에 <code>myApp</code> 폴더가 새롭게 생기는 것을 확인할 수 있습니다.</p>
+<p style="text-align: center;">
+<img src="img/myApp.png" width="100%" text-align="center">
+</p>
+</section>
+<section id="github-템플릿의-파일을-myapp으로-이동" class="level3">
+<h3 class="anchored" data-anchor-id="github-템플릿의-파일을-myapp으로-이동">2. github 템플릿의 파일을 myApp으로 이동</h3>
+<p>electron app 에서 기본으로 제공하는 템플릿은 shiny를 개발하기에는 약간 다른 내용들이 있어서 차라투 github에 제공된 파일로 교체합니다.</p>
+<p>이때 만들어진 myApp으로 이동해야 하는 파일은 아래의 5개입니다.</p>
+<ul>
+<li>shiny (폴더)</li>
+<li>src (폴더)</li>
+<li>add-cran-binary-pkgs.R</li>
+<li>get-r-win.sh</li>
+<li>start-shiny.R</li>
+</ul>
+<p style="text-align: center;">
+<img src="img/move.png" width="100%" text-align="center">
+</p>
+<p>이후 Rstudio의 터미널에서 <code>cd myApp</code>으로 디렉토리를 이동합니다.</p>
+</section>
+<section id="standalone-r-설치" class="level3">
+<h3 class="anchored" data-anchor-id="standalone-r-설치">3. Standalone R 설치</h3>
+<p>electron 에 포함 시킬 local R을 현재 프로젝트에 설치합니다.</p>
+<p>단, 이때 기존에 사용중인 R의 버전과 동일한 버전을 설치해야 하며, 23년 9월에 최신 버전인 4.3.1을 기준으로 사용합니다.</p>
+<p>local R은 Rstudio의 터미널에서 <code>sh ./get-r-win.sh</code>를 실행하는 것으로 설치할 수 있습니다.</p>
+<p>정상적으로 실행되었다면 <strong>Done.</strong> 메세지와 함께 폴더에 <code>r-win</code> 이라는 폴더가 새롭게 만들어 진 것을 확인할 수 있습니다. <code>r-win</code> 내부의 구조는 아래와 같습니다.</p>
+<p style="text-align: center;">
+<img src="img/r-win.png" width="100%" text-align="center">
+</p>
+</section>
+<section id="shiny-패키지-설치" class="level3">
+<h3 class="anchored" data-anchor-id="shiny-패키지-설치">4. Shiny 패키지 설치</h3>
+<p>예시에서 사용하는 shiny는 shiny 폴더의 <code>app.R</code> 코드를 사용합니다. (shiny 외의 다른 패키지를 사용하지 않는다면 해당 코드로 바꿔도 작동합니다) 이를 실행하기 위해 기본 R 에서 제공하는 패키지외에 (shiny를 포함한) 추가 CRAN 패키지를 설치합니다.</p>
+<p>Rstudio의 터미널에서 <code>Rscript add-cran-binary-pkgs.R</code>을 입력하여 패키지를 설치합니다.</p>
+<p>실행전 (기본 R 패키지)</p>
+<p style="text-align: center;">
+<img src="img/before.png" width="100%" text-align="center">
+</p>
+<p>실행후 (<strong>shiny를 포함한</strong> 패키지)</p>
+<p style="text-align: center;">
+<img src="img/after.png" width="100%" text-align="center">
+</p>
+</section>
+<section id="node-패키지-설치" class="level3">
+<h3 class="anchored" data-anchor-id="node-패키지-설치">5. node 패키지 설치</h3>
+<p>package.json의 내용을 다음과 같이 <code>[fix] package-json</code>의 내용으로 복사 붙여넣기합니다.</p>
+<p>이때 <code>author</code>와 <code>repository</code>는 본인의 내용에 맞게 수정해야합니다.</p>
+<p style="text-align: center;">
+<img src="img/package-json.png" width="100%" text-align="center">
+</p>
+<p>이후 Rstudio 터미널에서 <code>npm install</code>을 입력하여 패키지를 설치할 수 있습니다.</p>
+</section>
+</section>
+<section id="shiny-실행-및-패키징" class="level2">
+<h2 class="anchored" data-anchor-id="shiny-실행-및-패키징">Shiny 실행 및 패키징</h2>
+<p><code>app.R</code>은 개발 의도대로, 정상적으로 실행된다는 가정하에 Electron으로 shiny 를 실행하기 위해 Rstudio의 터미널에 <code>electron-forge start</code>를 입력합니다.</p>
+<p style="text-align: center;">
+<img src="img/start.gif" width="100%" text-align="center">
+</p>
+<p>큰 문제 없이 실행이 되었다면 이제 <code>electron-forge make</code>로 패키지를 만들 차례입니다.(zip)</p>
+<p>패키지 빌드를 위한 약간의 시간이 지난 후 <code>out</code> 디렉토리에서 앱과 zip 파일을 확인할 수 있습니다.</p>
+</section>
+<section id="정리" class="level2">
+<h2 class="anchored" data-anchor-id="정리">정리</h2>
+<p>이번 글에서는 Standalone의 특징과 electron을 활용하여 shiny를 standalone app으로 만드는 방법을 다뤄봤습니다.</p>
+<p>Electron을 활용하여 Standalone Shiny app을 만드는 것은 소개된 것처럼 R외의 개발 지식을 필요로 하기 때문에 경험이 없다면 다소 복잡하게 느껴질 수 있습니다. (글에서 다루지 않은 내용들도 있습니다)</p>
+<p>특히 electron 내부에서 local R과 electron을 위한 node 패키지들을 이미 포함해야 하기 때문에 간단한 shiny app도 용량이 200 메가바이트 정도부터 시작한다는 치명적인 단점도 존재합니다.</p>
+<p>그럼에도 불구하고 이는 Standalone 특유의 몇가지 특징들이 있어 사용자의 환경에 따라 적합한 shiny 개발 방법으로 고려해볼 수 있는 선택지 중 하나입니다.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🤗 Let’s talk
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>차라투에서는 R과 Shiny에 대한 컨설팅을 제공합니다. 진행중인 프로젝트 관련하여 도움이 필요하시다면 jinhwan@zarathu.com 으로 알려주세요!</p>
+</div>
+</div>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+  author = {Kim, Jinhwan},
+  title = {Electron {forge를} {활용하여} {Standalone} {Shiny}
+    {Application} {제작하기}},
+  date = {2023-09-18},
+  url = {https://blog.zarathu.com/posts/2023-09-18-shinyexe},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Jinhwan. 2023. <span>“Electron Forge를 활용하여 Standalone Shiny
+Application 제작하기.”</span> September 18, 2023. <a href="https://blog.zarathu.com/posts/2023-09-18-shinyexe">https://blog.zarathu.com/posts/2023-09-18-shinyexe</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Powered by <a href="https://quarto.org">Quarto</a>.</div>   
+    <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
