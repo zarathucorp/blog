@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.424">
+<meta name="generator" content="quarto-1.3.353">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="Yumin Kim">
 <meta name="dcterms.date" content="2022-03-25">
 <meta name="description" content="R 기본 함수, ggplot2 패키지, ggpubr 패키지를 활용해 의학논문에 필요한 그래프를 만들어보자.">
+
 <title>Zarathu Blog - R로 논문용 그래프 그리기</title>
 <style>
 code{white-space: pre-wrap;}
@@ -22,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -56,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -72,16 +76,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 50,
-  "keyboard-shortcut": [
-    null
-  ],
+  "limit": 20,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -91,10 +93,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-submit-button-title": "Submit"
   }
-}</script><script type="text/javascript">
+}</script>
+
+<script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -106,17 +109,27 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
 <link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../styles.css">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="../../styles.css">
 </head>
+
 <body class="floating nav-fixed">
 
+
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -127,73 +140,77 @@ ga('send', {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
-<span class="menu-text">Home</span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
-<span class="menu-text">Applications</span></a>
+    <a class="nav-link" href="https://openstat.ai/" rel="" target="_blank">
+ <span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
-<li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" rel="" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" rel="" target="_blank">
  <span class="dropdown-text">jskm</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" rel="" target="_blank">
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html"> 
-<span class="menu-text">Contributors</span></a>
+    <a class="nav-link" href="../../contributors.html" rel="" target="">
+ <span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
-<li>
-    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" rel="" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+    <a class="dropdown-item" href="https://github.com/shinykorea/" rel="" target="_blank">
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/zarathucorp" rel="" target="_blank"><i class="bi bi-github" role="img">
 </i> 
-<span class="menu-text"></span></a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
 </i> 
-<span class="menu-text"></span></a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+    <a class="nav-link" href="../../index.xml" rel="" target="_blank"><i class="bi bi-rss" role="img" aria-label="RSS">
 </i> 
-<span class="menu-text"></span></a>
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
-          <div class="quarto-navbar-tools">
+            <div class="quarto-navbar-tools">
 </div>
+          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">R로 논문용 그래프 그리기</h1>
                   <div>
@@ -238,53 +255,60 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li>
-<a href="#base-%ED%95%A8%EC%88%98-%EC%9D%B4%EC%9A%A9%ED%95%98%EA%B8%B0" id="toc-base-함수-이용하기" class="nav-link active" data-scroll-target="#base-%ED%95%A8%EC%88%98-%EC%9D%B4%EC%9A%A9%ED%95%98%EA%B8%B0">1. Base 함수 이용하기</a>
+  <li><a href="#base-함수-이용하기" id="toc-base-함수-이용하기" class="nav-link active" data-scroll-target="#base-함수-이용하기">1. Base 함수 이용하기</a>
   <ul class="collapse">
-<li><a href="#histogram" id="toc-histogram" class="nav-link" data-scroll-target="#histogram">Histogram</a></li>
+  <li><a href="#histogram" id="toc-histogram" class="nav-link" data-scroll-target="#histogram">Histogram</a></li>
   <li><a href="#barplot" id="toc-barplot" class="nav-link" data-scroll-target="#barplot">Barplot</a></li>
   <li><a href="#boxplot" id="toc-boxplot" class="nav-link" data-scroll-target="#boxplot">Boxplot</a></li>
   <li><a href="#scatter-plot" id="toc-scatter-plot" class="nav-link" data-scroll-target="#scatter-plot">Scatter plot</a></li>
   <li><a href="#line-plot" id="toc-line-plot" class="nav-link" data-scroll-target="#line-plot">Line plot</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#ggplot2-%EC%9D%B4%EC%9A%A9%ED%95%98%EA%B8%B0" id="toc-ggplot2-이용하기" class="nav-link" data-scroll-target="#ggplot2-%EC%9D%B4%EC%9A%A9%ED%95%98%EA%B8%B0">2. ggplot2 이용하기</a>
+  </ul></li>
+  <li><a href="#ggplot2-이용하기" id="toc-ggplot2-이용하기" class="nav-link" data-scroll-target="#ggplot2-이용하기">2. ggplot2 이용하기</a>
   <ul class="collapse">
-<li><a href="#scatter-plot-1" id="toc-scatter-plot-1" class="nav-link" data-scroll-target="#scatter-plot-1">Scatter plot</a></li>
+  <li><a href="#scatter-plot-1" id="toc-scatter-plot-1" class="nav-link" data-scroll-target="#scatter-plot-1">Scatter plot</a></li>
   <li><a href="#boxplot-1" id="toc-boxplot-1" class="nav-link" data-scroll-target="#boxplot-1">Boxplot</a></li>
   <li><a href="#barplot-1" id="toc-barplot-1" class="nav-link" data-scroll-target="#barplot-1">Barplot</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#ggpubr-%EC%9D%B4%EC%9A%A9%ED%95%98%EA%B8%B0" id="toc-ggpubr-이용하기" class="nav-link" data-scroll-target="#ggpubr-%EC%9D%B4%EC%9A%A9%ED%95%98%EA%B8%B0">3. ggpubr 이용하기</a>
+  </ul></li>
+  <li><a href="#ggpubr-이용하기" id="toc-ggpubr-이용하기" class="nav-link" data-scroll-target="#ggpubr-이용하기">3. ggpubr 이용하기</a>
   <ul class="collapse">
-<li><a href="#histogram-1" id="toc-histogram-1" class="nav-link" data-scroll-target="#histogram-1">Histogram</a></li>
+  <li><a href="#histogram-1" id="toc-histogram-1" class="nav-link" data-scroll-target="#histogram-1">Histogram</a></li>
   <li><a href="#boxplot-2" id="toc-boxplot-2" class="nav-link" data-scroll-target="#boxplot-2">Boxplot</a></li>
   <li><a href="#scatter-plot-2" id="toc-scatter-plot-2" class="nav-link" data-scroll-target="#scatter-plot-2">Scatter plot</a></li>
+  </ul></li>
+  <li><a href="#그래프-저장하기" id="toc-그래프-저장하기" class="nav-link" data-scroll-target="#그래프-저장하기">4. 그래프 저장하기</a></li>
   </ul>
-</li>
-  <li><a href="#%EA%B7%B8%EB%9E%98%ED%94%84-%EC%A0%80%EC%9E%A5%ED%95%98%EA%B8%B0" id="toc-그래프-저장하기" class="nav-link" data-scroll-target="#%EA%B7%B8%EB%9E%98%ED%94%84-%EC%A0%80%EC%9E%A5%ED%95%98%EA%B8%B0">4. 그래프 저장하기</a></li>
-  </ul></nav>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script><p>이번 시간에는 R을 이용해서 데이터와 통계 분석 결과를 한 눈에 전달할 수 있는 그래프를 만들 것이다. 예제 데이터로 지난 시간에 사용한 건강검진 데이터를 이용한다.</p>
+</script>
+
+
+
+
+<p>이번 시간에는 R을 이용해서 데이터와 통계 분석 결과를 한 눈에 전달할 수 있는 그래프를 만들 것이다. 예제 데이터로 지난 시간에 사용한 건강검진 데이터를 이용한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/jinseob2kim/R-skku-biohrs/main/data/example_g1e.csv"</span><span class="op">)</span></span>
-<span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html">paged_table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/jinseob2kim/R-skku-biohrs/main/data/example_g1e.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">paged_table</span>(<span class="fu">head</span>(data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
+
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["EXMD_BZ_YYYY"],"name":[1],"type":["int"],"align":["right"]},{"label":["RN_INDI"],"name":[2],"type":["int"],"align":["right"]},{"label":["HME_YYYYMM"],"name":[3],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_STK"],"name":[4],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_HTDZ"],"name":[5],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_HTN"],"name":[6],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_DM"],"name":[7],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_DLD"],"name":[8],"type":["int"],"align":["right"]},{"label":["Q_PHX_DX_PTB"],"name":[9],"type":["int"],"align":["right"]},{"label":["Q_HBV_AG"],"name":[10],"type":["int"],"align":["right"]},{"label":["Q_SMK_YN"],"name":[11],"type":["int"],"align":["right"]},{"label":["Q_DRK_FRQ_V09N"],"name":[12],"type":["int"],"align":["right"]},{"label":["HGHT"],"name":[13],"type":["int"],"align":["right"]},{"label":["WGHT"],"name":[14],"type":["int"],"align":["right"]},{"label":["WSTC"],"name":[15],"type":["int"],"align":["right"]},{"label":["BMI"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["VA_LT"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["VA_RT"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["BP_SYS"],"name":[19],"type":["int"],"align":["right"]},{"label":["BP_DIA"],"name":[20],"type":["int"],"align":["right"]},{"label":["URN_PROT"],"name":[21],"type":["int"],"align":["right"]},{"label":["HGB"],"name":[22],"type":["dbl"],"align":["right"]},{"label":["FBS"],"name":[23],"type":["int"],"align":["right"]},{"label":["TOT_CHOL"],"name":[24],"type":["int"],"align":["right"]},{"label":["TG"],"name":[25],"type":["int"],"align":["right"]},{"label":["HDL"],"name":[26],"type":["int"],"align":["right"]},{"label":["LDL"],"name":[27],"type":["int"],"align":["right"]},{"label":["CRTN"],"name":[28],"type":["dbl"],"align":["right"]},{"label":["SGOT"],"name":[29],"type":["int"],"align":["right"]},{"label":["SGPT"],"name":[30],"type":["int"],"align":["right"]},{"label":["GGT"],"name":[31],"type":["int"],"align":["right"]},{"label":["GFR"],"name":[32],"type":["int"],"align":["right"]}],"data":[{"1":"2009","2":"562083","3":"200909","4":"0","5":"0","6":"1","7":"0","8":"0","9":"NA","10":"3","11":"1","12":"0","13":"144","14":"61","15":"90","16":"29.4","17":"0.7","18":"0.8","19":"120","20":"80","21":"1","22":"12.6","23":"117","24":"264","25":"128","26":"60","27":"179","28":"0.9","29":"25","30":"20","31":"25","32":"59","_rn_":"1"},{"1":"2009","2":"334536","3":"200911","4":"0","5":"0","6":"0","7":"0","8":"0","9":"NA","10":"2","11":"1","12":"0","13":"162","14":"51","15":"63","16":"19.4","17":"0.8","18":"1.0","19":"120","20":"80","21":"1","22":"13.8","23":"96","24":"169","25":"92","26":"70","27":"80","28":"0.9","29":"18","30":"15","31":"28","32":"74","_rn_":"2"},{"1":"2009","2":"911867","3":"200903","4":"0","5":"0","6":"0","7":"0","8":"0","9":"NA","10":"3","11":"1","12":"0","13":"163","14":"65","15":"82","16":"24.5","17":"0.7","18":"0.6","19":"130","20":"80","21":"1","22":"15.0","23":"118","24":"216","25":"132","26":"55","27":"134","28":"0.8","29":"26","30":"30","31":"30","32":"79","_rn_":"3"},{"1":"2009","2":"183321","3":"200908","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"3","11":"1","12":"0","13":"152","14":"51","15":"70","16":"22.1","17":"0.8","18":"0.9","19":"101","20":"62","21":"1","22":"13.1","23":"90","24":"199","25":"100","26":"65","27":"114","28":"0.9","29":"18","30":"14","31":"11","32":"61","_rn_":"4"},{"1":"2009","2":"942671","3":"200909","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"3","11":"1","12":"0","13":"159","14":"50","15":"73","16":"19.8","17":"0.7","18":"0.8","19":"132","20":"78","21":"1","22":"13.0","23":"92","24":"162","25":"58","26":"40","27":"111","28":"0.9","29":"24","30":"23","31":"15","32":"49","_rn_":"5"},{"1":"2009","2":"979358","3":"200912","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"2","11":"1","12":"0","13":"157","14":"55","15":"73","16":"22.3","17":"1.5","18":"1.5","19":"110","20":"70","21":"1","22":"11.9","23":"100","24":"192","25":"109","26":"53","27":"117","28":"0.7","29":"15","30":"12","31":"14","32":"83","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -292,43 +316,47 @@ ga('send', {
 </div>
 </div>
 </div>
-<section id="base-함수-이용하기" class="level1"><h1>1. Base 함수 이용하기</h1>
+<section id="base-함수-이용하기" class="level1">
+<h1>1. Base 함수 이용하기</h1>
 <p>R에서 기본적으로 제공하는 함수만으로도 간단한 그래프를 그릴 수 있다.</p>
-<section id="histogram" class="level2"><h2 class="anchored" data-anchor-id="histogram">Histogram</h2>
+<section id="histogram" class="level2">
+<h2 class="anchored" data-anchor-id="histogram">Histogram</h2>
 <p>연속형 데이터를 히스토그램으로 나타내보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">HGHT</span>, main<span class="op">=</span><span class="st">"Distribution of height"</span>, xlab<span class="op">=</span><span class="st">"height(cm)"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(data<span class="sc">$</span>HGHT, <span class="at">main=</span><span class="st">"Distribution of height"</span>, <span class="at">xlab=</span><span class="st">"height(cm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/hist-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><strong>breaks=n</strong> 옵션을 이용해서 계급구간의 수를 설정하고, <strong>freq=F</strong> 옵션을 이용하면 y축을 빈도수가 아닌 확률밀도로 표시할 수 있다. 그래프의 색도 간단하게 설정할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">HGHT</span>, main<span class="op">=</span><span class="st">"Distribution of height"</span>, xlab<span class="op">=</span><span class="st">"height(cm)"</span>,</span>
-<span>     breaks <span class="op">=</span> <span class="fl">30</span>, freq<span class="op">=</span><span class="cn">F</span>, col<span class="op">=</span><span class="st">"grey"</span>, border<span class="op">=</span><span class="st">"white"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(data<span class="sc">$</span>HGHT, <span class="at">main=</span><span class="st">"Distribution of height"</span>, <span class="at">xlab=</span><span class="st">"height(cm)"</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">freq=</span>F, <span class="at">col=</span><span class="st">"grey"</span>, <span class="at">border=</span><span class="st">"white"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/hist2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section><section id="barplot" class="level2"><h2 class="anchored" data-anchor-id="barplot">Barplot</h2>
+</section>
+<section id="barplot" class="level2">
+<h2 class="anchored" data-anchor-id="barplot">Barplot</h2>
 <p>히스토그램과 유사하지만, X축에 표현하고자 하는 변수가 <strong>이산형 변수</strong>일 때는 빈도수를 바 그래프로 나타낼 수 있다. <strong>table()</strong> 함수를 이용해 빈도표를 만들고, 바 그래프로 나타낸다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">Q_SMK_YN</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">table</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>table <span class="ot">&lt;-</span> <span class="fu">table</span>(data<span class="sc">$</span>Q_SMK_YN)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
   1   2   3 
 995 256 391 </code></pre>
 </div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="va">table</span>, main<span class="op">=</span><span class="st">"Distribution of smoking"</span>, names.arg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span>, ylab<span class="op">=</span><span class="st">"frequency"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(table, <span class="at">main=</span><span class="st">"Distribution of smoking"</span>, <span class="at">names.arg=</span><span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>), <span class="at">ylab=</span><span class="st">"frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/bar-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>연도에 따른 흡연 여부의 분포를 하나의 그래프로 나타낼 수 있다. <strong>beside=T</strong> 옵션을 사용하면 적층형 그래프가 그룹형 그래프로 바뀐다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">Q_SMK_YN</span>, <span class="va">data</span><span class="op">$</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">table</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>table <span class="ot">&lt;-</span> <span class="fu">table</span>(data<span class="sc">$</span>Q_SMK_YN, data<span class="sc">$</span>EXMD_BZ_YYYY)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   
     2009 2010 2011 2012 2013 2014 2015
@@ -336,34 +364,38 @@ ga('send', {
   2   34   42   35   36   35   38   36
   3   53   62   48   52   67   59   50</code></pre>
 </div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="va">table</span>, main<span class="op">=</span><span class="st">"Distribution of smoking by year"</span>, ylab<span class="op">=</span><span class="st">"frequency"</span>,</span>
-<span>        legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(table, <span class="at">main=</span><span class="st">"Distribution of smoking by year"</span>, <span class="at">ylab=</span><span class="st">"frequency"</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/bar2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="va">table</span>, main<span class="op">=</span><span class="st">"Distribution of smoking by year"</span>, ylab<span class="op">=</span><span class="st">"frequency"</span>,</span>
-<span>        legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span>, beside<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(table, <span class="at">main=</span><span class="st">"Distribution of smoking by year"</span>, <span class="at">ylab=</span><span class="st">"frequency"</span>,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>), <span class="at">beside=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/bar3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section><section id="boxplot" class="level2"><h2 class="anchored" data-anchor-id="boxplot">Boxplot</h2>
+</section>
+<section id="boxplot" class="level2">
+<h2 class="anchored" data-anchor-id="boxplot">Boxplot</h2>
 <p>범주형 변수(흡연 여부, X축)에 따른 연속형 변수(수축기 혈압, Y축)의 분포를 나타내는 데는 박스 그래프를 이용할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">BP_SYS</span> <span class="op">~</span> <span class="va">Q_SMK_YN</span>, data <span class="op">=</span> <span class="va">data</span>, names<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span>, </span>
-<span>        main<span class="op">=</span><span class="st">"SBP average by smoking"</span>, ylab<span class="op">=</span><span class="st">"SBP(mmHg)"</span>, xlab<span class="op">=</span><span class="st">"Smoking"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(BP_SYS <span class="sc">~</span> Q_SMK_YN, <span class="at">data =</span> data, <span class="at">names=</span><span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>), </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">main=</span><span class="st">"SBP average by smoking"</span>, <span class="at">ylab=</span><span class="st">"SBP(mmHg)"</span>, <span class="at">xlab=</span><span class="st">"Smoking"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/box-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section><section id="scatter-plot" class="level2"><h2 class="anchored" data-anchor-id="scatter-plot">Scatter plot</h2>
+</section>
+<section id="scatter-plot" class="level2">
+<h2 class="anchored" data-anchor-id="scatter-plot">Scatter plot</h2>
 <p>두 연속형 변수 간의 관계는 산점도로 한 눈에 보여줄 수 있다. <strong>pch=n</strong> 옵션은 점의 모양, <strong>cex=n</strong> 옵션은 점의 크기를 지정한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">HGHT</span> <span class="op">~</span> <span class="va">WGHT</span>, data<span class="op">=</span><span class="va">data</span>,</span>
-<span>     ylab<span class="op">=</span><span class="st">"Height(cm)"</span>, xlab<span class="op">=</span><span class="st">"Weight(kg)"</span>,</span>
-<span>     pch<span class="op">=</span><span class="fl">16</span>, cex<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(HGHT <span class="sc">~</span> WGHT, <span class="at">data=</span>data,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Height(cm)"</span>, <span class="at">xlab=</span><span class="st">"Weight(kg)"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/scatter-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -371,21 +403,24 @@ ga('send', {
 <p>범주형 변수에 따른 점의 분포를 표현하고자 할 때는 <strong>점의 색깔(col= 옵션)</strong>로 구분해서 표현할 수 있다. 2009년과 2015년에 실시한 검사에서 수검자의 신장, 체중 분포에 차이가 있는지 확인해보자.<br>
 또, <strong>legend()</strong> 함수를 이용하면 범례에 사용될 옵션을 따로 설정할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2009</span>, <span class="fl">2015</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">HGHT</span> <span class="op">~</span> <span class="va">WGHT</span>, data<span class="op">=</span><span class="va">data2</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span>,</span>
-<span>     ylab<span class="op">=</span><span class="st">"Height(cm)"</span>, xlab<span class="op">=</span><span class="st">"Weight(kg)"</span>,</span>
-<span>     pch<span class="op">=</span><span class="fl">16</span>, cex<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"bottomright"</span>, legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"2009"</span>, <span class="st">"2015"</span><span class="op">)</span>, col<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(EXMD_BZ_YYYY <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2009</span>, <span class="dv">2015</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(HGHT <span class="sc">~</span> WGHT, <span class="at">data=</span>data2, <span class="at">col=</span><span class="fu">factor</span>(EXMD_BZ_YYYY),</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Height(cm)"</span>, <span class="at">xlab=</span><span class="st">"Weight(kg)"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="fl">0.5</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="at">x=</span><span class="st">"bottomright"</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"2009"</span>, <span class="st">"2015"</span>), <span class="at">col=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/scatter2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section><section id="line-plot" class="level2"><h2 class="anchored" data-anchor-id="line-plot">Line plot</h2>
-<p><strong>plot()</strong> 함수에 <strong>type=“l”</strong> 옵션을 사용하면 선 그래프를 그릴 수 있다.<br><strong>summarize</strong> 함수를 이용해 연도에 따른 흡연자 비율(Q_SMK_YN=3)을 계산한 뒤, 선 그래프로 표현해보자.</p>
+</section>
+<section id="line-plot" class="level2">
+<h2 class="anchored" data-anchor-id="line-plot">Line plot</h2>
+<p><strong>plot()</strong> 함수에 <strong>type=“l”</strong> 옵션을 사용하면 선 그래프를 그릴 수 있다.<br>
+<strong>summarize</strong> 함수를 이용해 연도에 따른 흡연자 비율(Q_SMK_YN=3)을 계산한 뒤, 선 그래프로 표현해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">table</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu">group_by</span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">summarize</span><span class="op">(</span>smoker<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">==</span><span class="fl">3</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">table</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>table <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(EXMD_BZ_YYYY) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">smoker=</span> <span class="fu">mean</span>(Q_SMK_YN<span class="sc">==</span><span class="dv">3</span>, <span class="at">na.rm=</span>T))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 7 × 2
   EXMD_BZ_YYYY smoker
@@ -398,44 +433,48 @@ ga('send', {
 6         2014  0.232
 7         2015  0.208</code></pre>
 </div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">table</span><span class="op">$</span><span class="va">EXMD_BZ_YYYY</span>, <span class="va">table</span><span class="op">$</span><span class="va">smoker</span>, type<span class="op">=</span><span class="st">"l"</span>,</span>
-<span>     xlab<span class="op">=</span><span class="st">"Year"</span>, ylab<span class="op">=</span><span class="st">"prop of current smoker"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(table<span class="sc">$</span>EXMD_BZ_YYYY, table<span class="sc">$</span>smoker, <span class="at">type=</span><span class="st">"l"</span>,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Year"</span>, <span class="at">ylab=</span><span class="st">"prop of current smoker"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/line-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section></section><section id="ggplot2-이용하기" class="level1"><h1>2. ggplot2 이용하기</h1>
+</section>
+</section>
+<section id="ggplot2-이용하기" class="level1">
+<h1>2. ggplot2 이용하기</h1>
 <p>다음으로 소개할 것은 R을 이용한 데이터 시각화에 가장 흔히 사용 되는 <strong>ggplot2</strong> 패키지이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"ggplot2"</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="scatter-plot-1" class="level2"><h2 class="anchored" data-anchor-id="scatter-plot-1">Scatter plot</h2>
+<section id="scatter-plot-1" class="level2">
+<h2 class="anchored" data-anchor-id="scatter-plot-1">Scatter plot</h2>
 <p>앞에서 만들었던 산점도를 ggplot2를 이용해 다시 만들어보며 ggplot의 기본 문법을 이해해 보자.</p>
 <p>ggplot 문법의 첫번째 요소는 시각화할 데이터, x축과 y축 변수, 기하학적 object의 모양, 색, 크기를 지정하고 변수의 스케일을 결정하는 <strong>aesthetic mapping</strong>이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">HGHT</span>, y<span class="op">=</span><span class="va">WGHT</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>data2, <span class="fu">aes</span>(<span class="at">x=</span>HGHT, <span class="at">y=</span>WGHT, <span class="at">col=</span><span class="fu">factor</span>(EXMD_BZ_YYYY)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/ggplot-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>위 코드를 통해 기본적인 그래프의 배경이 그려진다. 여기에 <strong>+</strong> 연산자를 이용해 기하학적 object를 추가한다. <strong>+</strong> 연산자는 magrittr에서의 <strong>%&gt;%</strong>와 같이 ggplot2 함수들을 연결해주는 역할을 한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">HGHT</span>, y<span class="op">=</span><span class="va">WGHT</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>data2, <span class="fu">aes</span>(<span class="at">x=</span>HGHT, <span class="at">y=</span>WGHT, <span class="at">col=</span><span class="fu">factor</span>(EXMD_BZ_YYYY))) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/geom-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><strong>ggtitle()</strong>, <strong>xlab()</strong>, <strong>ylab()</strong> 함수를 이용해 각각 그래프 제목, X축 라벨과 Y축 라벨을 추가할 수 있다. <strong>scale_color_manual()</strong> 함수를 이용하면 범례에 사용될 옵션들을 지정할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">HGHT</span>, y<span class="op">=</span><span class="va">WGHT</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Height and weight in year 2009 and 2015"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Height(cm)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Weight(cm)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span></span>
-<span>      values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"skyblue"</span><span class="op">)</span>,</span>
-<span>      labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Year 2009"</span>, <span class="st">"Year 2015"</span><span class="op">)</span>,</span>
-<span>      name <span class="op">=</span> <span class="st">"Exam year"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>data2, <span class="fu">aes</span>(<span class="at">x=</span>HGHT, <span class="at">y=</span>WGHT, <span class="at">col=</span><span class="fu">factor</span>(EXMD_BZ_YYYY))) <span class="sc">+</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Height and weight in year 2009 and 2015"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Height(cm)"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Weight(cm)"</span>) <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"skyblue"</span>),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Year 2009"</span>, <span class="st">"Year 2015"</span>),</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> <span class="st">"Exam year"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/geom2-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -443,14 +482,14 @@ ga('send', {
 <p>ggplot 문법의 장점은 <strong>+</strong> 연산자를 이용해서 기존 그래프 위에 새로운 요소를 추가해서 덧씌우는 것이 용이하다는 점이다.<br>
 위의 산점도에 <strong>geom_smooth()</strong> 함수를 추가하면 그래프 위에 추세선을 덧씌울 수 있다. 이때, <strong>aes(col=)</strong> 옵션을 ggplot() 함수에서 제외하고 geom_point() 함수 내로 이동시키면, aes(col=) 옵션은 geom_point object에만 영향을 미치고 geom_smooth object는 영향을 받지 않게 된다. 마찬가지로 각 object 함수 내에 지정된 <strong>alpha(투명도)</strong>, <strong>size</strong>, <strong>color</strong> 옵션은 해당 object에만 영향을 미친다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">HGHT</span>, y<span class="op">=</span><span class="va">WGHT</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span><span class="op">)</span>, alpha<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Height and weight in year 2009 and 2015"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Height(cm)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Weight(cm)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span></span>
-<span>      values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"skyblue"</span><span class="op">)</span>,</span>
-<span>      labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Year 2009"</span>, <span class="st">"Year 2015"</span><span class="op">)</span>,</span>
-<span>      name <span class="op">=</span> <span class="st">"Exam year"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>color<span class="op">=</span><span class="st">"brown"</span>, size<span class="op">=</span><span class="fl">0.8</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>data2, <span class="fu">aes</span>(<span class="at">x=</span>HGHT, <span class="at">y=</span>WGHT)) <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col=</span><span class="fu">factor</span>(EXMD_BZ_YYYY)), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Height and weight in year 2009 and 2015"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Height(cm)"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Weight(cm)"</span>) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"skyblue"</span>),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Year 2009"</span>, <span class="st">"Year 2015"</span>),</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> <span class="st">"Exam year"</span>) <span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">color=</span><span class="st">"brown"</span>, <span class="at">size=</span><span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using method = 'loess' and formula 'y ~ x'</code></pre>
 </div>
@@ -458,71 +497,75 @@ ga('send', {
 <p><img src="index_files/figure-html/geom3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section><section id="boxplot-1" class="level2"><h2 class="anchored" data-anchor-id="boxplot-1">Boxplot</h2>
+</section>
+<section id="boxplot-1" class="level2">
+<h2 class="anchored" data-anchor-id="boxplot-1">Boxplot</h2>
 <p>ggplot의 문법을 이해하고 나면 이를 응용해서 다양한 그래프를 그릴 수 있다.<br>
 앞서 만들었던 흡연 여부에 따른 수축기 혈압의 분포 그래프를 다시 만들어 보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span>, y<span class="op">=</span><span class="va">BP_SYS</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"SBP average by smoking"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"SBP(mmHg)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Smoking"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html">scale_x_discrete</a></span><span class="op">(</span>labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Q_SMK_YN))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>data2, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">factor</span>(Q_SMK_YN), <span class="at">y=</span>BP_SYS)) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"SBP average by smoking"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"SBP(mmHg)"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Smoking"</span>) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/geom_boxplot-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>여기에 하나의 변수를 더 추가해서, <strong>facet</strong>으로 구분된 그래프를 만들 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data2</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Q_PHX_DX_HTN</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span>, y<span class="op">=</span><span class="va">BP_SYS</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"SBP average by smoking"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"SBP(mmHg)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Smoking"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html">scale_x_discrete</a></span><span class="op">(</span>labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">Q_PHX_DX_HTN</span>, labeller<span class="op">=</span><span class="va">label_both</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> data2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Q_PHX_DX_HTN))</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>data2, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">factor</span>(Q_SMK_YN), <span class="at">y=</span>BP_SYS)) <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"SBP average by smoking"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"SBP(mmHg)"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Smoking"</span>) <span class="sc">+</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>)) <span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Q_PHX_DX_HTN, <span class="at">labeller=</span>label_both)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/geom_boxplot2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><strong>facet_grid</strong>를 이용해 2X2 grid 형태로 그래프를 그릴 수 있다. 고혈압 과거력 변수에 더해, 당뇨 과거력 변수에 따라서도 구분해서 그래프가 나타난다. <strong>labeller</strong> 함수를 사용해 facet의 label도 원하는 대로 설정할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data2</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Q_PHX_DX_DM</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">HTN.labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"No HTN"</span>, <span class="st">"HTN"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">HTN.labs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"1"</span><span class="op">)</span></span>
-<span><span class="va">DM.labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"No DM"</span>, <span class="st">"DM"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">DM.labs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"1"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span>, y<span class="op">=</span><span class="va">BP_SYS</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"SBP average by smoking"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"SBP(mmHg)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Smoking"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html">scale_x_discrete</a></span><span class="op">(</span>labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">Q_PHX_DX_DM</span><span class="op">~</span><span class="va">Q_PHX_DX_HTN</span>,</span>
-<span>             labeller <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labeller.html">labeller</a></span><span class="op">(</span>Q_PHX_DX_HTN <span class="op">=</span> <span class="va">HTN.labs</span>, Q_PHX_DX_DM <span class="op">=</span> <span class="va">DM.labs</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> data2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Q_PHX_DX_DM))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>HTN.labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"No HTN"</span>, <span class="st">"HTN"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(HTN.labs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0"</span>, <span class="st">"1"</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>DM.labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"No DM"</span>, <span class="st">"DM"</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(DM.labs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0"</span>, <span class="st">"1"</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>data2, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">factor</span>(Q_SMK_YN), <span class="at">y=</span>BP_SYS)) <span class="sc">+</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"SBP average by smoking"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"SBP(mmHg)"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Smoking"</span>) <span class="sc">+</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>)) <span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Q_PHX_DX_DM<span class="sc">~</span>Q_PHX_DX_HTN,</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">Q_PHX_DX_HTN =</span> HTN.labs, <span class="at">Q_PHX_DX_DM =</span> DM.labs))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/geom_boxplot3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section><section id="barplot-1" class="level2"><h2 class="anchored" data-anchor-id="barplot-1">Barplot</h2>
+</section>
+<section id="barplot-1" class="level2">
+<h2 class="anchored" data-anchor-id="barplot-1">Barplot</h2>
 <p>앞서 만들었던 바 그래프도 ggplot 패키지를 이용하면 table 변환 과정 없이 바로 그릴 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"grey"</span>, color<span class="op">=</span><span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Distribution of smoking"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Smoking"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html">scale_x_discrete</a></span><span class="op">(</span>labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>data2, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">factor</span>(Q_SMK_YN))) <span class="sc">+</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">fill=</span><span class="st">"grey"</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Distribution of smoking"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Smoking"</span>) <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/geom_bar-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>연도에 따른 흡연 여부의 분포도 table 변환 과정 없이 그릴 수 있다. geom_bar()의 <strong>position=‘fill’</strong> 옵션을 설정하면 100% 누적 비율 바 그래프가 그려진다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">EXMD_BZ_YYYY</span>, fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>position<span class="op">=</span><span class="st">"fill"</span>, color<span class="op">=</span><span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Distribution of smoking by year"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Year"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"proportion"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span></span>
-<span>      values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"skyblue"</span>, <span class="st">"navy"</span><span class="op">)</span>,</span>
-<span>      labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span>,</span>
-<span>      name <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks<span class="op">=</span><span class="fl">2009</span><span class="op">:</span><span class="fl">2015</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>data2, <span class="fu">aes</span>(<span class="at">x=</span>EXMD_BZ_YYYY, <span class="at">fill=</span><span class="fu">factor</span>(Q_SMK_YN))) <span class="sc">+</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position=</span><span class="st">"fill"</span>, <span class="at">color=</span><span class="st">"grey"</span>) <span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Distribution of smoking by year"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Year"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"proportion"</span>) <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"skyblue"</span>, <span class="st">"navy"</span>),</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>),</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> <span class="st">"Smoking"</span>) <span class="sc">+</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="dv">2009</span><span class="sc">:</span><span class="dv">2015</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/geom_bar2-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -530,94 +573,102 @@ ga('send', {
 <p>누적 비율이 아닌 count를 나타내고 싶다면 geom_bar()의 옵션을 <strong>position=‘stack’</strong>으로 변경한다. 적층형 그래프가 아닌 그룹형 그래프로 나타내고 싶다면 <strong>position=‘dodge’</strong>로 변경한다.</p>
 <p>그래프의 X축과 Y축 위치를 뒤집고 싶을 때는 <strong>coord_flip()</strong> 함수를 이용한다. X축과 Y축의 위치가 서로 바뀌는데, 축의 scale과 label을 다시 설정하지 않아도 되기 때문에 편리하다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">EXMD_BZ_YYYY</span>, fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>position<span class="op">=</span><span class="st">"dodge"</span>, color<span class="op">=</span><span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Distribution of smoking by year"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Year"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"count"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span></span>
-<span>      values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"skyblue"</span>, <span class="st">"navy"</span><span class="op">)</span>,</span>
-<span>      labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span>,</span>
-<span>      name <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks<span class="op">=</span><span class="fl">2009</span><span class="op">:</span><span class="fl">2015</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html">coord_flip</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>data2, <span class="fu">aes</span>(<span class="at">x=</span>EXMD_BZ_YYYY, <span class="at">fill=</span><span class="fu">factor</span>(Q_SMK_YN))) <span class="sc">+</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position=</span><span class="st">"dodge"</span>, <span class="at">color=</span><span class="st">"grey"</span>) <span class="sc">+</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Distribution of smoking by year"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Year"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"count"</span>) <span class="sc">+</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"skyblue"</span>, <span class="st">"navy"</span>),</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> <span class="st">"Smoking"</span>) <span class="sc">+</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="dv">2009</span><span class="sc">:</span><span class="dv">2015</span>) <span class="sc">+</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/geom_bar3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section></section><section id="ggpubr-이용하기" class="level1"><h1>3. ggpubr 이용하기</h1>
+</section>
+</section>
+<section id="ggpubr-이용하기" class="level1">
+<h1>3. ggpubr 이용하기</h1>
 <p><strong>ggpubr</strong> 패키지는 ggplot2의 문법을 활용해 논문 작성을 위한 데이터 시각화에 최적화된 기능을 제공하는 패키지이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"ggpubr"</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/">ggpubr</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggpubr"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>ggpubr 패키지를 이용하면 그래프 위에 자동으로 p-value나 통계적 유의성을 표시할 수 있고, 여러 종류의 그래프를 한 페이지로 보여주도록 배열할 수 있다.</p>
-<section id="histogram-1" class="level2"><h2 class="anchored" data-anchor-id="histogram-1">Histogram</h2>
+<section id="histogram-1" class="level2">
+<h2 class="anchored" data-anchor-id="histogram-1">Histogram</h2>
 <p>ggpubr 패키지의 기본 문법을 활용해서 히스토그램을 그려보자. 고혈압 병력이 있는 군과 없는 군 간에 체중 분포에 차이가 있을지 확인해본다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data3</span> <span class="op">&lt;-</span> <span class="va">data2</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>HTN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">Q_PHX_DX_HTN</span><span class="op">==</span><span class="fl">1</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">gghistogram</span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"WGHT"</span>,</span>
-<span>                     color<span class="op">=</span><span class="st">"HTN"</span>, fill <span class="op">=</span> <span class="st">"HTN"</span>, add<span class="op">=</span><span class="st">"mean"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>data3 <span class="ot">&lt;-</span> data2 <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">HTN =</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(Q_PHX_DX_HTN<span class="sc">==</span><span class="dv">1</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span>)))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">gghistogram</span>(<span class="at">data=</span>data3, <span class="at">x=</span><span class="st">"WGHT"</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">color=</span><span class="st">"HTN"</span>, <span class="at">fill =</span> <span class="st">"HTN"</span>, <span class="at">add=</span><span class="st">"mean"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Using `bins = 30` by default. Pick better value with the argument
 `bins`.</code></pre>
 </div>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">plot1</span> <span class="op">&lt;-</span> <span class="fu">ggpar</span><span class="op">(</span><span class="va">p</span>,</span>
-<span>               main<span class="op">=</span><span class="st">"Weight distrubution by HTN history"</span>,</span>
-<span>               xlab<span class="op">=</span><span class="st">"Weight(kg)"</span>,</span>
-<span>               legend.title<span class="op">=</span><span class="st">"HTN Dx history"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">plot1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>plot1 <span class="ot">&lt;-</span> <span class="fu">ggpar</span>(p,</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">main=</span><span class="st">"Weight distrubution by HTN history"</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">xlab=</span><span class="st">"Weight(kg)"</span>,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">legend.title=</span><span class="st">"HTN Dx history"</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/gghist-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section><section id="boxplot-2" class="level2"><h2 class="anchored" data-anchor-id="boxplot-2">Boxplot</h2>
+</section>
+<section id="boxplot-2" class="level2">
+<h2 class="anchored" data-anchor-id="boxplot-2">Boxplot</h2>
 <p>같은 분포를 박스 그래프로도 나타낼 수 있다. 여기에 <strong>stat_compare_means()</strong> 함수를 활용하면, 고혈압 병력군 간 체중 평균에 통계적으로 유의한 차이가 있는지 확인할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">ggboxplot</span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"HTN"</span>, y<span class="op">=</span><span class="st">"WGHT"</span>, color<span class="op">=</span><span class="st">"HTN"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>        <span class="fu">stat_compare_means</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"t.test"</span>, label.x.npc <span class="op">=</span> <span class="st">"middle"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">plot2</span> <span class="op">&lt;-</span> <span class="fu">ggpar</span><span class="op">(</span><span class="va">p</span>,</span>
-<span>               main<span class="op">=</span><span class="st">"Weight distrubution by HTN history"</span>,</span>
-<span>               ylab<span class="op">=</span><span class="st">"Weight(kg)"</span>,</span>
-<span>               xlab<span class="op">=</span><span class="st">"HTN Dx history"</span>,</span>
-<span>               legend<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">plot2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggboxplot</span>(<span class="at">data=</span>data3, <span class="at">x=</span><span class="st">"HTN"</span>, <span class="at">y=</span><span class="st">"WGHT"</span>, <span class="at">color=</span><span class="st">"HTN"</span>) <span class="sc">+</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stat_compare_means</span>(<span class="at">method =</span> <span class="st">"t.test"</span>, <span class="at">label.x.npc =</span> <span class="st">"middle"</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>plot2 <span class="ot">&lt;-</span> <span class="fu">ggpar</span>(p,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">main=</span><span class="st">"Weight distrubution by HTN history"</span>,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylab=</span><span class="st">"Weight(kg)"</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">xlab=</span><span class="st">"HTN Dx history"</span>,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">legend=</span><span class="st">"none"</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/ggbox-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>세 개 이상의 범주로 나누어졌을 때도 마찬가지로 통계적 유의성을 검정할 수 있다. <strong>scale_x_discrete()</strong> 함수의 사용에서 확인할 수 있듯이, ggpubr 패키지는 ggplot의 문법을 기반으로 하고 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_comparisons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"2"</span>, <span class="st">"3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"3"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">ggboxplot</span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"Q_SMK_YN"</span>, y<span class="op">=</span><span class="st">"WGHT"</span>, color<span class="op">=</span><span class="st">"Q_SMK_YN"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>        <span class="fu">stat_compare_means</span><span class="op">(</span>comparisons <span class="op">=</span> <span class="va">my_comparisons</span><span class="op">)</span> <span class="op">+</span></span>
-<span>        <span class="fu">stat_compare_means</span><span class="op">(</span>label.y <span class="op">=</span> <span class="fl">150</span><span class="op">)</span> <span class="op">+</span></span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html">scale_x_discrete</a></span><span class="op">(</span>labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">plot3</span> <span class="op">&lt;-</span> <span class="fu">ggpar</span><span class="op">(</span><span class="va">p</span>,</span>
-<span>               main<span class="op">=</span><span class="st">"Weight distrubution by smoking"</span>,</span>
-<span>               ylab<span class="op">=</span><span class="st">"Weight(kg)"</span>,</span>
-<span>               xlab<span class="op">=</span><span class="st">"Smoking"</span>,</span>
-<span>               legend<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">plot3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>my_comparisons <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>), <span class="fu">c</span>(<span class="st">"2"</span>, <span class="st">"3"</span>), <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"3"</span>))</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggboxplot</span>(<span class="at">data=</span>data3, <span class="at">x=</span><span class="st">"Q_SMK_YN"</span>, <span class="at">y=</span><span class="st">"WGHT"</span>, <span class="at">color=</span><span class="st">"Q_SMK_YN"</span>) <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stat_compare_means</span>(<span class="at">comparisons =</span> my_comparisons) <span class="sc">+</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stat_compare_means</span>(<span class="at">label.y =</span> <span class="dv">150</span>) <span class="sc">+</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span>))</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>plot3 <span class="ot">&lt;-</span> <span class="fu">ggpar</span>(p,</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">main=</span><span class="st">"Weight distrubution by smoking"</span>,</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylab=</span><span class="st">"Weight(kg)"</span>,</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">xlab=</span><span class="st">"Smoking"</span>,</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">legend=</span><span class="st">"none"</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/ggbox2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section><section id="scatter-plot-2" class="level2"><h2 class="anchored" data-anchor-id="scatter-plot-2">Scatter plot</h2>
+</section>
+<section id="scatter-plot-2" class="level2">
+<h2 class="anchored" data-anchor-id="scatter-plot-2">Scatter plot</h2>
 <p>위에서 여러번 만들었던 신장과 체중의 산점도를 다시 그려보자. <strong>add = “reg.line”</strong> 옵션을 이용해 그래프 위에 추세선을 그린 뒤, <strong>stat_cor()</strong> 함수로 두 변수 간의 상관계수와 p value를 구할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">ggscatter</span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"HGHT"</span>, y<span class="op">=</span><span class="st">"WGHT"</span>, </span>
-<span>               add <span class="op">=</span> <span class="st">"reg.line"</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>               add.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"navy"</span>, fill <span class="op">=</span> <span class="st">"lightgray"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>        <span class="fu">stat_cor</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">plot4</span> <span class="op">&lt;-</span> <span class="fu">ggpar</span><span class="op">(</span><span class="va">p</span>,</span>
-<span>               ylab<span class="op">=</span><span class="st">"Weight(kg)"</span>,</span>
-<span>               xlab<span class="op">=</span><span class="st">"Height(cm)"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">plot4</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggscatter</span>(<span class="at">data=</span>data3, <span class="at">x=</span><span class="st">"HGHT"</span>, <span class="at">y=</span><span class="st">"WGHT"</span>, </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">add =</span> <span class="st">"reg.line"</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"navy"</span>, <span class="at">fill =</span> <span class="st">"lightgray"</span>)) <span class="sc">+</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stat_cor</span>(<span class="at">method =</span> <span class="st">"pearson"</span>)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>plot4 <span class="ot">&lt;-</span> <span class="fu">ggpar</span>(p,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylab=</span><span class="st">"Weight(kg)"</span>,</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">xlab=</span><span class="st">"Height(cm)"</span>)</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
 </div>
@@ -627,15 +678,15 @@ ga('send', {
 </div>
 <p>같은 산점도를 고혈압 병력에 따른 두 그룹으로 나누어서 다른 색으로 표현하고, 상관계수와 p-value를 따로 계산할 수도 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">ggscatter</span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"HGHT"</span>, y<span class="op">=</span><span class="st">"WGHT"</span>, color<span class="op">=</span><span class="st">"HTN"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span>               add <span class="op">=</span> <span class="st">"reg.line"</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>        <span class="fu">stat_cor</span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">HTN</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">plot5</span> <span class="op">&lt;-</span> <span class="fu">ggpar</span><span class="op">(</span><span class="va">p</span>,</span>
-<span>               ylab<span class="op">=</span><span class="st">"Weight(kg)"</span>,</span>
-<span>               xlab<span class="op">=</span><span class="st">"Height(cm)"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">plot5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggscatter</span>(<span class="at">data=</span>data3, <span class="at">x=</span><span class="st">"HGHT"</span>, <span class="at">y=</span><span class="st">"WGHT"</span>, <span class="at">color=</span><span class="st">"HTN"</span>, <span class="at">alpha=</span><span class="fl">0.5</span>,</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">add =</span> <span class="st">"reg.line"</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stat_cor</span>(<span class="fu">aes</span>(<span class="at">color =</span> HTN))</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>plot5 <span class="ot">&lt;-</span> <span class="fu">ggpar</span>(p,</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylab=</span><span class="st">"Weight(kg)"</span>,</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">xlab=</span><span class="st">"Height(cm)"</span>)</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
 </div>
@@ -645,35 +696,39 @@ ga('send', {
 </div>
 <p><strong>ggarange</strong> 함수를 사용하면 여러 개의 그래프를 한 페이지에 배열해서 보여줄 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggarrange</span><span class="op">(</span><span class="va">plot2</span>, <span class="va">plot3</span>,</span>
-<span>          labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>,</span>
-<span>          ncol <span class="op">=</span> <span class="fl">2</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(plot2, plot3,</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>),</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/ggarrange-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section></section><section id="그래프-저장하기" class="level1"><h1>4. 그래프 저장하기</h1>
+</section>
+</section>
+<section id="그래프-저장하기" class="level1">
+<h1>4. 그래프 저장하기</h1>
 <p>이렇게 만들어진 그래프는 그림 파일 또는 PPT 파일로 저장해서 편집, 공유할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"rvg"</span>, <span class="st">"officer"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/officeverse/">rvg</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/officeverse/">officer</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"rvg"</span>, <span class="st">"officer"</span>))</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvg); <span class="fu">library</span>(officer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>rvg</strong> 패키지는 그래프를 편집 가능한 그림 형태로 만들어주고, <strong>officer</strong> 패키지는 그림을 microsoft PPT 파일로 저장하는 기능을 제공한다.</p>
 <p>아래 코드를 이용해 plot_file이라는 이름의 pptx 파일을 생성하고, 순서대로 슬라이드를 추가하고, 제작한 그래프를 <strong>dml(ggobj =)</strong> 함수를 이용해 편집 가능한 그림 형태로 슬라이드에 삽입하고, plot_file.pptx 파일로 로컬 드라이브에 저장하는 일련의 과정을 실행해 보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">plot_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://davidgohel.github.io/officer/reference/read_pptx.html">read_pptx</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op">(</span><span class="fu"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op">(</span>ggobj <span class="op">=</span> <span class="va">plot1</span><span class="op">)</span>, location<span class="op">=</span><span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_location_type.html">ph_location_type</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"body"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op">(</span><span class="fu"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op">(</span>ggobj <span class="op">=</span> <span class="va">plot4</span><span class="op">)</span>, location<span class="op">=</span><span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_location_type.html">ph_location_type</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"body"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op">(</span><span class="fu"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op">(</span>ggobj <span class="op">=</span> <span class="va">plot5</span><span class="op">)</span>, location<span class="op">=</span><span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_location_type.html">ph_location_type</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"body"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">plot_file</span>, target <span class="op">=</span> <span class="st">"plot_file.pptx"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>plot_file <span class="ot">&lt;-</span> <span class="fu">read_pptx</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_slide</span>() <span class="sc">%&gt;%</span> <span class="fu">ph_with</span>(<span class="fu">dml</span>(<span class="at">ggobj =</span> plot1), <span class="at">location=</span><span class="fu">ph_location_type</span>(<span class="at">type=</span><span class="st">"body"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_slide</span>() <span class="sc">%&gt;%</span> <span class="fu">ph_with</span>(<span class="fu">dml</span>(<span class="at">ggobj =</span> plot4), <span class="at">location=</span><span class="fu">ph_location_type</span>(<span class="at">type=</span><span class="st">"body"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_slide</span>() <span class="sc">%&gt;%</span> <span class="fu">ph_with</span>(<span class="fu">dml</span>(<span class="at">ggobj =</span> plot5), <span class="at">location=</span><span class="fu">ph_location_type</span>(<span class="at">type=</span><span class="st">"body"</span>))</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot_file, <span class="at">target =</span> <span class="st">"plot_file.pptx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2022,
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2022,
   author = {Kim, Yumin},
   title = {R로 {논문용} {그래프} {그리기}},
-  pages = {undefined},
   date = {2022-03-25},
   url = {https://blog.zarathu.com/posts/2022-03-25-graph},
   langid = {en}
@@ -681,7 +736,8 @@ ga('send', {
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2022" class="csl-entry quarto-appendix-citeas" role="listitem">
 Kim, Yumin. 2022. <span>“R로 논문용 그래프 그리기.”</span> March 25,
 2022. <a href="https://blog.zarathu.com/posts/2022-03-25-graph">https://blog.zarathu.com/posts/2022-03-25-graph</a>.
-</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -760,9 +816,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+  function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
+      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -772,17 +829,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start',
+      placement: 'bottom-start'
     };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -795,128 +843,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
-        }
-        typesetMath(container);
-        return container.innerHTML
-      } else {
-        typesetMath(note);
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      typesetMath(note);
-      return note.innerHTML;
-    }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
-          }
-        } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
-            if (note !== null) {
-              const html = processXRef(id, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -960,7 +886,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
-            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -986,32 +911,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1070,21 +969,20 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
-    <div class="nav-footer-left">
-<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
-</div>   
-    <div class="nav-footer-center">
-<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
-</div>
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Powered by <a href="https://quarto.org">Quarto</a>.</div>   
+    <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
