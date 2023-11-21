@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
-
+<meta name="generator" content="quarto-1.4.455">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2019-08-14">
 <meta name="description" content="이전 글 “선형모형의 다차원공간으로의 확장” 의 추가 제안으로, 선형모형의 무대를 허수축(Imaginary Axis)을 포함한 휘어진 다차원공간으로 확장, Inverted U-shape 관계를 선형관계로 재해석하였습니다.">
-
 <title>Zarathu Blog - 선형모형의 다차원공간으로의 확장(2): 허수축 도입</title>
 <style>
 code{white-space: pre-wrap;}
@@ -27,6 +24,7 @@ ul.task-list li input[type="checkbox"] {
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -44,7 +42,6 @@ div.csl-indent {
   margin-left: 2em;
 }</style>
 
-
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -61,14 +58,16 @@ div.csl-indent {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    null
+  ],
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -78,11 +77,10 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
-}</script>
-
-<script type="text/javascript">
+}</script><script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -94,26 +92,16 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script>
-<style>html{ scroll-behavior: smooth; }</style>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<link rel="stylesheet" href="../../styles.css">
+</script><style>html{ scroll-behavior: smooth; }</style>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
 </head>
-
 <body class="floating nav-fixed">
 
-
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo">
-    </a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -124,77 +112,73 @@ ga('send', {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="../../index.html" rel="" target="">
- <span class="menu-text">Home</span></a>
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://openstat.ai/" rel="" target="_blank">
- <span class="menu-text">Applications</span></a>
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
-        <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" rel="" target="_blank">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
+<li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" rel="" target="_blank">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
  <span class="dropdown-text">jskm</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" rel="" target="_blank">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html" rel="" target="">
- <span class="menu-text">Contributors</span></a>
+    <a class="nav-link" href="../../contributors.html"> 
+<span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
-        <li>
-    <a class="dropdown-item" href="https://www.r-bloggers.com/" rel="" target="_blank">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
+<li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/shinykorea/" rel="" target="_blank">
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/zarathucorp" rel="" target="_blank"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml" rel="" target="_blank"><i class="bi bi-rss" role="img" aria-label="RSS">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
+</div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
 </div>
-          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">선형모형의 다차원공간으로의 확장(2): 허수축 도입</h1>
                   <div>
@@ -241,85 +225,68 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
-    <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#시작하면서" id="toc-시작하면서" class="nav-link active" data-scroll-target="#시작하면서">시작하면서</a></li>
+<li><a href="#%EC%8B%9C%EC%9E%91%ED%95%98%EB%A9%B4%EC%84%9C" id="toc-시작하면서" class="nav-link active" data-scroll-target="#%EC%8B%9C%EC%9E%91%ED%95%98%EB%A9%B4%EC%84%9C">시작하면서</a></li>
   <li><a href="#abstract" id="toc-abstract" class="nav-link" data-scroll-target="#abstract">Abstract</a></li>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a>
+  <li>
+<a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a>
   <ul class="collapse">
-  <li><a href="#linear-relationship-cant-explained-via-mdvlm" id="toc-linear-relationship-cant-explained-via-mdvlm" class="nav-link" data-scroll-target="#linear-relationship-cant-explained-via-mdvlm">Linear relationship can’t explained via MDVLM</a></li>
-  <li><a href="#제안-mdvlm-with-imaginary-axis" id="toc-제안-mdvlm-with-imaginary-axis" class="nav-link" data-scroll-target="#제안-mdvlm-with-imaginary-axis">제안: MDVLM with Imaginary Axis</a></li>
-  </ul></li>
-  <li><a href="#formula" id="toc-formula" class="nav-link" data-scroll-target="#formula">Formula</a>
-  <ul class="collapse">
-  <li><a href="#brief-review-of-mdvlm" id="toc-brief-review-of-mdvlm" class="nav-link" data-scroll-target="#brief-review-of-mdvlm">Brief Review of MDVLM</a></li>
-  <li><a href="#mdvlm-with-imaginary-axis" id="toc-mdvlm-with-imaginary-axis" class="nav-link" data-scroll-target="#mdvlm-with-imaginary-axis">MDVLM with Imaginary Axis</a></li>
-  </ul></li>
-  <li><a href="#apply-to-data" id="toc-apply-to-data" class="nav-link" data-scroll-target="#apply-to-data">Apply to Data</a>
-  <ul class="collapse">
-  <li><a href="#example-1-y2-x_12---x_22" id="toc-example-1-y2-x_12---x_22" class="nav-link" data-scroll-target="#example-1-y2-x_12---x_22">Example 1: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span></a></li>
-  <li><a href="#example-2-y2-x_12---5-x_22" id="toc-example-2-y2-x_12---5-x_22" class="nav-link" data-scroll-target="#example-2-y2-x_12---5-x_22">Example 2: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span></a></li>
-  </ul></li>
-  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+<li><a href="#linear-relationship-cant-explained-via-mdvlm" id="toc-linear-relationship-cant-explained-via-mdvlm" class="nav-link" data-scroll-target="#linear-relationship-cant-explained-via-mdvlm">Linear relationship can’t explained via MDVLM</a></li>
+  <li><a href="#%EC%A0%9C%EC%95%88-mdvlm-with-imaginary-axis" id="toc-제안-mdvlm-with-imaginary-axis" class="nav-link" data-scroll-target="#%EC%A0%9C%EC%95%88-mdvlm-with-imaginary-axis">제안: MDVLM with Imaginary Axis</a></li>
   </ul>
-</nav>
-</nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</li>
+  <li>
+<a href="#formula" id="toc-formula" class="nav-link" data-scroll-target="#formula">Formula</a>
+  <ul class="collapse">
+<li><a href="#brief-review-of-mdvlm" id="toc-brief-review-of-mdvlm" class="nav-link" data-scroll-target="#brief-review-of-mdvlm">Brief Review of MDVLM</a></li>
+  <li><a href="#mdvlm-with-imaginary-axis" id="toc-mdvlm-with-imaginary-axis" class="nav-link" data-scroll-target="#mdvlm-with-imaginary-axis">MDVLM with Imaginary Axis</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#apply-to-data" id="toc-apply-to-data" class="nav-link" data-scroll-target="#apply-to-data">Apply to Data</a>
+  <ul class="collapse">
+<li><a href="#example-1-y2-x_12---x_22" id="toc-example-1-y2-x_12---x_22" class="nav-link" data-scroll-target="#example-1-y2-x_12---x_22">Example 1: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span></a></li>
+  <li><a href="#example-2-y2-x_12---5-x_22" id="toc-example-2-y2-x_12---5-x_22" class="nav-link" data-scroll-target="#example-2-y2-x_12---5-x_22">Example 2: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span></a></li>
+  </ul>
+</li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
-<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
-<script>
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script>
-
-
-
-
-<section id="시작하면서" class="level2">
-<h2 class="anchored" data-anchor-id="시작하면서">시작하면서</h2>
+</script><section id="시작하면서" class="level2"><h2 class="anchored" data-anchor-id="시작하면서">시작하면서</h2>
 <p>본 내용은 필자가 준비하던 박사논문 <a href="https://blog.zarathu.com/posts/2018-11-08-mdlm/">선형모형의 다차원공간으로의 확장</a> 의 후속으로 계획했던 내용으로, 선형모형 벡터공간에 <strong>허수축(Imaginary Axis)</strong> 을 도입, <strong>Inverted U-shape</strong> 을 선형관계로 재해석하였습니다. 아인슈타인 일반상대성이론의 4차원 시공간 중, 시간을 허수축으로 해석하는 것에서 아이디어를 얻었습니다. <a href="https://blog.zarathu.com/posts/2018-11-08-mdlm/">이전 내용</a> 의 요약은 아래 슬라이드를 참고해 주세요.</p>
-<embed src="MDLM_171220.pdf" type="application/pdf" width="100%" height="600">
-</section>
-<section id="abstract" class="level2">
-<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<embed src="MDLM_171220.pdf" type="application/pdf" width="100%" height="600"></section><section id="abstract" class="level2"><h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
 <p><a href="https://blog.zarathu.com/posts/2018-11-08-mdlm/">이전 연구</a> 에서 저자는 선형모형을 휘어진 다차원공간으로 확장하여 <span class="math inline">\(U\)</span>-shaped relationship을 선형모형으로 해석하는 방법을 제시하였는데, Inverted <span class="math inline">\(U\)</span>-shape은 이 방법으로 표현할 수 없었다. 이에 본 연구에서는 선형모형의 무대를 Imaginary Axis를 포함한 다차원공간까지 확장하여 Inverted <span class="math inline">\(U\)</span>-shaped relationship을 선형모형으로 해석하는 방법을 제안한다. 본 연구를 활용하여 Health science 연구자들이 새로운 관점에서 연구데이터를 해석할 수 있을 것이다.</p>
 <p><strong>keywords</strong> : Multidimension, Linear Model, Vector Space, Metric Tensor</p>
-</section>
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+</section><section id="introduction" class="level2"><h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>이전 연구에서 선형모형을 다차원 벡터공간으로 확장한 Multidimensional Vectorized Linear Model(MDVLM)을 제안하였는데, 변수들간의 dependency를 적절하게 조절하여 기존 선형모형에서 정확히 표현하기 어려웠던 관계를 표현할 수 있었다<span class="citation" data-cites="jkim2017MDVLM">(<a href="#ref-jkim2017MDVLM" role="doc-biblioref">Jinseob Kim 2017</a>)</span>. 특히 MDVLM을 통해 점점 느리게 감소하는 혹은 점점 빠르게 증가하는 모양을 표현할 수 있는데, 이는 MDVLM의 표현식 <span class="math inline">\(Y^2= \beta_1^2X_1^2 + 2r\beta_1\beta_2X_1X_2+ \beta_2^2X_2^2 = (\beta_1X_1+r\beta_2X_2)^2 + (1-r^2)\beta_2^2X_2^2\)</span>에서 <span class="math inline">\(X_1\)</span>과 <span class="math inline">\(Y\)</span>의 관계가 쌍곡선 모양을 보이기 때문이다(Figure 1).</p>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/f1_950580b6c2cf04a25cecb536aaa8dc60">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="index_files/figure-html/f1-1.png" class="img-fluid figure-img" width="960"></p>
-<figcaption class="figure-caption">Expressable relationship in conventional linear model and MDVLM</figcaption>
-</figure>
+<figure class="figure"><p><img src="index_files/figure-html/f1-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Expressable relationship in conventional linear model and MDVLM</figcaption></figure>
 </div>
 </div>
 </div>
 <p>이제 자연스러운 질문이 생긴다. “MDVLM은 점점 빠르게 감소하는 혹은 느리게 증가하는 관계를 표현할 수 있을까?” <span class="math inline">\(Y^2=X_1^2 - X_2^2\)</span>의 간단한 예를 통해 이를 살펴보도록 하자.</p>
-<section id="linear-relationship-cant-explained-via-mdvlm" class="level3">
-<h3 class="anchored" data-anchor-id="linear-relationship-cant-explained-via-mdvlm">Linear relationship can’t explained via MDVLM</h3>
+<section id="linear-relationship-cant-explained-via-mdvlm" class="level3"><h3 class="anchored" data-anchor-id="linear-relationship-cant-explained-via-mdvlm">Linear relationship can’t explained via MDVLM</h3>
 <p><span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>의 그래프(<span class="math inline">\(X, Y &gt; 0\)</span>)를 살펴보면 <span class="math inline">\(Y\)</span>와 <span class="math inline">\(X_2\)</span>는 타원모양(이 예시에서는 원)으로 감소하는 관계를 보이고 MDVLM으로 잘 표현할 수 없다(Figure 2(a)). MDVLM은 직선 혹은 쌍곡선 모양만 표현할 수 있기 때문이다.</p>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-1_e081cbdc57133bb15d179beb9c923d2d">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="1056"></p>
-<figcaption class="figure-caption">Relation between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(Y\)</span> by <span class="math inline">\(X_1\)</span>: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span></figcaption>
-</figure>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="1056"></p>
+<figcaption>Relation between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(Y\)</span> by <span class="math inline">\(X_1\)</span>: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span></figcaption></figure>
 </div>
 </div>
 </div>
@@ -337,24 +304,16 @@ ga('send', {
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-2_c73e1e345dd3cc47c94865ddae362351">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="1056"></p>
-<figcaption class="figure-caption">Relation between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(Y\)</span> by <span class="math inline">\(X_1\)</span>: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span></figcaption>
-</figure>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="1056"></p>
+<figcaption>Relation between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(Y\)</span> by <span class="math inline">\(X_1\)</span>: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span></figcaption></figure>
 </div>
 </div>
 </div>
-</section>
-<section id="제안-mdvlm-with-imaginary-axis" class="level3">
-<h3 class="anchored" data-anchor-id="제안-mdvlm-with-imaginary-axis">제안: MDVLM with Imaginary Axis</h3>
+</section><section id="제안-mdvlm-with-imaginary-axis" class="level3"><h3 class="anchored" data-anchor-id="제안-mdvlm-with-imaginary-axis">제안: MDVLM with Imaginary Axis</h3>
 <p>지금까지의 고찰을 토대로 본 연구에서는 허수축을 포함한 다차원 벡터공간에서 선형관계를 표현하는 MDVLM with Imaginary Axis(MDVLM-IA)를 제안한다. 이것은 기존의 MDVLM에 Imaginary Axis의 개념을 추가하여 일반화한 것인데, MDVLM의 개념을 간단하게 리뷰한 후 여기에 허수축을 추가하여 본 연구의 모형과 추정방법을 설명하겠다. 그 후 몇 가지 example을 통해 이것이 어떻게 활용되는지 살펴볼 것이다.</p>
-</section>
-</section>
-<section id="formula" class="level2">
-<h2 class="anchored" data-anchor-id="formula">Formula</h2>
+</section></section><section id="formula" class="level2"><h2 class="anchored" data-anchor-id="formula">Formula</h2>
 <p>이전에 연구했던 MDVLM에 대해 간단히 리뷰를 한 후, 이것을 확장하여 본 연구의 모형과 추정을 설명하도록 하겠다.</p>
-<section id="brief-review-of-mdvlm" class="level3">
-<h3 class="anchored" data-anchor-id="brief-review-of-mdvlm">Brief Review of MDVLM</h3>
+<section id="brief-review-of-mdvlm" class="level3"><h3 class="anchored" data-anchor-id="brief-review-of-mdvlm">Brief Review of MDVLM</h3>
 <p>음이 아닌 실수 <span class="math inline">\(Y\)</span>와 <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_2\)</span>,<span class="math inline">\(\cdots\)</span>, <span class="math inline">\(X_n\)</span> 들의 선형관계를 벡터공간에서 표현하면 아래와 같다.</p>
 <p><span class="math display">\[\vec{Y} = (\beta_1X_1+\beta_{01})\vec{e_1}+ (\beta_2X_2+\beta_{02})\vec{e_2} + \cdots + (\beta_pX_p+\beta_{0p})\vec{e_p}\]</span></p>
 <p>이 때, <span class="math inline">\(\vec{e_i}\)</span>들은 <span class="math inline">\(X_i\)</span>방향으로의 단위벡터로서 크기는 모두 1이며, <span class="math inline">\(X_i\)</span>와 <span class="math inline">\(X_j\)</span>가 완전히 독립적인 정보라면 <span class="math inline">\(\vec{e_i}\cdot\vec{e_j} = 0\)</span>이고 일반적으로 <span class="math inline">\(r_{ij} = r_{ji} = \vec{e_i}\cdot\vec{e_j}\)</span>의 값은 0에서 1까지의 값을 갖는다.</p>
@@ -373,9 +332,7 @@ Y^2 = (\vec{Y})\cdot(\vec{Y}) &amp;= (\sum_{i=1}^{p}(\beta_iX_i+\beta_{i0})\vec{
 <p>(<span class="math inline">\(Y_k, X_{ki}\)</span>: <span class="math inline">\(k\)</span>th individual’s <span class="math inline">\(Y, X_{i}\)</span> value)</p>
 <p>예를 들어 <span class="math inline">\(r_{ij}\)</span>가 전부 1이라면 <span class="math inline">\(SSE(\beta) = \sum_{k=1}^N (Y_k- \beta_0 -\beta_1X_{k1} - \beta_2X_{k2} - \cdots - \beta_pX_{kp})^2\)</span>로 기존 선형모형의 최소제곱추정과 동일한 것을 확인할 수 있다.</p>
 <p><span class="math inline">\(SSE(\beta)\)</span>를 최소로 하는 <span class="math inline">\(\beta\)</span>값은 optimization technique를 이용하며, Nelder-Mead, BFGS, CG, L-BFGS-B 등 다양한 방법이 있다<span class="citation" data-cites="jkim2017MDVLM fletcher1964function byrd1995limited">Nelder and Mead (<a href="#ref-nelder1965simplex" role="doc-biblioref">1965</a>)</span>.</p>
-</section>
-<section id="mdvlm-with-imaginary-axis" class="level3">
-<h3 class="anchored" data-anchor-id="mdvlm-with-imaginary-axis">MDVLM with Imaginary Axis</h3>
+</section><section id="mdvlm-with-imaginary-axis" class="level3"><h3 class="anchored" data-anchor-id="mdvlm-with-imaginary-axis">MDVLM with Imaginary Axis</h3>
 <p>MDVLM에서 허수축을 갖는 <span class="math inline">\(X_{p+1}\)</span>,<span class="math inline">\(\cdots\)</span>,<span class="math inline">\(X_{p+q}\)</span>를 추가하여 선형관계를 벡터공간에서 표현하면 아래와 같다.</p>
 <p><span class="math display">\[\vec{Y} = (\beta_1X_1+\beta_{01})\vec{e_1}+ \cdots + (\beta_pX_p+\beta_{0p})\vec{e_p} + (\beta_{p+1}X_{p+1}+\beta_{0(p+1)})\vec{e_{p+1}} + \cdots + (\beta_{p+q}X_{p+q}+\beta_{0(p+q)})\vec{e_{p+q}}\]</span></p>
 <p><span class="math inline">\(\vec{e_1},\cdots,\vec{e_p}\)</span>들은 실수축을 가진 단위벡터로서 자기자신과의 내적값인 <span class="math inline">\(\vec{e_i}\cdot\vec{e_i}\)</span>의 값이 1 이다. 반면 <span class="math inline">\(\vec{e_{p+1}},\cdots,\vec{e_{p+q}}\)</span>는 허수축을 가진 단위벡터로서 자기자신과의 내적값은 -1이다. <span class="math inline">\(1\le i, j \le p\)</span>일 때는 <span class="math inline">\(r_{ij} = r_{ji} = \vec{e_i}\cdot\vec{e_j}\)</span>가 0에서 1까지의 값을 갖으며, <span class="math inline">\(p+1\le i, j \le p+q\)</span>라면 -1에서 0까지의 값을 갖고, 그 외에는 <span class="math inline">\(r_{ij}=0\)</span>이다. 즉 Axis들의 dependency는 실수축끼리, 혹은 허수축끼리만 정의한다.</p>
@@ -395,8 +352,7 @@ Y^2 &amp;= (\sum_{i=1}^{p}(\beta_iX_i+\beta_{0i})\vec{e_i} + \sum_{i=p+1}^{p+q}(
 \end{aligned}\]</span>
 <p>$$</p>
 <p>이고, 모든 <span class="math inline">\(r_{ij}\)</span>들이 0이라면 <span class="math inline">\(\sum_{i=1}^p\beta_i^2(dX_i)^2 - \sum_{i=p+1}^{p+q}\beta_i^2(dX_i)^2\)</span>로 간단히 표현할 수 있다.</p>
-<p>최소제곱 추정을 위한 <span class="math inline">\(SSE(\beta)\)</span>값도 비슷하게 정의할 수 있으며 추정방법은 MDVLM의 경우와 같이 optimization technique를 이용한다.<br>
-</p>
+<p>최소제곱 추정을 위한 <span class="math inline">\(SSE(\beta)\)</span>값도 비슷하게 정의할 수 있으며 추정방법은 MDVLM의 경우와 같이 optimization technique를 이용한다.<br></p>
 <p><span class="math display">\[
 \begin{aligned}
 f(\beta,X_k) &amp;= (\sum_{i=1}^p(\beta_iX_{ki}+\beta_{0i})^2 + \sum_{1\le i&lt;j \le p}2r_{ij}(\beta_iX_{ki}+\beta_{0i})(\beta_jX_{kj}+\beta_{0j})) - (\sum_{i=p+1}^{p+q}(\beta_iX_{ki}+\beta_{0i})^2 + \sum_{p&lt; i&lt;j\le p+q}2r_{ij}(\beta_iX_{ki}+\beta_{0i})(\beta_jX_{kj}+\beta_{0j})) \\
@@ -404,40 +360,34 @@ SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
 \end{aligned}
 \]</span></p>
 <p>(<span class="math inline">\(Y_k, X_{ki}\)</span>: <span class="math inline">\(k\)</span>th individual’s <span class="math inline">\(Y, X_{i}\)</span> value, <span class="math inline">\(X_k= (X_{k1},\cdots,X_{k(p+q)})\)</span>)</p>
-</section>
-</section>
-<section id="apply-to-data" class="level2">
-<h2 class="anchored" data-anchor-id="apply-to-data">Apply to Data</h2>
+</section></section><section id="apply-to-data" class="level2"><h2 class="anchored" data-anchor-id="apply-to-data">Apply to Data</h2>
 <p>앞서 언급했던 <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>과 <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>인 경우의 데이터에 적용해보도록 하겠다. 모든 계산은 <code>R</code> 3.3.3의 <strong>optim</strong> 함수를 이용하였다.</p>
-<section id="example-1-y2-x_12---x_22" class="level3">
-<h3 class="anchored" data-anchor-id="example-1-y2-x_12---x_22">Example 1: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span></h3>
+<section id="example-1-y2-x_12---x_22" class="level3"><h3 class="anchored" data-anchor-id="example-1-y2-x_12---x_22">Example 1: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>
+</h3>
 <p><span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>인 양수 <span class="math inline">\(Y, X_1, X_2\)</span>의 쌍을 100번 random sampling 해서 MDVLM과 본 연구의 모형을 비교해 보았다.</p>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-3_944083de5032163515a044774cd3202f">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
-<figcaption class="figure-caption">MDVLM in <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>: Dependency and MSE</figcaption>
-</figure>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>MDVLM in <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>: Dependency and MSE</figcaption></figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-4_3f4872d63d777fe6cde78f8c911f461b">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<caption>Result comparison: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span></caption>
+<caption>Result comparison: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>
+</caption>
 <colgroup>
 <col style="width: 11%">
 <col style="width: 58%">
 <col style="width: 30%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: center;">Best Scenario of MDVLM</th>
 <th style="text-align: center;">MDVLM-IA</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Formula</td>
@@ -454,35 +404,31 @@ SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
 </div>
 </div>
 <p>실제로 <span class="math inline">\(Y^2\)</span>과 <span class="math inline">\(X_1^2, X_2^2\)</span>의 값을 이용해서 선형모형으로 추정하면 정확한 추정 결과를 얻는다. 그러나 제곱한 값이 아닌 원래값을 이용해서 선형모형에 적용하면 <span class="math inline">\(Y =\)</span> <span class="math inline">\(-0.224\)</span> <span class="math inline">\(+\)</span> <span class="math inline">\(1.163\)</span> <span class="math inline">\(X_1 +\)</span> <span class="math inline">\(-0.634\)</span> <span class="math inline">\(X_2\)</span>이 되어 정확한 추정을 얻지 못하고, MDVLM으로 확장해도 이보다 정확한 추정은 얻을 수 없다.</p>
-</section>
-<section id="example-2-y2-x_12---5-x_22" class="level3">
-<h3 class="anchored" data-anchor-id="example-2-y2-x_12---5-x_22">Example 2: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span></h3>
+</section><section id="example-2-y2-x_12---5-x_22" class="level3"><h3 class="anchored" data-anchor-id="example-2-y2-x_12---5-x_22">Example 2: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>
+</h3>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-5_626dcbb8e4b110b3b9bdb3cf7c555140">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="960"></p>
-<figcaption class="figure-caption">MDVLM in <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>: Dependency and MSE</figcaption>
-</figure>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>MDVLM in <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>: Dependency and MSE</figcaption></figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-6_ad63ac7cb8f1016306d4dbd3ef44f751">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<caption>Result comparison: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span></caption>
+<caption>Result comparison: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>
+</caption>
 <colgroup>
 <col style="width: 10%">
 <col style="width: 53%">
 <col style="width: 35%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: center;">Best Scenario of MDVLM</th>
 <th style="text-align: center;">MDVLM-IA</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Formula</td>
@@ -498,59 +444,37 @@ SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
 </table>
 </div>
 </div>
-</section>
-</section>
-<section id="discussion" class="level2">
-<h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
+</section></section><section id="discussion" class="level2"><h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
 <p>예상대로 <span class="math inline">\(Y\)</span>가 빨리 감소하거나 천천히 증가하는 타원모양의 관계는 MDVLM으로 잘 표현할 수 없었으며, 허수축을 활용했을 때 정확히 표현할 수 있었다.</p>
 <p>본 연구가 Health Status를 설명하기 위해 처음으로 허수 <span class="math inline">\(i\)</span>의 개념을 이용하였다는 의의가 있다. 본 연구에서는 <span class="math inline">\(i^2 = -1\)</span>이라는 특징을 이용해서 타원모양을 허수축에서의 선형관계로 재해석하여 MDVLM보다 더 확장된 선형모형을 제시하였는데, 이를 통해 연구자들이 선형관계라는 직관적 해석을 잃지 않으면서 지금보다 훨씬 다양하게 건강현상을 설명할 수 있을 것이라 확신한다.</p>
 <p>허수 <span class="math inline">\(i\)</span>의 또하나의 큰 특징은 복소수 표현을 통해 실수체계를 확장할 수 있다는 것인데, 이것을 적극적으로 활용한 분야 중 하나가 양자역학이다. 양자역학의 대표적인 방정식인 슈뢰딩거 방정식(Schrödinger equation)은 입자의 운동은 확률로 기술되고 그 확률은 파동처럼 행동한다는 내용인데 파동을 기술하는 함수가 복소수로 표현되어 있다는 것이 특징이며, 복소수가 포함된 파동함수 그 자체로는 실제 세계를 해석하기 어렵지만 켤레복소수와의 곱을 통해 확률을 표현할 수 있다. 양자역학이 미시세계의 현상을 설명하는 새로운 방법이 된 것과 마찬가지로 확률을 복소수를 포함한 파동함수로 표현하는 방법이 향후 Health science에서 건강상태를 설명하는 새로운 방법이 될 수 있을 것이라 예상한다.</p>
 <p>본 연구를 시작으로 향후 Health science에서 복소수를 활용한 모형이 활발히 제안되길 기대한다.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-byrd1995limited" class="csl-entry" role="listitem">
-Byrd, Richard H, Peihuang Lu, Jorge Nocedal, and Ciyou Zhu. 1995. <span>“A Limited Memory Algorithm for Bound Constrained Optimization.”</span> <em>SIAM Journal on Scientific Computing</em> 16 (5): 1190–1208.
-</div>
-<div id="ref-corry1997hermann" class="csl-entry" role="listitem">
-Corry, Leo. 1997. <span>“Hermann Minkowski and the Postulate of Relativity.”</span> <em>Archive for History of Exact Sciences</em> 51 (4): 273–314.
-</div>
-<div id="ref-fletcher1964function" class="csl-entry" role="listitem">
-Fletcher, Reeves, and Colin M Reeves. 1964. <span>“Function Minimization by Conjugate Gradients.”</span> <em>The Computer Journal</em> 7 (2): 149–54.
-</div>
-<div id="ref-jkim2017MDVLM" class="csl-entry" role="listitem">
-Jinseob Kim, Joohon Sung. 2017. <span>“Multidimensional Vectorized Linear Model: Linear Model in Multidimensional Vector Space.”</span> <em>Unpublish</em>.
-</div>
-<div id="ref-kulkarni1981proper" class="csl-entry" role="listitem">
-Kulkarni, Ravi S. 1981. <span>“Proper Actions and Pseudo—Riemannian Space Forms.”</span> <em>Advances in Mathematics</em> 40 (1): 10–51.
-</div>
-<div id="ref-nelder1965simplex" class="csl-entry" role="listitem">
-Nelder, John A, and Roger Mead. 1965. <span>“A Simplex Method for Function Minimization.”</span> <em>The Computer Journal</em> 7 (4): 308–13.
-</div>
-<div id="ref-byrd1995limited" class="csl-entry" role="listitem">
-Byrd, Richard H, Peihuang Lu, Jorge Nocedal, and Ciyou Zhu. 1995. <span>“A Limited Memory Algorithm for Bound Constrained Optimization.”</span> <em>SIAM Journal on Scientific Computing</em> 16 (5): 1190–1208.
-</div>
-<div id="ref-corry1997hermann" class="csl-entry" role="listitem">
-Corry, Leo. 1997. <span>“Hermann Minkowski and the Postulate of Relativity.”</span> <em>Archive for History of Exact Sciences</em> 51 (4): 273–314.
-</div>
-<div id="ref-fletcher1964function" class="csl-entry" role="listitem">
-Fletcher, Reeves, and Colin M Reeves. 1964. <span>“Function Minimization by Conjugate Gradients.”</span> <em>The Computer Journal</em> 7 (2): 149–54.
-</div>
-<div id="ref-jkim2017MDVLM" class="csl-entry" role="listitem">
-Jinseob Kim, Joohon Sung. 2017. <span>“Multidimensional Vectorized Linear Model: Linear Model in Multidimensional Vector Space.”</span> <em>Unpublish</em>.
-</div>
-<div id="ref-kulkarni1981proper" class="csl-entry" role="listitem">
-Kulkarni, Ravi S. 1981. <span>“Proper Actions and Pseudo—Riemannian Space Forms.”</span> <em>Advances in Mathematics</em> 40 (1): 10–51.
-</div>
-<div id="ref-nelder1965simplex" class="csl-entry" role="listitem">
-Nelder, John A, and Roger Mead. 1965. <span>“A Simplex Method for Function Minimization.”</span> <em>The Computer Journal</em> 7 (4): 308–13.
-</div>
-</div>
-</section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2019,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-byrd1995limited" class="csl-entry" role="listitem">
+Byrd, Richard H, Peihuang Lu, Jorge Nocedal, and Ciyou Zhu. 1995. <span>“A Limited Memory Algorithm for Bound Constrained Optimization.”</span> <em>SIAM Journal on Scientific Computing</em> 16 (5): 1190–1208.
+</div>
+<div id="ref-corry1997hermann" class="csl-entry" role="listitem">
+Corry, Leo. 1997. <span>“Hermann Minkowski and the Postulate of Relativity.”</span> <em>Archive for History of Exact Sciences</em> 51 (4): 273–314.
+</div>
+<div id="ref-fletcher1964function" class="csl-entry" role="listitem">
+Fletcher, Reeves, and Colin M Reeves. 1964. <span>“Function Minimization by Conjugate Gradients.”</span> <em>The Computer Journal</em> 7 (2): 149–54.
+</div>
+<div id="ref-jkim2017MDVLM" class="csl-entry" role="listitem">
+Jinseob Kim, Joohon Sung. 2017. <span>“Multidimensional Vectorized Linear Model: Linear Model in Multidimensional Vector Space.”</span> <em>Unpublish</em>.
+</div>
+<div id="ref-kulkarni1981proper" class="csl-entry" role="listitem">
+Kulkarni, Ravi S. 1981. <span>“Proper Actions and Pseudo—Riemannian Space Forms.”</span> <em>Advances in Mathematics</em> 40 (1): 10–51.
+</div>
+<div id="ref-nelder1965simplex" class="csl-entry" role="listitem">
+Nelder, John A, and Roger Mead. 1965. <span>“A Simplex Method for Function Minimization.”</span> <em>The Computer Journal</em> 7 (4): 308–13.
+</div>
+</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2019,
   author = {Kim, Jinseob},
   title = {선형모형의 {다차원공간으로의} {확장(2):} {허수축} {도입}},
+  pages = {undefined},
   date = {2019-08-14},
   url = {https://blog.zarathu.com/posts/2019-08-14-mdlmwithimaginaryaxes},
   langid = {en}
@@ -558,8 +482,7 @@ Nelder, John A, and Roger Mead. 1965. <span>“A Simplex Method for Function Min
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2019" class="csl-entry quarto-appendix-citeas" role="listitem">
 Kim, Jinseob. 2019. <span>“선형모형의 다차원공간으로의 확장(2): 허수축
 도입.”</span> August 14, 2019. <a href="https://blog.zarathu.com/posts/2019-08-14-mdlmwithimaginaryaxes">https://blog.zarathu.com/posts/2019-08-14-mdlmwithimaginaryaxes</a>.
-</div></div></section></div></main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -638,10 +561,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -651,8 +573,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -665,6 +596,128 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    const typesetMath = (el) => {
+      if (window.MathJax) {
+        // MathJax Typeset
+        window.MathJax.typeset([el]);
+      } else if (window.katex) {
+        // KaTeX Render
+        var mathElements = el.getElementsByClassName("math");
+        var macros = [];
+        for (var i = 0; i < mathElements.length; i++) {
+          var texText = mathElements[i].firstChild;
+          if (mathElements[i].tagName == "SPAN") {
+            window.katex.render(texText.data, mathElements[i], {
+              displayMode: mathElements[i].classList.contains('display'),
+              throwOnError: false,
+              macros: macros,
+              fleqn: false
+            });
+          }
+        }
+      }
+    }
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        typesetMath(container);
+        return container.innerHTML
+      } else {
+        typesetMath(note);
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      typesetMath(note);
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -708,6 +761,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -733,6 +787,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -791,20 +871,21 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script>
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
-    <div class="nav-footer-left">Powered by <a href="https://quarto.org">Quarto</a>.</div>   
-    <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
-
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
