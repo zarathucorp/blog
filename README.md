@@ -13,8 +13,9 @@ Zarathu Official Blog - <https://blog.zarathu.com>
 5.  아티클을 담을 디렉토리 **생성**, 이때 형식은 `YYYY-MM-DD-TITLE` (다른 예시 참조)
 6.  생성한 디렉토리로 이동 후 `index.qmd` 생성
 7.  YAML 작성 예시 (render 에러가 날 경우 **Indent**, **tab** 확인)
+수정 해야 하는 것은 `title`, `description`, `categories`, `alliases`, `author`, `date`
 
-```{YAML}
+``` {yaml}
 ---
 title: "pkgdown을 활용한 R 패키지 문서화"
 description: | 
@@ -33,6 +34,7 @@ author:
   email: jinhwan@zarathu.com
   url: https://github.com/jhk0530
 image: img/logo.png
+fig_width: 400
 date: 2023-03-15
 format: html
 execute:
