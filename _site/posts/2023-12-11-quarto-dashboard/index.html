@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.455">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Jinhwan Kim">
+<meta name="dcterms.date" content="2023-12-11">
+<meta name="description" content="Quarto를 사용하여 R과 Python, Julia로 인터랙티브한 대시보드를 만드는 방법을 소개합니다.">
+<title>Zarathu Blog - Quarto Dashboard를 이용해 대시보드 개발하기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    null
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script><style>html{ scroll-behavior: smooth; }</style>
+<link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Zarathu Blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">Applications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R packages</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
+<li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributors.html"> 
+<span class="menu-text">Contributors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Partners</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
+<li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Quarto Dashboard를 이용해 대시보드 개발하기</h1>
+                  <div>
+        <div class="description">
+          <p>Quarto를 사용하여 R과 Python, Julia로 인터랙티브한 대시보드를 만드는 방법을 소개합니다.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">Python</div>
+                <div class="quarto-category">Quarto</div>
+                <div class="quarto-category">Quarto dashboard</div>
+                <div class="quarto-category">Dashboard</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/jhk0530">Jinhwan Kim</a> <a href="mailto:jinhwan@zarathu.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">December 11, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#%EA%B0%9C%EC%9A%94" id="toc-개요" class="nav-link active" data-scroll-target="#%EA%B0%9C%EC%9A%94">개요</a></li>
+  <li><a href="#quarto-dashboard-%EC%86%8C%EA%B0%9C" id="toc-quarto-dashboard-소개" class="nav-link" data-scroll-target="#quarto-dashboard-%EC%86%8C%EA%B0%9C">Quarto Dashboard 소개</a></li>
+  <li><a href="#%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C%EC%9D%98-%EA%B5%AC%EC%84%B1" id="toc-대시보드의-구성" class="nav-link" data-scroll-target="#%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C%EC%9D%98-%EA%B5%AC%EC%84%B1">대시보드의 구성</a></li>
+  <li>
+<a href="#%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0" id="toc-대시보드-만들기" class="nav-link" data-scroll-target="#%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0">대시보드 만들기</a>
+  <ul class="collapse">
+<li><a href="#%EC%B9%B4%EB%93%9C" id="toc-카드" class="nav-link" data-scroll-target="#%EC%B9%B4%EB%93%9C">카드</a></li>
+  <li><a href="#%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83" id="toc-레이아웃" class="nav-link" data-scroll-target="#%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83">레이아웃</a></li>
+  <li><a href="#tabset" id="toc-tabset" class="nav-link" data-scroll-target="#tabset">Tabset</a></li>
+  <li><a href="#%ED%8E%98%EC%9D%B4%EC%A7%80" id="toc-페이지" class="nav-link" data-scroll-target="#%ED%8E%98%EC%9D%B4%EC%A7%80">페이지</a></li>
+  <li><a href="#header" id="toc-header" class="nav-link" data-scroll-target="#header">Header</a></li>
+  <li><a href="#sidebar" id="toc-sidebar" class="nav-link" data-scroll-target="#sidebar">Sidebar</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C-%EC%B1%84%EC%9A%B0%EA%B8%B0" id="toc-대시보드-채우기" class="nav-link" data-scroll-target="#%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C-%EC%B1%84%EC%9A%B0%EA%B8%B0">대시보드 채우기</a>
+  <ul class="collapse">
+<li><a href="#%ED%85%8C%EC%9D%B4%EB%B8%94" id="toc-테이블" class="nav-link" data-scroll-target="#%ED%85%8C%EC%9D%B4%EB%B8%94">테이블</a></li>
+  <li><a href="#value-box" id="toc-value-box" class="nav-link" data-scroll-target="#value-box">Value Box</a></li>
+  <li><a href="#theme" id="toc-theme" class="nav-link" data-scroll-target="#theme">Theme</a></li>
+  </ul>
+</li>
+  <li><a href="#%EB%8B%A4%EB%A5%B8-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C-%ED%88%B4%EA%B3%BC-quarto-dashboard%EC%9D%98-%EC%B0%A8%EC%9D%B4" id="toc-다른-대시보드-툴과-quarto-dashboard의-차이" class="nav-link" data-scroll-target="#%EB%8B%A4%EB%A5%B8-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C-%ED%88%B4%EA%B3%BC-quarto-dashboard%EC%9D%98-%EC%B0%A8%EC%9D%B4">다른 대시보드 툴과 Quarto Dashboard의 차이</a></li>
+  <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">마치며</a></li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="개요" class="level2"><h2 class="anchored" data-anchor-id="개요">개요</h2>
+<p>Quarto는 R Markdown을 기반으로 하는 문서 작성 도구입니다.</p>
+<p>R Markdown은 RStudio에서 제공하는 문서 작성 도구로, R 코드와 문서를 한 번에 작성할 수 있습니다.</p>
+<p>Quarto는 R Markdown의 <a href="https://pkgs.rstudio.com/flexdashboard/">flexdashboard</a>의 역할을 이어가는 기능으로써, R Markdown의 장점을 그대로 가져오면서, R 뿐만 아니라 Python, Julia 등 다양한 언어를 지원합니다.</p>
+<p>본 게시글은 <a href="https://quarto.org/docs/dashboards/">Quarto 공식 문서</a>를 참고해 작성되었습니다.</p>
+</section><section id="quarto-dashboard-소개" class="level2"><h2 class="anchored" data-anchor-id="quarto-dashboard-소개">Quarto Dashboard 소개</h2>
+<div class="callout callout-style-simple callout-warning callout-titled" title="Quarto Versione">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Quarto Versione
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quarto Dashboard는 현재 개발 중인 기능으로, 1.4 버전 이상의 Quarto를 사용해야 합니다.</p>
+</div>
+</div>
+<p>이번 글에서는 Quarto를 사용하여 <strong>Markdown</strong>과 <code>R</code>, <code>Python</code>, <code>Julia</code>등을 활용해 <strong>아래 이미지 같은</strong> 인터랙티브한 대시보드를 만드는 방법을 소개합니다.</p>
+<p style="align:center">
+<img src="img/dashboard.png" width="100%"></p>
+<p>더 많은 예시는 <a href="https://quarto.org/docs/dashboards/examples/">링크</a>에서 확인 할 수 있습니다.</p>
+<p>Quarto dashboard는 다양한 언어를 활용할 수 있기 때문에 이들로 부터 파생되는 <a href="https://plotly.com/python/">Plotly</a>, <a href="https://ipyleaflet.readthedocs.io/en/latest/">Leaflet</a>, <a href="https://quarto.org/docs/interactive/widgets/jupyter.html">Jupyter Widgets</a>, <a href="https://www.htmlwidgets.org/">Htmlwidgets</a>를 포함한 다양한 커스텀 위젯을 사용할 수 있습니다.</p>
+<div class="callout callout-style-simple callout-tip callout-titled" title="Prerequisite">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Prerequisite
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://education.zarathu.com/day3/quartodocu.html">Quarto</a>와 <a href="https://blog.zarathu.com/posts/2019-01-03-rmarkdown/">Rmarkdown</a>에 대한 설명은 이전의 글과 자료를 참고하시길 바랍니다.</p>
+</div>
+</div>
+</section><section id="대시보드의-구성" class="level2"><h2 class="anchored" data-anchor-id="대시보드의-구성">대시보드의 구성</h2>
+<p>보통 대시보드의 구성은 아래 그림과 같이 5개의 영역으로 구분합니다.</p>
+<p style="align:center">
+<img src="img/layout.png" width="100%"></p>
+<ul>
+<li>Main: 대시보드에서 주요 지표를 포함한 내용을 표현하는 공간입니다.</li>
+<li>Header / Footer : 대시보드에 대한 일반적인 메타 정보를 소개합니다.</li>
+<li>Navigator: 대시보드가 여러 개의 내용을 담고 있어 main을 구분해야하는 경우 각 페이지를 구분짓는 역할을 합니다.</li>
+<li>Side: 대시보드의 내용을 조절하는 역할을 합니다.</li>
+</ul>
+<p>즉, 위의 예시에서 보여진 <code>Labor and Delivery Dashboard</code>는 아래와 같이 영역을 구분해볼 수 있습니다.</p>
+<p style="align:center">
+<img src="img/layout2.png" width="100%"></p>
+</section><section id="대시보드-만들기" class="level2"><h2 class="anchored" data-anchor-id="대시보드-만들기">대시보드 만들기</h2>
+<p>qmd 파일에서 (이후 배포를 고려하면 파일명은 <code>index.qmd</code>를 권장합니다.)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> dashboard</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>를 추가하여 quarto dashboard를 만들 수 있습니다.</p>
+<p>Quarto dashboard에서 반드시 알아야 하는 컨셉은 3가지이며 하나씩 소개하면더 대시보드를 만들어가겠습니다.</p>
+<ol type="1">
+<li>카드</li>
+<li>대시보드 내부 요소 배치 (레이아웃)</li>
+<li>대시보드 구성 (페이지)</li>
+</ol>
+<section id="카드" class="level3"><h3 class="anchored" data-anchor-id="카드">카드</h3>
+<p><code>카드</code>는 대시보드의 Main을 구성하는 <strong>그래프나 테이블, 값등을 포함하는 하나의 단위</strong>입니다.</p>
+<p>quarto에서는 다음과 같이 사용합니다.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="sc">:::</span> {.card}</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>This text will be displayed within a card</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="sc">:::</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>추가로</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>```{r}</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>를 사용하는 기본 코드 블록은 Dashboard format에서 자동으로 카드로 변경됩니다.</p>
+<p>이때 카드에 사용할 수 있는 주요 옵션은 아래와 같습니다.</p>
+<ul>
+<li>
+<code>title</code>: 카드의 제목</li>
+<li>
+<code>expandable</code>: 카드를 접을 수 있을지의 여부</li>
+<li>
+<code>output</code>: 결과를 출력할지 여부</li>
+<li>
+<code>layout-ncol</code>: 카드 내용을 구분할 column의 개수 (<code>layout-nrow</code>)</li>
+</ul>
+<p>이 외에 기본 코드블록을 사용하기 때문에 코드 블록의 <a href="https://quarto.org/docs/output-formats/html-code.html">옵션</a>들을 사용 가능합니다.</p>
+<p>이제 카드를 qmd에 2개 추가해보겠습니다.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>```{r}</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>library(ggplot2)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>```{r}</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "Card 1"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>mtcars <span class="op">|&gt;</span> </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  ggplot(aes(x <span class="op">=</span> mpg, y <span class="op">=</span> wt)) <span class="op">+</span> </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  geom_point()</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>mtcars <span class="op">|&gt;</span> </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  ggplot(aes(x <span class="op">=</span> mpg, y <span class="op">=</span> qsec)) <span class="op">+</span> </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  geom_point()</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>```{r}</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "Card 2"</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>mtcars <span class="op">|&gt;</span> </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  ggplot(aes(x <span class="op">=</span> mpg, y <span class="op">=</span> vs)) <span class="op">+</span> </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  geom_point()</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>```{r}</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "Card 3"</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| expandable: false</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>mtcars <span class="op">|&gt;</span> </span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  ggplot(aes(x <span class="op">=</span> mpg, y <span class="op">=</span> vs)) <span class="op">+</span> </span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  geom_point()</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>위 코드의 실행결과는 아래 그림처럼 2개의 카드를 만들어냅니다. (2번째는 <code>output:false</code>)</p>
+<p style="align:center">
+<img src="img/card.png" width="100%"></p>
+</section><section id="레이아웃" class="level3"><h3 class="anchored" data-anchor-id="레이아웃">레이아웃</h3>
+<p>대시보드의 레이아웃은 특별한 설정을 하지 않으면 (위 예시처럼) 1개의 카드가 1개의 행으로 배치됩니다.</p>
+<p>그런데 <code>## Row</code> 태그를 사용하면 <code>## Row</code> 태그 아래에 있는 카드들을 1개의 행에 배치할 수 있습니다.</p>
+<p>(마찬가지로 별도의 설정을 하지 않으면 <code>Column</code>에 같은 크기로 배치됩니다)</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Row {height=70%}</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>:::{.card}</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>Card <span class="dv">1</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">## Row {height=30%}</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>:::{.card}</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>Card <span class="dv">2</span><span class="op">-</span><span class="dv">1</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>:::{.card}</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>Card <span class="dv">2</span><span class="op">-</span><span class="dv">2</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p style="align:center">
+<img src="img/card2.png" width="100%"></p>
+<p>추가로, <code>Row</code>로 먼저 행을 구분 한뒤, <code>Column</code>을 사용해 디테일한 배치도 가능합니다.</p>
+<p>이때 Column은 <code>### Column</code>으로 <code>## Row</code>안에만 사용할 수 있습니다.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Row {height=70%}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>:::{.card}</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>Card <span class="dv">1</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">## Row {height=30%}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">### Column {width=40%}</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>:::{.card}</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>Card <span class="dv">2</span><span class="op">-</span><span class="dv">1</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">### Column {width=60%}</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>:::{.card}</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>Card <span class="dv">2</span><span class="op">-</span><span class="dv">2</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p style="align:center">
+<img src="img/card3.png" width="100%"></p>
+<div class="callout callout-style-simple callout-tip callout-titled" title="Scroll">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Scroll
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>별 다른 설정을 하지 않으면 각 Row에 배치된 요소의 높이들의 합이 100%에 맞추어 크기가 일괄적으로 조절되지만, <strong>Scrolling</strong> 옵션을 사용하여 요소의 원래 크기를 유지하며 화면이 스크롤 되게 변경할 수 있습니다.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">dashboard</span><span class="kw">:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">scrolling</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="at"> </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section><section id="tabset" class="level3"><h3 class="anchored" data-anchor-id="tabset">Tabset</h3>
+<p>카드를 행과 열로 배치하는 것 외에도, <code>Tabset</code>을 사용하여 카드를 탭으로 구분할 수 있습니다.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Row {.tabset}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p style="align:center">
+<img src="img/tabset1.png" width="49%"><img src="img/tabset2.png" width="49%"></p>
+</section><section id="페이지" class="level3"><h3 class="anchored" data-anchor-id="페이지">페이지</h3>
+<p>대시보드에 여러 요소들을 담아야 한다면 별도의 페이지로 구분하여 만들 수 있습니다.</p>
+<p>이때 페이지는 <code>#</code> 태그를 사용하고, yaml에 “title”을 설정해야합니다.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"dashboard"</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> dashboard</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Page A</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Row {height=70%}</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>:::{.card}</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>Card <span class="dv">1</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">## Row {height=30%}</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">### Column {width=40%}</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>:::{.card}</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>Card <span class="dv">2</span><span class="op">-</span><span class="dv">1</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">### Column {width=60%}</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>:::{.card}</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>Card <span class="dv">2</span><span class="op">-</span><span class="dv">2</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Page B</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>:::{.card}</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>Card <span class="dv">3</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p style="align:center">
+<img src="img/card4.png" width="49%"><img src="img/card5.png" width="49%"></p>
+<p>이처럼 title을 설정하면 Header가 생성되며 Page 가 존재한다면 Navigation 역할도 같이 수행합니다.</p>
+</section><section id="header" class="level3"><h3 class="anchored" data-anchor-id="header">Header</h3>
+<p>Header에서는 <code>title</code> 외에 <code>author</code>를 사용해 일종의 “subtitle” 역할을 할 수 있습니다. 추가로 <code>logo</code>를 사용하여 대시보드의 로고를 설정하거나, 외부 링크나 자료로 연동할 수 있는 <code>nav-buttons</code>도 사용가능합니다.</p>
+<p>네비게이션 버튼을 커스텀으로 제작하는 것에 대해서는 설명하지 않고 <a href="https://quarto.org/docs/reference/projects/websites.html#nav-items">공식문서의 링크</a>로 대체합니다.</p>
+<div class="callout callout-style-simple callout-warning callout-titled" title="Quarto Versione">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Quarto Versione
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quarto 1.4.455 버전을 기준으로, 네비게이션 버튼은 버그로 아직 작동하지 않습니다.</p>
+</div>
+</div>
+</section><section id="sidebar" class="level3"><h3 class="anchored" data-anchor-id="sidebar">Sidebar</h3>
+<p>Sidebar는 <code>sidebar</code> 태그를 사용하여 만들 수 있으며 특정 페이지에 종속되지 않습니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># {.sidebar}</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>Sidebar content </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>로고와 sidebar를 설정하고 난 대시보드의 결과는 다음과 같습니다.</p>
+<p style="align:center">
+<img src="img/sidebar.png" width="100%"></p>
+</section></section><section id="대시보드-채우기" class="level2"><h2 class="anchored" data-anchor-id="대시보드-채우기">대시보드 채우기</h2>
+<p>대시보드에 들어갈 수 있는 내용은 주로 <code>r</code>로 만든 결과물이지만, 다른 형태의 요소들도 활용할 수 있습니다.</p>
+<section id="테이블" class="level3"><h3 class="anchored" data-anchor-id="테이블">테이블</h3>
+<p>여러 옵션이 있으며, <code>kable</code>, <code>DT</code>, <code>reactable</code> 정도가 사용됩니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span> <span class="co"># kable</span></span>
+<span></span>
+<span><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span> <span class="co"># DT</span></span>
+<span></span>
+<span><span class="fu">reactable</span><span class="fu">::</span><span class="fu"><a href="https://glin.github.io/reactable/reference/reactable.html">reactable</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span> <span class="co"># reactable</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p style="align:center">
+<img src="img/table.png" width="100%"></p>
+</section><section id="value-box" class="level3"><h3 class="anchored" data-anchor-id="value-box">Value Box</h3>
+<p>Quarto 대시보드에서만 사용할 수 있는 “지표를 표현하기 위한” 특별한 방법입니다.</p>
+<p>아래 예시처럼 <code>{.valuebox}</code> 코드로 사용할 수 있습니다.</p>
+<p>옵션으로 <strong>색상</strong>은 <code>primary</code>, <code>secondary</code>, <code>success</code>, <code>danger</code>, <code>warning</code>, <code>info</code>, <code>light</code>, <code>dark</code>를 사용할 수 있으며, 사용 가능한 (bootstrap) <strong>아이콘</strong>의 종류는 <a href="https://icons.getbootstrap.com/">링크</a>에서 확인 가능합니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="sc">:::</span> {.valuebox icon<span class="ot">=</span><span class="st">"pencil"</span> color<span class="ot">=</span>primary}</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>Articles per day</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">r articles</span><span class="st">`</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="sc">:::</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p style="align:center">
+<img src="img/valuebox.png" width="100%"></p>
+</section><section id="theme" class="level3"><h3 class="anchored" data-anchor-id="theme">Theme</h3>
+<p>다른 Quarto 기능들과 마찬가지로 Quarto Dashboard도 yaml에서 사용되어 색상과 스타일을 꾸밀 수 있는 Theme 기능을 제공합니다.</p>
+<p>기본 값은 cosmo이고, 가능한 값의 목록은 <a href="https://bootswatch.com/">링크</a>에서 확인 가능합니다.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">dashboard</span><span class="kw">:</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">logo</span><span class="kw">:</span><span class="at"> Zarathu.png</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> sandstone</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p style="align:center">
+<img src="img/theme.png" width="100%"></p>
+<div class="callout callout-style-simple callout-tip callout-titled" title="대시보드 게시하기">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+대시보드 게시하기
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quarto로 만든 Dashboard는 Quarto pub, Github page, Posit connect, Netlify 등의 서비스를 활용하여 공유할 수 있습니다.</p>
+<p>이 글에서는 다루지 않으며, 차라투의 Quarto <a href="https://education.zarathu.com/day3/quartodocu.html">교육자료</a> 17페이지를 참고하시길 바랍니다.</p>
+</div>
+</div>
+</section></section><section id="다른-대시보드-툴과-quarto-dashboard의-차이" class="level2"><h2 class="anchored" data-anchor-id="다른-대시보드-툴과-quarto-dashboard의-차이">다른 대시보드 툴과 Quarto Dashboard의 차이</h2>
+<p style="align:center">
+<img src="img/figure.png" width="100%"></p>
+<p><code>Quarto Dashboard</code>는 <code>Tableau</code>, <code>Power BI</code>, <code>Shiny</code>나 <code>Streamlit</code>과 같은 대시보드를 만들 수 있는 도구와 비교될 수 있습니다.</p>
+<p>제일 먼저 대시보드 사용에 필요한 비용입니다. 즉 <code>Tableau</code>, <code>Power BI</code>등 상용 서비스는 <strong>클릭</strong>으로 쉽게 만들 수 있지만 사용하기 위해 비용이 발생합니다.</p>
+<p>한편 <code>Quarto Dashboard</code>는 별도의 비용은 없지만, 개발을 통해 대시보드를 만들어야 합니다.</p>
+<p>두번째로는 대시보드의 내용이 변하는 가의 여부입니다.</p>
+<p>즉 사용자의 선택 값에 따라 값이 <strong>동적</strong>으로 바뀌어야 한다면 <code>Shiny</code>나 <code>Streamlit</code>을 사용하는 것이 좋습니다.</p>
+<p>반면 사용자의 선택은 없고 값이 <strong>정적</strong>으로 고정되어 있다면 <code>Quarto Dashboard</code>를 사용하는 것이 좋습니다.</p>
+<p>이 둘의 차이는 <strong>동적</strong> 대시보드는 사용자의 입력을 처리하고 결과를 호스팅할 <strong>서버</strong>가 필요하고 이를 한 비용이 필요합니다. (<strong>정적</strong>은 비용이 들지 않습니다)</p>
+<div class="callout callout-style-simple callout-tip callout-titled" title="정적/동적">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+정적/동적
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>예를 들어, 어제의 매출 데이터를 계산하여 보여주는 대시보드는 날마다 값이 변하긴 하지만, 사용자의 입력이 없기 때문에 <strong>정적</strong>으로 이루어져 <code>Quarto Dashboard</code>로도 충분합니다.</p>
+<p>그런데 동일한 매출 데이터이지만, 사용자로부터 날짜를 입력 받고, 그에 따라 매출 데이터를 계산하여 보여주는 대시보드는 데이터가 변해야하기 때문에 <code>Shiny</code>나 <code>Streamlit</code> 과 같은 <strong>동적</strong> 대시보드가 필요합니다.</p>
+</div>
+</div>
+<p>(Quarto Dashboard에서의 <strong>페이지</strong>나 <strong>탭셋</strong>은 모든 결과를 만들어두고 필요에 따라 보여주는 내용을 다르게 한다의 관점으로 데이터가 변하지 않는 <strong>정적</strong> 기능입니다.)</p>
+</section><section id="마치며" class="level2"><h2 class="anchored" data-anchor-id="마치며">마치며</h2>
+<p>이번 아티클에서는 새롭게 공개된 <code>Quarto Dashboard</code>를 통해 대시보드를 구성하는 방법에 대해 알아보았습니다.</p>
+<p>꼭 <strong>헬스케어</strong>, <strong>메디컬</strong> <strong>IT</strong> 업계에서뿐 아니라 다양한 산업과 역할에서 데이터를 활용하기 위해 대시보드를 활용하고 있습니다.</p>
+<p><code>Quarto</code>와 사용 가능한 <code>R</code>이나 <code>Python을</code> 활용할 수 있다면 <code>Quarto Dashboard</code>를 사용해 정적 대시보드 구성과 공유가 더욱 편리하게 이루어지기를 기대하며 글을 마칩니다.</p>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+  author = {Kim, Jinhwan},
+  title = {Quarto {Dashboard를} {이용해} {대시보드} {개발하기}},
+  pages = {undefined},
+  date = {2023-12-11},
+  url = {https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Jinhwan. 2023. <span>“Quarto Dashboard를 이용해 대시보드
+개발하기.”</span> December 11, 2023. <a href="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard">https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard</a>.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    const typesetMath = (el) => {
+      if (window.MathJax) {
+        // MathJax Typeset
+        window.MathJax.typeset([el]);
+      } else if (window.katex) {
+        // KaTeX Render
+        var mathElements = el.getElementsByClassName("math");
+        var macros = [];
+        for (var i = 0; i < mathElements.length; i++) {
+          var texText = mathElements[i].firstChild;
+          if (mathElements[i].tagName == "SPAN") {
+            window.katex.render(texText.data, mathElements[i], {
+              displayMode: mathElements[i].classList.contains('display'),
+              throwOnError: false,
+              macros: macros,
+              fleqn: false
+            });
+          }
+        }
+      }
+    }
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        typesetMath(container);
+        return container.innerHTML
+      } else {
+        typesetMath(note);
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      typesetMath(note);
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -10,7 +10,629 @@
 <atom:link href="https://blog.zarathu.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>News, insights, and in-depth case studies from Zarathu</description>
 <generator>quarto-1.4.455</generator>
-<lastBuildDate>Mon, 20 Nov 2023 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 10 Dec 2023 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Quarto Dashboard를 이용해 대시보드 개발하기</title>
+  <dc:creator>Jinhwan Kim</dc:creator>
+  <link>https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/</link>
+  <description><![CDATA[ <!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="개요" class="level2"><h2 class="anchored" data-anchor-id="개요">개요</h2>
+<p>Quarto는 R Markdown을 기반으로 하는 문서 작성 도구입니다.</p>
+<p>R Markdown은 RStudio에서 제공하는 문서 작성 도구로, R 코드와 문서를 한 번에 작성할 수 있습니다.</p>
+<p>Quarto는 R Markdown의 <a href="https://pkgs.rstudio.com/flexdashboard/">flexdashboard</a>의 역할을 이어가는 기능으로써, R Markdown의 장점을 그대로 가져오면서, R 뿐만 아니라 Python, Julia 등 다양한 언어를 지원합니다.</p>
+<p>본 게시글은 <a href="https://quarto.org/docs/dashboards/">Quarto 공식 문서</a>를 참고해 작성되었습니다.</p>
+</section><section id="quarto-dashboard-소개" class="level2"><h2 class="anchored" data-anchor-id="quarto-dashboard-소개">Quarto Dashboard 소개</h2>
+<div class="callout callout-style-simple callout-warning callout-titled" title="Quarto Versione">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Quarto Versione
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quarto Dashboard는 현재 개발 중인 기능으로, 1.4 버전 이상의 Quarto를 사용해야 합니다.</p>
+</div>
+</div>
+<p>이번 글에서는 Quarto를 사용하여 <strong>Markdown</strong>과 <code>R</code>, <code>Python</code>, <code>Julia</code>등을 활용해 <strong>아래 이미지 같은</strong> 인터랙티브한 대시보드를 만드는 방법을 소개합니다.</p>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/dashboard.png" width="100%"></p>
+<p>더 많은 예시는 <a href="https://quarto.org/docs/dashboards/examples/">링크</a>에서 확인 할 수 있습니다.</p>
+<p>Quarto dashboard는 다양한 언어를 활용할 수 있기 때문에 이들로 부터 파생되는 <a href="https://plotly.com/python/">Plotly</a>, <a href="https://ipyleaflet.readthedocs.io/en/latest/">Leaflet</a>, <a href="https://quarto.org/docs/interactive/widgets/jupyter.html">Jupyter Widgets</a>, <a href="https://www.htmlwidgets.org/">Htmlwidgets</a>를 포함한 다양한 커스텀 위젯을 사용할 수 있습니다.</p>
+<div class="callout callout-style-simple callout-tip callout-titled" title="Prerequisite">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Prerequisite
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://education.zarathu.com/day3/quartodocu.html">Quarto</a>와 <a href="https://blog.zarathu.com/posts/2019-01-03-rmarkdown/">Rmarkdown</a>에 대한 설명은 이전의 글과 자료를 참고하시길 바랍니다.</p>
+</div>
+</div>
+</section><section id="대시보드의-구성" class="level2"><h2 class="anchored" data-anchor-id="대시보드의-구성">대시보드의 구성</h2>
+<p>보통 대시보드의 구성은 아래 그림과 같이 5개의 영역으로 구분합니다.</p>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/layout.png" width="100%"></p>
+<ul>
+<li>Main: 대시보드에서 주요 지표를 포함한 내용을 표현하는 공간입니다.</li>
+<li>Header / Footer : 대시보드에 대한 일반적인 메타 정보를 소개합니다.</li>
+<li>Navigator: 대시보드가 여러 개의 내용을 담고 있어 main을 구분해야하는 경우 각 페이지를 구분짓는 역할을 합니다.</li>
+<li>Side: 대시보드의 내용을 조절하는 역할을 합니다.</li>
+</ul>
+<p>즉, 위의 예시에서 보여진 <code>Labor and Delivery Dashboard</code>는 아래와 같이 영역을 구분해볼 수 있습니다.</p>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/layout2.png" width="100%"></p>
+</section><section id="대시보드-만들기" class="level2"><h2 class="anchored" data-anchor-id="대시보드-만들기">대시보드 만들기</h2>
+<p>qmd 파일에서 (이후 배포를 고려하면 파일명은 <code>index.qmd</code>를 권장합니다.)</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">---</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">format</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> dashboard</span></span>
+<span id="cb1-3"><span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">---</span></span></code></pre></div>
+<p>를 추가하여 quarto dashboard를 만들 수 있습니다.</p>
+<p>Quarto dashboard에서 반드시 알아야 하는 컨셉은 3가지이며 하나씩 소개하면더 대시보드를 만들어가겠습니다.</p>
+<ol type="1">
+<li>카드</li>
+<li>대시보드 내부 요소 배치 (레이아웃)</li>
+<li>대시보드 구성 (페이지)</li>
+</ol>
+<section id="카드" class="level3"><h3 class="anchored" data-anchor-id="카드">카드</h3>
+<p><code>카드</code>는 대시보드의 Main을 구성하는 <strong>그래프나 테이블, 값등을 포함하는 하나의 단위</strong>입니다.</p>
+<p>quarto에서는 다음과 같이 사용합니다.</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:::</span> {.card}</span>
+<span id="cb2-2">This text will be displayed within a card</span>
+<span id="cb2-3"><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:::</span></span></code></pre></div>
+<p>추가로</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1">```{r}</span>
+<span id="cb3-2">...</span>
+<span id="cb3-3">```</span></code></pre></div>
+<p>를 사용하는 기본 코드 블록은 Dashboard format에서 자동으로 카드로 변경됩니다.</p>
+<p>이때 카드에 사용할 수 있는 주요 옵션은 아래와 같습니다.</p>
+<ul>
+<li>
+<code>title</code>: 카드의 제목</li>
+<li>
+<code>expandable</code>: 카드를 접을 수 있을지의 여부</li>
+<li>
+<code>output</code>: 결과를 출력할지 여부</li>
+<li>
+<code>layout-ncol</code>: 카드 내용을 구분할 column의 개수 (<code>layout-nrow</code>)</li>
+</ul>
+<p>이 외에 기본 코드블록을 사용하기 때문에 코드 블록의 <a href="https://quarto.org/docs/output-formats/html-code.html">옵션</a>들을 사용 가능합니다.</p>
+<p>이제 카드를 qmd에 2개 추가해보겠습니다.</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">```{r}</span>
+<span id="cb4-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| echo: false</span></span>
+<span id="cb4-3">library(ggplot2)</span>
+<span id="cb4-4">```</span>
+<span id="cb4-5"></span>
+<span id="cb4-6">```{r}</span>
+<span id="cb4-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| title: "Card 1"</span></span>
+<span id="cb4-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| layout-ncol: 2</span></span>
+<span id="cb4-9">mtcars <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb4-10">  ggplot(aes(x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> mpg, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> wt)) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb4-11">  geom_point()</span>
+<span id="cb4-12"></span>
+<span id="cb4-13">mtcars <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb4-14">  ggplot(aes(x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> mpg, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> qsec)) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb4-15">  geom_point()</span>
+<span id="cb4-16">```</span>
+<span id="cb4-17"></span>
+<span id="cb4-18">```{r}</span>
+<span id="cb4-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| title: "Card 2"</span></span>
+<span id="cb4-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| output: false</span></span>
+<span id="cb4-21">mtcars <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb4-22">  ggplot(aes(x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> mpg, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> vs)) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb4-23">  geom_point()</span>
+<span id="cb4-24">```</span>
+<span id="cb4-25"></span>
+<span id="cb4-26">```{r}</span>
+<span id="cb4-27"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| title: "Card 3"</span></span>
+<span id="cb4-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| expandable: false</span></span>
+<span id="cb4-29">mtcars <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb4-30">  ggplot(aes(x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> mpg, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> vs)) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb4-31">  geom_point()</span>
+<span id="cb4-32">```</span></code></pre></div>
+<p>위 코드의 실행결과는 아래 그림처럼 2개의 카드를 만들어냅니다. (2번째는 <code>output:false</code>)</p>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/card.png" width="100%"></p>
+</section><section id="레이아웃" class="level3"><h3 class="anchored" data-anchor-id="레이아웃">레이아웃</h3>
+<p>대시보드의 레이아웃은 특별한 설정을 하지 않으면 (위 예시처럼) 1개의 카드가 1개의 행으로 배치됩니다.</p>
+<p>그런데 <code>## Row</code> 태그를 사용하면 <code>## Row</code> 태그 아래에 있는 카드들을 1개의 행에 배치할 수 있습니다.</p>
+<p>(마찬가지로 별도의 설정을 하지 않으면 <code>Column</code>에 같은 크기로 배치됩니다)</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">## Row {height=70%}</span></span>
+<span id="cb5-2"></span>
+<span id="cb5-3">:::{.card}</span>
+<span id="cb5-4">Card <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb5-5">:::</span>
+<span id="cb5-6"></span>
+<span id="cb5-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">## Row {height=30%}</span></span>
+<span id="cb5-8"></span>
+<span id="cb5-9">:::{.card}</span>
+<span id="cb5-10">Card <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb5-11">:::</span>
+<span id="cb5-12"></span>
+<span id="cb5-13">:::{.card}</span>
+<span id="cb5-14">Card <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb5-15">:::</span></code></pre></div>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/card2.png" width="100%"></p>
+<p>추가로, <code>Row</code>로 먼저 행을 구분 한뒤, <code>Column</code>을 사용해 디테일한 배치도 가능합니다.</p>
+<p>이때 Column은 <code>### Column</code>으로 <code>## Row</code>안에만 사용할 수 있습니다.</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">## Row {height=70%}</span></span>
+<span id="cb6-2"></span>
+<span id="cb6-3">:::{.card}</span>
+<span id="cb6-4">Card <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb6-5">:::</span>
+<span id="cb6-6"></span>
+<span id="cb6-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">## Row {height=30%}</span></span>
+<span id="cb6-8"></span>
+<span id="cb6-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">### Column {width=40%}</span></span>
+<span id="cb6-10">:::{.card}</span>
+<span id="cb6-11">Card <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb6-12">:::</span>
+<span id="cb6-13"></span>
+<span id="cb6-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">### Column {width=60%}</span></span>
+<span id="cb6-15">:::{.card}</span>
+<span id="cb6-16">Card <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb6-17">:::</span></code></pre></div>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/card3.png" width="100%"></p>
+<div class="callout callout-style-simple callout-tip callout-titled" title="Scroll">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Scroll
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>별 다른 설정을 하지 않으면 각 Row에 배치된 요소의 높이들의 합이 100%에 맞추어 크기가 일괄적으로 조절되지만, <strong>Scrolling</strong> 옵션을 사용하여 요소의 원래 크기를 유지하며 화면이 스크롤 되게 변경할 수 있습니다.</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">format</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span></span>
+<span id="cb7-2"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dashboard</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span></span>
+<span id="cb7-3"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scrolling</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">true</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span></span></code></pre></div>
+</div>
+</div>
+</section><section id="tabset" class="level3"><h3 class="anchored" data-anchor-id="tabset">Tabset</h3>
+<p>카드를 행과 열로 배치하는 것 외에도, <code>Tabset</code>을 사용하여 카드를 탭으로 구분할 수 있습니다.</p>
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">## Row {.tabset}</span></span></code></pre></div>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/tabset1.png" width="49%"><img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/tabset2.png" width="49%"></p>
+</section><section id="페이지" class="level3"><h3 class="anchored" data-anchor-id="페이지">페이지</h3>
+<p>대시보드에 여러 요소들을 담아야 한다면 별도의 페이지로 구분하여 만들 수 있습니다.</p>
+<p>이때 페이지는 <code>#</code> 태그를 사용하고, yaml에 “title”을 설정해야합니다.</p>
+<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">---</span></span>
+<span id="cb9-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">title</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dashboard"</span></span>
+<span id="cb9-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">format</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> dashboard</span></span>
+<span id="cb9-4"><span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">---</span></span></code></pre></div>
+<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Page A</span></span>
+<span id="cb10-2"></span>
+<span id="cb10-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">## Row {height=70%}</span></span>
+<span id="cb10-4"></span>
+<span id="cb10-5">:::{.card}</span>
+<span id="cb10-6">Card <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb10-7">:::</span>
+<span id="cb10-8"></span>
+<span id="cb10-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">## Row {height=30%}</span></span>
+<span id="cb10-10"></span>
+<span id="cb10-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">### Column {width=40%}</span></span>
+<span id="cb10-12">:::{.card}</span>
+<span id="cb10-13">Card <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb10-14">:::</span>
+<span id="cb10-15"></span>
+<span id="cb10-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">### Column {width=60%}</span></span>
+<span id="cb10-17">:::{.card}</span>
+<span id="cb10-18">Card <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb10-19">:::</span>
+<span id="cb10-20"></span>
+<span id="cb10-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Page B</span></span>
+<span id="cb10-22"></span>
+<span id="cb10-23">:::{.card}</span>
+<span id="cb10-24">Card <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span></span>
+<span id="cb10-25">:::</span></code></pre></div>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/card4.png" width="49%"><img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/card5.png" width="49%"></p>
+<p>이처럼 title을 설정하면 Header가 생성되며 Page 가 존재한다면 Navigation 역할도 같이 수행합니다.</p>
+</section><section id="header" class="level3"><h3 class="anchored" data-anchor-id="header">Header</h3>
+<p>Header에서는 <code>title</code> 외에 <code>author</code>를 사용해 일종의 “subtitle” 역할을 할 수 있습니다. 추가로 <code>logo</code>를 사용하여 대시보드의 로고를 설정하거나, 외부 링크나 자료로 연동할 수 있는 <code>nav-buttons</code>도 사용가능합니다.</p>
+<p>네비게이션 버튼을 커스텀으로 제작하는 것에 대해서는 설명하지 않고 <a href="https://quarto.org/docs/reference/projects/websites.html#nav-items">공식문서의 링크</a>로 대체합니다.</p>
+<div class="callout callout-style-simple callout-warning callout-titled" title="Quarto Versione">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Quarto Versione
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quarto 1.4.455 버전을 기준으로, 네비게이션 버튼은 버그로 아직 작동하지 않습니다.</p>
+</div>
+</div>
+</section><section id="sidebar" class="level3"><h3 class="anchored" data-anchor-id="sidebar">Sidebar</h3>
+<p>Sidebar는 <code>sidebar</code> 태그를 사용하여 만들 수 있으며 특정 페이지에 종속되지 않습니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># {.sidebar}</span></span>
+<span id="cb11-2"></span>
+<span id="cb11-3">Sidebar content </span></code></pre></div>
+</div>
+<p>로고와 sidebar를 설정하고 난 대시보드의 결과는 다음과 같습니다.</p>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/sidebar.png" width="100%"></p>
+</section></section><section id="대시보드-채우기" class="level2"><h2 class="anchored" data-anchor-id="대시보드-채우기">대시보드 채우기</h2>
+<p>대시보드에 들어갈 수 있는 내용은 주로 <code>r</code>로 만든 결과물이지만, 다른 형태의 요소들도 활용할 수 있습니다.</p>
+<section id="테이블" class="level3"><h3 class="anchored" data-anchor-id="테이블">테이블</h3>
+<p>여러 옵션이 있으며, <code>kable</code>, <code>DT</code>, <code>reactable</code> 정도가 사용됩니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">knitr</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mtcars</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># kable</span></span>
+<span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">DT</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mtcars</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># DT</span></span>
+<span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reactable</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://glin.github.io/reactable/reference/reactable.html">reactable</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mtcars</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># reactable</span></span></code></pre></div>
+</div>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/table.png" width="100%"></p>
+</section><section id="value-box" class="level3"><h3 class="anchored" data-anchor-id="value-box">Value Box</h3>
+<p>Quarto 대시보드에서만 사용할 수 있는 “지표를 표현하기 위한” 특별한 방법입니다.</p>
+<p>아래 예시처럼 <code>{.valuebox}</code> 코드로 사용할 수 있습니다.</p>
+<p>옵션으로 <strong>색상</strong>은 <code>primary</code>, <code>secondary</code>, <code>success</code>, <code>danger</code>, <code>warning</code>, <code>info</code>, <code>light</code>, <code>dark</code>를 사용할 수 있으며, 사용 가능한 (bootstrap) <strong>아이콘</strong>의 종류는 <a href="https://icons.getbootstrap.com/">링크</a>에서 확인 가능합니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:::</span> {.valuebox icon<span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pencil"</span> color<span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span>primary}</span>
+<span id="cb13-2">Articles per day</span>
+<span id="cb13-3"></span>
+<span id="cb13-4"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">r articles</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span></span>
+<span id="cb13-5"><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:::</span></span></code></pre></div>
+</div>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/valuebox.png" width="100%"></p>
+</section><section id="theme" class="level3"><h3 class="anchored" data-anchor-id="theme">Theme</h3>
+<p>다른 Quarto 기능들과 마찬가지로 Quarto Dashboard도 yaml에서 사용되어 색상과 스타일을 꾸밀 수 있는 Theme 기능을 제공합니다.</p>
+<p>기본 값은 cosmo이고, 가능한 값의 목록은 <a href="https://bootswatch.com/">링크</a>에서 확인 가능합니다.</p>
+<div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb14-1"><span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">---</span></span>
+<span id="cb14-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">format</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span></span>
+<span id="cb14-3"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dashboard</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span></span>
+<span id="cb14-4"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">logo</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> Zarathu.png</span></span>
+<span id="cb14-5"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> sandstone</span></span>
+<span id="cb14-6"><span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">---</span></span></code></pre></div>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/theme.png" width="100%"></p>
+<div class="callout callout-style-simple callout-tip callout-titled" title="대시보드 게시하기">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+대시보드 게시하기
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quarto로 만든 Dashboard는 Quarto pub, Github page, Posit connect, Netlify 등의 서비스를 활용하여 공유할 수 있습니다.</p>
+<p>이 글에서는 다루지 않으며, 차라투의 Quarto <a href="https://education.zarathu.com/day3/quartodocu.html">교육자료</a> 17페이지를 참고하시길 바랍니다.</p>
+</div>
+</div>
+</section></section><section id="다른-대시보드-툴과-quarto-dashboard의-차이" class="level2"><h2 class="anchored" data-anchor-id="다른-대시보드-툴과-quarto-dashboard의-차이">다른 대시보드 툴과 Quarto Dashboard의 차이</h2>
+<p style="align:center">
+<img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/figure.png" width="100%"></p>
+<p><code>Quarto Dashboard</code>는 <code>Tableau</code>, <code>Power BI</code>, <code>Shiny</code>나 <code>Streamlit</code>과 같은 대시보드를 만들 수 있는 도구와 비교될 수 있습니다.</p>
+<p>제일 먼저 대시보드 사용에 필요한 비용입니다. 즉 <code>Tableau</code>, <code>Power BI</code>등 상용 서비스는 <strong>클릭</strong>으로 쉽게 만들 수 있지만 사용하기 위해 비용이 발생합니다.</p>
+<p>한편 <code>Quarto Dashboard</code>는 별도의 비용은 없지만, 개발을 통해 대시보드를 만들어야 합니다.</p>
+<p>두번째로는 대시보드의 내용이 변하는 가의 여부입니다.</p>
+<p>즉 사용자의 선택 값에 따라 값이 <strong>동적</strong>으로 바뀌어야 한다면 <code>Shiny</code>나 <code>Streamlit</code>을 사용하는 것이 좋습니다.</p>
+<p>반면 사용자의 선택은 없고 값이 <strong>정적</strong>으로 고정되어 있다면 <code>Quarto Dashboard</code>를 사용하는 것이 좋습니다.</p>
+<p>이 둘의 차이는 <strong>동적</strong> 대시보드는 사용자의 입력을 처리하고 결과를 호스팅할 <strong>서버</strong>가 필요하고 이를 한 비용이 필요합니다. (<strong>정적</strong>은 비용이 들지 않습니다)</p>
+<div class="callout callout-style-simple callout-tip callout-titled" title="정적/동적">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+정적/동적
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>예를 들어, 어제의 매출 데이터를 계산하여 보여주는 대시보드는 날마다 값이 변하긴 하지만, 사용자의 입력이 없기 때문에 <strong>정적</strong>으로 이루어져 <code>Quarto Dashboard</code>로도 충분합니다.</p>
+<p>그런데 동일한 매출 데이터이지만, 사용자로부터 날짜를 입력 받고, 그에 따라 매출 데이터를 계산하여 보여주는 대시보드는 데이터가 변해야하기 때문에 <code>Shiny</code>나 <code>Streamlit</code> 과 같은 <strong>동적</strong> 대시보드가 필요합니다.</p>
+</div>
+</div>
+<p>(Quarto Dashboard에서의 <strong>페이지</strong>나 <strong>탭셋</strong>은 모든 결과를 만들어두고 필요에 따라 보여주는 내용을 다르게 한다의 관점으로 데이터가 변하지 않는 <strong>정적</strong> 기능입니다.)</p>
+</section><section id="마치며" class="level2"><h2 class="anchored" data-anchor-id="마치며">마치며</h2>
+<p>이번 아티클에서는 새롭게 공개된 <code>Quarto Dashboard</code>를 통해 대시보드를 구성하는 방법에 대해 알아보았습니다.</p>
+<p>꼭 <strong>헬스케어</strong>, <strong>메디컬</strong> <strong>IT</strong> 업계에서뿐 아니라 다양한 산업과 역할에서 데이터를 활용하기 위해 대시보드를 활용하고 있습니다.</p>
+<p><code>Quarto</code>와 사용 가능한 <code>R</code>이나 <code>Python을</code> 활용할 수 있다면 <code>Quarto Dashboard</code>를 사용해 정적 대시보드 구성과 공유가 더욱 편리하게 이루어지기를 기대하며 글을 마칩니다.</p>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+  author = {Kim, Jinhwan},
+  title = {Quarto {Dashboard를} {이용해} {대시보드} {개발하기}},
+  pages = {undefined},
+  date = {2023-12-11},
+  url = {https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
+Kim, Jinhwan. 2023. <span>“Quarto Dashboard를 이용해 대시보드
+개발하기.”</span> December 11, 2023. <a href="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard">https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>Python</category>
+  <category>Quarto</category>
+  <category>Quarto dashboard</category>
+  <category>Dashboard</category>
+  <guid>https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/</guid>
+  <pubDate>Sun, 10 Dec 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/logo.png" medium="image" type="image/png" height="35" width="144"/>
+</item>
 <item>
   <title>Rstudio에서 Copilot을 활용해 AI로 코딩하기</title>
   <dc:creator>Jinhwan Kim</dc:creator>
@@ -1850,8 +2472,9 @@ Han, Jihee. 2023. <span>“Quarto Manuscripts를 이용해 학술 논문
 작성하기.”</span> October 18, 2023. <a href="https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript">https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
-  <category>quarto</category>
-  <category>quarto manuscript</category>
+  <category>Quarto</category>
+  <category>Quarto manuscript</category>
+  <category>Article</category>
   <guid>https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript/</guid>
   <pubDate>Tue, 17 Oct 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript/img/logo.png" medium="image" type="image/png" height="35" width="144"/>
@@ -5691,7 +6314,7 @@ font-style: inherit;">data</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -5841,7 +6464,7 @@ font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://Rdatatable.gitlab.io/data.table/reference/tstrsplit.html">tstrsplit</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/tstrsplit.html">tstrsplit</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -5924,7 +6547,7 @@ font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://Rdatatable.gitlab.io/data.table/reference/tstrsplit.html">tstrsplit</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/tstrsplit.html">tstrsplit</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -6012,7 +6635,7 @@ background-color: null;
 font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://Rdatatable.gitlab.io/data.table/reference/setcolorder.html">setcolorder</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/setcolorder.html">setcolorder</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -6313,7 +6936,7 @@ font-style: inherit;">data</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -6426,7 +7049,7 @@ font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://Rdatatable.gitlab.io/data.table/reference/tstrsplit.html">tstrsplit</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/tstrsplit.html">tstrsplit</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -6505,7 +7128,7 @@ font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://Rdatatable.gitlab.io/data.table/reference/tstrsplit.html">tstrsplit</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/tstrsplit.html">tstrsplit</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -6589,7 +7212,7 @@ background-color: null;
 font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://Rdatatable.gitlab.io/data.table/reference/setcolorder.html">setcolorder</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/setcolorder.html">setcolorder</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -12498,522 +13121,6 @@ September 30, 2022. <a href="https://blog.zarathu.com/posts/2022-09-30-GAM">http
   <guid>https://blog.zarathu.com/posts/2022-09-30-GAM/</guid>
   <pubDate>Thu, 29 Sep 2022 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2022-06-26-biohrs-data-scientist/af217364216d8.png" medium="image" type="image/png"/>
-</item>
-<item>
-  <title>Shiny for Python</title>
-  <dc:creator>Chaehee Lee</dc:creator>
-  <link>https://blog.zarathu.com/posts/2022-08-26-shinyforpython/</link>
-  <description><![CDATA[ <!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-L0DYYSH9KM');
-</script><section id="shiny-for-python-소개" class="level1" data-number="1"><h1 data-number="1">
-<span class="header-section-number">1</span> Shiny for python 소개</h1>
-<p>이제 파이썬에서도 Dash 이외에도 shiny를 사용하여 반응형 웹앱을 쉽게 구현할 수 있게 되었습니다.<br>
-아직 초기 단계라 많은 것이 구현되지는 않았고 Alpha단계이므로 API가 변경되거나 아래의 설명과 다른 점이 생길 수 있습니다. 글의 내용은 <a href="https://shiny.rstudio.com/py/">Shiny for Python</a>를 참고했습니다.</p>
-</section><section id="shiny-for-python-setup" class="level1" data-number="2"><h1 data-number="2">
-<span class="header-section-number">2</span> Shiny for Python setup</h1>
-<section id="python과-shiny-설치하기" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="python과-shiny-설치하기">
-<span class="header-section-number">2.1</span> python과 Shiny 설치하기</h2>
-<p>우선 Shiny app을 저장할 디렉토리를 만듭니다.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># make new directory for Shiny App</span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mkdir</span> myapp</span>
-<span id="cb1-3"></span>
-<span id="cb1-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># change directory</span></span>
-<span id="cb1-5"><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">cd</span> myapp</span></code></pre></div>
-</div>
-<p>python은 <a href="https://www.python.org/downloads/">Python.org</a> <a href="https://www.anaconda.com/distribution/">Anaconda</a> 에서 설치할 수 있습니다.</p>
-<p>python이 설치되었다면 사용하는 디렉토리의 폴더에 python 가상 환경을 만들고 이를 활성화합니다.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Create a virtual environment in the .venv subdirectory</span></span>
-<span id="cb2-2"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">python3</span> <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-m</span> venv venv</span>
-<span id="cb2-3"></span>
-<span id="cb2-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Activate the virtual environment</span></span>
-<span id="cb2-5"><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">source</span> venv/bin/activate</span></code></pre></div>
-</div>
-<p>shiny 를 설치합니다.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># install shiny</span></span>
-<span id="cb3-2"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pip</span> install shiny</span></code></pre></div>
-</div>
-</section><section id="shiny-server에서-이용하기" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="shiny-server에서-이용하기">
-<span class="header-section-number">2.2</span> Shiny Server에서 이용하기</h2>
-<p>Shiny for python은 Shinyapps.io, Shiny server, shinylive와 같은 다양한 방법으로 배포될 수 있습니다. 그중 shiny server에 배포하는 방법을 소개합니다.</p>
-<p>Shiny Server는 v1.5.19 이상이 필요합니다. 만약 이전 버전을 사용하고 있다면 업데이트 합니다.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#shiny-server v1.4.19</span></span>
-<span id="cb4-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">wget</span> https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-1.5.19.995-amd64.deb</span>
-<span id="cb4-3"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">gdebi</span> shiny-server-1.5.19.995-amd64.deb</span></code></pre></div>
-</div>
-<p>shiny server에서 python 파일을 실행하기 위해 config file을 수정해야 합니다.</p>
-<p>config file 은 /etc/shiny-server/shiny-server.conf 에 위치해있습니다.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Edit the file /etc/shiny-server/shiny-server.conf</span></span>
-<span id="cb5-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sudo</span> vim /etc/shiny-server/shiny-server.conf</span></code></pre></div>
-</div>
-<p>config file 을 열어 코드 상단에 python 경로를 추가합니다.</p>
-<p>예를 들어 /home/js/myapp/venv/bin/python3를 사용하고 싶다면 코드는 아래와 같습니다.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Use system python3 to run Shiny apps</span></span>
-<span id="cb6-2"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">python</span> /home/js/myapp/venv/bin/python3<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-3"></span>
-<span id="cb6-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Instruct Shiny Server to run applications as the user "shiny"</span></span>
-<span id="cb6-5"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">run_as</span> shiny<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-6"></span>
-<span id="cb6-7"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Define a server that listens on port 3838</span></span>
-<span id="cb6-8"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">server</span> {</span>
-<span id="cb6-9">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">listen</span> 3838<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-10"></span>
-<span id="cb6-11">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Define a location at the base URL</span></span>
-<span id="cb6-12">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">location</span> / {</span>
-<span id="cb6-13"></span>
-<span id="cb6-14">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Host the directory of Shiny Apps stored in this directory</span></span>
-<span id="cb6-15">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">site_dir</span> /srv/shiny-server<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-16"></span>
-<span id="cb6-17">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Log all Shiny output to files in this directory</span></span>
-<span id="cb6-18">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">log_dir</span> /var/log/shiny-server<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-19"></span>
-<span id="cb6-20">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># When a user visits the base URL rather than a particular application,</span></span>
-<span id="cb6-21">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># an index of the applications available in this directory will be shown.</span></span>
-<span id="cb6-22">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">directory_index</span> on<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-23">  <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span id="cb6-24"><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">}</span></span></code></pre></div>
-</div>
-</section></section><section id="shiny-for-python-사용" class="level1" data-number="3"><h1 data-number="3">
-<span class="header-section-number">3</span> Shiny for Python 사용</h1>
-<p>샤이니 앱은 크게 ui, server 부분으로 구성되어 있습니다.<br>
-ui는 사용자가 보는 화면에 해당하는 부분이며, server는 ui에서 받은 값들을 계산하는 부분입니다. 사용자가 ui에 값들을 입력하면 이들을 바탕으로 server에서 계산하고, 이 결과물을 다시 ui 부분에 출력하는 방식으로 작동합니다.</p>
-<p>간단한 예시를 통해 이를 이해하고, python의 코드가 R과 비교해 어떤 문법을 가지는지 알아보겠습니다.</p>
-<section id="shiny-app" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="shiny-app">
-<span class="header-section-number">3.1</span> Shiny App</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs">
-<li class="nav-item"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" aria-controls="tabset-1-1" aria-selected="true">python</a></li>
-<li class="nav-item"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" aria-controls="tabset-1-2" aria-selected="false">R</a></li>
-</ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" aria-labelledby="tabset-1-1-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># import shiny</span></span>
-<span id="cb7-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> shiny <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> ui, render, App</span>
-<span id="cb7-3"></span>
-<span id="cb7-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ui</span></span>
-<span id="cb7-5">app_ui <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> ui.page_fluid(</span>
-<span id="cb7-6">    ui.input_slider(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"n"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"N"</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">40</span>),</span>
-<span id="cb7-7">    ui.output_text_verbatim(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"txt"</span>),</span>
-<span id="cb7-8">)</span>
-<span id="cb7-9"></span>
-<span id="cb7-10"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># server</span></span>
-<span id="cb7-11"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">def</span> server(<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">input</span>, output, session):</span>
-<span id="cb7-12">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">@output</span></span>
-<span id="cb7-13">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">@render.text</span></span>
-<span id="cb7-14">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">def</span> txt():</span>
-<span id="cb7-15">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> <span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">f"n*2 is </span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">input</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>n() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span></span>
-<span id="cb7-16"></span>
-<span id="cb7-17"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># This is a shiny.App object. It must be named `app`.</span></span>
-<span id="cb7-18">app <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> App(app_ui, server)</span></code></pre></div>
-</div>
-<p><img src="https://blog.zarathu.com/posts/2022-08-26-shinyforpython/capture.PNG" class="img-fluid"></p>
-</div>
-<div id="tabset-1-2" class="tab-pane" aria-labelledby="tabset-1-2-tab">
-<div class="cell">
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;"><a href="https://shiny.posit.co/">shiny</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ui</span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span></span>
-<span>    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html">sliderInput</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"n"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"N"</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">40</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"txt"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">server</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">input</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">output</span>,<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">session</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span>     <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">txt</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html">renderText</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"n*2 is"</span>,<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">input</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">n</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"}"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span></span>
-<span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ui</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">server</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-</div>
-</div>
-</div>
-</div>
-<p>위는 ui에서 입력 받은 값을 server에서 2를 곱해주어 계산하고 이를 ui부분에서 출력하여 보여주는 예시입니다.</p>
-<ul>
-<li><p>먼저 from shiny import *를 통해 필요한 shiny 모듈을 불러옵니다.</p></li>
-<li><p>ui의 ui.input_slider() 함수를 통해 입력값을 받습니다. 이처럼 인풋에 해당하는 부분은 ui.input_*() 함수를 통해 만들 수 있습니다. “n”은 해당 input의 이름에 해당하는 부분이며, N은 label, 0,100,40은 각각 min, max,value에 해당하는 인자입니다.</p></li>
-<li><p>입력된 인풋값을 서버에 전송하면 이를 토대로 계산하여 값을 return하고 <code>@</code>render.text 라는 decorator를 통해 텍스트 형태로 렌더링합니다.</p></li>
-<li><p>다시 ui 부분에서는 ui.output_text_verbatim() 함수를 통해 텍스트를 출력합니다. 이처럼 ui부분에서 출력할 때는 ui.output_* 함수가 사용됩니다.</p></li>
-</ul></section><section id="shiny-for-python의-문법" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="shiny-for-python의-문법">
-<span class="header-section-number">3.2</span> Shiny for Python의 문법</h2>
-<p>위의 예시를 이용하여 R과 Python의 문법을 간단하게 비교해보면 다음과 같습니다.</p>
-<table class="table">
-<colgroup>
-<col style="width: 26%">
-<col style="width: 34%">
-<col style="width: 39%">
-</colgroup>
-<thead><tr class="header">
-<th></th>
-<th>python</th>
-<th>R</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>import shiny</td>
-<td>from shiny import *</td>
-<td>library(shiny)</td>
-</tr>
-<tr class="even">
-<td>UI</td>
-<td>app_ui = ui.page_fluid(</td>
-<td>ui = fluidPage(</td>
-</tr>
-<tr class="odd">
-<td>input</td>
-<td>&nbsp;&nbsp;ui.input_slider(“n”,“N”,0,100,40), &nbsp;&nbsp;ui.output_text_verbatim(“txt”) &nbsp; )</td>
-<td>&nbsp;&nbsp;sliderInput(“n”,“N”,0,100,40) &nbsp;&nbsp;textOutput(“txt”))</td>
-</tr>
-<tr class="even">
-<td>Server</td>
-<td>def server(in, out, session):</td>
-<td>server=function(in,out,session){</td>
-</tr>
-<tr class="odd">
-<td>decorator</td>
-<td>
-<code>@</code>output <code>@</code>render.text</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>output</td>
-<td>&nbsp;&nbsp;def txt:<br> &nbsp;&nbsp;&nbsp; return input.x()</td>
-<td>&nbsp;output<code>$</code>txt = renderText (input $ x) &nbsp;&nbsp;}</td>
-</tr>
-<tr class="odd">
-<td>app</td>
-<td>app = App(app_ui, server)</td>
-<td>shinyApp(ui, server)</td>
-</tr>
-</tbody>
-</table>
-<p>인풋에 해당하는 부분은 ui.input_<code>*</code>(), ui 부분에서 출력할 때는 ui.output_<code>*</code>()함수들을 사용합니다.<br>
-서버 부분에서 def server(input, output, session): def txt(): 와 같이 파이썬의 함수 문법을 사용합니다.</p>
-<table class="table">
-<colgroup>
-<col style="width: 36%">
-<col style="width: 36%">
-<col style="width: 26%">
-</colgroup>
-<thead><tr class="header">
-<th></th>
-<th>python</th>
-<th>R</th>
-</tr></thead>
-<tbody><tr class="odd">
-<td>decorater</td>
-<td>
-<code>@</code>render.text … <br><code>@</code>reactive.event() <code>@</code>reactive.Calc() …<br><code>@</code>output</td>
-<td>renderText() … <br> reactive({}) <br>output$id</td>
-</tr></tbody>
-</table>
-<p>예시의 server부분에서 <code>@</code>render.text <code>@</code>output이 사용된 것을 볼 수 있습니다. 이것은 함수를 인자로 받아 함수를 출력하는 decorator 라는 함수입니다. 보통 python 에서 여러 함수들이 부분적으로 중복될때 코드의 재사용을 용이하게 하기 위해 사용됩니다. 여기서는 그냥 함수의 일종이라고 생각하면 될 것 같습니다.</p>
-<p>R에서는 렌더링을 위해 renderPlot, renderText 같은 함수를 사용하지만 Python에서는 <code>@</code>render.text 같은 decorator를 사용합니다. 위의 예시에서는 txt() 라는 텍스트를 반환하는 함수에 <code>@</code>render.text라는 decorator가 적용됩니다. 이는 텍스트를 반환하는 함수를 리턴하는 함수로 텍스트를 렌더링해 주는 함수라고 생각할 수 있습니다.</p>
-<p>decorator는 output, module, reactivity, rendering 등 많은 부분에서 사용됩니다. 하나의 함수에 여러개가 적용될 수 있으며 <code>@</code>render.text 는 <code>@</code>output 보다 먼저 적용되어야 하는 것과 같이 순서나 parameter가 정해져 있습니다.</p>
-<table class="table">
-<thead><tr class="header">
-<th></th>
-<th>python</th>
-<th>R</th>
-</tr></thead>
-<tbody><tr class="odd">
-<td>HTML</td>
-<td>ui.div(), ui.a()</td>
-<td>tags<code>$</code>div, tags<code>$</code>a</td>
-</tr></tbody>
-</table>
-<p>HTML 태그의 경우는 ui.tags.*() 를 통해서 사용할 수 있습니다. 예를 들어 li 태그의 경우 ui.tags.li()로 사용 가능합니다.<br>
-일반적으로 많이 사용되는 div, span, a 같은 태그들은 ui.div()와 같이 ui 서브모듈에서 직접 사용할 수 있습니다.</p>
-<table class="table">
-<thead><tr class="header">
-<th></th>
-<th>python</th>
-<th>R</th>
-</tr></thead>
-<tbody><tr class="odd">
-<td>mutability</td>
-<td>objects can be modified</td>
-<td>objects cannot be modified</td>
-</tr></tbody>
-</table>
-<p>python으로 shiny앱을 작성할때 가변성 처리(Handling mutability)도 고려해야합니다. Python에서 문자,숫자열,튜플 같은 간단한 객체들은 변경할 수 없지만 딕셔너리,리스트 같은 대부분의 객체들은 수정할 수 있습니다.</p>
-<p>이로 인해 반응형 프로그래밍에서 문제가 발생할 수 있습니다. 즉, 프로그램의 한 부분에서 객체를 수정하면 프로그램의 다른 부분과 값이 다른 문제가 발생할 수 있습니다.</p>
-<p>이러한 문제를 해결하기 위한 몇가지 방법들이 있습니다.</p>
-<p>첫번째는 두 값이 객체를 copy해서 동일한 객체를 먼저 가리키는 것을 피하는 것입니다. a = [1,2], b = a.copy와 같이 사용하게 되면 a의 값이 바뀌어도 b는 바뀌기 이전의 값을 가리키게 됩니다. 두번째는 객체를 변경하는 연산자나 매서드를 사용하는 것입니다. 예를 들어 a = [1,2]를 a = [1,2,3]로 만들고 싶을 때 a = a+[3]보다는 a.append(3)을 사용하는것이 바람직합니다. 마지막은 변경 불가능한 객체를 사용하는 것입니다. 리스트 대신 튜플을 사용하거나 <a href="https://pypi.org/project/pyrsistent/">pyrsistent</a> 패키지의 리스트나 딕셔너리를 사용할 수 있습니다.</p>
-</section></section><section id="shinylive" class="level1" data-number="4"><h1 data-number="4">
-<span class="header-section-number">4</span> Shinylive</h1>
-<p>Shinylive는 Shiny for Python에서 사용할 수 있는 실험 단계의 모드로 앱이 브라우저에서 별도의 서버없이 실행될수 있습니다.</p>
-<p>기존에는 서버에서 파이썬과 샤이니를 실행하고, 클라이언트가 웹브라우저를 통해 접속하였습니다. 그러나 앱이 shinylive와 배포된다면 파이썬 컴퓨팅이 서버가 아닌 클라이언트의 웹 브라우저 에서 수행됩니다. 따라서 앱을 실행할 때 서버보다 클라이언트의 컴퓨팅 성능에 의존하며, 파일을 제공하는 서버는 존재하지만 파이썬과 샤이니를 실행하지는 않습니다.</p>
-<p>shinylive와 배포된 앱은 컴퓨터에 Python 또는 Shiny를 설치할 필요가 없이 URL만으로 공유 실행될수 있습니다.</p>
-<section id="shinylive-배포" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="shinylive-배포">
-<span class="header-section-number">4.1</span> shinylive 배포</h2>
-<p><a href="https://shinylive.io/py/examples/">shinylive editor</a>을 통해 간단하게 shinylive를 통해 배포해볼 수 있습니다 .</p>
-<p>이외에도 Netlify, GITHUB gist를 통해서도 가능하며 <a href="https://shiny.rstudio.com/py/docs/shinylive.html#sharing-shinylive-applications">Sharing Shinylive applications</a>를 참고할 수 있습니다.</p>
-
-
-</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lee2022,
-  author = {Lee, Chaehee},
-  title = {Shiny for {Python}},
-  pages = {undefined},
-  date = {2022-08-19},
-  url = {https://blog.zarathu.com/posts/2022-08-26-shinyforpython},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lee2022" class="csl-entry quarto-appendix-citeas">
-Lee, Chaehee. 2022. <span>“Shiny for Python.”</span> August 19, 2022. <a href="https://blog.zarathu.com/posts/2022-08-26-shinyforpython">https://blog.zarathu.com/posts/2022-08-26-shinyforpython</a>.
-</div></div></section></div> ]]></description>
-  <category>python</category>
-  <category>shiny</category>
-  <guid>https://blog.zarathu.com/posts/2022-08-26-shinyforpython/</guid>
-  <pubDate>Thu, 18 Aug 2022 15:00:00 GMT</pubDate>
-  <media:content url="https://blog.zarathu.com/posts/2022-08-26-shinyforpython/images.png" medium="image" type="image/png" height="78" width="144"/>
 </item>
 </channel>
 </rss>
