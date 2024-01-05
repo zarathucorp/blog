@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.455">
+<meta name="generator" content="quarto-1.4.534">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="Yujin Lee">
 <meta name="dcterms.date" content="2022-02-04">
 <meta name="description" content="데이터 셋의 변수를 하나의 테이블로 요약하여 효율적으로 논문에 들어갈 table1을 만들 수 있는 gtsummary 패키지에 대해 소개합니다.">
+
 <title>Zarathu Blog - gtsummary 패키지 소개</title>
 <style>
 code{white-space: pre-wrap;}
@@ -56,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -72,7 +76,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -80,7 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    null
+    "f",
+    "/",
+    "s"
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -90,11 +97,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script type="text/javascript">
+}</script>
+
+<script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -106,17 +116,25 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../styles.css">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="../../styles.css">
 </head>
+
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -127,7 +145,7 @@ ga('send', {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -139,8 +157,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
@@ -153,7 +171,7 @@ ga('send', {
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../../contributors.html"> 
 <span class="menu-text">Contributors</span></a>
@@ -162,8 +180,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
@@ -172,7 +190,7 @@ ga('send', {
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
@@ -189,11 +207,15 @@ ga('send', {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">gtsummary 패키지 소개</h1>
                   <div>
@@ -231,72 +253,85 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90" id="toc-시작하기-전에" class="nav-link active" data-scroll-target="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90">시작하기 전에</a></li>
-  <li>
-<a href="#%EC%9A%94%EC%95%BD-%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%A7%8C%EB%93%A4%EA%B8%B0" id="toc-요약-테이블-만들기" class="nav-link" data-scroll-target="#%EC%9A%94%EC%95%BD-%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%A7%8C%EB%93%A4%EA%B8%B0">요약 테이블 만들기</a>
+  <li><a href="#시작하기-전에" id="toc-시작하기-전에" class="nav-link active" data-scroll-target="#시작하기-전에">시작하기 전에</a></li>
+  <li><a href="#요약-테이블-만들기" id="toc-요약-테이블-만들기" class="nav-link" data-scroll-target="#요약-테이블-만들기">요약 테이블 만들기</a>
   <ul class="collapse">
-<li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
   <li><a href="#road-file" id="toc-road-file" class="nav-link" data-scroll-target="#road-file">Road file</a></li>
   <li><a href="#tbl_summary" id="toc-tbl_summary" class="nav-link" data-scroll-target="#tbl_summary">tbl_summary</a></li>
-  <li>
-<a href="#%EA%B7%B8%EB%A3%B9%EB%B3%84-%ED%86%B5%EA%B3%84" id="toc-그룹별-통계" class="nav-link" data-scroll-target="#%EA%B7%B8%EB%A3%B9%EB%B3%84-%ED%86%B5%EA%B3%84">그룹별 통계</a>
+  <li><a href="#그룹별-통계" id="toc-그룹별-통계" class="nav-link" data-scroll-target="#그룹별-통계">그룹별 통계</a>
   <ul class="collapse">
-<li><a href="#by" id="toc-by" class="nav-link" data-scroll-target="#by"><strong>by</strong></a></li>
+  <li><a href="#by" id="toc-by" class="nav-link" data-scroll-target="#by"><strong>by</strong></a></li>
   <li><a href="#tbl_strata" id="toc-tbl_strata" class="nav-link" data-scroll-target="#tbl_strata"><strong>tbl_strata</strong></a></li>
-  </ul>
-</li>
+  </ul></li>
   <li><a href="#modifying-function-arguments" id="toc-modifying-function-arguments" class="nav-link" data-scroll-target="#modifying-function-arguments">Modifying function arguments</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#functions-to-add-information" id="toc-functions-to-add-information" class="nav-link" data-scroll-target="#functions-to-add-information">functions to add information</a>
+  </ul></li>
+  <li><a href="#functions-to-add-information" id="toc-functions-to-add-information" class="nav-link" data-scroll-target="#functions-to-add-information">functions to add information</a>
   <ul class="collapse">
-<li><a href="#add_p" id="toc-add_p" class="nav-link" data-scroll-target="#add_p"><strong>add_p()</strong></a></li>
-  </ul>
-</li>
+  <li><a href="#add_p" id="toc-add_p" class="nav-link" data-scroll-target="#add_p"><strong>add_p()</strong></a></li>
+  </ul></li>
   <li><a href="#functions-to-format-table" id="toc-functions-to-format-table" class="nav-link" data-scroll-target="#functions-to-format-table">functions to format table</a></li>
   <li><a href="#multi-line-continuous-summaries" id="toc-multi-line-continuous-summaries" class="nav-link" data-scroll-target="#multi-line-continuous-summaries">Multi-line Continuous Summaries</a></li>
   <li><a href="#save-individual-tables" id="toc-save-individual-tables" class="nav-link" data-scroll-target="#save-individual-tables">Save individual tables</a></li>
-  <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">마치며</a></li>
-  </ul></nav>
-</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+  <li><a href="#마치며" id="toc-마치며" class="nav-link" data-scroll-target="#마치며">마치며</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script><section id="시작하기-전에" class="level1"><h1>시작하기 전에</h1>
+</script>
+
+
+
+
+
+<section id="시작하기-전에" class="level1">
+<h1>시작하기 전에</h1>
 <p>본 자료에서는 데이터 셋의 변수를 하나의 테이블로 요약하는 방법에 대해 알아볼 것이다. <strong>gtsummary</strong> 패키지를 이용하면 효율적으로 논문에 들어갈 table1을 만들 수 있다. <strong>gtsummary</strong> 패키지에 관한 기본 개념 및 함수들을 예제를 통해 다루어 보자.</p>
-</section><section id="요약-테이블-만들기" class="level1"><h1>요약 테이블 만들기</h1>
+</section>
+<section id="요약-테이블-만들기" class="level1">
+<h1>요약 테이블 만들기</h1>
 <p><strong>tbl_summary</strong> 함수를 이용하여 연속형 및 범주형 변수에 대한 기술 통계량을 계산하고 테이블 형태로 나타낼 수 있다.</p>
-<section id="setup" class="level2"><h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Setup</span></span>
-<span></span>
-<span><span class="co"># install.packages("tidyverse")</span></span>
-<span><span class="co"># install.packages("data.table")</span></span>
-<span><span class="co"># install.packages("gtsummary")</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ddsjoberg/gtsummary">gtsummary</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Setup</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tidyverse")</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("data.table")</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("gtsummary")</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="road-file" class="level2"><h2 class="anchored" data-anchor-id="road-file">Road file</h2>
+</section>
+<section id="road-file" class="level2">
+<h2 class="anchored" data-anchor-id="road-file">Road file</h2>
 <p>예제에 사용할 데이터를 <code>fread</code>함수를 통해 불러오자. 데이터는 09-15년 공단 건강검진 데이터에서 실습용으로 32 명을 뽑은 자료이며, 자세한 내용은 <a href="https://github.com/jinseob2kim/lecture-snuhlab/raw/master/data/2%EA%B5%90%EC%8B%9C%20%ED%85%8C%EC%9D%B4%EB%B8%94%20%EC%84%B8%EB%B6%80%20%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83%20%EC%86%8C%EA%B0%9C(%EC%B5%9C%EC%8B%A0%EC%9E%90%EB%A3%8C).pdf">“data/2교시 테이블 세부 레이아웃 소개(최신자료).pdf”</a> 를 참고하자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Load file</span></span>
-<span></span>
-<span><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span></span>
-<span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="va">url</span>, header<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
-<span><span class="va">dt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Load file</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">&lt;-</span> <span class="fu">fread</span>(url, <span class="at">header=</span>T)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>dt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -307,15 +342,17 @@ ga('send', {
 </div>
 </div>
 </div>
-</section><section id="tbl_summary" class="level2"><h2 class="anchored" data-anchor-id="tbl_summary">tbl_summary</h2>
+</section>
+<section id="tbl_summary" class="level2">
+<h2 class="anchored" data-anchor-id="tbl_summary">tbl_summary</h2>
 <p><strong>tbl_summary</strong> 함수를 사용하여 기본 테이블을 작성할 수 있다. 출력값으로 데이터 셋의 각 열에 대한 기술 통계량을 반환한다. 데이터 셋에 섞인 범주형 변수와 연속형 변수를 자동적으로 인식해 그에 맞는 값을 반환하며, <u>범주형 변수</u>의 기본 출력값은 n(%)이고 <u>연속형 변수</u>의 기본 출력값은 median(IQR)이다. 결측값은 테이블에 Unknown으로 출력된다.</p>
 <p><code>fread</code>를 통해 불러온 데이터에서 몇 개의 변수를 추출해 요약 테이블을 만들어보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># select variables</span></span>
-<span></span>
-<span><span class="va">dt2</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_SMK_YN"</span>,</span>
-<span>                     <span class="st">"HGHT"</span>, <span class="st">"WGHT"</span> ,<span class="st">"TOT_CHOL"</span>, <span class="st">"TG"</span><span class="op">)</span></span>
-<span><span class="va">dt2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># select variables</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>dt2 <span class="ot">&lt;-</span> dt <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_SMK_YN"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"HGHT"</span>, <span class="st">"WGHT"</span> ,<span class="st">"TOT_CHOL"</span>, <span class="st">"TG"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>dt2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -328,9 +365,9 @@ ga('send', {
 </div>
 <p><code>tbl_summary</code> 함수를 통해 간단한 요약 테이블을 만들어보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># create table</span></span>
-<span></span>
-<span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create table</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>dt2 <span class="sc">%&gt;%</span> <span class="fu">tbl_summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="qzdsybbjkg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -744,13 +781,14 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings"><tr class="header">
+<thead class="gt_col_headings">
+<tr class="header">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Characteristic</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>N = 1,644</strong><sup>1</sup>
-</th>
-</tr></thead>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>N = 1,644</strong><sup>1</sup></th>
+</tr>
+</thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left">EXMD_BZ_YYYY</td>
@@ -828,22 +866,28 @@ ga('send', {
 <td class="gt_row gt_left">TG</td>
 <td class="gt_row gt_center">106 (72, 163)</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes"><tr class="even">
-<td colspan="2" class="gt_footnote">
-<sup>1</sup> n (%); Median (IQR)</td>
-</tr></tfoot>
+</tbody><tfoot class="gt_footnotes">
+<tr class="even">
+<td colspan="2" class="gt_footnote"><sup>1</sup> n (%); Median (IQR)</td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
 <ul>
 <li>변수 유형이 자동으로 구분되어 연속형 변수는 median(IQR), 범주형 변수는 n(%)의 형태로 출력된 것을 볼 수 있다.</li>
-</ul></section><section id="그룹별-통계" class="level2"><h2 class="anchored" data-anchor-id="그룹별-통계">그룹별 통계</h2>
-<section id="by" class="level3"><h3 class="anchored" data-anchor-id="by"><strong>by</strong></h3>
+</ul>
+</section>
+<section id="그룹별-통계" class="level2">
+<h2 class="anchored" data-anchor-id="그룹별-통계">그룹별 통계</h2>
+<section id="by" class="level3">
+<h3 class="anchored" data-anchor-id="by"><strong>by</strong></h3>
 <p><code>tbl_summary</code> 함수에는 다양한 옵션이 존재한다. <strong>by</strong> 옵션을 이용하여 그룹별 통계량을 계산할 수 있다. <strong>by</strong> 옵션에 그룹별 통계를 수행할 변수를 지정하여 사용 가능하다. 다음 예시에서 연도 변수인 EXMD_BZ_YYYY를 기준으로 그룹별 통계량을 출력해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dt2 <span class="sc">%&gt;%</span> <span class="fu">tbl_summary</span>(<span class="at">by =</span> EXMD_BZ_YYYY)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="rtuztirtgh" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -1257,31 +1301,20 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings"><tr class="header">
+<thead class="gt_col_headings">
+<tr class="header">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Characteristic</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2009</strong>, N = 214<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2010</strong>, N = 236<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2011</strong>, N = 223<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2012</strong>, N = 234<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2013</strong>, N = 243<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2014</strong>, N = 254<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2015</strong>, N = 240<sup>1</sup>
-</th>
-</tr></thead>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2009</strong>, N = 214<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2010</strong>, N = 236<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2011</strong>, N = 223<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2012</strong>, N = 234<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2013</strong>, N = 243<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2014</strong>, N = 254<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2015</strong>, N = 240<sup>1</sup></th>
+</tr>
+</thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left">Q_PHX_DX_STK</td>
@@ -1393,26 +1426,30 @@ ga('send', {
 <td class="gt_row gt_center">108 (75, 162)</td>
 <td class="gt_row gt_center">111 (71, 167)</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes"><tr class="even">
-<td colspan="8" class="gt_footnote">
-<sup>1</sup> n (%); Median (IQR)</td>
-</tr></tfoot>
+</tbody><tfoot class="gt_footnotes">
+<tr class="even">
+<td colspan="8" class="gt_footnote"><sup>1</sup> n (%); Median (IQR)</td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
-</section><section id="tbl_strata" class="level3"><h3 class="anchored" data-anchor-id="tbl_strata"><strong>tbl_strata</strong></h3>
+</section>
+<section id="tbl_strata" class="level3">
+<h3 class="anchored" data-anchor-id="tbl_strata"><strong>tbl_strata</strong></h3>
 <p>by 옵션을 통해 그룹별 통계량을 계산한 것처럼 <code>tbl_strata</code> 함수를 이용하면 <u>여러 계층</u>으로 그룹을 묶을 수 있다. <strong>tbl_strata(data, strata, .tbl_fun, …)</strong> 형식을 사용하며 strata에 그룹화할 칼럼, .tbl_fun 인자에는 출력할 <code>tbl_summary</code> formula를 지정한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_strata.html">tbl_strata</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dt2</span>,</span>
-<span>           strata <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,</span>
-<span>           .tbl_fun <span class="op">=</span></span>
-<span>             <span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>             <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_SMK_YN</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>             <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>             <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_n.html">add_n</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>           .header <span class="op">=</span> <span class="st">"**{strata}**, N={n}"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tbl_strata</span>(<span class="at">data =</span> dt2,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">strata =</span> EXMD_BZ_YYYY,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">.tbl_fun =</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>             <span class="sc">~</span> .x <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">tbl_summary</span>(<span class="at">by =</span> Q_SMK_YN) <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>             <span class="fu">add_p</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>             <span class="fu">add_n</span>(),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">.header =</span> <span class="st">"**{strata}**, N={n}"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="mpipvczabm" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -1826,6 +1863,7 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
 <thead class="gt_col_headings">
 <tr class="header">
@@ -1840,96 +1878,40 @@ ga('send', {
 </tr>
 <tr class="odd">
 <th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>N</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 125<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2</strong>, N = 34<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>3</strong>, N = 53<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 125<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2</strong>, N = 34<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>3</strong>, N = 53<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
 <th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>N</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 132<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2</strong>, N = 42<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>3</strong>, N = 62<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 132<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2</strong>, N = 42<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>3</strong>, N = 62<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
 <th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>N</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 140<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2</strong>, N = 35<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>3</strong>, N = 48<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 140<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2</strong>, N = 35<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>3</strong>, N = 48<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
 <th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>N</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 146<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2</strong>, N = 36<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>3</strong>, N = 52<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 146<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2</strong>, N = 36<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>3</strong>, N = 52<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
 <th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>N</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 141<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2</strong>, N = 35<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>3</strong>, N = 67<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 141<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2</strong>, N = 35<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>3</strong>, N = 67<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
 <th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>N</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 157<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2</strong>, N = 38<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>3</strong>, N = 59<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 157<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2</strong>, N = 38<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>3</strong>, N = 59<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
 <th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>N</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 154<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2</strong>, N = 36<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>3</strong>, N = 50<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 154<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2</strong>, N = 36<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>3</strong>, N = 50<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
@@ -2161,22 +2143,24 @@ ga('send', {
 <td class="gt_row gt_center">150 (90, 248)</td>
 <td class="gt_row gt_center">&lt;0.001</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes">
+</tbody><tfoot class="gt_footnotes">
 <tr class="even">
-<td colspan="36" class="gt_footnote">
-<sup>1</sup> n (%); Median (IQR)</td>
+<td colspan="36" class="gt_footnote"><sup>1</sup> n (%); Median (IQR)</td>
 </tr>
 <tr class="odd">
-<td colspan="36" class="gt_footnote">
-<sup>2</sup> Fisher's exact test; Kruskal-Wallis rank sum test</td>
+<td colspan="36" class="gt_footnote"><sup>2</sup> Fisher's exact test; Kruskal-Wallis rank sum test</td>
 </tr>
 </tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
-</section></section><section id="modifying-function-arguments" class="level2"><h2 class="anchored" data-anchor-id="modifying-function-arguments">Modifying function arguments</h2>
+</section>
+</section>
+<section id="modifying-function-arguments" class="level2">
+<h2 class="anchored" data-anchor-id="modifying-function-arguments">Modifying function arguments</h2>
 <p><code>tbl_summary</code> 함수에는 다양한 옵션이 존재하며, 이러한 옵션 조정을 통해 원하는 테이블을 작성할 수 있다. 다음은 <code>tbl_summary</code> 함수의 주요 옵션에 대한 설명이다.</p>
 <ul>
 <li>label : 테이블에 출력되는 변수명 지정</li>
@@ -2191,19 +2175,23 @@ ga('send', {
 </ul>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<p><img src="https://github.com/ddsjoberg/gtsummary/raw/main/data-raw/crayon_images/crayon-selectors.png" class="img-fluid quarto-figure-center"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://github.com/ddsjoberg/gtsummary/raw/main/data-raw/crayon_images/crayon-selectors.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>다음은 옵션을 활용한 예시이다. 연도 변수 EXMD_BZ_YYYY의 그룹별 통계량을 출력하고, Q_SMK_YN 변수를 “smoking y/n”로 바꾸어보자. 이때 연속형 변수의 출력값을 {mean}({sd})으로, 범주형 변수의 출력값을 {n}/{N} ({p}%) 형태로 바꾸어보자. 결측값의 변수명은 “Missing”으로 수정한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span></span>
-<span>    by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,</span>
-<span>    statistic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_continuous</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{mean} ({sd})"</span>,</span>
-<span>                     <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_categorical</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{n} / {N} ({p}%)"</span><span class="op">)</span>,</span>
-<span>    label <span class="op">=</span> <span class="va">Q_SMK_YN</span> <span class="op">~</span> <span class="st">"smoking y/n"</span>,</span>
-<span>    missing_text <span class="op">=</span> <span class="st">"Missing"</span></span>
-<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dt2 <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> EXMD_BZ_YYYY,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{n} / {N} ({p}%)"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> Q_SMK_YN <span class="sc">~</span> <span class="st">"smoking y/n"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing_text =</span> <span class="st">"Missing"</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ehwulelzjv" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -2617,31 +2605,20 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings"><tr class="header">
+<thead class="gt_col_headings">
+<tr class="header">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Characteristic</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2009</strong>, N = 214<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2010</strong>, N = 236<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2011</strong>, N = 223<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2012</strong>, N = 234<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2013</strong>, N = 243<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2014</strong>, N = 254<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2015</strong>, N = 240<sup>1</sup>
-</th>
-</tr></thead>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2009</strong>, N = 214<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2010</strong>, N = 236<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2011</strong>, N = 223<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2012</strong>, N = 234<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2013</strong>, N = 243<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2014</strong>, N = 254<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2015</strong>, N = 240<sup>1</sup></th>
+</tr>
+</thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left">Q_PHX_DX_STK</td>
@@ -2753,16 +2730,21 @@ ga('send', {
 <td class="gt_row gt_center">138 (127)</td>
 <td class="gt_row gt_center">141 (113)</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes"><tr class="even">
-<td colspan="8" class="gt_footnote">
-<sup>1</sup> n / N (%); Mean (SD)</td>
-</tr></tfoot>
+</tbody><tfoot class="gt_footnotes">
+<tr class="even">
+<td colspan="8" class="gt_footnote"><sup>1</sup> n / N (%); Mean (SD)</td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
-</section></section><section id="functions-to-add-information" class="level1"><h1>functions to add information</h1>
+</section>
+</section>
+<section id="functions-to-add-information" class="level1">
+<h1>functions to add information</h1>
 <p>gtsummary 패키지에는 <strong>add_()</strong> 함수를 이용하여 테이블에 통계 정보를 추가하는 기능이 있다. 다음은 <strong>add_()</strong> 함수들의 주요 설명이다.</p>
 <ul>
 <li>add_p() : 그룹 간 값의 비교를 위한 p-value 추가</li>
@@ -2773,28 +2755,23 @@ ga('send', {
 <li>add_stat() : 사용자 지정 함수 추가</li>
 <li>add_q() : 다중 비교를 위한 q-value 추가</li>
 </ul>
-<section id="add_p" class="level3"><h3 class="anchored" data-anchor-id="add_p"><strong>add_p()</strong></h3>
+<section id="add_p" class="level3">
+<h3 class="anchored" data-anchor-id="add_p"><strong>add_p()</strong></h3>
 <p><strong>add_p()</strong> 함수를 사용하여 <code>tbl_summary</code>에 의해 생성된 테이블에 p-value를 추가할 수 있다. 이때 test 인자에 “t.test”, “wilcox.test”, “chisq.test”, “fisher.test”, “aov”, … 와 같이 수행할 통계 test를 지정할 수 있다. <strong>add_p(col ~ “.test”)</strong> 형식을 사용하며 모든 변수 또는 일부 변수에 대해 적용할 수 있다.</p>
 <ul>
 <li>default test
 <ul>
-<li>
-<u>연속형 변수</u> - 2그룹 <strong>wilcox.test</strong>, 3그룹 이상 <strong>kruskal.test</strong>
-</li>
-<li>
-<u>범주형 변수</u> - 행의 수가 5 이상인 경우 <strong>chisq.test</strong>, 5 미만인 경우 <strong>fisher.test</strong>
-</li>
-</ul>
-</li>
+<li><u>연속형 변수</u> - 2그룹 <strong>wilcox.test</strong>, 3그룹 이상 <strong>kruskal.test</strong></li>
+<li><u>범주형 변수</u> - 행의 수가 5 이상인 경우 <strong>chisq.test</strong>, 5 미만인 경우 <strong>fisher.test</strong></li>
+</ul></li>
 </ul>
 <ol type="1">
-<li>연속형 변수 - <strong>t.test</strong>, <strong>wilcox.test</strong>
-</li>
+<li>연속형 변수 - <strong>t.test</strong>, <strong>wilcox.test</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_continuous</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"t.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dt2 <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> Q_PHX_DX_STK) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"t.test"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="wdqcruxfof" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -3208,19 +3185,16 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings"><tr class="header">
+<thead class="gt_col_headings">
+<tr class="header">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Characteristic</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>0</strong>, N = 1,059<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 12<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
-</tr></thead>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>0</strong>, N = 1,059<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 12<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
+</tr>
+</thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left">EXMD_BZ_YYYY</td>
@@ -3324,25 +3298,24 @@ ga('send', {
 <td class="gt_row gt_center">128 (116, 148)</td>
 <td class="gt_row gt_center">0.5</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes">
+</tbody><tfoot class="gt_footnotes">
 <tr class="even">
-<td colspan="4" class="gt_footnote">
-<sup>1</sup> n (%); Median (IQR)</td>
+<td colspan="4" class="gt_footnote"><sup>1</sup> n (%); Median (IQR)</td>
 </tr>
 <tr class="odd">
-<td colspan="4" class="gt_footnote">
-<sup>2</sup> Fisher's exact test; Welch Two Sample t-test</td>
+<td colspan="4" class="gt_footnote"><sup>2</sup> Fisher's exact test; Welch Two Sample t-test</td>
 </tr>
 </tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="va">HGHT</span> <span class="op">~</span> <span class="st">"wilcox.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dt2 <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> Q_PHX_DX_STK) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>(HGHT <span class="sc">~</span> <span class="st">"wilcox.test"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="vykprjjqxw" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -3756,19 +3729,16 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings"><tr class="header">
+<thead class="gt_col_headings">
+<tr class="header">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Characteristic</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>0</strong>, N = 1,059<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 12<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
-</tr></thead>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>0</strong>, N = 1,059<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 12<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
+</tr>
+</thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left">EXMD_BZ_YYYY</td>
@@ -3872,29 +3842,27 @@ ga('send', {
 <td class="gt_row gt_center">128 (116, 148)</td>
 <td class="gt_row gt_center">0.10</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes">
+</tbody><tfoot class="gt_footnotes">
 <tr class="even">
-<td colspan="4" class="gt_footnote">
-<sup>1</sup> n (%); Median (IQR)</td>
+<td colspan="4" class="gt_footnote"><sup>1</sup> n (%); Median (IQR)</td>
 </tr>
 <tr class="odd">
-<td colspan="4" class="gt_footnote">
-<sup>2</sup> Fisher's exact test; Wilcoxon rank sum test</td>
+<td colspan="4" class="gt_footnote"><sup>2</sup> Fisher's exact test; Wilcoxon rank sum test</td>
 </tr>
 </tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
 <ol start="2" type="1">
-<li>범주형 변수 - <strong>chisq.test</strong>, <strong>fisher.test</strong>
-</li>
+<li>범주형 변수 - <strong>chisq.test</strong>, <strong>fisher.test</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_categorical</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"chisq.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dt2 <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> Q_PHX_DX_STK) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>(<span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"chisq.test"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="bkqliuxrbu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -4308,19 +4276,16 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings"><tr class="header">
+<thead class="gt_col_headings">
+<tr class="header">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Characteristic</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>0</strong>, N = 1,059<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 12<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
-</tr></thead>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>0</strong>, N = 1,059<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 12<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
+</tr>
+</thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left">EXMD_BZ_YYYY</td>
@@ -4424,25 +4389,24 @@ ga('send', {
 <td class="gt_row gt_center">128 (116, 148)</td>
 <td class="gt_row gt_center">0.10</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes">
+</tbody><tfoot class="gt_footnotes">
 <tr class="even">
-<td colspan="4" class="gt_footnote">
-<sup>1</sup> n (%); Median (IQR)</td>
+<td colspan="4" class="gt_footnote"><sup>1</sup> n (%); Median (IQR)</td>
 </tr>
 <tr class="odd">
-<td colspan="4" class="gt_footnote">
-<sup>2</sup> Pearson's Chi-squared test; Wilcoxon rank sum test</td>
+<td colspan="4" class="gt_footnote"><sup>2</sup> Pearson's Chi-squared test; Wilcoxon rank sum test</td>
 </tr>
 </tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span> <span class="op">~</span> <span class="st">"fisher.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dt2 <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> Q_PHX_DX_STK) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>(Q_SMK_YN <span class="sc">~</span> <span class="st">"fisher.test"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="sdqgfbjlqd" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -4856,19 +4820,16 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings"><tr class="header">
+<thead class="gt_col_headings">
+<tr class="header">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Characteristic</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>0</strong>, N = 1,059<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 12<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
-</tr></thead>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>0</strong>, N = 1,059<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 12<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
+</tr>
+</thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left">EXMD_BZ_YYYY</td>
@@ -4972,29 +4933,28 @@ ga('send', {
 <td class="gt_row gt_center">128 (116, 148)</td>
 <td class="gt_row gt_center">0.10</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes">
+</tbody><tfoot class="gt_footnotes">
 <tr class="even">
-<td colspan="4" class="gt_footnote">
-<sup>1</sup> n (%); Median (IQR)</td>
+<td colspan="4" class="gt_footnote"><sup>1</sup> n (%); Median (IQR)</td>
 </tr>
 <tr class="odd">
-<td colspan="4" class="gt_footnote">
-<sup>2</sup> Fisher's exact test; Wilcoxon rank sum test</td>
+<td colspan="4" class="gt_footnote"><sup>2</sup> Fisher's exact test; Wilcoxon rank sum test</td>
 </tr>
 </tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
 <p>이외에 다양한 <strong>add_()</strong>함수를 이용하여 앞에서 만든 table에 여러 통계량을 추가해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html">add_overall</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_n.html">add_n</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_q.html">add_q</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dt2 <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> EXMD_BZ_YYYY) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_overall</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_n</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_q</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="tjujjddnfd" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -5408,41 +5368,24 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings"><tr class="header">
+<thead class="gt_col_headings">
+<tr class="header">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Characteristic</strong></th>
 <th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>N</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>Overall</strong>, N = 1,644<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2009</strong>, N = 214<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2010</strong>, N = 236<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2011</strong>, N = 223<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2012</strong>, N = 234<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2013</strong>, N = 243<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2014</strong>, N = 254<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2015</strong>, N = 240<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>q-value</strong><sup>3</sup>
-</th>
-</tr></thead>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>Overall</strong>, N = 1,644<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2009</strong>, N = 214<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2010</strong>, N = 236<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2011</strong>, N = 223<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2012</strong>, N = 234<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2013</strong>, N = 243<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2014</strong>, N = 254<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2015</strong>, N = 240<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>q-value</strong><sup>3</sup></th>
+</tr>
+</thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left">Q_PHX_DX_STK</td>
@@ -5598,22 +5541,20 @@ ga('send', {
 <td class="gt_row gt_center">&gt;0.9</td>
 <td class="gt_row gt_center">&gt;0.9</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes">
+</tbody><tfoot class="gt_footnotes">
 <tr class="even">
-<td colspan="12" class="gt_footnote">
-<sup>1</sup> n (%); Median (IQR)</td>
+<td colspan="12" class="gt_footnote"><sup>1</sup> n (%); Median (IQR)</td>
 </tr>
 <tr class="odd">
-<td colspan="12" class="gt_footnote">
-<sup>2</sup> Fisher's exact test; Pearson's Chi-squared test; Kruskal-Wallis rank sum test</td>
+<td colspan="12" class="gt_footnote"><sup>2</sup> Fisher's exact test; Pearson's Chi-squared test; Kruskal-Wallis rank sum test</td>
 </tr>
 <tr class="even">
-<td colspan="12" class="gt_footnote">
-<sup>3</sup> False discovery rate correction for multiple testing</td>
+<td colspan="12" class="gt_footnote"><sup>3</sup> False discovery rate correction for multiple testing</td>
 </tr>
 </tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -5622,9 +5563,9 @@ ga('send', {
 </ul>
 <p>이번에는 두 그룹 간의 차이를 비교해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">Q_PHX_DX_STK</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_difference.html">add_difference</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dt2 <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> Q_PHX_DX_STK) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_difference</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="upuelpdvge" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -6038,25 +5979,18 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings"><tr class="header">
+<thead class="gt_col_headings">
+<tr class="header">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Characteristic</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>0</strong>, N = 1,059<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>1</strong>, N = 12<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>Difference</strong><sup>2</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>95% CI</strong><sup>2,3</sup>
-</th>
-</tr></thead>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>0</strong>, N = 1,059<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>1</strong>, N = 12<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>Difference</strong><sup>2</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>95% CI</strong><sup>2,3</sup></th>
+</tr>
+</thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left">EXMD_BZ_YYYY</td>
@@ -6194,28 +6128,30 @@ ga('send', {
 <td class="gt_row gt_center">-12</td>
 <td class="gt_row gt_center">-50, 26</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes">
+</tbody><tfoot class="gt_footnotes">
 <tr class="even">
-<td colspan="6" class="gt_footnote">
-<sup>1</sup> n (%); Median (IQR)</td>
+<td colspan="6" class="gt_footnote"><sup>1</sup> n (%); Median (IQR)</td>
 </tr>
 <tr class="odd">
-<td colspan="6" class="gt_footnote">
-<sup>2</sup> Welch Two Sample t-test</td>
+<td colspan="6" class="gt_footnote"><sup>2</sup> Welch Two Sample t-test</td>
 </tr>
 <tr class="even">
-<td colspan="6" class="gt_footnote">
-<sup>3</sup> CI = Confidence Interval</td>
+<td colspan="6" class="gt_footnote"><sup>3</sup> CI = Confidence Interval</td>
 </tr>
 </tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
 <ul>
 <li>Q_PHX_DX_STK 변수의 두 그룹 간의 차이와 신뢰구간, p-value가 추가된 것을 볼 수 있다.</li>
-</ul></section></section><section id="functions-to-format-table" class="level1"><h1>functions to format table</h1>
+</ul>
+</section>
+</section>
+<section id="functions-to-format-table" class="level1">
+<h1>functions to format table</h1>
 <p>gtsummary 패키지에는 테이블의 형식을 지정하는 함수 또한 존재한다. 다음과 같은 함수들을 사용하여 테이블의 디자인 및 형식을 설정할 수 있다.</p>
 <ul>
 <li>modify_header() : 테이블 header 형식 지정</li>
@@ -6230,15 +6166,15 @@ ga('send', {
 </ul>
 <p>위의 함수들을 사용하여 테이블의 디자인을 설정해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_n.html">add_n</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html">modify_header</a></span><span class="op">(</span><span class="va">label</span> <span class="op">~</span> <span class="st">"**Variables**"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html">modify_spanning_header</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_stat_cols</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"**Year**"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html">modify_footnote</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_stat_cols</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Median(IQR) or Frequency(%)"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html">modify_caption</a></span><span class="op">(</span><span class="st">"Table 1"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/bold_italicize_labels_levels.html">bold_labels</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dt2 <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> EXMD_BZ_YYYY) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_n</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_header</span>(label <span class="sc">~</span> <span class="st">"**Variables**"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_spanning_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**Year**"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_footnote</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"Median(IQR) or Frequency(%)"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_caption</span>(<span class="st">"Table 1"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="zfepsidbff" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -6652,6 +6588,7 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>Table 1</caption>
 <thead class="gt_col_headings">
@@ -6659,32 +6596,16 @@ ga('send', {
 <th rowspan="2" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Variables</strong></th>
 <th rowspan="2" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>N</strong></th>
 <th colspan="7" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th"><span class="gt_column_spanner"><strong>Year</strong></span></th>
-<th rowspan="2" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
+<th rowspan="2" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
 </tr>
 <tr class="odd">
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2009</strong>, N = 214<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2010</strong>, N = 236<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2011</strong>, N = 223<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2012</strong>, N = 234<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2013</strong>, N = 243<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2014</strong>, N = 254<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2015</strong>, N = 240<sup>1</sup>
-</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2009</strong>, N = 214<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2010</strong>, N = 236<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2011</strong>, N = 223<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2012</strong>, N = 234<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2013</strong>, N = 243<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2014</strong>, N = 254<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2015</strong>, N = 240<sup>1</sup></th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
@@ -6820,36 +6741,37 @@ ga('send', {
 <td class="gt_row gt_center">111 (71, 167)</td>
 <td class="gt_row gt_center">&gt;0.9</td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes">
+</tbody><tfoot class="gt_footnotes">
 <tr class="odd">
-<td colspan="10" class="gt_footnote">
-<sup>1</sup> Median(IQR) or Frequency(%)</td>
+<td colspan="10" class="gt_footnote"><sup>1</sup> Median(IQR) or Frequency(%)</td>
 </tr>
 <tr class="even">
-<td colspan="10" class="gt_footnote">
-<sup>2</sup> Fisher's exact test; Pearson's Chi-squared test; Kruskal-Wallis rank sum test</td>
+<td colspan="10" class="gt_footnote"><sup>2</sup> Fisher's exact test; Pearson's Chi-squared test; Kruskal-Wallis rank sum test</td>
 </tr>
 </tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
-</section><section id="multi-line-continuous-summaries" class="level1"><h1>Multi-line Continuous Summaries</h1>
+</section>
+<section id="multi-line-continuous-summaries" class="level1">
+<h1>Multi-line Continuous Summaries</h1>
 <p>연속형 변수의 통계량은 여러 줄로 요약될 수 있다. 여러 줄에 걸쳐 연속형 변수의 요약값을 출력할 때에는 변수 type을 <strong>continuous2</strong>로 지정해 주어야 한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">MyTbl</span> <span class="op">&lt;-</span> <span class="va">dt2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span></span>
-<span>    by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span>,</span>
-<span>    type <span class="op">=</span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_continuous</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"continuous2"</span>,</span>
-<span>    statistic <span class="op">=</span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html">all_continuous</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"{N_nonmiss}"</span>,</span>
-<span>                                     <span class="st">"{median} ({p25}, {p75})"</span>,</span>
-<span>                                     <span class="st">"{min}, {max}"</span><span class="op">)</span>,</span>
-<span>    missing <span class="op">=</span> <span class="st">"no"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">MyTbl</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>MyTbl <span class="ot">&lt;-</span> dt2 <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> EXMD_BZ_YYYY,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"continuous2"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">statistic =</span> <span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"{N_nonmiss}"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">"{median} ({p25}, {p75})"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">"{min}, {max}"</span>),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing =</span> <span class="st">"no"</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>()</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>MyTbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="gpnmljzjjg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
@@ -7263,34 +7185,21 @@ ga('send', {
   vertical-align: -0.05em;
 }
 </style>
+
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings"><tr class="header">
+<thead class="gt_col_headings">
+<tr class="header">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th"><strong>Characteristic</strong></th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2009</strong>, N = 214<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2010</strong>, N = 236<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2011</strong>, N = 223<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2012</strong>, N = 234<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2013</strong>, N = 243<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2014</strong>, N = 254<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>2015</strong>, N = 240<sup>1</sup>
-</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th">
-<strong>p-value</strong><sup>2</sup>
-</th>
-</tr></thead>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2009</strong>, N = 214<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2010</strong>, N = 236<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2011</strong>, N = 223<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2012</strong>, N = 234<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2013</strong>, N = 243<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2014</strong>, N = 254<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>2015</strong>, N = 240<sup>1</sup></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th"><strong>p-value</strong><sup>2</sup></th>
+</tr>
+</thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left">Q_PHX_DX_STK</td>
@@ -7523,45 +7432,50 @@ ga('send', {
 <td class="gt_row gt_center">34, 878</td>
 <td class="gt_row gt_center"></td>
 </tr>
-</tbody>
-<tfoot class="gt_footnotes">
+</tbody><tfoot class="gt_footnotes">
 <tr class="even">
-<td colspan="9" class="gt_footnote">
-<sup>1</sup> n (%)</td>
+<td colspan="9" class="gt_footnote"><sup>1</sup> n (%)</td>
 </tr>
 <tr class="odd">
-<td colspan="9" class="gt_footnote">
-<sup>2</sup> Fisher's exact test; Pearson's Chi-squared test; Kruskal-Wallis rank sum test</td>
+<td colspan="9" class="gt_footnote"><sup>2</sup> Fisher's exact test; Pearson's Chi-squared test; Kruskal-Wallis rank sum test</td>
 </tr>
 </tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
 <ul>
 <li>연속형 변수의 요약 통계량이 3줄로 늘어난 것을 확인할 수 있다.</li>
-</ul></section><section id="save-individual-tables" class="level1"><h1>Save individual tables</h1>
+</ul>
+</section>
+<section id="save-individual-tables" class="level1">
+<h1>Save individual tables</h1>
 <p><code>gtsummary</code> 패키지를 이용해 만든 table을 flextable 객체로 바꾼 후 <u>워드 파일로 저장</u>할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">MyTbl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/as_flex_table.html">as_flex_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/save_as_docx.html">save_as_docx</a></span><span class="op">(</span><span class="va">MyTbl</span>, path <span class="op">=</span> <span class="st">"/cloud/project/table.docx"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>MyTbl <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_flex_table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">save_as_docx</span>(MyTbl, <span class="at">path =</span> <span class="st">"/cloud/project/table.docx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="마치며" class="level1"><h1>마치며</h1>
+</section>
+<section id="마치며" class="level1">
+<h1>마치며</h1>
 <p>이번 강의를 정리하자.</p>
 <ol type="1">
 <li><p><strong>gtsummary</strong> 패키지의 <strong><code>tbl_summary</code></strong> 함수를 사용하여 요약 통계량 테이블을 작성할 수 있다.</p></li>
 <li><p><strong><code>tbl_summary</code></strong> 함수에는 다양한 옵션이 존재하며 <strong>by</strong> 옵션을 통해 그룹별 통계량을 계산할 수 있다.</p></li>
 <li><p><strong><code>tbl_strata</code></strong> 함수를 사용하여 여러 계층별 통계량을 계산할 수 있다.</p></li>
-<li><p><strong><code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html">add_p()</a></code></strong> 함수를 사용하여 수행할 test를 지정하고 p-value를 추가할 수 있다. 이외에도 다양한 함수를 통해 테이블에 통계량을 추가하고 디자인을 설정할 수 있다.</p></li>
+<li><p><strong><code>add_p()</code></strong> 함수를 사용하여 수행할 test를 지정하고 p-value를 추가할 수 있다. 이외에도 다양한 함수를 통해 테이블에 통계량을 추가하고 디자인을 설정할 수 있다.</p></li>
 <li><p><strong>gtsummary</strong> 패키지로 만든 table을 워드 파일로 저장할 수 있다.</p></li>
 </ol>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lee2022,
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lee2022,
   author = {Lee, Yujin},
   title = {Gtsummary {패키지} {소개}},
-  pages = {undefined},
   date = {2022-02-04},
   url = {https://blog.zarathu.com/posts/2022-02-07-gtsummary},
   langid = {en}
@@ -7569,7 +7483,8 @@ ga('send', {
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lee2022" class="csl-entry quarto-appendix-citeas" role="listitem">
 Lee, Yujin. 2022. <span>“Gtsummary 패키지 소개.”</span> February 4,
 2022. <a href="https://blog.zarathu.com/posts/2022-02-07-gtsummary">https://blog.zarathu.com/posts/2022-02-07-gtsummary</a>.
-</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -7697,38 +7612,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -7737,7 +7642,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }
@@ -7958,10 +7865,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
 <p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
 </div>   
@@ -7973,6 +7884,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
+
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>

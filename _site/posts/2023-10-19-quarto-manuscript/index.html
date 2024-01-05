@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.455">
+<meta name="generator" content="quarto-1.4.534">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="Jihee Han">
 <meta name="dcterms.date" content="2023-10-18">
 <meta name="description" content="코드 블록을 포함한 학술 논문을 웹에 발행하고, PDF, docx등 다양한 형식으로 다운받을 수 있는 Quarto Manuscript를 소개합니다.">
+
 <title>Zarathu Blog - Quarto Manuscripts를 이용해 학술 논문 작성하기</title>
 <style>
 code{white-space: pre-wrap;}
@@ -56,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -72,7 +76,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -80,7 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    null
+    "f",
+    "/",
+    "s"
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -90,11 +97,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script type="text/javascript">
+}</script>
+
+<script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -106,16 +116,23 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
 <link rel="stylesheet" href="../../styles.css">
 </head>
+
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -126,7 +143,7 @@ ga('send', {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -138,8 +155,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
@@ -152,7 +169,7 @@ ga('send', {
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../../contributors.html"> 
 <span class="menu-text">Contributors</span></a>
@@ -161,8 +178,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
@@ -171,7 +188,7 @@ ga('send', {
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
@@ -188,11 +205,15 @@ ga('send', {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">Quarto Manuscripts를 이용해 학술 논문 작성하기</h1>
                   <div>
@@ -231,35 +252,49 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#%EA%B0%9C%EC%9A%94" id="toc-개요" class="nav-link active" data-scroll-target="#%EA%B0%9C%EC%9A%94">개요</a></li>
-  <li><a href="#quarto-manuscript-%EC%86%8C%EA%B0%9C" id="toc-quarto-manuscript-소개" class="nav-link" data-scroll-target="#quarto-manuscript-%EC%86%8C%EA%B0%9C">Quarto Manuscript 소개</a></li>
-  <li>
-<a href="#quarto-manuscript%EB%A1%9C-%ED%95%99%EC%88%A0-%EB%85%BC%EB%AC%B8-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0" id="toc-quarto-manuscript로-학술-논문-작성하기" class="nav-link" data-scroll-target="#quarto-manuscript%EB%A1%9C-%ED%95%99%EC%88%A0-%EB%85%BC%EB%AC%B8-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0">Quarto Manuscript로 학술 논문 작성하기</a>
+  <li><a href="#개요" id="toc-개요" class="nav-link active" data-scroll-target="#개요">개요</a></li>
+  <li><a href="#quarto-manuscript-소개" id="toc-quarto-manuscript-소개" class="nav-link" data-scroll-target="#quarto-manuscript-소개">Quarto Manuscript 소개</a></li>
+  <li><a href="#quarto-manuscript로-학술-논문-작성하기" id="toc-quarto-manuscript로-학술-논문-작성하기" class="nav-link" data-scroll-target="#quarto-manuscript로-학술-논문-작성하기">Quarto Manuscript로 학술 논문 작성하기</a>
   <ul class="collapse">
-<li><a href="#%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0" id="toc-준비하기" class="nav-link" data-scroll-target="#%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0">1. 준비하기</a></li>
-  <li><a href="#%EC%9B%90%EA%B3%A0-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0" id="toc-원고-작성하기" class="nav-link" data-scroll-target="#%EC%9B%90%EA%B3%A0-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0">2. 원고 작성하기</a></li>
-  <li><a href="#%EA%B9%83%ED%97%88%EB%B8%8C-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%A5%BC-%ED%86%B5%ED%95%B4-%EC%9B%B9%EC%9C%BC%EB%A1%9C-%EB%B0%9C%ED%96%89%ED%95%98%EA%B8%B0" id="toc-깃허브-페이지를-통해-웹으로-발행하기" class="nav-link" data-scroll-target="#%EA%B9%83%ED%97%88%EB%B8%8C-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%A5%BC-%ED%86%B5%ED%95%B4-%EC%9B%B9%EC%9C%BC%EB%A1%9C-%EB%B0%9C%ED%96%89%ED%95%98%EA%B8%B0">3. 깃허브 페이지를 통해 웹으로 발행하기</a></li>
+  <li><a href="#준비하기" id="toc-준비하기" class="nav-link" data-scroll-target="#준비하기">1. 준비하기</a></li>
+  <li><a href="#원고-작성하기" id="toc-원고-작성하기" class="nav-link" data-scroll-target="#원고-작성하기">2. 원고 작성하기</a></li>
+  <li><a href="#깃허브-페이지를-통해-웹으로-발행하기" id="toc-깃허브-페이지를-통해-웹으로-발행하기" class="nav-link" data-scroll-target="#깃허브-페이지를-통해-웹으로-발행하기">3. 깃허브 페이지를 통해 웹으로 발행하기</a></li>
+  </ul></li>
+  <li><a href="#마치며" id="toc-마치며" class="nav-link" data-scroll-target="#마치며">마치며</a></li>
   </ul>
-</li>
-  <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">마치며</a></li>
-  </ul></nav>
-</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script><section id="개요" class="level2"><h2 class="anchored" data-anchor-id="개요">개요</h2>
+</script>
+
+
+
+
+
+<section id="개요" class="level2">
+<h2 class="anchored" data-anchor-id="개요">개요</h2>
 <p>지난 9월 R Studio 2023.09.0 버전이 공개되었습니다. 새롭게 추가된 여러 기능 중에서 .qmd 파일을 이용해 학술 논문을 작성하고 웹페이지로 발행할 수 있는 <strong>Quarto Manuscript Project</strong>를 소개합니다. 본 게시글은 <a href="https://quarto.org/docs/manuscripts/">Quarto manuscript 공식 문서</a>를 참고해 작성되었습니다.</p>
-</section><section id="quarto-manuscript-소개" class="level2"><h2 class="anchored" data-anchor-id="quarto-manuscript-소개">Quarto Manuscript 소개</h2>
+</section>
+<section id="quarto-manuscript-소개" class="level2">
+<h2 class="anchored" data-anchor-id="quarto-manuscript-소개">Quarto Manuscript 소개</h2>
 <p>Quarto Manuscript는 .qmd 파일을 통해 학술 논문을 작성할 수 있는 프로젝트로, 다음과 같은 장점을 갖습니다.</p>
 <ol type="1">
 <li>그림, 표, 수식, 인용 정보, 코드 블록 등 학술 논문에 필요한 모든 요소를 포함한 원고를 작성할 수 있습니다.</li>
@@ -267,10 +302,15 @@ ga('send', {
 <li>원고를 PDF, docx, 압축 파일 등 다양한 형식으로 손쉽게 다운로드할 수 있습니다.</li>
 </ol>
 <p>Quarto Manuscript를 활용해 작성한 학술 논문 예시는 <a href="https://quarto-ext.github.io/manuscript-template-jupyter/">여기</a>에서 확인할 수 있습니다. 이 예시를 참고해 Quarto manuscript 원고를 작성하고 웹사이트로 발행해보겠습니다.</p>
-</section><section id="quarto-manuscript로-학술-논문-작성하기" class="level2"><h2 class="anchored" data-anchor-id="quarto-manuscript로-학술-논문-작성하기">Quarto Manuscript로 학술 논문 작성하기</h2>
-<section id="준비하기" class="level3"><h3 class="anchored" data-anchor-id="준비하기">1. 준비하기</h3>
+</section>
+<section id="quarto-manuscript로-학술-논문-작성하기" class="level2">
+<h2 class="anchored" data-anchor-id="quarto-manuscript로-학술-논문-작성하기">Quarto Manuscript로 학술 논문 작성하기</h2>
+<section id="준비하기" class="level3">
+<h3 class="anchored" data-anchor-id="준비하기">1. 준비하기</h3>
 <p>Quarto Manuscript를 사용하기에 앞서 (1) <a href="https://posit.co/downloads/">2023.09 버전 이상의 RStudio</a>와 (2) <a href="https://quarto.org/docs/download/prerelease">1.4 버전 이상의 Quarto</a>를 설치해야 합니다.</p>
-</section><section id="원고-작성하기" class="level3"><h3 class="anchored" data-anchor-id="원고-작성하기">2. 원고 작성하기</h3>
+</section>
+<section id="원고-작성하기" class="level3">
+<h3 class="anchored" data-anchor-id="원고-작성하기">2. 원고 작성하기</h3>
 <p>RStudio에서 <strong>New project &gt; New Directory &gt; Quarto Manuscript</strong>를 선택해 프로젝트를 생성합니다.</p>
 <p>학술 논문 원고는 <code>index.qmd</code> 파일에서 작성합니다. 우선 작성할 논문의 제목, 저자, 키워드, 초록과 같은 정보를 아래 예시와 같이 YAML header에 입력합니다.</p>
 <div class="cell">
@@ -319,41 +359,44 @@ ga('send', {
 </div>
 </div>
 <p>YAML header 아래에 본문을 작성합니다. 본문은 Quarto markdown 형식으로 작성하며, 기본적인 사용법은 <a href="https://quarto.org/docs/authoring/markdown-basics.html">Quarto Markdown Basics 공식 문서</a> 혹은 R markdown 기초를 다루었던 <a href="https://blog.zarathu.com/posts/2019-01-03-rmarkdown/#r-chunk">이전 게시글</a>에서 참고할 수 있습니다. 본 게시글에서는 논문 작성에 필요한 몇 가지 기능을 중점적으로 살펴보겠습니다.</p>
-<section id="sec-figure" class="level4"><h4 class="anchored" data-anchor-id="sec-figure">2.1. figure 삽입하기</h4>
+<section id="sec-figure" class="level4">
+<h4 class="anchored" data-anchor-id="sec-figure">2.1. figure 삽입하기</h4>
 <p>r 코드 블록을 활용해 figure를 삽입할 수 있습니다. 아래 예시와 같이 figure을 생성하는 코드와 함께 figure의 label, caption, alt text, width, height 등을 입력합니다. 본문에는 figure와 캡션만 표시되고 코드는 Article Notebook에서 모아 볼 수 있습니다. 본문에서 <code>@fig-timeline</code>와 같이 <code>@</code> 기호와 figure의 label을 입력하면 figure을 인용할 수 있습니다.</p>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>index.qmd</strong></pre>
 </div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># figure 작성 예시</span></span>
-<span></span>
-<span><span class="co"># ```{r}</span></span>
-<span><span class="va">eruptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1492</span>, <span class="fl">1585</span>, <span class="fl">1646</span>, <span class="fl">1677</span>, <span class="fl">1712</span>, <span class="fl">1949</span>, <span class="fl">1971</span>, <span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="va">n_eruptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">eruptions</span><span class="op">)</span></span>
-<span><span class="co"># ```</span></span>
-<span></span>
-<span><span class="co"># ```{r}</span></span>
-<span><span class="co">#| label: fig-timeline</span></span>
-<span><span class="co">#| fig-cap: Timeline of recent earthquakes on La Palma</span></span>
-<span><span class="co">#| fig-alt: An event plot of the years of the last 8 eruptions on La Palma.</span></span>
-<span><span class="co">#| fig-height: 1.5</span></span>
-<span><span class="co">#| fig-width: 6</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">eruptions</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n_eruptions</span><span class="op">)</span>, </span>
-<span>  pch <span class="op">=</span> <span class="st">"|"</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/box.html">box</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co"># ```</span></span>
-<span></span>
-<span><span class="co"># ```{r}</span></span>
-<span><span class="co">#| output: false</span></span>
-<span><span class="va">avg_years_between_eruptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="va">eruptions</span><span class="op">[</span><span class="op">-</span><span class="va">n_eruptions</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">avg_years_between_eruptions</span></span>
-<span><span class="co">#```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># figure 작성 예시</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ```{r}</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>eruptions <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1492</span>, <span class="dv">1585</span>, <span class="dv">1646</span>, <span class="dv">1677</span>, <span class="dv">1712</span>, <span class="dv">1949</span>, <span class="dv">1971</span>, <span class="dv">2021</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>n_eruptions <span class="ot">&lt;-</span> <span class="fu">length</span>(eruptions)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ```</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ```{r}</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-timeline</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Timeline of recent earthquakes on La Palma</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: An event plot of the years of the last 8 eruptions on La Palma.</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 1.5</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fl">0.1</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(eruptions, <span class="fu">rep</span>(<span class="dv">0</span>, n_eruptions), </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="st">"|"</span>, <span class="at">axes =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>()</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ```</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># ```{r}</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>avg_years_between_eruptions <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">diff</span>(eruptions[<span class="sc">-</span>n_eruptions]))</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>avg_years_between_eruptions</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="다른-.qmd-파일에-작성한-plot-삽입하기" class="level4"><h4 class="anchored" data-anchor-id="다른-.qmd-파일에-작성한-plot-삽입하기">2.2. 다른 .qmd 파일에 작성한 plot 삽입하기</h4>
+</section>
+<section id="다른-.qmd-파일에-작성한-plot-삽입하기" class="level4">
+<h4 class="anchored" data-anchor-id="다른-.qmd-파일에-작성한-plot-삽입하기">2.2. 다른 .qmd 파일에 작성한 plot 삽입하기</h4>
 <p><a href="#sec-figure" class="quarto-xref">Section&nbsp;3.2.1</a> 에서와 같이 간단한 그림이 아닌, 연구에서 사용된 데이터를 통해 plot을 그리고 이를 본문에 삽입하기 위해서는 디렉토리에 <code>notebooks</code> 폴더를 생성해야 합니다. 생성한 notebooks 폴더 안에 데이터 파일을 넣고 새로운 .qmd 파일을 만들어 plot을 그리는 r 코드 블록을 작성합니다.</p>
 <p>이후 <code>index.qmd</code> 파일로 돌아와 아래와 같은 코드를 작성하면 plot이 삽입됩니다.</p>
 <div class="cell">
@@ -367,7 +410,9 @@ ga('send', {
 </div>
 </div>
 <p>notebooks 폴더의 .qmd 파일에서 작성한 코드는 마찬가지로 Article Notebook에서 모아 볼 수 있습니다.</p>
-</section><section id="참고문헌-작성하기" class="level4"><h4 class="anchored" data-anchor-id="참고문헌-작성하기">2.3. 참고문헌 작성하기</h4>
+</section>
+<section id="참고문헌-작성하기" class="level4">
+<h4 class="anchored" data-anchor-id="참고문헌-작성하기">2.3. 참고문헌 작성하기</h4>
 <p>참고문헌은 아래 예시와 같이 <code>references.bib</code> 파일에 BibTeX 형태로 작성합니다. <code>index.qmd</code> 파일의 본문에서 <code>@marrero2019</code>와 같이 <code>@</code> 기호와 참고문헌의 label을 입력하면 참고문헌을 인용할 수 있습니다.</p>
 <div class="cell">
 <div class="code-with-filename">
@@ -388,19 +433,21 @@ ga('send', {
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="journal-template-적용하기" class="level4"><h4 class="anchored" data-anchor-id="journal-template-적용하기">2.4. journal template 적용하기</h4>
+</section>
+<section id="journal-template-적용하기" class="level4">
+<h4 class="anchored" data-anchor-id="journal-template-적용하기">2.4. journal template 적용하기</h4>
 <p>journal template은 PDF에 적용됩니다. .qmd 파일을 PDF 파일로 내보내려면 <code>tinytex</code> 패키지가 설치되어 있어야 합니다. 아래 코드를 통해 패키지를 설치하겠습니다.</p>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>console</strong></pre>
 </div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># tinytex 설치 후 로드</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html">installed.packages</a></span><span class="op">(</span><span class="st">"tinytex"</span><span class="op">)</span></span>
-<span><span class="fu">tinytex</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tinytex/man/install_tinytex.html">install_tinytex</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/tinytex">tinytex</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tinytex 설치 후 로드</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">installed.packages</span>(<span class="st">"tinytex"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>tinytex<span class="sc">::</span><span class="fu">install_tinytex</span>()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tinytex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="cell">
@@ -408,9 +455,9 @@ ga('send', {
 <div class="code-with-filename-file">
 <pre><strong>console</strong></pre>
 </div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 패키지 설치 확인(True가 출력되면 성공적으로 설치된 것임)</span></span>
-<span></span>
-<span><span class="fu">tinytex</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/pkg/tinytex/man/is_tinytex.html">is_tinytex</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 패키지 설치 확인(True가 출력되면 성공적으로 설치된 것임)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>tinytex<span class="sc">:::</span><span class="fu">is_tinytex</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>journal format을 추가하기 위해 <a href="https://quarto.org/docs/extensions/listing-journals.html">Quarto Extensions: Journal Articles</a>를 참고해 터미널에 아래 코드를 실행시켜 익스텐션을 설치합니다.</p>
@@ -426,31 +473,41 @@ ga('send', {
 </div>
 <p>이후 <code>_quarto.yml</code> 파일의 <code>format:</code>에 <code>acs-pdf: default</code>를 추가하면 acs format이 적용됩니다.</p>
 <p>웹페이지를 발행한 뒤 PDF 파일을 다운로드하면 아래와 같이 journal format이 적용된 것을 확인할 수 있습니다.</p>
-<figure style="text-align: center;" class="figure"><div>
+<figure style="text-align: center;" class="figure">
+<div>
 
 </div>
 <div class="quarto-layout-panel" data-layout-ncol="2">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;display: flex;">
 <p><img src="img/acs.png" width="500px" class="figure-img"></p>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;display: flex;">
 <p><img src="img/elsevier.png" width="500px" class="figure-img"></p>
 </div>
 </div>
 </div>
 <figcaption>
 (좌) acs format, (우) elsevier format 적용 예시
-</figcaption></figure></section></section><section id="깃허브-페이지를-통해-웹으로-발행하기" class="level3"><h3 class="anchored" data-anchor-id="깃허브-페이지를-통해-웹으로-발행하기">3. 깃허브 페이지를 통해 웹으로 발행하기</h3>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="깃허브-페이지를-통해-웹으로-발행하기" class="level3">
+<h3 class="anchored" data-anchor-id="깃허브-페이지를-통해-웹으로-발행하기">3. 깃허브 페이지를 통해 웹으로 발행하기</h3>
 <p>원고를 깃허브 페이지를 통해 웹으로 발행하기 위해 <code>_quarto.yml</code>파일의 <code>project:</code>에 <code>output-dir: docs</code> 설정을 추가합니다. 이후 <code>index.qmd</code> 파일으로 돌아와 터미널에 <code>quarto render</code>을 입력합니다. 모든 변경사항을 깃허브에 commit 후 push 하면, 원고가 깃허브 페이지를 통해 웹으로 발행됩니다. 깃허브의 해당 레포지토리의 <strong>settings &gt; pages</strong>에서 웹페이지 링크를 확인할 수 있습니다.</p>
-</section></section><section id="마치며" class="level2"><h2 class="anchored" data-anchor-id="마치며">마치며</h2>
+</section>
+</section>
+<section id="마치며" class="level2">
+<h2 class="anchored" data-anchor-id="마치며">마치며</h2>
 <p>이번 게시글에서는 새롭게 공개된 Quarto Manuscript를 통해 학술 논문 원고를 작성하고 깃허브 페이지를 통해 웹으로 발행하는 방법을 알아보았습니다. Quarto Manuscript를 통해 논문 작성과 공유가 더욱 편리하게 이루어지기를 기대하며 글을 마칩니다.</p>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{han2023,
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{han2023,
   author = {Han, Jihee},
   title = {Quarto {Manuscripts를} {이용해} {학술} {논문} {작성하기}},
-  pages = {undefined},
   date = {2023-10-18},
   url = {https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript},
   langid = {en}
@@ -458,7 +515,8 @@ ga('send', {
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-han2023" class="csl-entry quarto-appendix-citeas" role="listitem">
 Han, Jihee. 2023. <span>“Quarto Manuscripts를 이용해 학술 논문
 작성하기.”</span> October 18, 2023. <a href="https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript">https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript</a>.
-</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -586,38 +644,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -626,7 +674,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }
@@ -847,10 +897,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
 <p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
 </div>   
@@ -862,6 +916,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
+
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.455">
+<meta name="generator" content="quarto-1.4.534">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="Yujin Lee">
 <meta name="dcterms.date" content="2022-02-07">
 <meta name="description" content="효율적으로 의학 연구 논문에 들어갈 table1을 만들 수 있는 tableone 패키지에 대해 소개합니다.">
+
 <title>Zarathu Blog - tableone 패키지 소개</title>
 <style>
 code{white-space: pre-wrap;}
@@ -56,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -72,7 +76,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -80,7 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    null
+    "f",
+    "/",
+    "s"
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -90,11 +97,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script type="text/javascript">
+}</script>
+
+<script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -106,17 +116,25 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../styles.css">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="../../styles.css">
 </head>
+
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -127,7 +145,7 @@ ga('send', {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -139,8 +157,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
@@ -153,7 +171,7 @@ ga('send', {
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../../contributors.html"> 
 <span class="menu-text">Contributors</span></a>
@@ -162,8 +180,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
@@ -172,7 +190,7 @@ ga('send', {
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
@@ -189,11 +207,15 @@ ga('send', {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">tableone 패키지 소개</h1>
                   <div>
@@ -231,73 +253,91 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90" id="toc-시작하기-전에" class="nav-link active" data-scroll-target="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90">시작하기 전에</a></li>
+  <li><a href="#시작하기-전에" id="toc-시작하기-전에" class="nav-link active" data-scroll-target="#시작하기-전에">시작하기 전에</a></li>
   <li><a href="#what-is-tableone" id="toc-what-is-tableone" class="nav-link" data-scroll-target="#what-is-tableone">What is tableone?</a></li>
   <li><a href="#creating-a-tableone" id="toc-creating-a-tableone" class="nav-link" data-scroll-target="#creating-a-tableone">Creating a tableone</a></li>
-  <li>
-<a href="#argument-customize" id="toc-argument-customize" class="nav-link" data-scroll-target="#argument-customize">Argument customize</a>
+  <li><a href="#argument-customize" id="toc-argument-customize" class="nav-link" data-scroll-target="#argument-customize">Argument customize</a>
   <ul class="collapse">
-<li><a href="#categorical-variable-conversion" id="toc-categorical-variable-conversion" class="nav-link" data-scroll-target="#categorical-variable-conversion">Categorical variable conversion</a></li>
+  <li><a href="#categorical-variable-conversion" id="toc-categorical-variable-conversion" class="nav-link" data-scroll-target="#categorical-variable-conversion">Categorical variable conversion</a></li>
   <li><a href="#multiple-group-summary" id="toc-multiple-group-summary" class="nav-link" data-scroll-target="#multiple-group-summary">Multiple group summary</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#print-tableone" id="toc-print-tableone" class="nav-link" data-scroll-target="#print-tableone">Print tableone</a>
+  </ul></li>
+  <li><a href="#print-tableone" id="toc-print-tableone" class="nav-link" data-scroll-target="#print-tableone">Print tableone</a>
   <ul class="collapse">
-<li><a href="#showing-all-levels" id="toc-showing-all-levels" class="nav-link" data-scroll-target="#showing-all-levels">Showing all levels</a></li>
+  <li><a href="#showing-all-levels" id="toc-showing-all-levels" class="nav-link" data-scroll-target="#showing-all-levels">Showing all levels</a></li>
   <li><a href="#nonnormal-variables" id="toc-nonnormal-variables" class="nav-link" data-scroll-target="#nonnormal-variables">nonnormal variables</a></li>
   <li><a href="#exact" id="toc-exact" class="nav-link" data-scroll-target="#exact">exact</a></li>
   <li><a href="#smd" id="toc-smd" class="nav-link" data-scroll-target="#smd">smd</a></li>
-  </ul>
-</li>
+  </ul></li>
   <li><a href="#detailed-information-summary" id="toc-detailed-information-summary" class="nav-link" data-scroll-target="#detailed-information-summary">Detailed information : summary()</a></li>
   <li><a href="#show-categorical-or-continuous-variable-only" id="toc-show-categorical-or-continuous-variable-only" class="nav-link" data-scroll-target="#show-categorical-or-continuous-variable-only">Show categorical or continuous variable only</a></li>
   <li><a href="#export-tableone" id="toc-export-tableone" class="nav-link" data-scroll-target="#export-tableone">Export tableone</a></li>
-  <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">마치며</a></li>
-  </ul></nav>
-</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+  <li><a href="#마치며" id="toc-마치며" class="nav-link" data-scroll-target="#마치며">마치며</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script><section id="시작하기-전에" class="level1"><h1>시작하기 전에</h1>
+</script>
+
+
+
+
+
+<section id="시작하기-전에" class="level1">
+<h1>시작하기 전에</h1>
 <p>본 자료는 데이터셋의 변수를 하나의 테이블로 요약하는 방법에 대해 알아볼 것이다. <strong>tableone</strong> 패키지를 이용하면 효율적으로 논문에 들어갈 table1을 만들 수 있다.</p>
-</section><section id="what-is-tableone" class="level1"><h1>What is tableone?</h1>
+</section>
+<section id="what-is-tableone" class="level1">
+<h1>What is tableone?</h1>
 <p><code>tableone</code>은 의학 연구 논문에서 볼 수 있는 table1을 구성하는 데 사용되는 패키지로, 한 테이블 내에 혼합된 범주형 변수와 연속형 변수를 모두 요약할 수 있고 사용법이 매우 간단하다는 장점이 있다.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2018-11-24-basic-biostatistics/table1.jpg" class="img-fluid quarto-figure-center"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://blog.zarathu.com/posts/2018-11-24-basic-biostatistics/table1.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
 </div>
 </div>
-</section><section id="creating-a-tableone" class="level1"><h1>Creating a tableone</h1>
+</div>
+</section>
+<section id="creating-a-tableone" class="level1">
+<h1>Creating a tableone</h1>
 <p><strong>CreateTableOne()</strong> 함수를 사용하여 테이블을 만들 수 있다. <code>fread</code>를 통해 데이터를 불러와 간단한 테이블을 만들어보자. 데이터는 09-15년 공단 건강검진 데이터에서 실습용으로 32 명을 뽑은 자료이며, 자세한 내용은 <a href="https://github.com/jinseob2kim/lecture-snuhlab/raw/master/data/2%EA%B5%90%EC%8B%9C%20%ED%85%8C%EC%9D%B4%EB%B8%94%20%EC%84%B8%EB%B6%80%20%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83%20%EC%86%8C%EA%B0%9C(%EC%B5%9C%EC%8B%A0%EC%9E%90%EB%A3%8C).pdf">“data/2교시 테이블 세부 레이아웃 소개(최신자료).pdf”</a> 를 참고하자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Setup</span></span>
-<span></span>
-<span><span class="co"># install.packages("data.table")</span></span>
-<span><span class="co"># install.packages("curl")</span></span>
-<span><span class="co"># install.packages("tableone")</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jeroen.r-universe.dev/curl">curl</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Setup</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("data.table")</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("curl")</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tableone")</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(curl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Using libcurl 7.86.0 with LibreSSL/3.3.6</code></pre>
 </div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kaz-yos/tableone">tableone</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tableone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Load file</span></span>
-<span><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span></span>
-<span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="va">url</span>,header<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load file</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">&lt;-</span> <span class="fu">fread</span>(url,<span class="at">header=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -310,16 +350,18 @@ ga('send', {
 </div>
 <p><strong>CreateTableOne()</strong> 함수를 사용해 간단한 테이블을 만들어 보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># create table1</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/tableone/man/CreateTableOne.html">CreateTableOne</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">dt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create table1</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">CreateTableOne</span>(<span class="at">data=</span>dt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: left;">Overall</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">n</td>
@@ -460,39 +502,43 @@ ga('send', {
 <ul>
 <li>범주형 변수는 개수(백분율)로 요약된다.</li>
 <li>연속형 변수는 normal인 경우 mean(sd)로 나타나고, nonnormal인 경우 median(IQR)로 요약된다.</li>
-</ul></section><section id="argument-customize" class="level1"><h1>Argument customize</h1>
+</ul>
+</section>
+<section id="argument-customize" class="level1">
+<h1>Argument customize</h1>
 <p><strong>CreateTableOne()</strong> 함수에는 다양한 옵션이 존재한다. 세부적인 옵션 설정을 통해 원하는 table1을 만들 수 있다. 주요 옵션은 다음과 같다.</p>
 <ul>
-<li>
-<code>CreateTableOne</code>
+<li><code>CreateTableOne</code>
 <ul>
 <li>vars : 테이블에 들어갈 변수들</li>
 <li>factorVars : 범주형 변수들</li>
 <li>data : 데이터</li>
 <li>strata : 그룹 변수 지정</li>
 <li>includeNA : 범주형 변수에서 <code>NA</code>를 하나의 범주로 포함할지 여부</li>
-</ul>
-</li>
+</ul></li>
 </ul>
 <p>옵션에 대한 자세한 설명은 예시를 통해 다루도록 하겠다.</p>
-<section id="categorical-variable-conversion" class="level2"><h2 class="anchored" data-anchor-id="categorical-variable-conversion">Categorical variable conversion</h2>
+<section id="categorical-variable-conversion" class="level2">
+<h2 class="anchored" data-anchor-id="categorical-variable-conversion">Categorical variable conversion</h2>
 <p><strong>factorVars</strong> 인자를 사용하여 범주형 변수를 지정할 수 있다. 이때 <strong>vars</strong> 인자를 통해 전체 데이터 셋 중 테이블에 들어갈 변수를 설정할 수 있고, 지정하지 않을 시 데이터 셋의 모든 변수가 포함된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Variables</span></span>
-<span><span class="va">myVars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"HGHT"</span>, <span class="st">"WGHT"</span>, <span class="st">"BMI"</span>, <span class="st">"HDL"</span>, <span class="st">"LDL"</span>, <span class="st">"TG"</span>, <span class="st">"SGPT"</span>, </span>
-<span>            <span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span>, <span class="st">"Q_HBV_AG"</span>, <span class="st">"Q_SMK_YN"</span><span class="op">)</span></span>
-<span><span class="co"># Categorical variables</span></span>
-<span><span class="va">catVars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span>, <span class="st">"Q_HBV_AG"</span>, <span class="st">"Q_SMK_YN"</span><span class="op">)</span></span>
-<span><span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tableone/man/CreateTableOne.html">CreateTableOne</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="va">myVars</span>, factorVars <span class="op">=</span> <span class="va">catVars</span>, data <span class="op">=</span> <span class="va">dt</span><span class="op">)</span></span>
-<span><span class="va">t1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>myVars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HGHT"</span>, <span class="st">"WGHT"</span>, <span class="st">"BMI"</span>, <span class="st">"HDL"</span>, <span class="st">"LDL"</span>, <span class="st">"TG"</span>, <span class="st">"SGPT"</span>, </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span>, <span class="st">"Q_HBV_AG"</span>, <span class="st">"Q_SMK_YN"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Categorical variables</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>catVars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span>, <span class="st">"Q_HBV_AG"</span>, <span class="st">"Q_SMK_YN"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">CreateTableOne</span>(<span class="at">vars =</span> myVars, <span class="at">factorVars =</span> catVars, <span class="at">data =</span> dt)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>t1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: left;">Overall</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">n</td>
@@ -574,15 +620,18 @@ ga('send', {
 <li><p>범주형 변수로 설정한 컬럼의 요약값이 mean(sd)에서 n(percentage)로 바뀐 것을 볼 수 있다.</p></li>
 <li><p>두 개의 범주가 있는 범주형 변수의 경우, 두 번째 범주의 요약값만 출력된다. 예를 들어 0과 1의 범주가 있을 때, 범주1의 개수와 백분율이 출력된다. 이는 옵션 설정을 통해 전체 범주의 요약값을 출력하도록 변경할 수 있다.</p></li>
 <li><p>3개 이상의 범주가 있을 때에는 모든 범주의 값이 요약되며, 백분율은 누락된 값을 제외한 후 계산된다.</p></li>
-</ul></section><section id="multiple-group-summary" class="level2"><h2 class="anchored" data-anchor-id="multiple-group-summary">Multiple group summary</h2>
+</ul>
+</section>
+<section id="multiple-group-summary" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-group-summary">Multiple group summary</h2>
 <p><strong>strata</strong> 인자를 설정하여 그룹별 연산을 할 수 있다. <strong>strata</strong>는 dplyr 패키지의 group_by() 함수와 유사하며, 그룹 연산을 할 변수를 지정하여 사용할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tableone/man/CreateTableOne.html">CreateTableOne</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dt</span>,</span>
-<span>                     vars <span class="op">=</span> <span class="va">myVars</span>,</span>
-<span>                     strata <span class="op">=</span> <span class="st">"Q_SMK_YN"</span>,</span>
-<span>                     factorVars <span class="op">=</span> <span class="va">catVars</span>,</span>
-<span>                     includeNA <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
-<span><span class="va">t2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">CreateTableOne</span>(<span class="at">data =</span> dt,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">vars =</span> myVars,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">strata =</span> <span class="st">"Q_SMK_YN"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">factorVars =</span> catVars,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">includeNA =</span> F)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>t2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -595,14 +644,16 @@ ga('send', {
 <col style="width: 8%">
 <col style="width: 6%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: left;">1</th>
 <th style="text-align: left;">2</th>
 <th style="text-align: left;">3</th>
 <th style="text-align: left;">p</th>
 <th style="text-align: left;">test</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">n</td>
@@ -755,36 +806,40 @@ ga('send', {
 <ul>
 <li><p>연속형 변수의 경우, 기본적으로 one-way ANOVA test가 적용되며 nonnormal일 경우 옵션 설정을 통해 Kruskal–Wallis one-way ANOVA test를 적용할 수 있다.</p></li>
 <li><p>범주형 변수의 경우, 기본적으로 chisq-test가 적용되며 print 함수의 exact 옵션 설정을 통해 fisher-test를 적용할 수 있다.</p></li>
-</ul></section></section><section id="print-tableone" class="level1"><h1>Print tableone</h1>
+</ul>
+</section>
+</section>
+<section id="print-tableone" class="level1">
+<h1>Print tableone</h1>
 <p><strong>CreateTableOne()</strong> 함수를 사용하여 테이블을 만든 후, <strong>print</strong> 명령어로 세부 옵션을 지정할 수 있다. 주요 옵션은 다음과 같다.</p>
 <ul>
-<li>
-<code>print</code>
+<li><code>print</code>
 <ul>
 <li>showAllLevels, cramVars : 2범주인 변수에서 2범주를 다 보여줄 변수</li>
 <li>nonnormal : 비모수통계를 쓸 연속 변수</li>
 <li>exact : fisher-test를 쓸 범주형 변수</li>
 <li>smd : standardized mean difference</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<section id="showing-all-levels" class="level2"><h2 class="anchored" data-anchor-id="showing-all-levels">Showing all levels</h2>
+<section id="showing-all-levels" class="level2">
+<h2 class="anchored" data-anchor-id="showing-all-levels">Showing all levels</h2>
 <p>범주형 변수에서 모든 범주의 요약값을 확인하려면 <strong>ShowAllLevels</strong> 또는 <strong>cramVars</strong> 옵션을 사용한다. ShowAllLevels = T 를 설정하거나 cramVars 옵션에 원하는 변수명을 지정하여 사용할 수 있다.</p>
 <ul>
-<li>1.use <strong>showAllLevels</strong>
-</li>
+<li>1.use <strong>showAllLevels</strong></li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t1</span>, showAllLevels <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(t1, <span class="at">showAllLevels =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: left;">level</th>
 <th style="text-align: left;">Overall</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">n</td>
@@ -881,19 +936,20 @@ ga('send', {
 </div>
 </div>
 <ul>
-<li>2.use <strong>cramVars</strong>
-</li>
+<li>2.use <strong>cramVars</strong></li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t1</span>, cramVars<span class="op">=</span><span class="st">"Q_PHX_DX_STK"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(t1, <span class="at">cramVars=</span><span class="st">"Q_PHX_DX_STK"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: left;">Overall</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">n</td>
@@ -971,18 +1027,22 @@ ga('send', {
 </table>
 </div>
 </div>
-</section><section id="nonnormal-variables" class="level2"><h2 class="anchored" data-anchor-id="nonnormal-variables">nonnormal variables</h2>
+</section>
+<section id="nonnormal-variables" class="level2">
+<h2 class="anchored" data-anchor-id="nonnormal-variables">nonnormal variables</h2>
 <p>비모수통계를 사용하는 연속형 변수에는 <strong>nonnormal</strong> 옵션을 설정한다. nonnormal 설정 시 mean(sd)에서 median(IQR)로 요약값이 변경된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t1</span>, nonnormal<span class="op">=</span><span class="st">"LDL"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(t1, <span class="at">nonnormal=</span><span class="st">"LDL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: left;">Overall</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">n</td>
@@ -1060,10 +1120,12 @@ ga('send', {
 </table>
 </div>
 </div>
-</section><section id="exact" class="level2"><h2 class="anchored" data-anchor-id="exact">exact</h2>
+</section>
+<section id="exact" class="level2">
+<h2 class="anchored" data-anchor-id="exact">exact</h2>
 <p><strong>exact</strong> 옵션을 통해 fisher-test를 진행할 범주형 변수를 설정할 수 있다. 범주형 변수는 기본적으로 chisq-test가 적용되며, exact 옵션에 fisher-test를 적용할 변수를 지정하여 사용할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t2</span>, exact<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(t2, <span class="at">exact=</span><span class="fu">c</span>(<span class="st">"Q_PHX_DX_STK"</span>, <span class="st">"Q_PHX_DX_HTDZ"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1076,14 +1138,16 @@ ga('send', {
 <col style="width: 8%">
 <col style="width: 7%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: left;">1</th>
 <th style="text-align: left;">2</th>
 <th style="text-align: left;">3</th>
 <th style="text-align: left;">p</th>
 <th style="text-align: left;">test</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">n</td>
@@ -1233,10 +1297,12 @@ ga('send', {
 </table>
 </div>
 </div>
-</section><section id="smd" class="level2"><h2 class="anchored" data-anchor-id="smd">smd</h2>
+</section>
+<section id="smd" class="level2">
+<h2 class="anchored" data-anchor-id="smd">smd</h2>
 <p><strong>smd</strong> 옵션을 통해 smd(standardized mean difference)를 table1에 포함할 수 있다. default는 FALSE이고, smd=TRUE 설정 시 각 변수의 smd 값이 출력된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t2</span>, smd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(t2, <span class="at">smd =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1250,7 +1316,8 @@ ga('send', {
 <col style="width: 5%">
 <col style="width: 6%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: left;">1</th>
 <th style="text-align: left;">2</th>
@@ -1258,7 +1325,8 @@ ga('send', {
 <th style="text-align: left;">p</th>
 <th style="text-align: left;">test</th>
 <th style="text-align: left;">SMD</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">n</td>
@@ -1426,10 +1494,13 @@ ga('send', {
 </table>
 </div>
 </div>
-</section></section><section id="detailed-information-summary" class="level1"><h1>Detailed information : summary()</h1>
+</section>
+</section>
+<section id="detailed-information-summary" class="level1">
+<h1>Detailed information : summary()</h1>
 <p><code>summary</code> 함수를 쓰면 누락값을 포함한 table1의 자세한 정보를 알 수 있다. 연속형 변수의 값들이 먼저 출력되며 그 다음으로 범주형 변수의 요약값이 출력된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">t1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(t1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
      ### Summary of continuous variables ###
@@ -1466,11 +1537,13 @@ strata: Overall
                                                               </code></pre>
 </div>
 </div>
-</section><section id="show-categorical-or-continuous-variable-only" class="level1"><h1>Show categorical or continuous variable only</h1>
+</section>
+<section id="show-categorical-or-continuous-variable-only" class="level1">
+<h1>Show categorical or continuous variable only</h1>
 <p>앞에서 만든 table1에서 연속형 변수와 범주형 변수를 구분하여 출력할 수 있다. <strong>“$”</strong>를 사용하여 연속형 변수는 ConTable, 범주형 변수는 CaTable을 설정하면 해당 변수를 따로 출력할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Categorical variables</span></span>
-<span><span class="va">t2</span><span class="op">$</span><span class="va">CatTable</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Categorical variables</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>t2<span class="sc">$</span>CatTable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1483,14 +1556,16 @@ strata: Overall
 <col style="width: 10%">
 <col style="width: 7%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: left;">1</th>
 <th style="text-align: left;">2</th>
 <th style="text-align: left;">3</th>
 <th style="text-align: left;">p</th>
 <th style="text-align: left;">test</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">n</td>
@@ -1585,8 +1660,8 @@ strata: Overall
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Continuous variables</span></span>
-<span><span class="va">t2</span><span class="op">$</span><span class="va">ContTable</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Continuous variables</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>t2<span class="sc">$</span>ContTable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1599,14 +1674,16 @@ strata: Overall
 <col style="width: 9%">
 <col style="width: 6%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: left;">1</th>
 <th style="text-align: left;">2</th>
 <th style="text-align: left;">3</th>
 <th style="text-align: left;">p</th>
 <th style="text-align: left;">test</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">n</td>
@@ -1676,14 +1753,18 @@ strata: Overall
 </table>
 </div>
 </div>
-</section><section id="export-tableone" class="level1"><h1>Export tableone</h1>
+</section>
+<section id="export-tableone" class="level1">
+<h1>Export tableone</h1>
 <p><code>write.csv</code> 함수를 사용하여 table1을 csv파일로 저장할 수 있다. <strong>write.csv(x, file=“파일명”)</strong> 형식을 사용하여 csv파일로 저장한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># export table1</span></span>
-<span><span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">table1</span>, file <span class="op">=</span> <span class="st">"table1.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># export table1</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>table1 <span class="ot">&lt;-</span> <span class="fu">print</span>(t2)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(table1, <span class="at">file =</span> <span class="st">"table1.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="마치며" class="level1"><h1>마치며</h1>
+</section>
+<section id="마치며" class="level1">
+<h1>마치며</h1>
 <p>이번 강의를 정리하자.</p>
 <ol type="1">
 <li><p><strong>tableone</strong> 패키지의 <strong><code>CreateTableone</code></strong> 함수를 사용하여 요약 통계량 테이블을 작성할 수 있다.</p></li>
@@ -1694,10 +1775,11 @@ strata: Overall
 </ol>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lee2022,
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lee2022,
   author = {Lee, Yujin},
   title = {Tableone {패키지} {소개}},
-  pages = {undefined},
   date = {2022-02-07},
   url = {https://blog.zarathu.com/posts/2022-02-07-tableone},
   langid = {en}
@@ -1705,7 +1787,8 @@ strata: Overall
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lee2022" class="csl-entry quarto-appendix-citeas" role="listitem">
 Lee, Yujin. 2022. <span>“Tableone 패키지 소개.”</span> February 7, 2022.
 <a href="https://blog.zarathu.com/posts/2022-02-07-tableone">https://blog.zarathu.com/posts/2022-02-07-tableone</a>.
-</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -1833,38 +1916,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -1873,7 +1946,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }
@@ -2094,10 +2169,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
 <p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
 </div>   
@@ -2109,6 +2188,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
+
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>

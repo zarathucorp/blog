@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.455">
+<meta name="generator" content="quarto-1.4.534">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="KO JUN HYUK">
 <meta name="dcterms.date" content="2022-07-13">
 <meta name="description" content="데이터를 빠르게 가공할 수 있는 data.table에 대하여 패키지 설치부터, 기본 구조 및 데이터를 가공하여 재구조화 하는 방법에 대해서 소개합니다.">
+
 <title>Zarathu Blog - data.table 패키지 기초</title>
 <style>
 code{white-space: pre-wrap;}
@@ -56,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -72,7 +76,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -80,7 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    null
+    "f",
+    "/",
+    "s"
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -90,11 +97,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script type="text/javascript">
+}</script>
+
+<script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -106,17 +116,25 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../styles.css">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="../../styles.css">
 </head>
+
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -127,7 +145,7 @@ ga('send', {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -139,8 +157,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
@@ -153,7 +171,7 @@ ga('send', {
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../../contributors.html"> 
 <span class="menu-text">Contributors</span></a>
@@ -162,8 +180,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
@@ -172,7 +190,7 @@ ga('send', {
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
@@ -189,11 +207,15 @@ ga('send', {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">data.table 패키지 기초</h1>
                   <div>
@@ -232,84 +254,98 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li>
-<a href="#data.-table" id="toc-data.-table" class="nav-link active" data-scroll-target="#data.-table">1. data. table</a>
+  <li><a href="#data.-table" id="toc-data.-table" class="nav-link active" data-scroll-target="#data.-table">1. data. table</a>
   <ul class="collapse">
-<li><a href="#data.table-%ED%8A%B9%EC%A7%95" id="toc-data.table-특징" class="nav-link" data-scroll-target="#data.table-%ED%8A%B9%EC%A7%95">1-1. data.table 특징</a></li>
-  <li><a href="#%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0" id="toc-생성하기" class="nav-link" data-scroll-target="#%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0">1-2. 생성하기</a></li>
-  <li><a href="#%EA%B8%B0%EB%B3%B8%EB%AC%B8%EB%B2%95" id="toc-기본문법" class="nav-link" data-scroll-target="#%EA%B8%B0%EB%B3%B8%EB%AC%B8%EB%B2%95">1-3. 기본문법</a></li>
-  <li><a href="#%ED%8A%B9%EC%88%98%EA%B8%B0%ED%98%B8" id="toc-특수기호" class="nav-link" data-scroll-target="#%ED%8A%B9%EC%88%98%EA%B8%B0%ED%98%B8">1-4. 특수기호</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#data.table%EC%97%90-%EC%A0%91%EA%B7%BC%ED%95%98%EA%B8%B0" id="toc-data.table에-접근하기" class="nav-link" data-scroll-target="#data.table%EC%97%90-%EC%A0%91%EA%B7%BC%ED%95%98%EA%B8%B0">2. data.table에 접근하기</a>
+  <li><a href="#data.table-특징" id="toc-data.table-특징" class="nav-link" data-scroll-target="#data.table-특징">1-1. data.table 특징</a></li>
+  <li><a href="#생성하기" id="toc-생성하기" class="nav-link" data-scroll-target="#생성하기">1-2. 생성하기</a></li>
+  <li><a href="#기본문법" id="toc-기본문법" class="nav-link" data-scroll-target="#기본문법">1-3. 기본문법</a></li>
+  <li><a href="#특수기호" id="toc-특수기호" class="nav-link" data-scroll-target="#특수기호">1-4. 특수기호</a></li>
+  </ul></li>
+  <li><a href="#data.table에-접근하기" id="toc-data.table에-접근하기" class="nav-link" data-scroll-target="#data.table에-접근하기">2. data.table에 접근하기</a>
   <ul class="collapse">
-<li><a href="#%ED%96%89row%EC%97%90-%EC%A0%91%EA%B7%BC%ED%95%98%EA%B8%B0" id="toc-행row에-접근하기" class="nav-link" data-scroll-target="#%ED%96%89row%EC%97%90-%EC%A0%91%EA%B7%BC%ED%95%98%EA%B8%B0">2-1. 행(Row)에 접근하기</a></li>
-  <li><a href="#%EC%97%B4column%EC%97%90-%EC%A0%91%EA%B7%BC%ED%95%98%EA%B8%B0" id="toc-열column에-접근하기" class="nav-link" data-scroll-target="#%EC%97%B4column%EC%97%90-%EC%A0%91%EA%B7%BC%ED%95%98%EA%B8%B0">2-2. 열(Column)에 접근하기</a></li>
-  <li><a href="#by%EC%97%90-%EC%A0%91%EA%B7%BC%ED%95%98%EA%B8%B0" id="toc-by에-접근하기" class="nav-link" data-scroll-target="#by%EC%97%90-%EC%A0%91%EA%B7%BC%ED%95%98%EA%B8%B0">2-3. by에 접근하기</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#%EB%8B%A4%EB%A5%B8-%EA%B8%B0%EB%8A%A5%EB%93%A4" id="toc-다른-기능들" class="nav-link" data-scroll-target="#%EB%8B%A4%EB%A5%B8-%EA%B8%B0%EB%8A%A5%EB%93%A4">3. 다른 기능들</a>
+  <li><a href="#행row에-접근하기" id="toc-행row에-접근하기" class="nav-link" data-scroll-target="#행row에-접근하기">2-1. 행(Row)에 접근하기</a></li>
+  <li><a href="#열column에-접근하기" id="toc-열column에-접근하기" class="nav-link" data-scroll-target="#열column에-접근하기">2-2. 열(Column)에 접근하기</a></li>
+  <li><a href="#by에-접근하기" id="toc-by에-접근하기" class="nav-link" data-scroll-target="#by에-접근하기">2-3. by에 접근하기</a></li>
+  </ul></li>
+  <li><a href="#다른-기능들" id="toc-다른-기능들" class="nav-link" data-scroll-target="#다른-기능들">3. 다른 기능들</a>
   <ul class="collapse">
-<li><a href="#setkey" id="toc-setkey" class="nav-link" data-scroll-target="#setkey">3-1. setkey()</a></li>
-  <li><a href="#merge-data.table-%EB%B3%91%ED%95%A9" id="toc-merge-data.table-병합" class="nav-link" data-scroll-target="#merge-data.table-%EB%B3%91%ED%95%A9">3-2. Merge : data.table 병합</a></li>
-  <li><a href="#%EC%88%98%EC%A0%95-%EC%97%B0%EC%82%B0%EC%9E%90" id="toc-수정-연산자" class="nav-link" data-scroll-target="#%EC%88%98%EC%A0%95-%EC%97%B0%EC%82%B0%EC%9E%90">3-3. 수정 연산자 :=</a></li>
-  <li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%9E%AC%EA%B5%AC%EC%A1%B0%ED%99%94" id="toc-데이터-재구조화" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%9E%AC%EA%B5%AC%EC%A1%B0%ED%99%94">3-4. 데이터 재구조화</a></li>
+  <li><a href="#setkey" id="toc-setkey" class="nav-link" data-scroll-target="#setkey">3-1. setkey()</a></li>
+  <li><a href="#merge-data.table-병합" id="toc-merge-data.table-병합" class="nav-link" data-scroll-target="#merge-data.table-병합">3-2. Merge : data.table 병합</a></li>
+  <li><a href="#수정-연산자" id="toc-수정-연산자" class="nav-link" data-scroll-target="#수정-연산자">3-3. 수정 연산자 :=</a></li>
+  <li><a href="#데이터-재구조화" id="toc-데이터-재구조화" class="nav-link" data-scroll-target="#데이터-재구조화">3-4. 데이터 재구조화</a></li>
+  </ul></li>
+  <li><a href="#마치며" id="toc-마치며" class="nav-link" data-scroll-target="#마치며">4. 마치며</a></li>
   </ul>
-</li>
-  <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">4. 마치며</a></li>
-  </ul></nav>
-</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script><section id="data.-table" class="level2"><h2 class="anchored" data-anchor-id="data.-table">1. data. table</h2>
-<section id="data.table-특징" class="level3"><h3 class="anchored" data-anchor-id="data.table-특징">1-1. data.table 특징</h3>
+</script>
+
+
+
+
+
+<section id="data.-table" class="level2">
+<h2 class="anchored" data-anchor-id="data.-table">1. data. table</h2>
+<section id="data.table-특징" class="level3">
+<h3 class="anchored" data-anchor-id="data.table-특징">1-1. data.table 특징</h3>
 <p><strong>data.table</strong>은 빠른 속도와 메모리 효율성에 가장 적합한 패키지입니다.</p>
 <p>대용량의 데이터를 분산처리 시스템 없이 처리할 수 있습니다.</p>
 <p>데이터 프레임(data.frame)을 대신하여 더 빠르고 편리하게 사용할 수 있는 데이터 타입입니다.</p>
 <ul>
 <li><p>장점으로는, 상대적으로 메모리 요구량이 적고, 속도가 매우 빠르다는 특징이 있습니다.</p></li>
 <li><p>단점으로는, 다소 난해한 문법으로 널리 사용되지 못하고 있다는 특징이 있습니다.</p></li>
-</ul></section><section id="생성하기" class="level3"><h3 class="anchored" data-anchor-id="생성하기">1-2. 생성하기</h3>
+</ul>
+</section>
+<section id="생성하기" class="level3">
+<h3 class="anchored" data-anchor-id="생성하기">1-2. 생성하기</h3>
 <p>본격적으로 data.table에 대해서 알아보기 전에, <strong>Setup</strong> 과정에 대해서 먼저 소개하려고 합니다. data.table은 R에서 기본적으로 제공되는 데이터 구조가 아니기 때문에, package 설치가 필요합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Setup</span></span>
-<span><span class="co"># install.packages("data.table")</span></span>
-<span><span class="co"># install.packages("curl")</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jeroen.r-universe.dev/curl">curl</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Setup</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("data.table")</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("curl")</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(curl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>위의 과정을 통해 pacakge 설치 및 불러오기를 실행합니다.</p>
 <p>data.table을 생성하는 데는 두 가지 방법이 있습니다.</p>
 <p>첫번째는, data.table() 함수를 통해 직접 생성하는 방식입니다. 다음의 예시로 살펴보겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX</span><span class="op">=</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span></span>
-<span>  ID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"C"</span>,<span class="st">"D"</span>,<span class="st">"E"</span><span class="op">)</span>,</span>
-<span>  MATH<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">96</span>,<span class="fl">94</span>,<span class="fl">88</span>,<span class="fl">92</span><span class="op">)</span>,</span>
-<span>  ENGLISH<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">96</span>,<span class="fl">86</span>,<span class="fl">97</span>,<span class="fl">92</span>,<span class="fl">93</span><span class="op">)</span>,</span>
-<span>  HISTORY<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">85</span>,<span class="fl">92</span>,<span class="fl">87</span>,<span class="fl">92</span>,<span class="fl">94</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>EX<span class="ot">=</span><span class="fu">data.table</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">ID=</span><span class="fu">c</span>(<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"C"</span>,<span class="st">"D"</span>,<span class="st">"E"</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">MATH=</span><span class="fu">c</span>(<span class="dv">100</span>,<span class="dv">96</span>,<span class="dv">94</span>,<span class="dv">88</span>,<span class="dv">92</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ENGLISH=</span><span class="fu">c</span>(<span class="dv">96</span>,<span class="dv">86</span>,<span class="dv">97</span>,<span class="dv">92</span>,<span class="dv">93</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">HISTORY=</span><span class="fu">c</span>(<span class="dv">85</span>,<span class="dv">92</span>,<span class="dv">87</span>,<span class="dv">92</span>,<span class="dv">94</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;">ID</th>
 <th style="text-align: right;">MATH</th>
 <th style="text-align: right;">ENGLISH</th>
 <th style="text-align: right;">HISTORY</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">A</td>
@@ -349,16 +385,16 @@ ga('send', {
 <p>두번째는, 기존의 데이터를 불러오는 방법이 있습니다.</p>
 <p>fread 함수는 대용량 파일을 빠르게 가져올 수 있는 함수입니다. 파일을 읽어와서 data.table 형식의 자료로 만들 때, 로컬 file path를 입력하거나, http://로 시작하는 URL을 입력하는 방법을 사용할 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span> ; <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span><span class="op">)</span></span>
-<span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table) ; <span class="fu">library</span>(magrittr)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>09-15년 공단 건강검진 데이터에서 실습용으로 32명을 뽑은 자료를 이용하여,</p>
 <p><strong>df</strong>에는 <strong>data.frame</strong> 형식으로 데이터를 불러왔고, <strong>dt</strong>에는 fread 함수를 이용하여 <strong>data.table</strong>의 형식으로 데이터를 불러온 것을 확인할 수 있습니다.</p>
 <p>fread 함수로 파일을 불러오면 그 class는 data.frame에 data.table이 추가되며, 문법이 원래의 data.frame과 달라지는 점을 유의해야 합니다.</p>
 <p>class 함수를 통해 df와 dt의 속성을 확인해보겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">)</span> ; <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">class</span>(df)) ; <span class="fu">print</span>(<span class="fu">class</span>(dt))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "data.frame"</code></pre>
 </div>
@@ -372,9 +408,9 @@ ga('send', {
 <p>예시로 알아보도록 하겠습니다.</p>
 <p>R에 기본적으로 저장되어 있는 <strong>mtcars</strong> 데이터를 이용하도록 하겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># mtcars</span></span>
-<span><span class="va">EX1</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
-<span><span class="va">EX2</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html">as.data.table</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mtcars</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>EX1<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(mtcars)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>EX2<span class="ot">&lt;-</span><span class="fu">as.data.table</span>(mtcars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -395,7 +431,7 @@ ga('send', {
 <p>실행하였을 때, EX1과 EX2의 행의 이름에서 차이점이 있음을 확인할 수 있습니다.</p>
 <p>만약, data.table에서도 행의 이름을 남겨 놓고 싶을 때는 다음과 같이 실행하면 됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html">as.data.table</a></span><span class="op">(</span><span class="va">mtcars</span>,keep.rownames<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>EX3<span class="ot">&lt;-</span><span class="fu">as.data.table</span>(mtcars,<span class="at">keep.rownames=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -408,14 +444,19 @@ ga('send', {
 </div>
 <p>data 값 뒤에 <strong>keep.rownames=T</strong>로 설정하였을 때,</p>
 <p>각 행의 이름이 <strong>rn</strong> 컬럼에 남아 있는 것을 확인할 수 있습니다.</p>
-</section><section id="기본문법" class="level3"><h3 class="anchored" data-anchor-id="기본문법">1-3. 기본문법</h3>
+</section>
+<section id="기본문법" class="level3">
+<h3 class="anchored" data-anchor-id="기본문법">1-3. 기본문법</h3>
 <p>data.table의 기본 문법은 <strong>DT[i, j, by]</strong> 형태입니다.</p>
 <ul>
 <li><p><strong>i</strong>는 행(row)과 관련되어, 행에 대해서 subset 하는 역할을 수행합니다.</p></li>
 <li><p><strong>j</strong>는 열(column)을 선택하거나, 열 또는 테이블 전체(.SD)에 함수를 적용합니다.</p></li>
 <li><p><strong>by</strong>는 집단을 나눕니다. j에서 지정한 열과 함수에 대한 실행을 그룹 별로(by group) 수행합니다.</p></li>
 <li><p>맨 마지막에 <strong>[order]</strong>를 붙여 오름차순이나 내림차순으로 정렬할 수 있습니다.</p></li>
-</ul></section><section id="특수기호" class="level3"><h3 class="anchored" data-anchor-id="특수기호">1-4. 특수기호</h3>
+</ul>
+</section>
+<section id="특수기호" class="level3">
+<h3 class="anchored" data-anchor-id="특수기호">1-4. 특수기호</h3>
 <p>data.table에서만 확인할 수 있는 특수기호들이 있습니다.</p>
 <p>각 특수기호의 자세한 기능과 사용법은 이하에서 설명하기로 하고, 여기에서는 간단히 개념정도만 다뤄보려고 합니다.</p>
 <ul>
@@ -425,14 +466,18 @@ ga('send', {
 <li><p><strong>:=</strong> : <strong>DT[i, j, by]</strong>에서 칼럼 j를 추가/갱신/삭제할 때 특수기호 <strong>:=</strong> 연산자를 사용하여 수행할 수 있습니다.</p></li>
 </ul>
 <p>이상에서 data.table을 이용하면서 가장 많이 쓰이는 특수기호들에 대해서 알아보았습니다. 각각의 특수기호들이 어떻게 실제로 쓰이는지에 대해서는 이하에서 등장할 때마다 자세하게 설명하도록 하겠습니다.</p>
-</section></section><section id="data.table에-접근하기" class="level2"><h2 class="anchored" data-anchor-id="data.table에-접근하기">2. data.table에 접근하기</h2>
+</section>
+</section>
+<section id="data.table에-접근하기" class="level2">
+<h2 class="anchored" data-anchor-id="data.table에-접근하기">2. data.table에 접근하기</h2>
 <p>이하에서는 위에서 불러온 <strong>dt</strong>(=09-15년 공단 건강검진 데이터)와 <strong>EX3</strong>(=mtcars) 데이터를 이용해서 실습하려고 합니다.</p>
-<section id="행row에-접근하기" class="level3"><h3 class="anchored" data-anchor-id="행row에-접근하기">2-1. 행(Row)에 접근하기</h3>
+<section id="행row에-접근하기" class="level3">
+<h3 class="anchored" data-anchor-id="행row에-접근하기">2-1. 행(Row)에 접근하기</h3>
 <p>data.table에서 <strong>행(Row)</strong>에 접근하는 방법은 DT[i, j, by]에서 <strong>i 자리</strong>에 값을 넣는 것입니다. 즉, DT[c(row1, row2, …)]의 방식입니다.</p>
 <p>mtcars 데이터로 예시를 들어보겠습니다.</p>
 <p>여러 개의 자동차 종류 중, Datsun 710과 Hornet Sprotabout에 대해서만 알아보고 싶을 때는 다음과 같이 작성하면 됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">5</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>EX3[<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">5</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -451,7 +496,8 @@ ga('send', {
 <col style="width: 7%">
 <col style="width: 7%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;">rn</th>
 <th style="text-align: right;">mpg</th>
 <th style="text-align: right;">cyl</th>
@@ -464,7 +510,8 @@ ga('send', {
 <th style="text-align: right;">am</th>
 <th style="text-align: right;">gear</th>
 <th style="text-align: right;">carb</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Datsun 710</td>
@@ -500,7 +547,7 @@ ga('send', {
 </div>
 <p>만약 Mazda RX4 부터 Hornet Sportabout까지 알아보고 싶다면, 범위로 지정할 수도 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>EX3[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -519,7 +566,8 @@ ga('send', {
 <col style="width: 7%">
 <col style="width: 7%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;">rn</th>
 <th style="text-align: right;">mpg</th>
 <th style="text-align: right;">cyl</th>
@@ -532,7 +580,8 @@ ga('send', {
 <th style="text-align: right;">am</th>
 <th style="text-align: right;">gear</th>
 <th style="text-align: right;">carb</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Mazda RX4</td>
@@ -613,7 +662,7 @@ ga('send', {
 <p><strong>DT[조건]</strong>의 형식을 이용하면 됩니다.</p>
 <p>mtcars 데이터에서 cyl&gt;=6이면서, carb==4인 조건을 만족하는 데이터를 찾고 싶은 경우, 다음과 같이 작성하면 됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span><span class="va">cyl</span><span class="op">&gt;=</span><span class="fl">6</span> <span class="op">&amp;</span> <span class="va">carb</span><span class="op">==</span><span class="fl">4</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>EX3[cyl<span class="sc">&gt;=</span><span class="dv">6</span> <span class="sc">&amp;</span> carb<span class="sc">==</span><span class="dv">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -627,8 +676,8 @@ ga('send', {
 <p>KEY를 미리 설정해놓으면 더 빠르게 검색할 수 있는데, 이 내용에 대해서는 뒤에서 자세하게 다루도록 하겠습니다.</p>
 <p>다음으로는 특정 행(row)을 제외하는 방법에 대해서 알아보려고 합니다. 제외하려는 행 혹은 행의 범위 앞에 <strong>-</strong> 나 <strong>!</strong> 를 붙여주면 됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span><span class="op">!</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
-<span><span class="va">EX3</span><span class="op">[</span><span class="op">-</span><span class="fl">2</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>EX3[<span class="sc">!</span><span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>EX3[<span class="sc">-</span><span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -647,18 +696,22 @@ ga('send', {
 </div>
 </div>
 <p>위와 같이 실행했을 때, 제외하려는 데이터가 사라진 것을 확인할 수 있습니다.</p>
-</section><section id="열column에-접근하기" class="level3"><h3 class="anchored" data-anchor-id="열column에-접근하기">2-2. 열(Column)에 접근하기</h3>
+</section>
+<section id="열column에-접근하기" class="level3">
+<h3 class="anchored" data-anchor-id="열column에-접근하기">2-2. 열(Column)에 접근하기</h3>
 <p>행(Row)을 선택할 때와 유사합니다. 기본적인 형식은 DT[i, j, by]의 <strong>j 자리</strong>에 넣는 것입니다.</p>
 <p>mtcars 데이터에서 ‘cyl’ 열(Column)을 가져오고 싶을 때는 다음과 같이 가져올 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span>,<span class="fl">3</span><span class="op">]</span> ; <span class="va">EX3</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span><span class="op">]</span> ; <span class="va">EX3</span><span class="op">[</span>,<span class="st">"cyl"</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>EX3[,<span class="dv">3</span>] ; EX3[,.(cyl)] ; EX3[,<span class="st">"cyl"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: center;">cyl</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">6</td>
@@ -687,7 +740,7 @@ ga('send', {
 <p>data.table에서는 변수의 이름만 넣었을 경우, 벡터의 형식으로 값을 불러옵니다. 그렇기 때문에 data.table의 형식을 유지하면서 데이터를 불러오려면 <strong>.()</strong> 혹은 <strong>list()</strong> 형식을 이용해야 합니다. 혹은 변수를 따옴표를 이용하여 작성하는 것도 동일한 결과를 가져옵니다.</p>
 <p>열(column)을 선택할 때, DT[,.(new_col_name=col)] 형식을 사용하여 새로운 열 이름을 지정해서 출력할 수도 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span>MPG<span class="op">=</span><span class="va">mpg</span>, CYL<span class="op">=</span><span class="va">cyl</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>EX3[,.(<span class="at">MPG=</span>mpg, <span class="at">CYL=</span>cyl)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -702,10 +755,10 @@ ga('send', {
 <p>다음으로는 변수로 열을 선택하는 방법에 대해서 알아보려고 합니다.</p>
 <p>예시를 위해 mpg, cyl, disp 세 변수를 묶는 <strong>VARS</strong>라는 새로운 변수를 임의로 설정하겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">VARS</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mpg"</span>,<span class="st">"cyl"</span>,<span class="st">"disp"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>VARS<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"mpg"</span>,<span class="st">"cyl"</span>,<span class="st">"disp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span>,<span class="va">..VARS</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>EX3[,..VARS]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -720,7 +773,7 @@ ga('send', {
 <p>data.table의 약속이라고 보면 되는데, 같은 결과를 도출하는 다른 형식들에 대해서 소개하려고 합니다.</p>
 <p>우선은, <strong>with = F</strong>가 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span>,<span class="va">VARS</span>,with<span class="op">=</span><span class="cn">F</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>EX3[,VARS,with<span class="ot">=</span>F]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -734,7 +787,7 @@ ga('send', {
 <p>VARS 앞에 ..을 붙이지 않아도, with=F를 추가한다면 같은 결과를 도출하는 것을 확인할 수 있습니다.</p>
 <p>다음으로는 앞서 배운 <strong>.SD</strong> 과 <strong>.SDcols</strong>를 이용하는 방법에 대해 알아보겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span>,<span class="va">.SD</span>,.SDcols<span class="op">=</span><span class="va">VARS</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>EX3[,.SD,.SDcols<span class="ot">=</span>VARS]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -748,7 +801,7 @@ ga('send', {
 <p>.SD를 통해 전체 변수를 대상으로 하되, .SDcols로 특정 변수만을 설정하는 메커니즘입니다.</p>
 <p>또한 특정조건을 만족하는 값들에 대해 VARS의 변수 값을 알고 싶으면 다음과 같이 실행하면 됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span><span class="va">hp</span><span class="op">&gt;=</span><span class="fl">130</span> <span class="op">&amp;</span> <span class="va">gear</span><span class="op">&gt;=</span><span class="fl">4</span>, <span class="va">..VARS</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>EX3[hp<span class="sc">&gt;=</span><span class="dv">130</span> <span class="sc">&amp;</span> gear<span class="sc">&gt;=</span><span class="dv">4</span>, ..VARS]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -762,7 +815,7 @@ ga('send', {
 <p>hp가 130을 넘고, gear가 4를 넘는 값들 중 VARS(mpg,cyl,disp) 변수에서 해당하는 값들을 보여주는 것을 확인할 수 있습니다.</p>
 <p>다음으로는 열을 제거하는 방법에 대해서 알아보려고 합니다. 행(row)을 제거할 때와 유사하게 <strong>-</strong> , <strong>!</strong> 을 통해서 실행하면 됩니다. 그리고 같은 결과를 도출하는 다른 형식들에 대해서도 소개하려고 합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span>,<span class="op">-</span><span class="va">..VARS</span><span class="op">]</span> ; <span class="va">EX3</span><span class="op">[</span>,<span class="op">!</span><span class="va">..VARS</span><span class="op">]</span> ; <span class="va">EX3</span><span class="op">[</span>,<span class="va">.SD</span>,.SDcols<span class="op">=</span><span class="op">-</span><span class="va">VARS</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>EX3[,<span class="sc">-</span>..VARS] ; EX3[,<span class="sc">!</span>..VARS] ; EX3[,.SD,.SDcols<span class="ot">=</span><span class="sc">-</span>VARS]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -776,7 +829,7 @@ ga('send', {
 <p>마지막으로 열(column)의 값에 대해서 함수들을 이용해 값들을 가공하는 방법입니다.</p>
 <p>mpg와 hp의 평균에 대해서 구해보겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">hp</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>EX3[,.(<span class="fu">mean</span>(mpg), <span class="fu">mean</span>(hp))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -790,7 +843,7 @@ ga('send', {
 <p>값을 실행할 경우, V1, V2라는 변수 아래에 값이 도출되는 것을 확인할 수 있습니다.</p>
 <p>위에서 배웠던, 변수에 새로운 이름을 부여하는 방식을 이용해보겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span>MEAN_mpg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span>, MEAN_hp<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">hp</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>EX3[,.(<span class="at">MEAN_mpg=</span><span class="fu">mean</span>(mpg), <span class="at">MEAN_hp=</span><span class="fu">mean</span>(hp))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -804,47 +857,57 @@ ga('send', {
 <p>위와 동일한 값에 변수의 이름이 생긴 것을 확인할 수 있습니다.</p>
 <p>.SD, .SDcols를 이용해서도 도출할 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>,<span class="va">mean</span><span class="op">)</span>, .SDcols<span class="op">=</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mpg"</span>, <span class="st">"hp"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>EX3[,<span class="fu">lapply</span>(.SD,mean), .SDcols<span class="ot">=</span>(<span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"hp"</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: center;">mpg</th>
 <th style="text-align: center;">hp</th>
-</tr></thead>
-<tbody><tr class="odd">
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td style="text-align: center;">20.09062</td>
 <td style="text-align: center;">146.6875</td>
-</tr></tbody>
+</tr>
+</tbody>
 </table>
 </div>
 </div>
 <p>또한 행(row)의 자리에 특정 조건을 입력하여, 특정 조건을 만족하는 변수들에 대해서만 특정 함수를 적용할 수도 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">EX3</span><span class="op">[</span><span class="va">gear</span><span class="op">==</span><span class="fl">4</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>,<span class="va">mean</span><span class="op">)</span>, .SDcols<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mpg"</span>,<span class="st">"hp"</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>EX3[gear<span class="sc">==</span><span class="dv">4</span>, <span class="fu">lapply</span>(.SD,mean), .SDcols<span class="ot">=</span><span class="fu">c</span>(<span class="st">"mpg"</span>,<span class="st">"hp"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: center;">mpg</th>
 <th style="text-align: center;">hp</th>
-</tr></thead>
-<tbody><tr class="odd">
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td style="text-align: center;">24.53333</td>
 <td style="text-align: center;">89.5</td>
-</tr></tbody>
+</tr>
+</tbody>
 </table>
 </div>
 </div>
-</section><section id="by에-접근하기" class="level3"><h3 class="anchored" data-anchor-id="by에-접근하기">2-3. by에 접근하기</h3>
+</section>
+<section id="by에-접근하기" class="level3">
+<h3 class="anchored" data-anchor-id="by에-접근하기">2-3. by에 접근하기</h3>
 <p><strong>by</strong>는 집단을 나눕니다. 정확히는 옵션을 이용하여 그룹별로 함수를 적용할 수 있습니다.</p>
 <p>by = (그룹1, 그룹2, …)의 형식으로 두 개 이상의 그룹별로 함수를 적용할 수도 있는데, 이 때 괄호 앞에 있는 점(.)은 list를 의미하므로 꼭 포함시켜야 합니다. (ex. by=.(EXMD_BZ_YYYY, Q_SMK_YN) 와 같이 두 개 이상의 그룹으로 묶을 때는 .()의 형식을 이용해야 합니다.)</p>
 <p>어떻게 쓰이는지 바로 알아보도록 하겠습니다.</p>
 <p>여기에서는 dt(=09-15 공단 건강검진 데이터)를 이용해서 실습해보려고 합니다. EXMD_BZ_YYYY을 기준으로 집단을 분리한 후, 각 집단의 HGHT와 WGHT, BMI 평균을 구하는 방법은 다음과 같습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span>HGHT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">HGHT</span><span class="op">)</span>, WGHT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">WGHT</span><span class="op">)</span>, BMI<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">BMI</span><span class="op">)</span><span class="op">)</span>, by<span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dt[,.(<span class="at">HGHT=</span><span class="fu">mean</span>(HGHT), <span class="at">WGHT=</span><span class="fu">mean</span>(WGHT), <span class="at">BMI=</span><span class="fu">mean</span>(BMI)), by<span class="ot">=</span> EXMD_BZ_YYYY]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -858,7 +921,7 @@ ga('send', {
 <p>EXMD_BZ_YYYY에 따라 각 연도를 기준으로, HGHT, WGHT, BMI가 정렬이 되었고, 그 값들의 평균을 그룹별로 구하여 나타낸 데이터 값입니다.</p>
 <p>만약 특정한 변수가 아닌, <strong>모든 변수</strong>에 대해서 평균을 구하고 싶다면 <strong>.SD</strong>를 이용하면 됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>,<span class="va">mean</span><span class="op">)</span>, by<span class="op">=</span><span class="va">EXMD_BZ_YYYY</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>dt[,<span class="fu">lapply</span>(.SD,mean), by<span class="ot">=</span>EXMD_BZ_YYYY]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -873,7 +936,7 @@ ga('send', {
 <p>다음으로는 두 개 이상의 그룹 변수를 지정해 행(row)의 개수를 구해보겠습니다.</p>
 <p>키가 175cm 이상인 사람들에 대해서, 연도(EXMD_BZ_YYYY)와 흡연 여부(Q_SMK_YN)로 구분해보려고 합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span><span class="op">[</span><span class="va">HGHT</span><span class="op">&gt;=</span><span class="fl">175</span>, <span class="va">.N</span>, by<span class="op">=</span><span class="fu">.</span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span>, <span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dt[HGHT<span class="sc">&gt;=</span><span class="dv">175</span>, .N, by<span class="ot">=</span>.(EXMD_BZ_YYYY, Q_SMK_YN)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -887,8 +950,8 @@ ga('send', {
 <p>위에서 잠깐 언급한 <strong>.N</strong> 을 이용하여 특정조건에 부합하며 각 변수값에 해당되는 행(row)의 수를 구해보았습니다. 그러나, 여기에서 도출된 결과값의 문제는 Q_SMK_YN의 값이 섞여 있다는 것입니다.</p>
 <p>조금 더 정렬된 결과값으로 나타내고 싶을 때는, by 대신에 <strong>keyby</strong>를 이용하면 됩니다. keyby는 기존의 by에 오름차순/내림차순 기능이 포함되었다고 생각하면 됩니다. 만약 by를 이용하면서 정렬을 시키고 싶다면 마지막에 <strong>[order(정렬기준)]</strong>를 붙이면 됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span><span class="op">[</span><span class="va">HGHT</span><span class="op">&gt;=</span><span class="fl">175</span>, <span class="va">.N</span>, keyby<span class="op">=</span><span class="fu">.</span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span>, <span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">dt</span><span class="op">[</span><span class="va">HGHT</span><span class="op">&gt;=</span><span class="fl">175</span>, <span class="va">.N</span>, by<span class="op">=</span><span class="fu">.</span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span>, <span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>dt[HGHT<span class="sc">&gt;=</span><span class="dv">175</span>, .N, keyby<span class="ot">=</span>.(EXMD_BZ_YYYY, Q_SMK_YN)]</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>dt[HGHT<span class="sc">&gt;=</span><span class="dv">175</span>, .N, by<span class="ot">=</span>.(EXMD_BZ_YYYY, Q_SMK_YN)][<span class="fu">order</span>(EXMD_BZ_YYYY)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -902,15 +965,17 @@ ga('send', {
 <p>연도를 기준으로 정렬을 하고 싶은 경우, 위와 같이 뒤에 [order(EXMD_BZ_YYYY)]를 붙여주면, 위의 값과 다르게 정렬된 것을 확인할 수 있습니다.</p>
 <p>다음으로, 특정 조건(HGHT&gt;=175)를 만족시키면서, 하나의 기준을 더 추가하여 분류하고 싶을 때는 다음과 같은 방식을 이용하면 됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span><span class="op">[</span><span class="va">HGHT</span><span class="op">&gt;=</span><span class="fl">175</span>, <span class="va">.N</span>, keyby<span class="op">=</span><span class="fu">.</span><span class="op">(</span>Y2015 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span><span class="op">&gt;=</span><span class="fl">2015</span>, <span class="st">"&gt;=2015"</span>, <span class="st">"&lt;2015"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>dt[HGHT<span class="sc">&gt;=</span><span class="dv">175</span>, .N, keyby<span class="ot">=</span>.(<span class="at">Y2015 =</span> <span class="fu">ifelse</span>(EXMD_BZ_YYYY<span class="sc">&gt;=</span><span class="dv">2015</span>, <span class="st">"&gt;=2015"</span>, <span class="st">"&lt;2015"</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: center;">Y2015</th>
 <th style="text-align: center;">N</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">&lt;2015</td>
@@ -925,15 +990,19 @@ ga('send', {
 </div>
 </div>
 <p>HGHT가 175 이상인 사람들을 우선으로 뽑아놓고, 거기에서 Y=2015를 기준으로 행(row)의 갯수를 확인하였습니다.</p>
-</section></section><section id="다른-기능들" class="level2"><h2 class="anchored" data-anchor-id="다른-기능들">3. 다른 기능들</h2>
-<section id="setkey" class="level3"><h3 class="anchored" data-anchor-id="setkey">3-1. setkey()</h3>
+</section>
+</section>
+<section id="다른-기능들" class="level2">
+<h2 class="anchored" data-anchor-id="다른-기능들">3. 다른 기능들</h2>
+<section id="setkey" class="level3">
+<h3 class="anchored" data-anchor-id="setkey">3-1. setkey()</h3>
 <p><strong>키를 설정합니다.</strong> 키를 활용하는 이유는 자료를 찾을 때, 그 탐색 및 처리 시간을 단축시키기 위함입니다.</p>
 <p><strong>setkey(DT,col)</strong>로 키를 설정하며 키가 문자열 벡터일 경우 <strong>setkeyv</strong>을 활용합니다.</p>
 <p>만일 설정된 키를 제거할 경우, <strong>setkey(DT, NULL)</strong>를 활용합니다.</p>
 <p>dt 데이터를 이용하여, key를 설정하고 활용해보겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html">setkey</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">EXMD_BZ_YYYY</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html">key</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setkey</span>(dt, EXMD_BZ_YYYY)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">key</span>(dt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "EXMD_BZ_YYYY"</code></pre>
 </div>
@@ -942,7 +1011,7 @@ ga('send', {
 <p>다음으로는 키를 활용한 행(row) 선택에 대해서 알아보려고 합니다. <strong>dt[.(a)], dt[J(a)], dt[list(a)], dt[col==a]</strong> 중에서 아무거나 사용하여 행을 선택할 수 있습니다. 위에서 EXMD_BZ_YYYY를 key로 설정하였기 때문에, dt[J(a)]에서 a의 자리에 EXMD_BZ_YYYY에 포함되어 있는 값을 넣으면 그 값을 기준으로 데이터를 정리합니다.</p>
 <p>예시로,</p>
 <div class="cell">
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span><span class="op">[</span><span class="fu">J</span><span class="op">(</span><span class="fl">2013</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>dt[<span class="fu">J</span>(<span class="dv">2013</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -956,14 +1025,14 @@ ga('send', {
 <p>이 값의 경우, EXMD_BZ_YYYY가 2013인 값에 대하여 정리한 것을 확인할 수 있습니다.</p>
 <p>만약, key를 두 개 이상 설정해놓은 경우, a의 자리에 다른 조건을 연결하면 그 조건도 포함하고 있는 값이 도출됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html">setkey</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">EXMD_BZ_YYYY</span>, <span class="va">Q_HBV_AG</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html">key</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setkey</span>(dt, EXMD_BZ_YYYY, Q_HBV_AG)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">key</span>(dt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "EXMD_BZ_YYYY" "Q_HBV_AG"    </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span><span class="op">[</span><span class="fu">J</span><span class="op">(</span><span class="fl">2013</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>dt[<span class="fu">J</span>(<span class="dv">2013</span>,<span class="dv">2</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -975,17 +1044,19 @@ ga('send', {
 </div>
 </div>
 <p>위의 과정은 key에 Q_HBV_AG를 추가한 뒤, 2013년도에 Q_HBV_AG가 2인 값들에 대해서 정리한 것입니다.</p>
-</section><section id="merge-data.table-병합" class="level3"><h3 class="anchored" data-anchor-id="merge-data.table-병합">3-2. Merge : data.table 병합</h3>
+</section>
+<section id="merge-data.table-병합" class="level3">
+<h3 class="anchored" data-anchor-id="merge-data.table-병합">3-2. Merge : data.table 병합</h3>
 <p>다음으로는 두 개의 data.table에 대해서 공통된 column을 기준으로,</p>
 <p>하나의 data.table로 만드는 방법에 대해서 소개하려고 합니다.</p>
 <p>dt 파일의 설문조사에 관한 데이터(Q_)들을 하나의 변수 <strong>colvars</strong>로 편의를 위해 설정하였습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">colvars</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"Q_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span>, value<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>colvars<span class="ot">&lt;-</span><span class="fu">grep</span>(<span class="st">"Q_"</span>, <span class="fu">names</span>(dt), <span class="at">value=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>다음으로는 dt 데이터를 임의로 분리하여 dt1, dt2를 설정하겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt1</span><span class="op">&lt;-</span><span class="va">dt</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="va">.SD</span>, .SDcols<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>, <span class="va">colvars</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">dt2</span><span class="op">&lt;-</span><span class="va">dt</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">15</span>, <span class="op">-</span><span class="va">..colvars</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>dt1<span class="ot">&lt;-</span>dt[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, .SD, .SDcols<span class="ot">=</span><span class="fu">c</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>, colvars)]</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>dt2<span class="ot">&lt;-</span>dt[<span class="dv">6</span><span class="sc">:</span><span class="dv">15</span>, <span class="sc">-</span>..colvars]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>본격적인 분석을 하기에 앞서, dt1 과 dt2에 대해서 간단히 살펴보겠습니다.</p>
 <p><strong>행(row)을 기준</strong>으로는 6:10행까지가 겹치고,</p>
@@ -995,8 +1066,8 @@ ga('send', {
 <p>하나하나씩 예시와 함께 알아보도록 하겠습니다.</p>
 <p>처음으로 알아볼 것은 <strong>inner_join</strong> 입니다. 집합의 교집합 개념과 유사하지만, 약간의 차이점은 존재합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">inner_join</span><span class="op">(</span><span class="va">dt1</span>,<span class="va">dt2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">dt1</span>, <span class="va">dt2</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span><span class="op">)</span>, all<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inner_join</span>(dt1,dt2)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(dt1, dt2, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>), <span class="at">all=</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1013,8 +1084,8 @@ ga('send', {
 <p>이 변수값은 원래 dt1에서는 HGHT와 WGHT 등의 값을 가지고 있지 않았습니다. 그러나, inner_join을 하면서 dt2의 값을 그대로 받아와, HGHT, WGHT 등의 값을 부여받은 것을 확인할 수 있습니다.</p>
 <p>다음으로는 <strong>full_join</strong> 입니다. 집합의 합집합 개념과 유사합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">full_join</span><span class="op">(</span><span class="va">dt1</span>, <span class="va">dt2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">dt1</span>, <span class="va">dt2</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span><span class="op">)</span>, all<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">full_join</span>(dt1, dt2)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(dt1, dt2, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>), <span class="at">all=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1031,9 +1102,9 @@ ga('send', {
 <p>반면, <strong>11:15행</strong>의 경우에는 dt2에는 속해 있지만, dt1에는 속해있지 않습니다. 그렇기 때문에 <strong>Q_</strong>로 시작하는 변수값에 대해서 받을 수가 없어서 NA로 나온 것을 확인할 수 있습니다.</p>
 <p>다음으로는 <strong>left_join과 right_join</strong> 입니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">left_join</span><span class="op">(</span><span class="va">dt1</span>,<span class="va">dt2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">dt1</span>, <span class="va">dt2</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span><span class="op">)</span>, all.x<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
-<span><span class="va">dt2</span><span class="op">[</span><span class="va">dt1</span>, on <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(dt1,dt2)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(dt1, dt2, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>), <span class="at">all.x=</span>T)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>dt2[dt1, on <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1048,9 +1119,9 @@ ga('send', {
 <p>right_join으로도 직접 실습하여 차이를 확인하시기 바랍니다.</p>
 <p>하나의 차이가 있다면, left_join을 했을 때는 <strong>all.x = T</strong> 였지만, right_join의 경우에는 <strong>all.y =T</strong> 를 사용합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">right_join</span><span class="op">(</span><span class="va">dt1</span>, <span class="va">dt2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">dt1</span>, <span class="va">dt2</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span><span class="op">)</span>, all.y<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
-<span><span class="va">dt1</span><span class="op">[</span><span class="va">dt2</span>, on <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">right_join</span>(dt1, dt2)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(dt1, dt2, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>), <span class="at">all.y=</span>T)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>dt1[dt2, on <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1063,8 +1134,8 @@ ga('send', {
 </div>
 <p>마지막으로 <strong>anti_join</strong>이 있습니다. 예시부터 보이고 설명하도록 하겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">anti_join</span><span class="op">(</span><span class="va">dt1</span>,<span class="va">dt2</span><span class="op">)</span></span>
-<span><span class="va">dt1</span><span class="op">[</span><span class="op">!</span><span class="va">dt2</span>, on <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(dt1,dt2)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>dt1[<span class="sc">!</span>dt2, on <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1077,7 +1148,9 @@ ga('send', {
 </div>
 <p>직관적으로 확인할 수 있듯, dt2와 겹치지 않는 dt1의 값들에 대해서만 나타낸 것을 확인할 수 있습니다. 또한 다른 join들이 dt2의 column(variable)을 가져왔던 것과 다르게, anti_join은 오직 dt1의 변수들로만 구성된 것을 확인할 수 있습니다.</p>
 <p>만약에 anti_join(dt2,dt1) (또는, dt2[!dt1, on = c(“EXMD_BZ_YYYY”, “RN_INDI”, “HME_YYYYMM”))은 이라고 작성한다면 위와 반대로 dt2를 기준으로 데이터의 값이 도출됩니다.</p>
-</section><section id="수정-연산자" class="level3"><h3 class="anchored" data-anchor-id="수정-연산자">3-3. 수정 연산자 :=</h3>
+</section>
+<section id="수정-연산자" class="level3">
+<h3 class="anchored" data-anchor-id="수정-연산자">3-3. 수정 연산자 :=</h3>
 <p>data.table에서 열 j를 추가하거나 갱신 또는 삭제할 때 특수 기호 <strong>:=</strong> 연산자를 사용합니다.</p>
 <p>수정 또는 생성하는 column이 두 개 이상이라면, DT[,c(“cola”, “colb”) := list(valA,valB)] 또는, DT[, “:=”(cola, colb)]의 형식을 사용합니다.</p>
 <p>즉, := 는 새로운 data.table을 생성하지 않고 기존의 데이터 테이블에 덮어씌우거나(수정), 새로운 컬럼을 추가합니다.</p>
@@ -1085,7 +1158,7 @@ ga('send', {
 <p>BMI2 라는 새로운 변수를 data.table에 추가하려고 합니다.</p>
 <p>(BMI2 = WGHT/(HGHT/100)^2 를 하고, 소수점 첫째자리까지 반영)</p>
 <div class="cell">
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span><span class="op">[</span>, <span class="va">BMI2</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">WGHT</span><span class="op">/</span><span class="op">(</span><span class="va">HGHT</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>dt[, BMI2 <span class="sc">:</span><span class="er">=</span> <span class="fu">round</span>(WGHT<span class="sc">/</span>(HGHT<span class="sc">/</span><span class="dv">100</span>)<span class="sc">^</span><span class="dv">2</span>, <span class="dv">1</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1100,7 +1173,7 @@ ga('send', {
 <p>다음으로는 특정 조건을 충족하는 값들에 대해서 새로운 변수를 만들어 확인하는 것에 대해서 알아보려고 합니다.</p>
 <p>두 가지 조건을 설정하겠습니다. 하나는, BP_SYS가 140이 넘는지 그리고 BMI가 25가 넘는지에 대해서, factor로 바꾸어 0과 1로 나타내는 column에 대해서 추가하려고 합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span><span class="op">[</span>, <span class="st">':='</span> <span class="op">(</span>BP_SYS140 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">BP_SYS</span><span class="op">&gt;=</span><span class="fl">140</span><span class="op">)</span><span class="op">)</span>, BMI25 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">BMI</span><span class="op">&gt;=</span><span class="fl">25</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>dt[, <span class="st">':='</span> (<span class="at">BP_SYS140 =</span> <span class="fu">factor</span>(<span class="fu">as.integer</span>(BP_SYS<span class="sc">&gt;=</span><span class="dv">140</span>)), <span class="at">BMI25 =</span> <span class="fu">factor</span>(<span class="fu">as.integer</span>(BMI<span class="sc">&gt;=</span><span class="dv">25</span>)))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1114,7 +1187,7 @@ ga('send', {
 <p>dt의 column에 새롭게 BP_SYS140과 BMI25 컬럼이 생성되어, 0과 1로 TRUE/FALSE를 보여주고 있습니다.</p>
 <p>그리고 := 을 이용해서 column을 삭제할 수도 있습니다. 위에서 만들어본 BMI25 column에 대해서 제거해보려고 합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span><span class="op">[</span>,<span class="va">BMI25</span> <span class="op">:=</span> <span class="cn">NULL</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>dt[,BMI25 <span class="sc">:</span><span class="er">=</span> <span class="cn">NULL</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1125,7 +1198,9 @@ ga('send', {
 </div>
 </div>
 </div>
-</section><section id="데이터-재구조화" class="level3"><h3 class="anchored" data-anchor-id="데이터-재구조화">3-4. 데이터 재구조화</h3>
+</section>
+<section id="데이터-재구조화" class="level3">
+<h3 class="anchored" data-anchor-id="데이터-재구조화">3-4. 데이터 재구조화</h3>
 <p>마지막으로, data의 형태를 바꾸는 <strong>melt(wide to long), dcast(long to wide)</strong> 함수에 대해서 알아보겠습니다.</p>
 <p>우선 melt 함수입니다.</p>
 <p>melt 함수는 일부 고정 칼럼을 제외한 나머지 칼럼을 stack 처리할 수 있습니다. melt 함수의 기본 구조는 다음과 같습니다.</p>
@@ -1138,12 +1213,12 @@ ga('send', {
 </ul>
 <p>예시로 쉽게 설명해보겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">melt_EX</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/melt.data.table.html">melt</a></span><span class="op">(</span><span class="va">dt</span>,</span>
-<span>              id.vars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span><span class="op">)</span>,</span>
-<span>              measure.vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"TOT_CHOL"</span>, <span class="st">"TG"</span>, <span class="st">"HDL"</span>, <span class="st">"LDL"</span><span class="op">)</span>,</span>
-<span>              variable.name <span class="op">=</span> <span class="st">"Lipie"</span>,</span>
-<span>              value.name <span class="op">=</span> <span class="st">"Value"</span><span class="op">)</span></span>
-<span><span class="va">melt_EX</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>melt_EX<span class="ot">&lt;-</span><span class="fu">melt</span>(dt,</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">id.vars=</span><span class="fu">c</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>),</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"TOT_CHOL"</span>, <span class="st">"TG"</span>, <span class="st">"HDL"</span>, <span class="st">"LDL"</span>),</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">variable.name =</span> <span class="st">"Lipie"</span>,</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">value.name =</span> <span class="st">"Value"</span>)</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>melt_EX</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1158,13 +1233,13 @@ ga('send', {
 <p>melt 함수는 또한 동시에 여러 개의 칼럼들을 묶어서 사용할 수도 있습니다. melt 함수에 meausre = list(col1, col2, …) 형식으로 여러 개의 칼럼 이름을 list() 형태로 넣습니다. 이 때 공통의 value.name을 지정할 수 있습니다.</p>
 <p>다음의 예시를 보겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">col1</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"BP_SYS"</span>, <span class="st">"BP_DIA"</span><span class="op">)</span></span>
-<span><span class="va">col2</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"VA_LT"</span>, <span class="st">"VA_RT"</span><span class="op">)</span></span>
-<span><span class="va">melt_EX2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/melt.data.table.html">melt</a></span><span class="op">(</span><span class="va">dt</span>,</span>
-<span>                 id.vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span><span class="op">)</span>,</span>
-<span>                 measure.vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">col1</span>, <span class="va">col2</span><span class="op">)</span>,</span>
-<span>                 value.name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"BP"</span>, <span class="st">"VA"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">melt_EX2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>col1<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"BP_SYS"</span>, <span class="st">"BP_DIA"</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>col2<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"VA_LT"</span>, <span class="st">"VA_RT"</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>melt_EX2 <span class="ot">&lt;-</span> <span class="fu">melt</span>(dt,</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"EXMD_BZ_YYYY"</span>, <span class="st">"RN_INDI"</span>, <span class="st">"HME_YYYYMM"</span>),</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">measure.vars =</span> <span class="fu">list</span>(col1, col2),</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">value.name =</span> <span class="fu">c</span>(<span class="st">"BP"</span>, <span class="st">"VA"</span>))</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>melt_EX2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1193,8 +1268,8 @@ ga('send', {
 </ul>
 <p>예시로 알아보도록 하겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dcast_EX</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/dcast.data.table.html">dcast</a></span><span class="op">(</span><span class="va">melt_EX</span>, <span class="va">EXMD_BZ_YYYY</span><span class="op">+</span><span class="va">RN_INDI</span><span class="op">+</span><span class="va">HME_YYYYMM</span> <span class="op">~</span> <span class="va">Lipid</span>, value.var<span class="op">=</span><span class="st">"Value"</span><span class="op">)</span></span>
-<span><span class="va">dcast_EX</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>dcast_EX <span class="ot">&lt;-</span> <span class="fu">dcast</span>(melt_EX, EXMD_BZ_YYYY<span class="sc">+</span>RN_INDI<span class="sc">+</span>HME_YYYYMM <span class="sc">~</span> Lipid, <span class="at">value.var=</span><span class="st">"Value"</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>dcast_EX</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1208,8 +1283,8 @@ ga('send', {
 <p>Lipid 변수에 하나로 묶어뒀던 TOT_CHOL, TG, HDL, LDL 변수가 다시 각각의 변수로 바뀐 것을 확인할 수 있습니다.</p>
 <p>다음은 dcast 함수를 조금 더 응용해서, 재구조화를 할 때 sum, mean 등의 집계함수를 이용해서 그룹별 요약 통계량을 나타내는 과정을 소개하겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dcast_EX2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/dcast.data.table.html">dcast</a></span><span class="op">(</span><span class="va">melt_EX</span>, <span class="va">EXMD_BZ_YYYY</span> <span class="op">~</span> <span class="va">Lipid</span>, value.var <span class="op">=</span> <span class="st">"Value"</span>, fun.aggregate <span class="op">=</span> <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span><span class="va">dcast_EX2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>dcast_EX2 <span class="ot">&lt;-</span> <span class="fu">dcast</span>(melt_EX, EXMD_BZ_YYYY <span class="sc">~</span> Lipid, <span class="at">value.var =</span> <span class="st">"Value"</span>, <span class="at">fun.aggregate =</span> mean, <span class="at">na.rm =</span> T)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>dcast_EX2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1225,8 +1300,8 @@ ga('send', {
 <p>다음으로는 여러 개의 칼럼들을 묶어서 melt 한 data.table에 대해서도 dcast를 하는 것에 대해 설명하겠습니다. 기본적으로 dcast 구조와 동일하지만 약간의 차이가 있습니다. variable 칸에는 그대로 long to wide 하려는 변수 이름만을 작성하면 되지만, value.var = 칸에는 각각의 데이터 값의 이름을 다 적어야 한다는 차이점이 존재합니다.</p>
 <p>예시로 보이겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dcast_EX3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/dcast.data.table.html">dcast</a></span><span class="op">(</span><span class="va">melt_EX2</span>, <span class="va">EXMD_BZ_YYYY</span><span class="op">+</span><span class="va">RN_INDI</span><span class="op">+</span><span class="va">HME_YYYYMM</span> <span class="op">~</span> <span class="va">variable</span>, value.var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"BP"</span>, <span class="st">"VA"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">dcast_EX3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>dcast_EX3 <span class="ot">&lt;-</span> <span class="fu">dcast</span>(melt_EX2, EXMD_BZ_YYYY<span class="sc">+</span>RN_INDI<span class="sc">+</span>HME_YYYYMM <span class="sc">~</span> variable, <span class="at">value.var =</span> <span class="fu">c</span>(<span class="st">"BP"</span>, <span class="st">"VA"</span>))</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>dcast_EX3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -1237,7 +1312,10 @@ ga('send', {
 </div>
 </div>
 </div>
-</section></section><section id="마치며" class="level2"><h2 class="anchored" data-anchor-id="마치며">4. 마치며</h2>
+</section>
+</section>
+<section id="마치며" class="level2">
+<h2 class="anchored" data-anchor-id="마치며">4. 마치며</h2>
 <p>이상에서 R에서 데이터를 쉽고 빠르게 가공할 수 있는 data.table에 대하여 알아보았습니다.</p>
 <p>배운 내용을 가볍게 정리하고 마무리하도록 하겠습니다.</p>
 <p><strong>1) 생성하기</strong> : data.table은 기본적으로 설치되어 있는 프로그램이 아니기 때문에, package 설치가 필요하다.</p>
@@ -1253,10 +1331,11 @@ ga('send', {
 <p><strong>감사합니다.</strong></p>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{ko2022,
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{ko2022,
   author = {Ko, Junhyuk},
   title = {Data.table {패키지} {기초}},
-  pages = {undefined},
   date = {2022-07-13},
   url = {https://blog.zarathu.com/posts/2022-07-13-r-datatable2},
   langid = {en}
@@ -1264,7 +1343,8 @@ ga('send', {
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-ko2022" class="csl-entry quarto-appendix-citeas" role="listitem">
 Ko, Junhyuk. 2022. <span>“Data.table 패키지 기초.”</span> July 13, 2022.
 <a href="https://blog.zarathu.com/posts/2022-07-13-r-datatable2">https://blog.zarathu.com/posts/2022-07-13-r-datatable2</a>.
-</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -1392,38 +1472,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -1432,7 +1502,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }
@@ -1653,10 +1725,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
 <p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
 </div>   
@@ -1668,6 +1744,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
+
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>

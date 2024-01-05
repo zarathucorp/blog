@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.455">
+<meta name="generator" content="quarto-1.4.534">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="HyunJun Ko">
 <meta name="dcterms.date" content="2021-07-25">
 <meta name="description" content="Follow up assignment of ShinyProxy lecture">
+
 <title>Zarathu Blog - googleAuth</title>
 <style>
 code{white-space: pre-wrap;}
@@ -56,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -72,7 +76,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -80,7 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    null
+    "f",
+    "/",
+    "s"
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -90,11 +97,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script type="text/javascript">
+}</script>
+
+<script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -106,16 +116,23 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
 <link rel="stylesheet" href="../../styles.css">
 </head>
+
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -126,7 +143,7 @@ ga('send', {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -138,8 +155,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
@@ -152,7 +169,7 @@ ga('send', {
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../../contributors.html"> 
 <span class="menu-text">Contributors</span></a>
@@ -161,8 +178,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
@@ -171,7 +188,7 @@ ga('send', {
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
@@ -188,11 +205,15 @@ ga('send', {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">googleAuth</h1>
                   <div>
@@ -229,93 +250,108 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#%EC%9A%94%EC%95%BD" id="toc-요약" class="nav-link active" data-scroll-target="#%EC%9A%94%EC%95%BD">요약</a></li>
-  <li>
-<a href="#contents" id="toc-contents" class="nav-link" data-scroll-target="#contents">Contents</a>
+  <li><a href="#요약" id="toc-요약" class="nav-link active" data-scroll-target="#요약">요약</a></li>
+  <li><a href="#contents" id="toc-contents" class="nav-link" data-scroll-target="#contents">Contents</a>
   <ul class="collapse">
-<li><a href="#review-of-previous-lecture" id="toc-review-of-previous-lecture" class="nav-link" data-scroll-target="#review-of-previous-lecture">Review of previous lecture</a></li>
+  <li><a href="#review-of-previous-lecture" id="toc-review-of-previous-lecture" class="nav-link" data-scroll-target="#review-of-previous-lecture">Review of previous lecture</a></li>
   <li><a href="#google-oauth" id="toc-google-oauth" class="nav-link" data-scroll-target="#google-oauth">Google OAuth</a></li>
   <li><a href="#shinyproxy-setting" id="toc-shinyproxy-setting" class="nav-link" data-scroll-target="#shinyproxy-setting">ShinyProxy Setting</a></li>
-  <li><a href="#%EB%A7%88%EB%AC%B4%EB%A6%AC" id="toc-마무리" class="nav-link" data-scroll-target="#%EB%A7%88%EB%AC%B4%EB%A6%AC">마무리</a></li>
+  <li><a href="#마무리" id="toc-마무리" class="nav-link" data-scroll-target="#마무리">마무리</a></li>
+  </ul></li>
   </ul>
-</li>
-  </ul></nav>
-</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script><p>7월 17일 Virtual Box를 이용해 ShinyProxy 환경을 구축하는 강의가 있었습니다. 강의 시간에 직접 해보지 못한 Social Login 중 Google Authentication 방법에 대해 알아보겠습니다.</p>
-<section id="요약" class="level2"><h2 class="anchored" data-anchor-id="요약">요약</h2>
+</script>
+
+
+
+
+
+<p>7월 17일 Virtual Box를 이용해 ShinyProxy 환경을 구축하는 강의가 있었습니다. 강의 시간에 직접 해보지 못한 Social Login 중 Google Authentication 방법에 대해 알아보겠습니다.</p>
+<section id="요약" class="level2">
+<h2 class="anchored" data-anchor-id="요약">요약</h2>
 <ul>
 <li><p>지난 Lecture에서 구축한 환경설정 간단하게 리뷰</p></li>
 <li><p>Application.yml을 project folder에 생성하여 Social login을 사용하도록 설정</p></li>
 <li><p>Google Developer Console에서 OAuth 설정을 통해 Client Id, Key 발급과 Redirection URL 설정</p></li>
-</ul></section><section id="contents" class="level2"><h2 class="anchored" data-anchor-id="contents">Contents</h2>
-<section id="review-of-previous-lecture" class="level3"><h3 class="anchored" data-anchor-id="review-of-previous-lecture">Review of previous lecture</h3>
+</ul>
+</section>
+<section id="contents" class="level2">
+<h2 class="anchored" data-anchor-id="contents">Contents</h2>
+<section id="review-of-previous-lecture" class="level3">
+<h3 class="anchored" data-anchor-id="review-of-previous-lecture">Review of previous lecture</h3>
 <ul>
-<li>
-<p>ShinyManager (https://datastorm-open.github.io/shinymanager/)</p>
+<li><p>ShinyManager (https://datastorm-open.github.io/shinymanager/)</p>
 <ul>
 <li>Shiny App의 Authentication service 제공</li>
 <li>Sigle thread 기반으로 구성되기 때문에 동시에 여러 유저가 로그인 불가</li>
-</ul>
-</li>
-<li>
-<p>ShinyProxy (https://www.shinyproxy.io/)</p>
+</ul></li>
+<li><p>ShinyProxy (https://www.shinyproxy.io/)</p>
 <ul>
 <li>ShinyManager를 사용할 때 동시에 하나의 유저만 로그인할 수 있는 한계를 극복하기 위해 도입</li>
 <li>여러 사용자의 동시 접근을 가능한 Shiny App deploy</li>
-</ul>
-</li>
-<li>
-<p>Google OAuth 설정으로 넘어가기 전에…</p>
+</ul></li>
+<li><p>Google OAuth 설정으로 넘어가기 전에…</p>
 <ul>
 <li>강의시간에 만든 Virtual box의 가상이미지 실행 후 shinyproxy docker 이미지가 실행되고 있는지 확인</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sudo docker images <span class="sc">|</span> grep shinyproxy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</li>
-<li>
-<p>Rstudio server 로그인 후 Terminal에서 shinyproxy 실행</p>
+</div></li>
+<li><p>Rstudio server 로그인 후 Terminal에서 shinyproxy 실행</p>
 <ol type="1">
 <li>브라우저에서 127.0.0.1:8787로 접속 후 Virtual Box 이미지 생성 시 입력했던 아이디와 패스워드로 로그인</li>
 <li>Rstudio Terminal에서 shinyproxy 실행</li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>java <span class="sc">-</span>jar shinyproxy<span class="dv">-2</span>.<span class="dv">5</span>.<span class="fl">0.</span>jar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</li>
-<li>
-<p>127.0.0.1:8080으로 접속하여 admin 계정을 통해 login 기능 작동 확인</p>
+</div></li>
+<li><p>127.0.0.1:8080으로 접속하여 admin 계정을 통해 login 기능 작동 확인</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/main-page.png" class="img-fluid" width="1280"></p>
+<div>
+<figure class="figure">
+<p><img src="images/main-page.png" class="img-fluid figure-img" width="1280"></p>
+</figure>
 </div>
 </div>
-</li>
-</ul></section><section id="google-oauth" class="level3"><h3 class="anchored" data-anchor-id="google-oauth">Google OAuth</h3>
+</div></li>
+</ul>
+</section>
+<section id="google-oauth" class="level3">
+<h3 class="anchored" data-anchor-id="google-oauth">Google OAuth</h3>
 <ul>
 <li>Facebook, Github 등 다양한 소셜 로그인 중 하나</li>
 <li>Google Developer Console <a href="https://console.cloud.google.com/apis/">https://console.cloud.google.com/apis/</a>에서 프로젝트 생성 후 Client Id와 Client Key 발급</li>
 <li>발급받은 Id, Key를 application.yml 파일에 입력</li>
 <li>Google Devloper Console에서 로그인 후 redirection할 URL을 입력하면 끝!</li>
 <li>구체적인 과정은 <a href="http://yoonbumtae.com/?p=2631">네이버 블로그</a>를 따라하세요</li>
-</ul></section><section id="shinyproxy-setting" class="level3"><h3 class="anchored" data-anchor-id="shinyproxy-setting">ShinyProxy Setting</h3>
+</ul>
+</section>
+<section id="shinyproxy-setting" class="level3">
+<h3 class="anchored" data-anchor-id="shinyproxy-setting">ShinyProxy Setting</h3>
 <ul>
 <li><p>application.yml : Authentication 방법을 정의하는 파일로 simple, LDAP, openid, social 등의 방법 선택 가능 (authentication: {원하는 로그인 방식})</p></li>
-<li>
-<p>RStudio server에서 홈 디렉토리에 application.yml 파일 생성(아래 코드를 복사하세요)</p>
+<li><p>RStudio server에서 홈 디렉토리에 application.yml 파일 생성(아래 코드를 복사하세요)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>proxy<span class="sc">:</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  title<span class="sc">:</span> Shiny App</span>
@@ -355,8 +391,7 @@ ga('send', {
 <span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>logging<span class="sc">:</span></span>
 <span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  file<span class="sc">:</span></span>
 <span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    shinyproxy.log</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</li>
+</div></li>
 </ul>
 <ol type="1">
 <li>authenticaiton을 openid로 설정할 경우</li>
@@ -376,7 +411,10 @@ ga('send', {
 <li>Google Developer Console에서 승인된 redirect url에 다음을 입력 http://127.0.0.1:8080/signin/google</li>
 <li>RStudio server Terminal에서 실행중인 shinyproxy 종료(Ctrl + C) 후 재실행</li>
 <li>브라우저에 127.0.0.1:8080을 입력 후 google login 수행</li>
-</ul></section><section id="마무리" class="level3"><h3 class="anchored" data-anchor-id="마무리">마무리</h3>
+</ul>
+</section>
+<section id="마무리" class="level3">
+<h3 class="anchored" data-anchor-id="마무리">마무리</h3>
 <ol type="1">
 <li><p>ShinyProxy는 Spring framework 기반으로 작성되어 application.yml 수정을 통해 여러 인증방법을 적용할 수 있습니다.</p></li>
 <li><p>Facebook, Github 등 여러 API provider들이 구글과 비슷한 인증 서비스를 제공하고 있어 손쉽게 여러 social 인증을 추가할 수 있습니다.</p></li>
@@ -385,17 +423,20 @@ ga('send', {
 </ol>
 
 
-</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{ko2021,
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{ko2021,
   author = {Ko, Hyunjun},
   title = {googleAuth},
-  pages = {undefined},
   date = {2021-07-25},
   url = {https://blog.zarathu.com/posts/2021-07-25-googleauth},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-ko2021" class="csl-entry quarto-appendix-citeas" role="listitem">
 Ko, Hyunjun. 2021. <span>“googleAuth.”</span> July 25, 2021. <a href="https://blog.zarathu.com/posts/2021-07-25-googleauth">https://blog.zarathu.com/posts/2021-07-25-googleauth</a>.
-</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -523,38 +564,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -563,7 +594,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }
@@ -784,10 +817,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
 <p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
 </div>   
@@ -799,6 +836,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
+
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>

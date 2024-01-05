@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.455">
+<meta name="generator" content="quarto-1.4.534">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="Yeongho Kim">
 <meta name="dcterms.date" content="2023-06-20">
 <meta name="description" content="RSQLite, shinyauthr 등 여러 R package를 이용한 웹 기반 방역관리 위험도 평가 대시보드 제작 과정">
+
 <title>Zarathu Blog - R Shiny 기반 방역관리 위험도 평가 대시보드</title>
 <style>
 code{white-space: pre-wrap;}
@@ -56,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -72,7 +76,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -80,7 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    null
+    "f",
+    "/",
+    "s"
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -90,11 +97,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script type="text/javascript">
+}</script>
+
+<script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -106,16 +116,23 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
 <link rel="stylesheet" href="../../styles.css">
 </head>
+
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -126,7 +143,7 @@ ga('send', {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -138,8 +155,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
@@ -152,7 +169,7 @@ ga('send', {
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../../contributors.html"> 
 <span class="menu-text">Contributors</span></a>
@@ -161,8 +178,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
@@ -171,7 +188,7 @@ ga('send', {
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
@@ -188,11 +205,15 @@ ga('send', {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">R Shiny 기반 방역관리 위험도 평가 대시보드</h1>
                   <div>
@@ -230,139 +251,153 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#db-dbi-rsqlite" id="toc-db-dbi-rsqlite" class="nav-link active" data-scroll-target="#db-dbi-rsqlite">1. DB : <code>DBI</code> &amp; <code>RSQLite</code></a></li>
+  <li><a href="#db-dbi-rsqlite" id="toc-db-dbi-rsqlite" class="nav-link active" data-scroll-target="#db-dbi-rsqlite">1. DB : <code>DBI</code> &amp; <code>RSQLite</code></a></li>
   <li><a href="#log-in-register-shinyauthr-customizing" id="toc-log-in-register-shinyauthr-customizing" class="nav-link" data-scroll-target="#log-in-register-shinyauthr-customizing">2. Log in / Register : <code>shinyauthr</code> Customizing</a></li>
-  <li><a href="#%ED%95%84%EC%88%98-%EC%9D%91%EB%8B%B5-%EC%84%A4%EB%AC%B8-%EC%84%A4%EC%A0%95-shinyvalidate" id="toc-필수-응답-설문-설정-shinyvalidate" class="nav-link" data-scroll-target="#%ED%95%84%EC%88%98-%EC%9D%91%EB%8B%B5-%EC%84%A4%EB%AC%B8-%EC%84%A4%EC%A0%95-shinyvalidate">3. 필수 응답 설문 설정 : <code>shinyvalidate</code></a></li>
-  <li><a href="#reactable-onclick-%ED%99%9C%EC%9A%A9-ui%EC%97%90%EC%84%9C-%EB%8F%99%EC%A0%81%EC%9C%BC%EB%A1%9C-db-table-update%ED%95%98%EA%B8%B0" id="toc-reactable-onclick-활용-ui에서-동적으로-db-table-update하기" class="nav-link" data-scroll-target="#reactable-onclick-%ED%99%9C%EC%9A%A9-ui%EC%97%90%EC%84%9C-%EB%8F%99%EC%A0%81%EC%9C%BC%EB%A1%9C-db-table-update%ED%95%98%EA%B8%B0">4. Reactable onClick 활용 : UI에서 동적으로 DB Table Update하기</a></li>
-  <li>
-<a href="#%EC%9D%B4-%EC%99%B8" id="toc-이-외" class="nav-link" data-scroll-target="#%EC%9D%B4-%EC%99%B8">5. 이 외</a>
+  <li><a href="#필수-응답-설문-설정-shinyvalidate" id="toc-필수-응답-설문-설정-shinyvalidate" class="nav-link" data-scroll-target="#필수-응답-설문-설정-shinyvalidate">3. 필수 응답 설문 설정 : <code>shinyvalidate</code></a></li>
+  <li><a href="#reactable-onclick-활용-ui에서-동적으로-db-table-update하기" id="toc-reactable-onclick-활용-ui에서-동적으로-db-table-update하기" class="nav-link" data-scroll-target="#reactable-onclick-활용-ui에서-동적으로-db-table-update하기">4. Reactable onClick 활용 : UI에서 동적으로 DB Table Update하기</a></li>
+  <li><a href="#이-외" id="toc-이-외" class="nav-link" data-scroll-target="#이-외">5. 이 외</a>
   <ul>
-<li><a href="#reactable-reactive-download-to-csv" id="toc-reactable-reactive-download-to-csv" class="nav-link" data-scroll-target="#reactable-reactive-download-to-csv">(1) <code>reactable</code> : reactive download to csv</a></li>
-  <li><a href="#lapply%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%84%A4%EB%AC%B8-ui-%EA%B0%84%EB%8B%A8%ED%95%98%EA%B2%8C-%EB%A7%8C%EB%93%A4%EA%B8%B0" id="toc-lapply를-이용한-설문-ui-간단하게-만들기" class="nav-link" data-scroll-target="#lapply%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%84%A4%EB%AC%B8-ui-%EA%B0%84%EB%8B%A8%ED%95%98%EA%B2%8C-%EB%A7%8C%EB%93%A4%EA%B8%B0">(2) <code>lapply</code>를 이용한 설문 UI 간단하게 만들기</a></li>
+  <li><a href="#reactable-reactive-download-to-csv" id="toc-reactable-reactive-download-to-csv" class="nav-link" data-scroll-target="#reactable-reactive-download-to-csv">(1) <code>reactable</code> : reactive download to csv</a></li>
+  <li><a href="#lapply를-이용한-설문-ui-간단하게-만들기" id="toc-lapply를-이용한-설문-ui-간단하게-만들기" class="nav-link" data-scroll-target="#lapply를-이용한-설문-ui-간단하게-만들기">(2) <code>lapply</code>를 이용한 설문 UI 간단하게 만들기</a></li>
+  </ul></li>
+  <li><a href="#마치며" id="toc-마치며" class="nav-link" data-scroll-target="#마치며">마치며</a></li>
   </ul>
-</li>
-  <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">마치며</a></li>
-  </ul></nav>
-</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script><p><code>R Shiny</code>의 활용성은 무궁무진합니다. 다양한 Shiny 전용 패키지와 함수, Javascript, CSS와의 연계성 등 다양한 기능을 활용해 반응형 웹페이지 제작이 가능합니다.</p>
+</script>
+
+
+
+
+
+<p><code>R Shiny</code>의 활용성은 무궁무진합니다. 다양한 Shiny 전용 패키지와 함수, Javascript, CSS와의 연계성 등 다양한 기능을 활용해 반응형 웹페이지 제작이 가능합니다.</p>
 <p>본 글에서는 이렇게 무궁무진한 <code>R Shiny</code>로 <em>웹 기반 방역관리 위험도 평가 대시보드</em>를 제작한 경험을 공유하며 사용한 여러 기능을 소개하려고 합니다.</p>
-<p><small> UI의 전반적인 레이아웃은 <code>Shinydashboard</code>를 사용했으며 본문에선 <code>Shinydashboard</code>와 <code>Shiny</code>의 기본 함수에 대한 설명은 생략합니다. 두 패키지에 대한 기본적인 함수 및 구조 설명은 아래 링크를 참조하세요.</small></p>
+<p><small> UI의 전반적인 레이아웃은 <code>Shinydashboard</code>를 사용했으며 본문에선 <code>Shinydashboard</code>와 <code>Shiny</code>의 기본 함수에 대한 설명은 생략합니다. 두 패키지에 대한 기본적인 함수 및 구조 설명은 아래 링크를 참조하세요.</small></p><small>
 <p><code>Shinydashboard</code> package : <a href="https://rstudio.github.io/shinydashboard/">Shiny Dashboard</a></p>
-<p><code>Shiny</code> package : <a href="https://mastering-shiny.org/">Mastering Shiny</a> </p>
+</small><p><small><code>Shiny</code> package : <a href="https://mastering-shiny.org/">Mastering Shiny</a> </small></p>
 <p><br></p>
-<section id="db-dbi-rsqlite" class="level2"><h2 class="anchored" data-anchor-id="db-dbi-rsqlite">1. DB : <code>DBI</code> &amp; <code>RSQLite</code>
-</h2>
+<section id="db-dbi-rsqlite" class="level2">
+<h2 class="anchored" data-anchor-id="db-dbi-rsqlite">1. DB : <code>DBI</code> &amp; <code>RSQLite</code></h2>
 <p>본 대시보드는 사용자별로 데이터 무결성이 유지되어야 했고 지속적인 데이터 수집이 필요했기에 DB를 따로 운영하기로 했습니다.</p>
 <p>DB를 다룰 수 있는 <a href="https://dbi.r-dbi.org/"><code>DBI</code></a> 패키지와 간단한 DBMS인 SQLite를 사용할 수 있는 <a href="https://rsqlite.r-dbi.org/"><code>RSQLite</code></a>를 사용하여 DB 설계 및 유지 보수를 진행했습니다.</p>
 <p>다음과 같이 DB connect / disconnect 함수를 따로 지정하여 초기 설정을 해줍니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dbi.r-dbi.org">DBI</a></span><span class="op">)</span>;<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rsqlite.r-dbi.org">RSQLite</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># connection</span></span>
-<span><span class="va">con</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span><span class="op">(</span><span class="fu"><a href="https://rsqlite.r-dbi.org/reference/SQLite.html">SQLite</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>            dbname <span class="op">=</span> <span class="st">"[path]/[DBname].sqlite"</span><span class="op">)</span>    </span>
-<span>  </span>
-<span>  <span class="co">#기존에 SQLite DB가 존재한다면 Connected, 아니면 create DB</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># disconnection</span></span>
-<span><span class="va">discon</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html">dbDisconnect</a></span><span class="op">(</span><span class="fu">con</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DBI);<span class="fu">library</span>(RSQLite)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># connection</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  DBI<span class="sc">::</span><span class="fu">dbConnect</span>(<span class="fu">SQLite</span>(),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">dbname =</span> <span class="st">"[path]/[DBname].sqlite"</span>)    </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#기존에 SQLite DB가 존재한다면 Connected, 아니면 create DB</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># disconnection</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>discon <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbDisconnect</span>(<span class="fu">con</span>())</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>DBI</code> 패키지의 대부분의 함수는 parameter로 DBIconnection object를 요구합니다. 따라서 다음과 같이 <code>con()</code> 이라는 함수를 parameter로 호출하여 DBI의 함수를 사용할 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Example :  DBname : database.sqlite</span></span>
-<span></span>
-<span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html">dbExecute</a></span><span class="op">(</span><span class="fu">con</span><span class="op">(</span><span class="op">)</span>, <span class="st">"CREATE TABLE table1 (</span></span>
-<span><span class="st">                                 keyvalue INTEGER(10) PRIMARY KEY,</span></span>
-<span><span class="st">                                 value1 DATE,</span></span>
-<span><span class="st">                                 value2 VARCHAR(20) CHECK(value2 IN ('a', 'b', 'c'))</span></span>
-<span><span class="st">                                 )"</span><span class="op">)</span></span>
-<span><span class="fu">discon</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html">dbExecute</a></span><span class="op">(</span><span class="fu">con</span><span class="op">(</span><span class="op">)</span>, <span class="st">"INSERT INTO table1 VALUES (?, ?, ?)"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"2023-05-24"</span>, <span class="st">"a"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbGetQuery.html">dbGetQuery</a></span><span class="op">(</span><span class="fu">con</span><span class="op">(</span><span class="op">)</span>, <span class="st">"SELECT * FROM table1"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example :  DBname : database.sqlite</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbExecute</span>(<span class="fu">con</span>(), <span class="st">"CREATE TABLE table1 (</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">                                 keyvalue INTEGER(10) PRIMARY KEY,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">                                 value1 DATE,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">                                 value2 VARCHAR(20) CHECK(value2 IN ('a', 'b', 'c'))</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">                                 )"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">discon</span>()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbExecute</span>(<span class="fu">con</span>(), <span class="st">"INSERT INTO table1 VALUES (?, ?, ?)"</span>, <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">"2023-05-24"</span>, <span class="st">"a"</span>))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbGetQuery</span>(<span class="fu">con</span>(), <span class="st">"SELECT * FROM table1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>dbExecute</code> 함수를 통해 실행하고자 하는 SQL문을 실행시킵니다. 이전에 생성한 <code>con()</code> 함수를 통해 DB에 연결한 뒤 SQL문을 문자열 형태로 입력하여 실행합니다. 또한 SQL문에 동적으로 R의 변수를 넣어야하는 경우, <code>?</code>를 통해 SQL문을 입력한 뒤에 <code>?</code>에 넣고자 하는 순서에 맞게 뒤에 vector 형태로 입력하면 됩니다.</p>
 <p><code>dbGetQuery</code>의 경우<code>SELECT문</code>같이 SQL Query의 결과를 갖고 오고 싶은 경우 사용합니다. 추출 결과를 dataframe 형태로 가져옵니다.</p>
 <p>본 대시보드 제작 과정에선 <code>RSQLite</code>를 이용하여 Table 4개를 운용하였고, <code>SQLite</code>에서도 당연히 참조 무결성 제약조건(PK-FK)을 생성할 수 있기때문에 직접 R에서 코드를 작성하지 않고 SQL문을 통해 미리 제약조건을 생성할 수 있습니다.</p>
-<hr></section><section id="log-in-register-shinyauthr-customizing" class="level2"><h2 class="anchored" data-anchor-id="log-in-register-shinyauthr-customizing">2. Log in / Register : <code>shinyauthr</code> Customizing</h2>
+<hr>
+</section>
+<section id="log-in-register-shinyauthr-customizing" class="level2">
+<h2 class="anchored" data-anchor-id="log-in-register-shinyauthr-customizing">2. Log in / Register : <code>shinyauthr</code> Customizing</h2>
 <p><code>Shiny</code> 패키지 중 Log in/Log out UI를 제공하는 패키지는 대표적으로 <a href="https://datastorm-open.github.io/shinymanager/"><code>shinymanager</code></a>와 <a href="https://github.com/PaulC91/shinyauthr"><code>shinyauthr</code></a>가 있습니다. 그러나 <code>Shinymanager</code>에는 회원가입 기능을 추가하기가 어려운 부분이 있어 <code>shinyauthr</code>를 사용하되, 살짝 코드를 수정하여 Log in/Log out/Register option을 Web에 추가하였습니다.</p>
 <p><code>shinyauthr</code> package의 주요 함수는 다음과 같습니다.</p>
 <ul>
-<li>
-<code>loginUI</code> : log in UI를 보여주는 함수로 화면에 나타나는 메시지를 수정가능합니다.</li>
-<li>
-<code>loginServer</code> : log in의 base가 되는 database를 설정하고 id, password 설정, 쿠키 로그인 설정이 가능합니다.</li>
-<li>
-<code>logoutUI</code> : log out UI를 보여주는 함수로, 화면에 나타나는 메시지 및 css style을 수정할 수 있습니다.</li>
-<li>
-<code>logoutServer</code> : log out시 실행되는 함수로, 사용자의 권한(<code>user_auth</code>)를 boolean reactive 형태로 관리합니다.</li>
+<li><code>loginUI</code> : log in UI를 보여주는 함수로 화면에 나타나는 메시지를 수정가능합니다.</li>
+<li><code>loginServer</code> : log in의 base가 되는 database를 설정하고 id, password 설정, 쿠키 로그인 설정이 가능합니다.</li>
+<li><code>logoutUI</code> : log out UI를 보여주는 함수로, 화면에 나타나는 메시지 및 css style을 수정할 수 있습니다.</li>
+<li><code>logoutServer</code> : log out시 실행되는 함수로, 사용자의 권한(<code>user_auth</code>)를 boolean reactive 형태로 관리합니다.</li>
 </ul>
 <p>login logic : <code>loginUI</code>에 ID/PW 입력 -&gt; <code>loginServer</code>에서 확인 후 권한 부여</p>
 <p>logout logic : <code>logoutUI</code>의 logout button 클릭 -&gt; <code>logoutServer</code>에서 reactive하게 user_auth 상태 변경</p>
 <p><small> (자세한 내용은 <a href="https://github.com/PaulC91/shinyauthr">shinyauthr package</a> 참조) </small></p>
 <p>UI의 일반적인 구성은 다음과 같습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">dashboardPage</span><span class="op">(</span></span>
-<span>  </span>
-<span>  skin <span class="op">=</span> <span class="st">"black"</span>,</span>
-<span>  header <span class="op">=</span> <span class="fu">dashboardHeader</span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="op">(</span><span class="st">"방역관리 위험도 평가"</span><span class="op">)</span>,</span>
-<span>    <span class="va">tags</span><span class="op">$</span><span class="fu">li</span><span class="op">(</span>class <span class="op">=</span> <span class="st">"dropdown"</span>, style <span class="op">=</span> <span class="st">"padding: 8px;"</span>, <span class="fu">shinyauthr</span><span class="fu">::</span><span class="fu">logoutUI</span><span class="op">(</span><span class="st">"logout"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  </span>
-<span>  sidebar <span class="op">=</span> <span class="fu">dashboardSidebar</span><span class="op">(</span></span>
-<span>    <span class="co"># menu </span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  </span>
-<span>  body <span class="op">=</span> <span class="fu">dashboardBody</span><span class="op">(</span></span>
-<span>    <span class="fu">shinyauthr</span><span class="fu">::</span><span class="fu">loginUI</span><span class="op">(</span><span class="st">"login"</span>,</span>
-<span>                        title <span class="op">=</span> <span class="fu">h4</span><span class="op">(</span><span class="fu">HTML</span><span class="op">(</span><span class="st">"&lt;center&gt; 이름과 전화번호를 입력해주세요 &lt;/center&gt;"</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>                        user_title <span class="op">=</span> <span class="st">"이름"</span>, </span>
-<span>                        pass_title <span class="op">=</span> <span class="st">"전화번호"</span>, </span>
-<span>                        login_title <span class="op">=</span> <span class="st">"로그인"</span>,</span>
-<span>                        error_message <span class="op">=</span> <span class="fu">h6</span><span class="op">(</span><span class="st">"유효하지 않은 정보입니다. 처음이시라면 회원가입을 눌러주세요."</span>, style <span class="op">=</span> <span class="st">"color : red"</span><span class="op">)</span>,</span>
-<span>                        additional_ui <span class="op">=</span> <span class="va">tags</span><span class="op">$</span><span class="fu">a</span><span class="op">(</span></span>
-<span>                          <span class="fu">actionBttn</span><span class="op">(</span></span>
-<span>                            inputId <span class="op">=</span> <span class="st">"register"</span>,</span>
-<span>                            label <span class="op">=</span> <span class="st">"회원가입"</span>,</span>
-<span>                            style <span class="op">=</span> <span class="st">"fill"</span>, </span>
-<span>                            color <span class="op">=</span> <span class="st">"danger"</span>,</span>
-<span>                            size <span class="op">=</span> <span class="st">"xs"</span></span>
-<span>                          <span class="op">)</span></span>
-<span>                        <span class="op">)</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    <span class="co"># menu 별 UI</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">dashboardPage</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">skin =</span> <span class="st">"black"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">header =</span> <span class="fu">dashboardHeader</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> (<span class="st">"방역관리 위험도 평가"</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    tags<span class="sc">$</span><span class="fu">li</span>(<span class="at">class =</span> <span class="st">"dropdown"</span>, <span class="at">style =</span> <span class="st">"padding: 8px;"</span>, shinyauthr<span class="sc">::</span><span class="fu">logoutUI</span>(<span class="st">"logout"</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">sidebar =</span> <span class="fu">dashboardSidebar</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># menu </span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">body =</span> <span class="fu">dashboardBody</span>(</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    shinyauthr<span class="sc">::</span><span class="fu">loginUI</span>(<span class="st">"login"</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                        <span class="at">title =</span> <span class="fu">h4</span>(<span class="fu">HTML</span>(<span class="st">"&lt;center&gt; 이름과 전화번호를 입력해주세요 &lt;/center&gt;"</span>)), </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                        <span class="at">user_title =</span> <span class="st">"이름"</span>, </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>                        <span class="at">pass_title =</span> <span class="st">"전화번호"</span>, </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>                        <span class="at">login_title =</span> <span class="st">"로그인"</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>                        <span class="at">error_message =</span> <span class="fu">h6</span>(<span class="st">"유효하지 않은 정보입니다. 처음이시라면 회원가입을 눌러주세요."</span>, <span class="at">style =</span> <span class="st">"color : red"</span>),</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                        <span class="at">additional_ui =</span> tags<span class="sc">$</span><span class="fu">a</span>(</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">actionBttn</span>(</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                            <span class="at">inputId =</span> <span class="st">"register"</span>,</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>                            <span class="at">label =</span> <span class="st">"회원가입"</span>,</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                            <span class="at">style =</span> <span class="st">"fill"</span>, </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                            <span class="at">color =</span> <span class="st">"danger"</span>,</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                            <span class="at">size =</span> <span class="st">"xs"</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>                          )</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>                        )</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># menu 별 UI</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>본 UI는 <code>shinydashboard</code>를 기반으로 구성되어있습니다. 따라서 header에 logout 버튼을 생성하려 했고, dashboradBody에 login UI를 배치해 메인 화면에 바로 로그인 화면이 나오도록 하였습니다. 또한 loginUI의 parameter를 원하는 텍스트로 설정하였고, 회원가입은 <code>additional_ui</code> parameter를 이용하여 추가적으로 <a href="https://shinyapps.dreamrs.fr/shinyWidgets/"><code>shinyWidgets::actionBttn</code></a> 에 따른 UI가 생성되도록 설계하였습니다. 아래는 로그인 화면과 회원가입 버튼 클릭 시의 화면입니다.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="img/login.png" class="img-fluid figure-img" style="width:50.0%"></p>
-<figcaption>로그인 화면</figcaption></figure>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/login.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>로그인 화면</figcaption>
+</figure>
 </div>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="img/Register.png" class="img-fluid figure-img" style="width:50.0%"></p>
-<figcaption>회원가입 화면</figcaption></figure>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Register.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>회원가입 화면</figcaption>
+</figure>
 </div>
 </div>
 </div>
@@ -370,26 +405,26 @@ ga('send', {
 <p>예를 들어 회원 가입 후 즉시 로그인하기 위해선 새로운 사용자의 정보가 반영된 DB를 reactive하게 Call 해야하는데 이 부분에 제약사항이 있었습니다.</p>
 <p>따라서 reactive하게 DB 정보를 받아올 수 있도록 함수를 수정해야 했습니다. (다음 링크 참조 : <a href="https://github.com/thisis05/shinyauthr_with_reactive_DB">Shinyauthr loginServer Customizing</a>)</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  </span>
-<span><span class="co">#login/logout function--------------------------------------</span></span>
-<span></span>
-<span>  <span class="va">credentials</span> <span class="op">&lt;-</span> <span class="fu">Myloginserver</span><span class="op">(</span></span>
-<span>      id <span class="op">=</span> <span class="st">"login"</span>,</span>
-<span>      log_out <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="fu">logout_init</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>      reload_on_logout <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span>  <span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">logout_init</span> <span class="op">&lt;-</span> <span class="fu">shinyauthr</span><span class="fu">::</span><span class="fu">logoutServer</span><span class="op">(</span> </span>
-<span>    <span class="st">"logout"</span>, </span>
-<span>    <span class="fu">reactive</span><span class="op">(</span><span class="fu">credentials</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">user_auth</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">userdata</span> <span class="op">&lt;-</span> <span class="fu">reactive</span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="fu">credentials</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">info</span></span>
-<span>  <span class="op">}</span><span class="op">)</span></span>
-<span>  </span>
-<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#login/logout function--------------------------------------</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  credentials <span class="ot">&lt;-</span> <span class="fu">Myloginserver</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">id =</span> <span class="st">"login"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">log_out =</span> <span class="fu">reactive</span>(<span class="fu">logout_init</span>()),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">reload_on_logout =</span> <span class="cn">TRUE</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  logout_init <span class="ot">&lt;-</span> shinyauthr<span class="sc">::</span><span class="fu">logoutServer</span>( </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"logout"</span>, </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">reactive</span>(<span class="fu">credentials</span>()<span class="sc">$</span>user_auth)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  userdata <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">credentials</span>()<span class="sc">$</span>info</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>Myloginserver</code>는 customizing 된 <code>shinyauthr::loginServer</code> 함수이며 미리 생성된 사용자 정보 DB table을 바탕으로 로그인이 되도록 설정되어 있습니다. 기본적으로 <code>shinyauthr::loginServer</code> 함수는 <code>info</code>와 <code>user_auth</code>라는 변수를 담고 있습니다.</p>
 <ul>
@@ -403,39 +438,40 @@ ga('send', {
 <pre><code>req(credential()$user_auth)</code></pre>
 <p>다음과 같은 옵션을 <code>uiOutput</code>을 이용하여 <code>renderUI</code>에 추가하거나, 아래와 같이 <code>MenuOutput</code> 과 <code>renderMenu</code>를 이용하여 <code>shinydashboard</code>의 Menu 자체를 숨길 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#UI</span></span>
-<span></span>
-<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">dashboardPage</span><span class="op">(</span></span>
-<span>  </span>
-<span>  <span class="co"># others</span></span>
-<span>  </span>
-<span>  sidebar <span class="op">=</span> <span class="fu">dashboardSidebar</span><span class="op">(</span></span>
-<span>    <span class="fu">sidebarMenu</span><span class="op">(</span></span>
-<span>      id <span class="op">=</span> <span class="st">"tabs"</span>,</span>
-<span>      <span class="fu">menuItemOutput</span><span class="op">(</span><span class="st">"check"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  </span>
-<span>  body <span class="op">=</span> <span class="fu">dashboardBody</span><span class="op">(</span></span>
-<span>    <span class="fu">tabItems</span><span class="op">(</span></span>
-<span>      <span class="fu">tabItem</span><span class="op">(</span>tabName <span class="op">=</span> <span class="st">"check"</span>,</span>
-<span>              <span class="co"># UI contents</span></span>
-<span>      <span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">#Server</span></span>
-<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  </span>
-<span>  <span class="va">output</span><span class="op">$</span><span class="va">check</span> <span class="op">&lt;-</span> <span class="fu">renderMenu</span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="fu">req</span><span class="op">(</span><span class="fu">credentials</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">user_auth</span><span class="op">)</span></span>
-<span>    <span class="fu">menuItem</span><span class="op">(</span><span class="st">"방역관리자 업무 점검"</span>, icon <span class="op">=</span> <span class="fu">icon</span><span class="op">(</span><span class="st">"check"</span>, lib <span class="op">=</span><span class="st">"glyphicon"</span><span class="op">)</span>, tabName <span class="op">=</span> <span class="st">"check"</span><span class="op">)</span></span>
-<span>  <span class="op">}</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#UI</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">dashboardPage</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># others</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sidebar =</span> <span class="fu">dashboardSidebar</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sidebarMenu</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">id =</span> <span class="st">"tabs"</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">menuItemOutput</span>(<span class="st">"check"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">body =</span> <span class="fu">dashboardBody</span>(</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tabItems</span>(</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tabItem</span>(<span class="at">tabName =</span> <span class="st">"check"</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>              <span class="co"># UI contents</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">#Server</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>check <span class="ot">&lt;-</span> <span class="fu">renderMenu</span>({</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req</span>(<span class="fu">credentials</span>()<span class="sc">$</span>user_auth)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">menuItem</span>(<span class="st">"방역관리자 업무 점검"</span>, <span class="at">icon =</span> <span class="fu">icon</span>(<span class="st">"check"</span>, <span class="at">lib =</span><span class="st">"glyphicon"</span>), <span class="at">tabName =</span> <span class="st">"check"</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="필수-응답-설문-설정-shinyvalidate" class="level2"><h2 class="anchored" data-anchor-id="필수-응답-설문-설정-shinyvalidate">3. 필수 응답 설문 설정 : <code>shinyvalidate</code>
-</h2>
+</section>
+<section id="필수-응답-설문-설정-shinyvalidate" class="level2">
+<h2 class="anchored" data-anchor-id="필수-응답-설문-설정-shinyvalidate">3. 필수 응답 설문 설정 : <code>shinyvalidate</code></h2>
 <p><a href="https://rstudio.github.io/shinyvalidate/"><code>shinyvalidate</code></a> package는 <code>selectInput</code>, <code>numericInput</code> 등 <code>Input</code> function에 대해 사용자의 입력값에 대한 제약조건을 걸 수 있는 package입니다.</p>
 <p>기본적으로 필수적으로 응답해야는 부분에 대해 설정할 수 있으며, ‘&lt;’ 등의 연산자를 사용한 제약조건, ‘email’ 형식 제약조건 등 여러가지 option이 있습니다.</p>
 <p>본 개발에선 필수 응답 설문 항목에 대한 설정을 위해 다음과 같이 <code>shinyvalidate</code> package를 사용하였습니다.</p>
@@ -445,14 +481,14 @@ ga('send', {
 </div>
 <p>기본적인 Logic은 다음과 같습니다.</p>
 <ol type="1">
-<li>
-<code>InputValidator$new()</code>를 통한 validation 변수 선언</li>
-<li>
-<code>add_rule</code>을 통한 <code>input variable</code>별 Warning Message 작성</li>
+<li><code>InputValidator$new()</code>를 통한 validation 변수 선언</li>
+<li><code>add_rule</code>을 통한 <code>input variable</code>별 Warning Message 작성</li>
 </ol>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="img/validate.png" class="img-fluid figure-img" style="width:50.0%"></p>
-<figcaption>회원가입 시 shinyvalidate 사용 예시</figcaption></figure>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/validate.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>회원가입 시 shinyvalidate 사용 예시</figcaption>
+</figure>
 </div>
 <p>다음과 같이 필수 입력 항목의 경우, 응답하지 않을 시 기본적으로 빨간색 테두리와 작성한 경고 메시지가 뜨게 됩니다.</p>
 <p>추가적으로 이러한 필수 응답 항목에 답하지 않을 시 다음단계로 지나가지 못하게 제약조건을 추가할 수 있습니다.</p>
@@ -460,53 +496,55 @@ ga('send', {
 
     2. if([validation name]$is_valid())</code></pre>
 <p>다음과 같은 옵션을 추가하여 <code>renderUI</code> 혹은 <code>actionButton</code> click시의 전제 조건으로 추가하여 Web 설계가 가능합니다.</p>
-</section><section id="reactable-onclick-활용-ui에서-동적으로-db-table-update하기" class="level2"><h2 class="anchored" data-anchor-id="reactable-onclick-활용-ui에서-동적으로-db-table-update하기">4. Reactable onClick 활용 : UI에서 동적으로 DB Table Update하기</h2>
+</section>
+<section id="reactable-onclick-활용-ui에서-동적으로-db-table-update하기" class="level2">
+<h2 class="anchored" data-anchor-id="reactable-onclick-활용-ui에서-동적으로-db-table-update하기">4. Reactable onClick 활용 : UI에서 동적으로 DB Table Update하기</h2>
 <p>본 대시보드의 관리자 버전에선 관리자가 컨설팅 완료 여부를 입력해야하는 기능이 필요했습니다.</p>
 <p>또한 DB의 값이 관리자의 Web 내의 완료 여부 입력에 따라 같이 변경되어야 했습니다.</p>
 <p>따라서 <a href="https://glin.github.io/reactable/"><code>reactable</code></a> 형태로 DB의 테이블을 보여준 뒤 cell 마다 <code>onClick</code> 옵션을 추가하여 binary 형태로 값을 자유롭게 변경할 수 있도록 기능을 추가했습니다.</p>
 <p>아래는 <code>reactable</code>에 구현한 예시 코드입니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span> <span class="va">consult_rt</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">table</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="va">rt</span> <span class="op">&lt;-</span><span class="fu">reactable</span><span class="op">(</span></span>
-<span>      data <span class="op">=</span> <span class="va">table</span>, <span class="co"># DB에서 받아온 테이블</span></span>
-<span>      onClick <span class="op">=</span> <span class="fu">JS</span><span class="op">(</span><span class="st">"function(rowInfo, colInfo) {</span></span>
-<span><span class="st">                      var tb_index = {'colId': colInfo.id, 'rowId': rowInfo.id };</span></span>
-<span><span class="st">                      Shiny.setInputValue('consult_index', tb_index, { priority: 'event' })}"</span><span class="op">)</span>,</span>
-<span>      </span>
-<span>        <span class="co">#...이외 내용 생략</span></span>
-<span>        </span>
-<span></span>
-<span>    <span class="op">)</span></span>
-<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a> consult_rt <span class="ot">&lt;-</span> <span class="cf">function</span>(table){</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    rt <span class="ot">&lt;-</span><span class="fu">reactable</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> table, <span class="co"># DB에서 받아온 테이블</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">onClick =</span> <span class="fu">JS</span>(<span class="st">"function(rowInfo, colInfo) {</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="st">                      var tb_index = {'colId': colInfo.id, 'rowId': rowInfo.id };</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="st">                      Shiny.setInputValue('consult_index', tb_index, { priority: 'event' })}"</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">#...이외 내용 생략</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>먼저 <code>onClick</code> parameter를 통해 각 cell을 클릭할 시의 reactive action을 설정해줍니다.</p>
 <p><code>JS</code> 함수를 통해 JavaScript 코드를 호출하였고, <code>tb_index</code>라는 variable을 선언하여 row Id와 column Id를 저장한 뒤 <code>Shiny</code> 내 <code>consult_index</code>라는 input 변수에 <code>tb_index</code>의 값이 저장되도록 하였습니다.</p>
 <p>따라서 이 input 변수를 다음과 같이 활용하였습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">consult_index</span>,  <span class="op">{</span></span>
-<span>    <span class="co"># table : reactable에 사용한 table로 똑같이 DB에서 받아옴</span></span>
-<span></span>
-<span>    <span class="va">rowid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">consult_index</span><span class="op">$</span><span class="va">rowId</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span></span>
-<span>    <span class="va">colid</span> <span class="op">&lt;-</span> <span class="va">input</span><span class="op">$</span><span class="va">consult_index</span><span class="op">$</span><span class="va">colId</span> </span>
-<span>    <span class="va">colname</span> <span class="op">&lt;-</span> <span class="va">consult_list</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="va">colid</span>, <span class="va">consult_list_name</span><span class="op">)</span><span class="op">]</span> <span class="co">#원래 DB 컬럼명</span></span>
-<span>    <span class="va">userKey</span> <span class="op">&lt;-</span> <span class="va">table</span><span class="op">[</span><span class="va">rowid</span><span class="op">]</span><span class="op">[[</span><span class="st">"KeyName"</span><span class="op">]</span><span class="op">]</span> <span class="co">#해당 row의 DB Key</span></span>
-<span>    <span class="va">value</span> <span class="op">&lt;-</span> <span class="va">table</span><span class="op">[</span><span class="va">rowid</span><span class="op">]</span><span class="op">[[</span><span class="va">colname</span><span class="op">]</span><span class="op">]</span> <span class="co">#실제 DB에서의 값</span></span>
-<span>    </span>
-<span>    <span class="va">colname</span> <span class="op">&lt;-</span> <span class="va">consult_list</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="va">colid</span>, <span class="va">consult_list_name</span><span class="op">)</span><span class="op">]</span></span>
-<span>    <span class="va">date</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="kw">if</span><span class="op">(</span><span class="va">value</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
-<span>      <span class="va">message</span> <span class="op">&lt;-</span> <span class="fu">h5</span><span class="op">(</span><span class="st">"컨설팅 완료 상태로 변경되었습니다."</span><span class="op">)</span></span>
-<span>      <span class="va">query</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"UPDATE consult SET "</span>, <span class="va">colname</span>, <span class="st">" = ? WHERE PKcolumn = ?"</span><span class="op">)</span></span>
-<span>      <span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html">dbExecute</a></span><span class="op">(</span><span class="fu">con</span><span class="op">(</span><span class="op">)</span>, <span class="va">query</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">userKey</span><span class="op">)</span><span class="op">)</span></span>
-<span>      <span class="fu">discon</span><span class="op">(</span><span class="op">)</span></span>
-<span>    <span class="op">}</span><span class="kw">else</span><span class="op">{</span></span>
-<span>      <span class="va">message</span> <span class="op">&lt;-</span> <span class="fu">h5</span><span class="op">(</span><span class="st">"컨설팅 미완료 상태로 변경되었습니다."</span><span class="op">)</span></span>
-<span>      <span class="va">query</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"UPDATE consult SET "</span>, <span class="va">colname</span>, <span class="st">" = ? WHERE PKcolumn = ?"</span><span class="op">)</span></span>
-<span>      <span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html">dbExecute</a></span><span class="op">(</span><span class="fu">con</span><span class="op">(</span><span class="op">)</span>, <span class="va">query</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="va">userKey</span><span class="op">)</span><span class="op">)</span></span>
-<span>      <span class="fu">discon</span><span class="op">(</span><span class="op">)</span></span>
-<span>    <span class="op">}</span></span>
-<span>    </span>
-<span><span class="op">}</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">observeEvent</span>(input<span class="sc">$</span>consult_index,  {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># table : reactable에 사용한 table로 똑같이 DB에서 받아옴</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    rowid <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(input<span class="sc">$</span>consult_index<span class="sc">$</span>rowId) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    colid <span class="ot">&lt;-</span> input<span class="sc">$</span>consult_index<span class="sc">$</span>colId </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    colname <span class="ot">&lt;-</span> consult_list[<span class="fu">match</span>(colid, consult_list_name)] <span class="co">#원래 DB 컬럼명</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    userKey <span class="ot">&lt;-</span> table[rowid][[<span class="st">"KeyName"</span>]] <span class="co">#해당 row의 DB Key</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    value <span class="ot">&lt;-</span> table[rowid][[colname]] <span class="co">#실제 DB에서의 값</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    colname <span class="ot">&lt;-</span> consult_list[<span class="fu">match</span>(colid, consult_list_name)]</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    date <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="fu">Sys.Date</span>())</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(value <span class="sc">%&gt;%</span> <span class="fu">is.na</span>()){</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>      message <span class="ot">&lt;-</span> <span class="fu">h5</span>(<span class="st">"컨설팅 완료 상태로 변경되었습니다."</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>      query <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"UPDATE consult SET "</span>, colname, <span class="st">" = ? WHERE PKcolumn = ?"</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">dbExecute</span>(<span class="fu">con</span>(), query, <span class="fu">c</span>(date, userKey))</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">discon</span>()</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    }<span class="cf">else</span>{</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>      message <span class="ot">&lt;-</span> <span class="fu">h5</span>(<span class="st">"컨설팅 미완료 상태로 변경되었습니다."</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>      query <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"UPDATE consult SET "</span>, colname, <span class="st">" = ? WHERE PKcolumn = ?"</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">dbExecute</span>(<span class="fu">con</span>(), query, <span class="fu">c</span>(<span class="cn">NA</span>, userKey))</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">discon</span>()</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>consult_incex</code>에 저장된 row Id와 column Id는 index 형태로, <code>input$consult_index$rowId</code> 형식으로 값을 받아올 수 있습니다.</p>
 <p>받아온 index는 0부터 시작하고, DB table이 저장된 <code>data.table</code> 형태의 table은 index가 1부터 시작하기 때문에 +1 해주어 row의 index를 받아왔습니다.</p>
@@ -518,94 +556,109 @@ ga('send', {
 <p>아래는 실제 UI에서 구현된 예시입니다.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="img/consulting_pre.png" class="img-fluid figure-img" style="width:150.0%"></p>
-<figcaption>변경 전</figcaption></figure>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/consulting_pre.png" class="img-fluid figure-img" style="width:150.0%"></p>
+<figcaption>변경 전</figcaption>
+</figure>
 </div>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="img/consulting_post.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption>변경 후</figcaption></figure>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/consulting_post.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption>변경 후</figcaption>
+</figure>
 </div>
 </div>
 </div>
-</section><section id="이-외" class="level2"><h2 class="anchored" data-anchor-id="이-외">5. 이 외</h2>
-<section id="reactable-reactive-download-to-csv" class="level3"><h3 class="anchored" data-anchor-id="reactable-reactive-download-to-csv">(1) <code>reactable</code> : reactive download to csv</h3>
+</section>
+<section id="이-외" class="level2">
+<h2 class="anchored" data-anchor-id="이-외">5. 이 외</h2>
+<section id="reactable-reactive-download-to-csv" class="level3">
+<h3 class="anchored" data-anchor-id="reactable-reactive-download-to-csv">(1) <code>reactable</code> : reactive download to csv</h3>
 <p>admin을 위한 web page 제작 과정에서, DB table 들로부터 받아온 사용자 정보를 <code>reactable</code>을 이용하여 다음과 같이 제작하였습니다.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="img/userinfo.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<figcaption>사용자 정보</figcaption></figure>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/userinfo.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>사용자 정보</figcaption>
+</figure>
 </div>
 <p>이러한 table을 csv로 다운로드 받을 수 있게 하면서도, 만약 사용자가 일부 사용자의 정보를 확인하고 싶어 검색 기능을 사용했을 때 보여지는 subset table을 reactive하게 csv로 다운로드 받을 수 있게 하려했습니다.</p>
 <p>이 부분은 <a href="https://glin.github.io/reactable/articles/javascript-api.html">Reactable 공식 문서</a>의 JavaScript API 이용 부분을 차용하여 작성하였습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/box.html">box</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">12</span>, title <span class="op">=</span> <span class="st">"전체 사용자 정보"</span> <span class="op">%&gt;%</span> <span class="va">h5c</span>,</span>
-<span>                    <span class="fu">reactableOutput</span><span class="op">(</span><span class="st">"infotable"</span><span class="op">)</span>, </span>
-<span>                    <span class="fu">br</span><span class="op">(</span><span class="op">)</span>,</span>
-<span>                    <span class="fu">htmltools</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/htmltools/reference/browsable.html">browsable</a></span><span class="op">(</span></span>
-<span>                      <span class="fu">tagList</span><span class="op">(</span></span>
-<span>                        <span class="va">tags</span><span class="op">$</span><span class="fu">button</span><span class="op">(</span></span>
-<span>                          <span class="fu">tagList</span><span class="op">(</span><span class="fu">fontawesome</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/fontawesome/reference/fa.html">fa</a></span><span class="op">(</span><span class="st">"download"</span><span class="op">)</span>, <span class="st">"Download CSV"</span><span class="op">)</span>,</span>
-<span>                          onclick <span class="op">=</span> <span class="st">"Reactable.downloadDataCSV('user_info', '[filename].csv')"</span></span>
-<span>                        <span class="op">)</span></span>
-<span>                      <span class="op">)</span></span>
-<span>                    <span class="op">)</span></span>
-<span>    <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>(<span class="at">width =</span> <span class="dv">12</span>, <span class="at">title =</span> <span class="st">"전체 사용자 정보"</span> <span class="sc">%&gt;%</span> h5c,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">reactableOutput</span>(<span class="st">"infotable"</span>), </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">br</span>(),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                    htmltools<span class="sc">::</span><span class="fu">browsable</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">tagList</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                        tags<span class="sc">$</span><span class="fu">button</span>(</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">tagList</span>(fontawesome<span class="sc">::</span><span class="fu">fa</span>(<span class="st">"download"</span>), <span class="st">"Download CSV"</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">onclick =</span> <span class="st">"Reactable.downloadDataCSV('user_info', '[filename].csv')"</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>                        )</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>                      )</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                    )</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>UI 작성 Part에서 <code>box</code>를 통해 <code>reactable</code>을 이용한 사용자 정보를 보여주려고 한다면 위와 같이 filename 부분을 수정하여 작성하면 현재 Web에 보여지는 <code>reactable</code>을 Download to csv가 가능합니다.</p>
-</section><section id="lapply를-이용한-설문-ui-간단하게-만들기" class="level3"><h3 class="anchored" data-anchor-id="lapply를-이용한-설문-ui-간단하게-만들기">(2) <code>lapply</code>를 이용한 설문 UI 간단하게 만들기</h3>
+</section>
+<section id="lapply를-이용한-설문-ui-간단하게-만들기" class="level3">
+<h3 class="anchored" data-anchor-id="lapply를-이용한-설문-ui-간단하게-만들기">(2) <code>lapply</code>를 이용한 설문 UI 간단하게 만들기</h3>
 <p>만약 설문의 스타일이 간단하거나 (Ex: 예/아니오 유형, 체크 유형, 점수 유형) 반복되는 경우 <code>lapply</code>함수를 통해 좀 더 간단하고 정갈하게 UI 및 Server 코드를 작성할 수 있습니다.</p>
 <p>예를 들어, 해당하는 항목에 체크하는 형식의 설문이라면, 아래와 같이 미리 설문내용만 list 형태로 만들어 놓을 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># example 5개 Question</span></span>
-<span></span>
-<span><span class="va">Q_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">" 시설 위험도 평가 후 시설 별 맞춤형 방역관리 지침을 마련하였는가?"</span>, </span>
-<span>    <span class="st">" 정기적으로 종사자들에게 방역 수칙 교육·안내 하였는가?"</span>,</span>
-<span>    <span class="st">" 발열 및 호흡기 증상 유무를 확인하고 증상이 있는 경우 즉시 검사받도록 안내하였는가?"</span>,</span>
-<span>    <span class="st">" 감염병 예방수칙 홍보 안내문을 잘 보이는 곳에 배치 하였는가?"</span>,</span>
-<span>    <span class="st">" 환기 대장 및 소독 대장을 배치 하였는가?"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Shiny Input 함수의 ID를 각 설문 항목별 name으로 지정 (이 때 DB를 사용하실 거라면 DB의 컬럼명으로 ID를 지정하면 간편합니다)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">Q_list</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"q"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># example 5개 Question</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>Q_list <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">" 시설 위험도 평가 후 시설 별 맞춤형 방역관리 지침을 마련하였는가?"</span>, </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">" 정기적으로 종사자들에게 방역 수칙 교육·안내 하였는가?"</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">" 발열 및 호흡기 증상 유무를 확인하고 증상이 있는 경우 즉시 검사받도록 안내하였는가?"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">" 감염병 예방수칙 홍보 안내문을 잘 보이는 곳에 배치 하였는가?"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">" 환기 대장 및 소독 대장을 배치 하였는가?"</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Shiny Input 함수의 ID를 각 설문 항목별 name으로 지정 (이 때 DB를 사용하실 거라면 DB의 컬럼명으로 ID를 지정하면 간편합니다)</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(Q_list) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"q"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>다음과 같이 설문 내용을 정리한 변수를 기반으로 <code>Shiny</code> 코드를 작성할 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># UI code </span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">Q_list</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
-<span>                              <span class="fu">checkboxInput</span><span class="op">(</span><span class="va">x</span>, <span class="va">Q_list</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span>, value <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
-<span>                             <span class="op">}</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Server code</span></span>
-<span>  </span>
-<span>  <span class="co">## 답변 여부에 따라 Yes or No 형식으로 저장 </span></span>
-<span>  <span class="va">inputlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">Q_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
-<span>      <span class="kw">if</span><span class="op">(</span><span class="va">input</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">{</span></span>
-<span>        <span class="st">"Yes"</span></span>
-<span>      <span class="op">}</span><span class="kw">else</span><span class="op">{</span></span>
-<span>        <span class="st">"No"</span></span>
-<span>      <span class="op">}</span></span>
-<span>  <span class="op">}</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co">## DB에Insert (DB 컬럼 순서에 맞게) </span></span>
-<span>  <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html">dbExecute</a></span><span class="op">(</span><span class="fu">con</span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"INSERT INTO [table name] values ('"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">inputlist</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"', '"</span><span class="op">)</span>, <span class="st">"')"</span><span class="op">)</span> <span class="op">)</span></span>
-<span>  <span class="fu">discon</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># UI code </span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(<span class="fu">names</span>(Q_list)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="cf">function</span>(x){</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">checkboxInput</span>(x, Q_list[[x]], <span class="at">value =</span> F)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                             })</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Server code</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="do">## 답변 여부에 따라 Yes or No 형식으로 저장 </span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  inputlist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(Q_list), <span class="cf">function</span>(x){</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(input[[x]]){</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Yes"</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>      }<span class="cf">else</span>{</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"No"</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="do">## DB에Insert (DB 컬럼 순서에 맞게) </span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  DBI<span class="sc">::</span><span class="fu">dbExecute</span>(<span class="fu">con</span>(), <span class="fu">paste0</span>(<span class="st">"INSERT INTO [table name] values ('"</span>, <span class="fu">paste</span>(<span class="fu">unlist</span>(inputlist), <span class="at">collapse =</span> <span class="st">"', '"</span>), <span class="st">"')"</span>) )</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">discon</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>Shiny</code>의 UI 내에서도 간편하게 위와 같이 <code>lapply</code> 함수를 사용하여 Input 함수를 나타내는 것이 가능합니다.</p>
 <p><code>Input[[x]]</code>로 사용자의 입력 내용에 접근 가능하므로 다음과 같이 <code>inputlist</code>로 Input 값에 접근에 DB에 저장할 수 있습니다.</p>
 <p>설문 내용을 value로, Input ID 및 DB columnname을 name으로 할 시 좀더 간편하게 코드 작성이 가능합니다.</p>
 <p>답변 유형(Yes or No, 점수 등등)에 따라 설문 datatable을 만들어 놓은 뒤 이에 맞게 datatable 컬럼 별로 <code>lapply</code> 함수를 잘 사용하여 UI 코드를 작성하면 보다 간편하게 <code>Shiny</code>를 이용하실 수 있습니다.</p>
-</section></section><section id="마치며" class="level2"><h2 class="anchored" data-anchor-id="마치며">마치며</h2>
+</section>
+</section>
+<section id="마치며" class="level2">
+<h2 class="anchored" data-anchor-id="마치며">마치며</h2>
 <p>R만을 이용하여 Server와 UI를 동시에 제작하고 배포할 수 있다는 것이 <strong>R Shiny</strong> 의 가장 큰 장점입니다. 또한 오픈 소스가 활성화되어 있어 다양한 사용자 개발 library를 이용할 수 있으므로 사용하고 싶은 기능은 웬만하면 사용이 가능하며, 기존 library의 함수를 원하는 방식으로 변형하여 사용할 수도 있습니다. JavaScript나 CSS와도 호환이 잘 되기 때문에 UI 디자인까지 R이라는 한 Tool로 작업이 가능하기 때문에 상당히 편리합니다.</p>
 <p>본 글에선 이러한 <strong>R Shiny</strong> 웹 App의 기반이 되는 로그인 시스템, DB 운용 등 잘 알려지지 않은(?) 여러가지 세세한 기능과 가능성에 대해 소개해보았습니다.</p>
 <p>이외에 여러 package를 공부해가며 나만의 Shiny Web App을 제작해보는 과정 역시 재미있으니, 많은 분들께서 <strong>R Shiny</strong>를 이용하여 멋진 웹 페이지 제작에 참여해보시길 바라겠습니다.</p>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Yeongho},
   title = {R {Shiny} {기반} {방역관리} {위험도} {평가} {대시보드}},
-  pages = {undefined},
   date = {2023-06-20},
   url = {https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR},
   langid = {en}
@@ -613,7 +666,8 @@ ga('send', {
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas" role="listitem">
 Kim, Yeongho. 2023. <span>“R Shiny 기반 방역관리 위험도 평가
 대시보드.”</span> June 20, 2023. <a href="https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR">https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR</a>.
-</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -741,38 +795,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -781,7 +825,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }
@@ -1002,10 +1048,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
 <p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
 </div>   
@@ -1017,6 +1067,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
+
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>

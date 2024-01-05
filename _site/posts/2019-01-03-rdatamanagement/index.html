@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.455">
+<meta name="generator" content="quarto-1.4.534">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2019-01-23">
 <meta name="description" content="파일을 읽는 readr, 읽기 쉬운 코드를 만드는 %>% 연산자, 데이터를 다루는 dplyr 그리고 반복문을 다루는 purrr 패키지를 중심으로 tidyverse 생태계에서 데이터를 다루는 방법을 정리하였습니다.">
+
 <title>Zarathu Blog - R 데이터 매니지먼트: tidyverse</title>
 <style>
 code{white-space: pre-wrap;}
@@ -56,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -72,7 +76,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -80,7 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    null
+    "f",
+    "/",
+    "s"
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -90,11 +97,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script type="text/javascript">
+}</script>
+
+<script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -106,21 +116,34 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="../../site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script><link href="../../site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="../../site_libs/datatables-binding-0.28/datatables.js"></script><script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><link href="../../site_libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<script src="../../site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<link href="../../site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="../../site_libs/datatables-binding-0.28/datatables.js"></script>
+<script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="../../site_libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="../../site_libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet">
-<script src="../../site_libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script><link href="../../site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
-<script src="../../site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script><link rel="stylesheet" href="../../styles.css">
+<script src="../../site_libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
+<link href="../../site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
+<script src="../../site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+
+
+<link rel="stylesheet" href="../../styles.css">
 </head>
+
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -131,7 +154,7 @@ ga('send', {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -143,8 +166,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
@@ -157,7 +180,7 @@ ga('send', {
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../../contributors.html"> 
 <span class="menu-text">Contributors</span></a>
@@ -166,8 +189,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
@@ -176,7 +199,7 @@ ga('send', {
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
@@ -193,11 +216,15 @@ ga('send', {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">R 데이터 매니지먼트: tidyverse</h1>
                   <div>
@@ -222,12 +249,12 @@ ga('send', {
       <div class="quarto-title-meta-contents">
       <p class="author"><a href="https://github.com/jinseob2kim">Jinseob Kim</a> </p>
     </div>
-      <div class="quarto-title-meta-contents">
+    <div class="quarto-title-meta-contents">
           <p class="affiliation">
               ANPANMAN Co.,Ltd
             </p>
         </div>
-      </div>
+    </div>
 
   <div class="quarto-title-meta">
 
@@ -245,45 +272,55 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90" id="toc-시작하기-전에" class="nav-link active" data-scroll-target="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90">시작하기 전에</a></li>
-  <li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%9D%BD%EA%B8%B0-readr" id="toc-데이터-읽기-readr" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%9D%BD%EA%B8%B0-readr">데이터 읽기: readr</a></li>
-  <li><a href="#%EC%A7%81%EA%B4%80%EC%A0%81%EC%9D%B8-%EC%BD%94%EB%93%9C-%EC%97%B0%EC%82%B0%EC%9E%90" id="toc-직관적인-코드-연산자" class="nav-link" data-scroll-target="#%EC%A7%81%EA%B4%80%EC%A0%81%EC%9D%B8-%EC%BD%94%EB%93%9C-%EC%97%B0%EC%82%B0%EC%9E%90">직관적인 코드: <code>%&gt;%</code> 연산자</a></li>
-  <li>
-<a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%95%EB%A6%AC-dplyr" id="toc-데이터-정리-dplyr" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%95%EB%A6%AC-dplyr">데이터 정리: dplyr</a>
+  <li><a href="#시작하기-전에" id="toc-시작하기-전에" class="nav-link active" data-scroll-target="#시작하기-전에">시작하기 전에</a></li>
+  <li><a href="#데이터-읽기-readr" id="toc-데이터-읽기-readr" class="nav-link" data-scroll-target="#데이터-읽기-readr">데이터 읽기: readr</a></li>
+  <li><a href="#직관적인-코드-연산자" id="toc-직관적인-코드-연산자" class="nav-link" data-scroll-target="#직관적인-코드-연산자">직관적인 코드: <code>%&gt;%</code> 연산자</a></li>
+  <li><a href="#데이터-정리-dplyr" id="toc-데이터-정리-dplyr" class="nav-link" data-scroll-target="#데이터-정리-dplyr">데이터 정리: dplyr</a>
   <ul class="collapse">
-<li><a href="#filter" id="toc-filter" class="nav-link" data-scroll-target="#filter"><code>filter</code></a></li>
-  <li><a href="#arrange-%EC%A0%95%EB%A0%AC" id="toc-arrange-정렬" class="nav-link" data-scroll-target="#arrange-%EC%A0%95%EB%A0%AC"><code>arrange</code>: 정렬</a></li>
-  <li><a href="#select-%EB%B3%80%EC%88%98-%EC%84%A0%ED%83%9D" id="toc-select-변수-선택" class="nav-link" data-scroll-target="#select-%EB%B3%80%EC%88%98-%EC%84%A0%ED%83%9D"><code>select</code>: 변수 선택</a></li>
-  <li><a href="#mutate-%EB%B3%80%EC%88%98-%EC%83%9D%EC%84%B1" id="toc-mutate-변수-생성" class="nav-link" data-scroll-target="#mutate-%EB%B3%80%EC%88%98-%EC%83%9D%EC%84%B1"><code>mutate</code>: 변수 생성</a></li>
-  <li><a href="#group_by%EC%99%80-summarize" id="toc-group_by와-summarize" class="nav-link" data-scroll-target="#group_by%EC%99%80-summarize"><code>group_by</code>와 <code>summarize</code></a></li>
-  <li><a href="#%EC%99%80-%EA%B8%B0%EB%B3%B8%ED%95%A8%EC%88%98%EB%A7%8C%EC%9C%BC%EB%A1%9C-%EB%98%91%EA%B0%99%EC%9D%B4-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0." id="toc-와-기본함수만으로-똑같이-구현하기." class="nav-link" data-scroll-target="#%EC%99%80-%EA%B8%B0%EB%B3%B8%ED%95%A8%EC%88%98%EB%A7%8C%EC%9C%BC%EB%A1%9C-%EB%98%91%EA%B0%99%EC%9D%B4-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0."><code>%&gt;%</code>와 기본함수만으로 똑같이 구현하기.</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#%EB%B0%98%EB%B3%B5%EB%AC%B8-%EC%B2%98%EB%A6%AC-purrr" id="toc-반복문-처리-purrr" class="nav-link" data-scroll-target="#%EB%B0%98%EB%B3%B5%EB%AC%B8-%EC%B2%98%EB%A6%AC-purrr">반복문 처리: purrr</a>
+  <li><a href="#filter" id="toc-filter" class="nav-link" data-scroll-target="#filter"><code>filter</code></a></li>
+  <li><a href="#arrange-정렬" id="toc-arrange-정렬" class="nav-link" data-scroll-target="#arrange-정렬"><code>arrange</code>: 정렬</a></li>
+  <li><a href="#select-변수-선택" id="toc-select-변수-선택" class="nav-link" data-scroll-target="#select-변수-선택"><code>select</code>: 변수 선택</a></li>
+  <li><a href="#mutate-변수-생성" id="toc-mutate-변수-생성" class="nav-link" data-scroll-target="#mutate-변수-생성"><code>mutate</code>: 변수 생성</a></li>
+  <li><a href="#group_by와-summarize" id="toc-group_by와-summarize" class="nav-link" data-scroll-target="#group_by와-summarize"><code>group_by</code>와 <code>summarize</code></a></li>
+  <li><a href="#와-기본함수만으로-똑같이-구현하기." id="toc-와-기본함수만으로-똑같이-구현하기." class="nav-link" data-scroll-target="#와-기본함수만으로-똑같이-구현하기."><code>%&gt;%</code>와 기본함수만으로 똑같이 구현하기.</a></li>
+  </ul></li>
+  <li><a href="#반복문-처리-purrr" id="toc-반복문-처리-purrr" class="nav-link" data-scroll-target="#반복문-처리-purrr">반복문 처리: purrr</a>
   <ul class="collapse">
-<li><a href="#map" id="toc-map" class="nav-link" data-scroll-target="#map"><code>map</code></a></li>
-  <li><a href="#map2-pmap-%EC%9E%85%EB%A0%A5-%EB%B3%80%EC%88%98-2%EA%B0%9C-%EC%9D%B4%EC%83%81" id="toc-map2-pmap-입력-변수-2개-이상" class="nav-link" data-scroll-target="#map2-pmap-%EC%9E%85%EB%A0%A5-%EB%B3%80%EC%88%98-2%EA%B0%9C-%EC%9D%B4%EC%83%81"><code>map2</code>, <code>pmap</code>: 입력 변수 2개 이상</a></li>
+  <li><a href="#map" id="toc-map" class="nav-link" data-scroll-target="#map"><code>map</code></a></li>
+  <li><a href="#map2-pmap-입력-변수-2개-이상" id="toc-map2-pmap-입력-변수-2개-이상" class="nav-link" data-scroll-target="#map2-pmap-입력-변수-2개-이상"><code>map2</code>, <code>pmap</code>: 입력 변수 2개 이상</a></li>
+  </ul></li>
+  <li><a href="#마치며" id="toc-마치며" class="nav-link" data-scroll-target="#마치며">마치며</a></li>
   </ul>
-</li>
-  <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">마치며</a></li>
-  </ul></nav>
-</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script><p><a href="https://github.com/jinseob2kim">김진섭</a> 대표는 1월 28일(월) <a href="http://biomed.skku.edu/hkcheong">성균관의대 사회의학교실</a>를 방문, <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 생태계에서의 데이터 매니지먼트 방법을 강의할 예정입니다. 강의 내용을 미리 정리하였습니다.</p>
-<section id="시작하기-전에" class="level2"><h2 class="anchored" data-anchor-id="시작하기-전에">시작하기 전에</h2>
+</script>
+
+
+
+
+
+<p><a href="https://github.com/jinseob2kim">김진섭</a> 대표는 1월 28일(월) <a href="http://biomed.skku.edu/hkcheong">성균관의대 사회의학교실</a>를 방문, <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 생태계에서의 데이터 매니지먼트 방법을 강의할 예정입니다. 강의 내용을 미리 정리하였습니다.</p>
+<section id="시작하기-전에" class="level2">
+<h2 class="anchored" data-anchor-id="시작하기-전에">시작하기 전에</h2>
 <p><a href="https://www.r-project.org/"><strong>R</strong></a> 데이터 매니지먼트 방법은 크게 3 종류가 있다.</p>
 <ol type="1">
 <li><p>원래의 <a href="https://www.r-project.org/"><strong>R</strong></a> 문법을 이용한 방법으로 <a href="https://jinseob2kim.github.io/rbasic.html"><strong>과거 홈페이지</strong></a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>에 정리했었다.</p></li>
@@ -297,12 +334,13 @@ ga('send', {
 <li><p><a href="https://purrr.tidyverse.org/"><strong>purrr</strong></a> 패키지의 <code>map</code> 함수로 쉽게 반복문을 처리하는 것을 목표로 한다.</p></li>
 </ol>
 <p>각각의 패키지를 따로 설치할 수도 있고 <code>install.packages("tidyverse")</code>로 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 생태계의 패키지를 모두 설치할 수도 있다.</p>
-</section><section id="데이터-읽기-readr" class="level2"><h2 class="anchored" data-anchor-id="데이터-읽기-readr">데이터 읽기: <a href="https://readr.tidyverse.org/">readr</a>
-</h2>
+</section>
+<section id="데이터-읽기-readr" class="level2">
+<h2 class="anchored" data-anchor-id="데이터-읽기-readr">데이터 읽기: <a href="https://readr.tidyverse.org/">readr</a></h2>
 <p><a href="https://readr.tidyverse.org/"><strong>readr</strong></a> 패키지에서 <code>csv</code> 파일을 읽는 함수는 <code>read_csv</code>이며, 구분자(ex: 공백, 탭)가 다를 때는 <code>read_delim</code> 함수를 이용하여 구분자를 설정할 수 있다. 예제 데이터를 읽어보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/jinseob2kim/R-skku-biohrs/master/data/smc_example1.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/jinseob2kim/R-skku-biohrs/master/data/smc_example1.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 1000 Columns: 14
 ── Column specification ────────────────────────────────────────────────────────
@@ -316,12 +354,12 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p>데이터를 읽으면 각 변수들을 어떤 형태(숫자형, 문자형)로 읽었는지 표현되는데, 바꾸고 싶은 것이 있으면 아래와 같이 <code>col_types</code> 옵션을 이용하면 된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Character: col_character() or "c"</span></span>
-<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/jinseob2kim/R-skku-biohrs/master/data/smc_example1.csv"</span>,col_types <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/cols.html">cols</a></span><span class="op">(</span>HTN <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Character: col_character() or "c"</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/jinseob2kim/R-skku-biohrs/master/data/smc_example1.csv"</span>,<span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">HTN =</span> <span class="st">"c"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>이제 데이터를 살펴보면 <code>HTN</code> 변수가 문자형이 된것을 볼 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -335,27 +373,31 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 <p>기본 함수인 <code>read.csv</code> 와 비교했을 때 아주 작은 데이터에서는 장점이 없으나, 그 크기가 커질수록 <code>read_csv</code>가 더 좋은 성능을 보임이 알려져 있다(Figure @ref(fig:readfunc)).</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="https://csgillespie.github.io/efficientR/_main_files/figure-html/readr-vs-base-1.png" class="img-fluid figure-img"></p>
-<figcaption>파일 읽기 함수 비교<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></figcaption></figure>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://csgillespie.github.io/efficientR/_main_files/figure-html/readr-vs-base-1.png" class="img-fluid figure-img"></p>
+<figcaption>파일 읽기 함수 비교<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></figcaption>
+</figure>
 </div>
 </div>
 </div>
 <p><code>read_csv</code>로 읽은 데이터는 <strong>tibble</strong>이라는 새로운 클래스로 저장된다. 직접 확인해보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "spec_tbl_df" "tbl_df"      "tbl"         "data.frame" </code></pre>
 </div>
 </div>
 <p>기존의 <strong>data.frame</strong> 외에도 <strong>tbl_df</strong>, <strong>tbl</strong> 와 같은 것들이 추가되어 있다. <strong>tibble</strong>은 <strong>data.frame</strong>보다 좀 더 날 것(?)의 정보를 보여주는데, 범주형 변수를 <code>factor</code>가 아닌 <code>character</code> 그대로 저장하고 변수명을 그대로 유지하는 것(<strong>data.frame</strong>에서 변수명의 특수문자나 공백은 <strong>.</strong>으로 바뀜)이 가장 큰 특징이다. <strong>tibble</strong>의 추가 내용은 <a href="https://www.jumpingrivers.com/blog/the-trouble-with-tibbles/">jumpingrivers 블로그</a><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>를 참고하기 바란다.</p>
-</section><section id="직관적인-코드-연산자" class="level2"><h2 class="anchored" data-anchor-id="직관적인-코드-연산자">직관적인 코드: <a href="https://magrittr.tidyverse.org/"><code>%&gt;%</code></a> 연산자</h2>
+</section>
+<section id="직관적인-코드-연산자" class="level2">
+<h2 class="anchored" data-anchor-id="직관적인-코드-연산자">직관적인 코드: <a href="https://magrittr.tidyverse.org/"><code>%&gt;%</code></a> 연산자</h2>
 <p><a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 생태계에서 가장 중요한 것을 하나만 고르라면 <a href="https://magrittr.tidyverse.org/"><strong>magrittr</strong></a> 패키지의 <code>%&gt;%</code> 연산자를 선택하겠다. <code>%&gt;%</code>은 Rstudio에서 단축키 <strong>Ctrl + Shift + M</strong> (OS X: <strong>Cmd + Shift + M</strong>)로 입력할 수 있는데, 이것을 이용하면 의식의 흐름대로 코딩을 할 수 있어 직관적인 코드를 작성할 수 있다. <code>head</code>함수를 통해 <code>%&gt;%</code>의 장점을 알아보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## head(a)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">head</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="do">## head(a)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> head</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -367,7 +409,7 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -380,14 +422,14 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p><code>head(a)</code>와 <code>a %&gt;% head</code>는 같은 명령어 “<strong><code>a</code>의 <code>head</code>를 보여줘</strong>”로, <code>a %&gt;% head</code>가 생각의 흐름이 반영된 코드임을 알 수 있다. 일반적으로 <code>%&gt;%</code> 연산자는 함수의 맨 처음 인자를 앞으로 빼오는 역할을 하고 <code>f(x, y)</code>는 <code>x %&gt;% f(y)</code>로 바꿀 수 있다. 맨 처음 인자가 아닐 때에는 <code>y %&gt;% f(x, .)</code>과 같이 앞으로 빼온 변수의 자리에 <code>.</code>를 넣으면 된다. 예를 들면 아래에 나오는 세 명령어는 모두 같다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="fl">10</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">.</span><span class="op">)</span>   </span>
-<span><span class="fl">10</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">a</span>, n <span class="op">=</span> <span class="va">.</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="dv">10</span> <span class="sc">%&gt;%</span> <span class="fu">head</span>(a, .)   </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="dv">10</span> <span class="sc">%&gt;%</span> <span class="fu">head</span>(a, <span class="at">n =</span> .)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>%&gt;%</code>의 진가는 여러 함수를 한 번에 사용할 때 나타나는데, <code>head</code>와 <code>subset</code>을 동시에 쓰는 경우를 예로 살펴보겠다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## head(subset(a, Sex == "M"))</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"M"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">head</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="do">## head(subset(a, Sex == "M"))</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">subset</span>(Sex <span class="sc">==</span> <span class="st">"M"</span>) <span class="sc">%&gt;%</span> head</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -400,10 +442,10 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p>이 명령어는 <strong><code>a</code>에서 남자만 뽑아서 <code>head</code>를 보여줘</strong>로 기존의 <code>head(subset(a, Sex == "M"))</code>보다 훨씬 직관적이며 함수가 3개, 4개로 늘어날수록 비교가 안될 정도의 가독성을 보여준다. <strong>남자만 뽑아 회귀분석을 수행하고 그 계수와 p-value</strong>를 구하는 예를 살펴보자. 먼저 기존의 코딩 스타일대로 명령을 수행하면 아래와 같다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">Sex</span> <span class="op">==</span> <span class="st">"M"</span><span class="op">)</span></span>
-<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">DM</span> <span class="op">~</span> <span class="va">Age</span> <span class="op">+</span> <span class="va">Weight</span> <span class="op">+</span> <span class="va">BMI</span>, data <span class="op">=</span> <span class="va">b</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span>
-<span><span class="va">summ.model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
-<span><span class="va">summ.model</span><span class="op">$</span><span class="va">coefficients</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">subset</span>(a, Sex <span class="sc">==</span> <span class="st">"M"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(DM <span class="sc">~</span> Age <span class="sc">+</span> Weight <span class="sc">+</span> BMI, <span class="at">data =</span> b, <span class="at">family =</span> binomial)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>summ.model <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>summ.model<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -413,11 +455,11 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p>다음은 <code>%&gt;%</code> 를 이용한 코딩이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"M"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">DM</span> <span class="op">~</span> <span class="va">Age</span> <span class="op">+</span> <span class="va">Weight</span> <span class="op">+</span> <span class="va">BMI</span>, data <span class="op">=</span> <span class="va">.</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="va">summary</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="va">.</span><span class="op">$</span><span class="va">coefficients</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(Sex <span class="sc">==</span> <span class="st">"M"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(DM <span class="sc">~</span> Age <span class="sc">+</span> Weight <span class="sc">+</span> BMI, <span class="at">data =</span> ., <span class="at">family =</span> binomial) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  summary <span class="sc">%&gt;%</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  .<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -431,14 +473,16 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">%&gt;%</span> head </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>본 강의 후 다른 것은 까먹어도 <code>%&gt;%</code> 만 익숙해지면 성공이라고 생각한다.</p>
-</section><section id="데이터-정리-dplyr" class="level2"><h2 class="anchored" data-anchor-id="데이터-정리-dplyr">데이터 정리: <a href="https://dplyr.tidyverse.org/">dplyr</a>
-</h2>
+</section>
+<section id="데이터-정리-dplyr" class="level2">
+<h2 class="anchored" data-anchor-id="데이터-정리-dplyr">데이터 정리: <a href="https://dplyr.tidyverse.org/">dplyr</a></h2>
 <p><a href="https://dplyr.tidyverse.org/"><strong>dplyr</strong></a> 는 데이터를 효과적으로 다룰 수 있는 일련의 함수들을 제공한다. 이중 <code>group_by</code>와 <code>summarize</code>는 쉽게 그룹 별 요약통계량을 보여줌으로서 기존 <a href="https://www.r-project.org/"><strong>R</strong></a> 문법과 차별화된 가치를 제공하므로 꼭 익혀두자.</p>
-<section id="filter" class="level3"><h3 class="anchored" data-anchor-id="filter"><code>filter</code></h3>
+<section id="filter" class="level3">
+<h3 class="anchored" data-anchor-id="filter"><code>filter</code></h3>
 <p><code>filter</code>는 <code>subset</code> 함수와 같은 기능으로 특정 조건으로 데이터를 필터링하는 데 이용된다. 아래는 데이터에서 남자만 추출하는 예시이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"M"</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Sex <span class="sc">==</span> <span class="st">"M"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -451,8 +495,8 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p><code>filter</code>에서는 <code>&amp;</code> 외에 <code>,</code>으로도 <strong>AND</strong> 조건을 쓸 수 있어 가독성이 좋다. <code>between</code> 함수를 이용하면 연속변수의 특정 범위를 선택할 수도 있는데, 이것 역시 기존의 <code>&amp;</code>를 활용하는 것보다 직관적이다. 50~60세 사이를 필터링하는 예시를 살펴보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Age between 50 and 60.</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/between.html">between</a></span><span class="op">(</span><span class="va">Age</span>, <span class="fl">50</span>, <span class="fl">60</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Age between 50 and 60.</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">between</span>(Age, <span class="dv">50</span>, <span class="dv">60</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -465,15 +509,16 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p>아래의 <code>&amp;</code>나 <code>,</code>로 표현한 조건도 <code>between</code>을 이용한 것과 같은 결과를 보여준다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Age</span> <span class="op">&gt;=</span> <span class="fl">50</span> <span class="op">&amp;</span> <span class="va">Age</span> <span class="op">&lt;=</span> <span class="fl">60</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Age</span> <span class="op">&gt;=</span> <span class="fl">50</span>, <span class="va">Age</span> <span class="op">&lt;=</span> <span class="fl">60</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Age <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">&amp;</span> Age <span class="sc">&lt;=</span> <span class="dv">60</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Age <span class="sc">&gt;=</span> <span class="dv">50</span>, Age <span class="sc">&lt;=</span> <span class="dv">60</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="arrange-정렬" class="level3"><h3 class="anchored" data-anchor-id="arrange-정렬">
-<code>arrange</code>: 정렬</h3>
+</section>
+<section id="arrange-정렬" class="level3">
+<h3 class="anchored" data-anchor-id="arrange-정렬"><code>arrange</code>: 정렬</h3>
 <p><code>arrange</code>는 특정 순서에 따라 데이터를 정렬하는 함수로, 정렬 순서만 알려주는 <code>order</code> 함수와는 달리 정렬된 데이터를 보여주는 것이 특징이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## a[order(a$Age), ]</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Age</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">## a[order(a$Age), ]</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(Age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -486,8 +531,8 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p>정렬 조건이 2개 이상이면 <code>,</code>로 같이 적을 수 있으며 내림차순 정렬은 <code>desc</code> 명령어를 이용한다. 아래는 <code>Age</code>에 대해 오름차순, <code>BMI</code>에 대해 내림차순 정렬을 수행하는 예시이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## a[order(a$Age, -a$BMI), ]</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Age</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">BMI</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="do">## a[order(a$Age, -a$BMI), ]</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(Age, <span class="fu">desc</span>(BMI))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -500,14 +545,15 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p>조건에 <code>Age</code> 대신 <code>"Age"</code>와 같이 문자열을 넣을 때는 언더바(<code>_</code>)가 붙은 <code>arrange_</code> 함수를 이용하며, 이것은 나머지 함수들에서도 마찬가지이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html">arrange_</a></span><span class="op">(</span><span class="st">"Age"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">arrange_</span>(<span class="st">"Age"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="select-변수-선택" class="level3"><h3 class="anchored" data-anchor-id="select-변수-선택">
-<code>select</code>: 변수 선택</h3>
+</section>
+<section id="select-변수-선택" class="level3">
+<h3 class="anchored" data-anchor-id="select-변수-선택"><code>select</code>: 변수 선택</h3>
 <p><code>select</code>는 데이터에서 특정 변수들을 선택하는 함수로 기본 <a href="https://www.r-project.org/"><strong>R</strong></a> 에는 없는 유용한 기능들을 제공한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## a[, c("Sex", "Age")]</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Sex</span>, <span class="va">Age</span>, <span class="va">Height</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">## a[, c("Sex", "Age")]</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(Sex, Age, Height)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -520,16 +566,16 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p>변수명 대신에 열 번호를 넣어도 되며 <code>Sex:Height</code>을 이용해서 <code>Sex</code>와 <code>Height</code> 사이의 모든 변수를 선택할 수도 있다. <code>arrange</code> 함수와는 달리 <code>"Sex"</code>와 같은 문자열도 그대로 입력 가능하며, 아래의 방법들은 모두 <code>a %&gt;% select(Sex, Age, Height)</code>와 같은 코드이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Sex</span><span class="op">:</span><span class="va">Height</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="st">"Sex"</span><span class="op">:</span><span class="st">"Height"</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(Sex<span class="sc">:</span>Height)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">"Sex"</span><span class="sc">:</span><span class="st">"Height"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>))</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>특정 변수들을 빼려면 <code>-Sex</code>나 <code>-(Sex:Height)</code>와 같이 적으면 된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## a[, -c("Sex", "Age", "Height")]</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Sex</span>, <span class="op">-</span><span class="va">Age</span>, <span class="op">-</span><span class="va">Height</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="do">## a[, -c("Sex", "Age", "Height")]</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>Sex, <span class="sc">-</span>Age, <span class="sc">-</span>Height)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -542,19 +588,19 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p>아래의 코드도 <code>a %&gt;% select(-Sex, -Age, -Height)</code>와 같은 결과를 준다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## a[, -c("Sex", "Age", "Height")]</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">3</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="va">Sex</span><span class="op">:</span><span class="va">Height</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="st">"Sex"</span>, <span class="op">-</span><span class="st">"Age"</span>, <span class="op">-</span><span class="st">"Height"</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="st">"Sex"</span><span class="op">:</span><span class="st">"Height"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="do">## a[, -c("Sex", "Age", "Height")]</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">4</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>))</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>(Sex<span class="sc">:</span>Height))</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="st">"Sex"</span>, <span class="sc">-</span><span class="st">"Age"</span>, <span class="sc">-</span><span class="st">"Height"</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>(<span class="st">"Sex"</span><span class="sc">:</span><span class="st">"Height"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>만약 <code>MACCE_date</code>, <code>Death_date</code>와 같이 <code>_date</code>로 끝나는 변수들을 선택하고 싶다면 <code>end_with</code> 함수를 이용하면 된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## a[, grep("_date", names(a))]</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">ends_with</a></span><span class="op">(</span><span class="st">"date"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="do">## a[, grep("_date", names(a))]</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"date"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -573,14 +619,16 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 <li><p><code>one_of(c("a", "b", "c"))</code>: 변수명이 <code>a</code>, <code>b</code>, <code>c</code> 중 하나</p></li>
 <li><p><code>matches("(.)\\1")</code>: 정규표현식 조건</p></li>
 <li><p><code>num_range("x", 1:3)</code>: <code>x1</code>, <code>x2</code>, <code>x3</code></p></li>
-</ul></section><section id="mutate-변수-생성" class="level3"><h3 class="anchored" data-anchor-id="mutate-변수-생성">
-<code>mutate</code>: 변수 생성</h3>
+</ul>
+</section>
+<section id="mutate-변수-생성" class="level3">
+<h3 class="anchored" data-anchor-id="mutate-변수-생성"><code>mutate</code>: 변수 생성</h3>
 <p><code>mutate</code>는 새로운 변수를 만드는 함수이다. <code>Age</code>와 <code>BMI</code> 변수에서 고령과 비만을 뜻하는 <code>Old</code>, <code>Overweight</code> 변수를 만들어 보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## a$old &lt;- as.integer(a$Age &gt;= 65); a$overweight &lt;- as.integer(a$BMI &gt;= 27)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Old <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">Age</span> <span class="op">&gt;=</span> <span class="fl">65</span><span class="op">)</span>,</span>
-<span>             Overweight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">BMI</span> <span class="op">&gt;=</span> <span class="fl">27</span><span class="op">)</span></span>
-<span>             <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="do">## a$old &lt;- as.integer(a$Age &gt;= 65); a$overweight &lt;- as.integer(a$BMI &gt;= 27)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Old =</span> <span class="fu">as.integer</span>(Age <span class="sc">&gt;=</span> <span class="dv">65</span>),</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">Overweight =</span> <span class="fu">as.integer</span>(BMI <span class="sc">&gt;=</span> <span class="dv">27</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>             )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -593,9 +641,9 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p>새로운 변수만 보여주려면 <code>mutate</code> 대신 <code>transmute</code>를 사용한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html">transmute</a></span><span class="op">(</span>Old <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">Age</span> <span class="op">&gt;=</span> <span class="fl">65</span><span class="op">)</span>,</span>
-<span>             Overweight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">BMI</span> <span class="op">&gt;=</span> <span class="fl">27</span><span class="op">)</span></span>
-<span>             <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">transmute</span>(<span class="at">Old =</span> <span class="fu">as.integer</span>(Age <span class="sc">&gt;=</span> <span class="dv">65</span>),</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">Overweight =</span> <span class="fu">as.integer</span>(BMI <span class="sc">&gt;=</span> <span class="dv">27</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>             )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -606,16 +654,16 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 </div>
 </div>
-</section><section id="group_by와-summarize" class="level3"><h3 class="anchored" data-anchor-id="group_by와-summarize">
-<code>group_by</code>와 <code>summarize</code>
-</h3>
+</section>
+<section id="group_by와-summarize" class="level3">
+<h3 class="anchored" data-anchor-id="group_by와-summarize"><code>group_by</code>와 <code>summarize</code></h3>
 <p><code>group_by</code>, <code>summarize</code>를 이용하여 원하는대로 그룹을 나누고 각 그룹의 요약통계량을 간단히 구할 수 있다. 기본 <a href="https://www.r-project.org/"><strong>R</strong></a>에서는 <code>aggregate</code>함수가 같은 기능을 수행한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Sex</span>, <span class="va">Smoking</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>            meanBMI <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">BMI</span><span class="op">)</span>,</span>
-<span>            sdBMI <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">BMI</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Sex, Smoking) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>(),</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">meanBMI =</span> <span class="fu">mean</span>(BMI),</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">sdBMI =</span> <span class="fu">sd</span>(BMI))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -629,10 +677,10 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 <p><code>group_by</code>에 <code>"Age"</code> 같은 문자열을 넣으려면 언더바(<code>_</code>)가 붙은 <code>group_by_</code> 함수를 이용해야 한다.</p>
 <p>모든 변수에 같은 요약방법을 적용하려면 <code>summarize_all</code> 함수를 사용한다. 아래는 50세 이상을 대상으로 모든 변수에 그룹별 평균을 적용한 예시이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Age</span> <span class="op">&gt;=</span> <span class="fl">50</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Sex</span>, <span class="va">Smoking</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarize_all</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Age <span class="sc">&gt;=</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Sex, Smoking) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_all</span>(mean) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -645,11 +693,11 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <p>평균값을 계산할 수 없는 범주형 변수는 <code>NA</code>를, 그 외 변수들은 평균값을 보여줌을 확인할 수 있다. 여러 요약값을 동시에 보여주려면 <code>funs</code> 명령어로 여러 함수를 같이 적어주면 된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Age</span> <span class="op">&gt;=</span> <span class="fl">50</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Patient_ID</span>, <span class="op">-</span><span class="va">STRESS_EXIST</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>       <span class="co">## Except categorical variable</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Sex</span>, <span class="va">Smoking</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarize_all</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/funs.html">funs</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">mean</span>, sd <span class="op">=</span> <span class="va">sd</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Age <span class="sc">&gt;=</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Patient_ID, <span class="sc">-</span>STRESS_EXIST) <span class="sc">%&gt;%</span>       <span class="do">## Except categorical variable</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Sex, Smoking) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_all</span>(<span class="fu">funs</span>(<span class="at">mean =</span> mean, <span class="at">sd =</span> sd)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -660,25 +708,29 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 </div>
 </div>
-</section><section id="와-기본함수만으로-똑같이-구현하기." class="level3"><h3 class="anchored" data-anchor-id="와-기본함수만으로-똑같이-구현하기.">
-<code>%&gt;%</code>와 기본함수만으로 똑같이 구현하기.</h3>
+</section>
+<section id="와-기본함수만으로-똑같이-구현하기." class="level3">
+<h3 class="anchored" data-anchor-id="와-기본함수만으로-똑같이-구현하기."><code>%&gt;%</code>와 기본함수만으로 똑같이 구현하기.</h3>
 <p>마지막에 수행했던 작업을 <code>%&gt;%</code>와 <a href="https://www.r-project.org/"><strong>R</strong></a> 기본함수만으로 구현하면서 본 단원을 마무리하겠다. <code>filter</code> 대신 <code>subset</code>, <code>select</code> 대신 <code>[]</code>, <code>group_by</code>와 <code>summarize_all</code> 대신에 <code>aggregate</code>를 이용하면 된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">Age</span> <span class="op">&gt;=</span> <span class="fl">50</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">14</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Sex <span class="op">=</span> <span class="va">.</span><span class="op">$</span><span class="va">Sex</span>, Smoking <span class="op">=</span> <span class="va">.</span><span class="op">$</span><span class="va">Smoking</span><span class="op">)</span>, </span>
-<span>            FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(Age <span class="sc">&gt;=</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  .[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">14</span>)] <span class="sc">%&gt;%</span> </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aggregate</span>(<span class="fu">list</span>(<span class="at">Sex =</span> .<span class="sc">$</span>Sex, <span class="at">Smoking =</span> .<span class="sc">$</span>Smoking), </span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">FUN =</span> <span class="cf">function</span>(x){<span class="fu">c</span>(<span class="at">mean =</span> <span class="fu">mean</span>(x), <span class="at">sd =</span> <span class="fu">sd</span>(x))})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>위와 같이 기본 함수로도 <code>%&gt;%</code> 연산자를 이용하여 그럴듯하게 코드를 작성할 수 있으나, <a href="https://dplyr.tidyverse.org/"><strong>dplyr</strong></a> 와 비교했을 때 아무래도 가독성이 떨어진다는 점에서 <a href="https://dplyr.tidyverse.org/"><strong>dplyr</strong></a>가 유용한 패키지임을 확인할 수 있었다.</p>
-</section></section><section id="반복문-처리-purrr" class="level2"><h2 class="anchored" data-anchor-id="반복문-처리-purrr">반복문 처리: <a href="https://purrr.tidyverse.org/">purrr</a>
-</h2>
+</section>
+</section>
+<section id="반복문-처리-purrr" class="level2">
+<h2 class="anchored" data-anchor-id="반복문-처리-purrr">반복문 처리: <a href="https://purrr.tidyverse.org/">purrr</a></h2>
 <p>본 내용에서는 <code>for</code>문이나 멀티코어의 사용은 언급하지 않는다. 해당 내용은 <a href="https://jinseob2kim.github.io/radv1.html#faster_for-loop">과거 강의</a><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>를 참고하기 바란다.</p>
 <p><a href="https://www.r-project.org/"><strong>R</strong></a>에서 반복문을 처리하는데 가장 많이 이용되는 함수는 <code>lapply</code>(또는 <code>sapply</code>)일 것이다. <a href="https://purrr.tidyverse.org/">purrr</a>의 대표 함수인 <code>map</code>은 이 <code>lapply</code>를 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 철학으로 구현한 것이다. 이제부터 차이점을 알아보자.</p>
-<section id="map" class="level3"><h3 class="anchored" data-anchor-id="map"><code>map</code></h3>
+<section id="map" class="level3">
+<h3 class="anchored" data-anchor-id="map"><code>map</code></h3>
 <p>데이터의 모든 변수들의 형태를 살펴보는 <code>lapply</code> 구문은 아래와 같다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">class</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(a, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$Sex
 [1] "character"
@@ -725,8 +777,8 @@ $Number_stent
 </div>
 <p>이것을 <code>map</code>으로 구현하면 <code>lapply</code>와 정확히 같은 형태가 된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/">purrr</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">class</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(a, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$Sex
 [1] "character"
@@ -783,7 +835,7 @@ $Number_stent
 </ul>
 <p>앞의 예를 <code>map_chr</code>을 이용해 다시 실행하자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_chr</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">class</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_chr</span>(a, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         Sex          Age       Height       Weight          BMI           DM 
  "character"    "numeric"    "numeric"    "numeric"    "numeric"    "numeric" 
@@ -795,15 +847,15 @@ STRESS_EXIST Number_stent
 </div>
 <p>이것은 <code>sapply</code>함수의 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 버전으로 기억하면 좋다. 아래의 명령어들은 모두 같은 결과를 나타낸다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_chr</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">class</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_chr</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">class</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">class</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">class</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_chr</span>(a, class)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">map_chr</span>(class)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(a, class)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unlist</span>(<span class="fu">map</span>(a, class))</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">unlist</span>(<span class="fu">lapply</span>(a, class))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>각 변수에서 첫 번째 값을 뽑는 아래의 코드들도 <code>sapply</code>와 <code>map_*</code>의 차이는 없다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">}</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">sapply</span>(<span class="cf">function</span>(x){x[<span class="dv">1</span>]})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         Sex          Age       Height       Weight          BMI           DM 
          "M"         "52"        "160"         "63"  "24.609375"          "0" 
@@ -812,7 +864,7 @@ STRESS_EXIST Number_stent
 STRESS_EXIST Number_stent 
    "No test"          "3" </code></pre>
 </div>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">`[`</span>, <span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">sapply</span>(<span class="st">`</span><span class="at">[</span><span class="st">`</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         Sex          Age       Height       Weight          BMI           DM 
          "M"         "52"        "160"         "63"  "24.609375"          "0" 
@@ -821,7 +873,7 @@ STRESS_EXIST Number_stent
 STRESS_EXIST Number_stent 
    "No test"          "3" </code></pre>
 </div>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_chr</a></span><span class="op">(</span><span class="va">`[`</span>, <span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">map_chr</span>(<span class="st">`</span><span class="at">[</span><span class="st">`</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Sex           Age        Height        Weight           BMI 
           "M"   "52.000000"  "160.000000"   "63.000000"   "24.609375" 
@@ -833,9 +885,9 @@ STRESS_EXIST Number_stent
 </div>
 <p><code>class</code>나 <code>mean</code>, 그리고 <code>`[`</code> 등 간단한 함수들은 <code>lapply</code>를 쓰나 <code>map</code>을 쓰나 차이가 없다. <code>map</code>의 진가는 반복할 함수가 복잡할 때 드러난다. 성별로 같은 회귀분석을 반복하는 코드를 예로 들어 보자. 먼저 <code>lapply</code>를 이용한 코드는 아래와 같다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span><span class="op">(</span><span class="va">Sex</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Death</span> <span class="op">~</span> <span class="va">Age</span>, data <span class="op">=</span> <span class="va">x</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_split</span>(Sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(<span class="cf">function</span>(x){<span class="fu">lm</span>(Death <span class="sc">~</span> Age, <span class="at">data =</span> x, <span class="at">family =</span> binomial)})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 
@@ -859,9 +911,9 @@ Coefficients:
 </div>
 <p>위 예시에서 알 수 있듯이 <code>lapply</code>에서 복잡한 함수를 반복하려면 <code>function(x)</code> 문이 꼭 필요하고 가독성을 저해하는 원인이 된다. 그러나 <code>map</code>에서는 <code>~</code>로 간단히 <code>function(x)</code>를 대체할 수 있다. 아래 코드를 살펴보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span><span class="op">(</span><span class="va">Sex</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Death</span> <span class="op">~</span> <span class="va">Age</span>, data <span class="op">=</span> <span class="va">.</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_split</span>(Sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span><span class="fu">lm</span>(Death <span class="sc">~</span> Age, <span class="at">data =</span> ., <span class="at">family =</span> binomial))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 
@@ -886,69 +938,70 @@ Coefficients:
 <p><code>map</code>함수를 이용하여 <code>function(x)</code>를 <code>~</code>로, 성별 데이터에 해당하는 <code>x</code>를 <code>.</code>으로 바꾸니 훨씬 읽기가 쉬워졌다.</p>
 <p>이번엔 같은 회귀분석을 수행한 후 <code>Age</code>의 p-value만 뽑는다고 하자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span><span class="op">(</span><span class="va">Sex</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Death</span> <span class="op">~</span> <span class="va">Age</span>, data <span class="op">=</span> <span class="va">x</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>      <span class="va">summary</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>      <span class="va">.</span><span class="op">$</span><span class="va">coefficients</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>      <span class="va">.</span><span class="op">[</span><span class="fl">8</span><span class="op">]</span>     <span class="co">## p-value: 8th value</span></span>
-<span>    <span class="op">}</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_split</span>(Sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sapply</span>(<span class="cf">function</span>(x){</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lm</span>(Death <span class="sc">~</span> Age, <span class="at">data =</span> x, <span class="at">family =</span> binomial) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>      summary <span class="sc">%&gt;%</span> </span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>      .<span class="sc">$</span>coefficients <span class="sc">%&gt;%</span> </span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>      .[<span class="dv">8</span>]     <span class="do">## p-value: 8th value</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>    }) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 9.016998e-01 2.094342e-07</code></pre>
 </div>
 </div>
 <p><code>%&gt;%</code> 연산자를 이용해 나름대로 읽기 쉬운 코드가 되었다. 이것을 <code>map_dbl</code>로 다시 표현하면 아래와 같다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span><span class="op">(</span><span class="va">Sex</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Death</span> <span class="op">~</span> <span class="va">Age</span>, data <span class="op">=</span> <span class="va">.</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>        <span class="va">summary</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>        <span class="va">.</span><span class="op">$</span><span class="va">coefficients</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>        <span class="va">.</span><span class="op">[</span><span class="fl">8</span><span class="op">]</span></span>
-<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_split</span>(Sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(<span class="sc">~</span><span class="fu">lm</span>(Death <span class="sc">~</span> Age, <span class="at">data =</span> ., <span class="at">family =</span> binomial) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>        summary <span class="sc">%&gt;%</span> </span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>        .<span class="sc">$</span>coefficients <span class="sc">%&gt;%</span> </span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>        .[<span class="dv">8</span>]</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 9.016998e-01 2.094342e-07</code></pre>
 </div>
 </div>
 <p><code>function(x)</code> 가 없어 더 잘 보이기는 하나 고작 이 정도의 장점이라면 <code>map</code>을 쓸 필요가 없을 것 같다. <code>map</code>을 좀 더 적극적으로 사용해 보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span><span class="op">(</span><span class="va">Sex</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Death</span> <span class="op">~</span> <span class="va">Age</span>, data <span class="op">=</span> <span class="va">.</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="st">"coefficients"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> </span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_split</span>(Sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span><span class="fu">lm</span>(Death <span class="sc">~</span> Age, <span class="at">data =</span> ., <span class="at">family =</span> binomial)) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(summary) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="st">"coefficients"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(<span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 9.016998e-01 2.094342e-07</code></pre>
 </div>
 </div>
 <p>기존 코드는 <code>.$coefficient</code>와 <code>.[8]</code> 같은 부분이 거슬렸는데, <code>map("coefficients")</code>, <code>map_dbl(8)</code>으로 바꾸니 보기에 훨씬 깔끔하다. 참고로 <code>map("coefficients")</code> 은 <code>map(`[[`, "coefficients")</code>의, <code>map_dbl(8)</code>은 <code>map_dbl(`[`, 8)</code>의 축약형 표현이다. 사실 아까 다루었던 첫 번째 값 뽑기의 경우도 아래와 같이 더 간단하게 쓸 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_chr</a></span><span class="op">(</span><span class="va">`[`</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_chr</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">map_chr</span>(<span class="st">`</span><span class="at">[</span><span class="st">`</span>, <span class="dv">1</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span> <span class="fu">map_chr</span>(<span class="dv">1</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>map</code>을 통해 함수의 모든 중간과정을 따로따로 구현한 것도 장점이다. 에러가 발생했을 때 드래그로 중간과정까지만 실행할 수 있어 함수의 어느 부분에서 에러가 발생했는지를 쉽게 알아낼 수 있다.</p>
-</section><section id="map2-pmap-입력-변수-2개-이상" class="level3"><h3 class="anchored" data-anchor-id="map2-pmap-입력-변수-2개-이상">
-<code>map2</code>, <code>pmap</code>: 입력 변수 2개 이상</h3>
+</section>
+<section id="map2-pmap-입력-변수-2개-이상" class="level3">
+<h3 class="anchored" data-anchor-id="map2-pmap-입력-변수-2개-이상"><code>map2</code>, <code>pmap</code>: 입력 변수 2개 이상</h3>
 <p>2개 이상의 입력값에 대해 반복문을 수행하는 함수로는 <code>mapply</code>가 있다. 이것의 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 버전이 <code>map2</code>와 <code>pmap</code>인데 전자는 2개의 조건에, 후자는 리스트 형태로 입력값의 갯수에 상관없이 반복문을 구현할 수 있다. 본 강의에서는 간단한 예만 다루어 보겠다. 먼저 <code>mapply</code>를 이용해서 여러 입력값의 합을 구하는 코드를 살펴보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mapply.html">mapply</a></span><span class="op">(</span><span class="va">sum</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(sum, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  2  4  6  8 10</code></pre>
 </div>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sum</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/mapply.html">mapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>sum <span class="sc">%&gt;%</span> <span class="fu">mapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  2  4  6  8 10</code></pre>
 </div>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sum</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/mapply.html">mapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>sum <span class="sc">%&gt;%</span> <span class="fu">mapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  3  6  9 12 15</code></pre>
 </div>
 </div>
 <p><code>mapply</code>는 첫번째 인수에 함수를, 그 다음부터는 입력값들을 2개, 3개… 계속 받을 수 있다. 반면 <code>map2</code>와 <code>pmap</code>은 입력값을 먼저 받는데, 이 때문에 <code>pmap</code>에서는 입력값들을 리스트 형태로 받는다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">map2</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="va">sum</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 [1] 2
@@ -965,7 +1018,7 @@ Coefficients:
 [[5]]
 [1] 10</code></pre>
 </div>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pmap.html">pmap</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pmap</span>(<span class="fu">list</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 [1] 3
@@ -985,33 +1038,36 @@ Coefficients:
 </div>
 <p>리턴 형태를 지정하려면 <code>map</code>과 마찬가지로 <code>map2_*</code>나 <code>pmap_*</code> 꼴의 함수를 이용하면 되며 아래의 코드들은 같은 결과를 나타낸다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pmap.html">pmap_int</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pmap_int</span>(<span class="fu">list</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  3  6  9 12 15</code></pre>
 </div>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/pmap.html">pmap_int</a></span><span class="op">(</span><span class="va">sum</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">pmap_int</span>(sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  3  6  9 12 15</code></pre>
 </div>
 </div>
 <p>마지막으로 <code>paste</code>함수로 문자열을 합치는 예를 살펴보겠다. 먼저 <code>map2_chr</code>로 두 문자열을 합쳐보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Alice"</span>, <span class="st">"Bob"</span><span class="op">)</span></span>
-<span><span class="va">place</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"LA"</span>, <span class="st">"New york"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">map2_chr</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">place</span>, <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">.x</span>, <span class="st">"was born at"</span>, <span class="va">.y</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Alice"</span>, <span class="st">"Bob"</span>)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>place <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"LA"</span>, <span class="st">"New york"</span>)</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">map2_chr</span>(name, place, <span class="sc">~</span><span class="fu">paste</span>(.x, <span class="st">"was born at"</span>, .y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Alice was born at LA"     "Bob was born at New york"</code></pre>
 </div>
 </div>
 <p>첫 번째 입력값은 함수에서 <code>.x</code>로 두 번째 입력값은 <code>.y</code>로 표현할 수 있다. <code>pmap</code> 함수를 이용할 때는 <code>..1</code>, <code>..2</code>, <code>..3</code>으로 바꿔 표현하면 된다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">life</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"born"</span>, <span class="st">"died"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">life</span>, <span class="va">place</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/pmap.html">pmap_chr</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">..1</span>, <span class="st">"was"</span>, <span class="va">..2</span>, <span class="st">"at"</span>, <span class="va">..3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>life <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"born"</span>, <span class="st">"died"</span>)</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(name, life, place) <span class="sc">%&gt;%</span> <span class="fu">pmap_chr</span>(<span class="sc">~</span><span class="fu">paste</span>(..<span class="dv">1</span>, <span class="st">"was"</span>, ..<span class="dv">2</span>, <span class="st">"at"</span>, ..<span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Alice was born at LA"     "Bob was died at New york"</code></pre>
 </div>
 </div>
-</section></section><section id="마치며" class="level2"><h2 class="anchored" data-anchor-id="마치며">마치며</h2>
+</section>
+</section>
+<section id="마치며" class="level2">
+<h2 class="anchored" data-anchor-id="마치며">마치며</h2>
 <p>지금까지 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 생태계에서 몇 가지 패키지를 이용해 데이터를 다루는 방법을 살펴보았다. 앞서 말했듯이 이 생태계에서 가장 중요한 것은 <code>%&gt;%</code> 연산자를 이용하여 의식의 흐름대로 코딩을 수행하는 것이며, 이후 나머지 내용을 하나씩 적용해나가면 어느 순간 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 없이 살 수 없는(?) 자신을 발견하게 될 것이다. 본 글에서 다루지 않은 내용인 <code>long</code>, <code>short</code> 포맷을 다루는 <a href="https://tidyr.tidyverse.org/"><strong>tidyr</strong></a>, 문자열을 다루는 <a href="https://stringr.tidyverse.org/"><strong>stringr</strong></a>, <code>factor</code>를 다루는 <a href="https://forcats.tidyverse.org/"><strong>forcats</strong></a>, 날짜를 다루는 <a href="https://lubridate.tidyverse.org/"><strong>lubridate</strong></a> 그리고 모델을 다루는 <a href="https://modelr.tidyverse.org/"><strong>modelr</strong></a>과 <a href="https://broom.tidyverse.org/"><strong>broom</strong></a> 등은 <a href="https://r4ds.had.co.nz/">R for Data Science</a>[^8]와 <a href="https://www.rstudio.com/resources/cheatsheets/">Rstudio cheetsheet</a>[^9]를 참고하기 바란다. 다음번에는 빠른 속도가 장점인 <a href="https://github.com/Rdatatable/data.table/wiki"><strong>data.table</strong></a>를 다시 한번 정리해 볼 생각이다.</p>
 <!--
 [^5]: https://r4ds.had.co.nz/
@@ -1020,17 +1076,21 @@ Coefficients:
 -->
 
 
-</section><div id="quarto-appendix" class="default"><aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
 <ol>
 <li id="fn1"><p>https://jinseob2kim.github.io/rbasic.html<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>https://jinseob2kim.github.io/radv1.html<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>https://csgillespie.github.io/efficientR/5-3-importing-data.html<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>https://www.jumpingrivers.com/blog/the-trouble-with-tibbles/<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>https://jinseob2kim.github.io/radv1.html#faster_for-loop<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2019,
+</ol>
+</section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2019,
   author = {Kim, Jinseob},
   title = {R {데이터} {매니지먼트:} Tidyverse},
-  pages = {undefined},
   date = {2019-01-23},
   url = {https://blog.zarathu.com/posts/2019-01-03-rdatamanagement},
   langid = {en}
@@ -1038,7 +1098,8 @@ Coefficients:
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2019" class="csl-entry quarto-appendix-citeas" role="listitem">
 Kim, Jinseob. 2019. <span>“R 데이터 매니지먼트: Tidyverse.”</span>
 January 23, 2019. <a href="https://blog.zarathu.com/posts/2019-01-03-rdatamanagement">https://blog.zarathu.com/posts/2019-01-03-rdatamanagement</a>.
-</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -1166,38 +1227,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -1206,7 +1257,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }
@@ -1427,10 +1480,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
 <p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
 </div>   
@@ -1442,6 +1499,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
+
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
