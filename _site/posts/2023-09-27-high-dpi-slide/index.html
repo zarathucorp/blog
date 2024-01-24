@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.534">
-
+<meta name="generator" content="quarto-1.4.398">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="author" content="Jihee Han">
 <meta name="dcterms.date" content="2023-09-27">
 <meta name="description" content="officer 패키지를 활용해 파워포인트로 저장한 이미지를 300DPI의 고해상도로 내보내기 (해상도 설정 변경 방법은 운영체제마다 다르며, 본 게시글은 Windows OS를 기준으로 합니다.)">
-
 <title>Zarathu Blog - R로 만든 PPT 슬라이드 고해상도로 저장하기</title>
 <style>
 code{white-space: pre-wrap;}
@@ -59,7 +56,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -76,8 +72,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -85,9 +80,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
+    null
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -97,14 +90,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
-    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-
-<script type="text/javascript">
+}</script><script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -116,23 +106,16 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script>
-<style>html{ scroll-behavior: smooth; }</style>
-
-
+</script><style>html{ scroll-behavior: smooth; }</style>
 <link rel="stylesheet" href="../../styles.css">
 </head>
-
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo">
-    </a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -143,7 +126,7 @@ ga('send', {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -155,8 +138,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
-        <li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
+<li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
@@ -169,7 +152,7 @@ ga('send', {
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item">
     <a class="nav-link" href="../../contributors.html"> 
 <span class="menu-text">Contributors</span></a>
@@ -178,8 +161,8 @@ ga('send', {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
-        <li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
+<li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
@@ -188,7 +171,7 @@ ga('send', {
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
@@ -205,15 +188,11 @@ ga('send', {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
+</div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">R로 만든 PPT 슬라이드 고해상도로 저장하기</h1>
                   <div>
@@ -252,145 +231,107 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#개요" id="toc-개요" class="nav-link active" data-scroll-target="#개요">개요</a></li>
-  <li><a href="#dpi란" id="toc-dpi란" class="nav-link" data-scroll-target="#dpi란">DPI란?</a></li>
-  <li><a href="#고해상도로-슬라이드-내보내기" id="toc-고해상도로-슬라이드-내보내기" class="nav-link" data-scroll-target="#고해상도로-슬라이드-내보내기">고해상도로 슬라이드 내보내기</a>
+<li><a href="#%EA%B0%9C%EC%9A%94" id="toc-개요" class="nav-link active" data-scroll-target="#%EA%B0%9C%EC%9A%94">개요</a></li>
+  <li><a href="#dpi%EB%9E%80" id="toc-dpi란" class="nav-link" data-scroll-target="#dpi%EB%9E%80">DPI란?</a></li>
+  <li>
+<a href="#%EA%B3%A0%ED%95%B4%EC%83%81%EB%8F%84%EB%A1%9C-%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C-%EB%82%B4%EB%B3%B4%EB%82%B4%EA%B8%B0" id="toc-고해상도로-슬라이드-내보내기" class="nav-link" data-scroll-target="#%EA%B3%A0%ED%95%B4%EC%83%81%EB%8F%84%EB%A1%9C-%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C-%EB%82%B4%EB%B3%B4%EB%82%B4%EA%B8%B0">고해상도로 슬라이드 내보내기</a>
   <ul class="collapse">
-  <li><a href="#officer-패키지를-사용해-파워포인트로-이미지-저장하기" id="toc-officer-패키지를-사용해-파워포인트로-이미지-저장하기" class="nav-link" data-scroll-target="#officer-패키지를-사용해-파워포인트로-이미지-저장하기">1. officer 패키지를 사용해 파워포인트로 이미지 저장하기</a></li>
-  <li><a href="#내보내기-해상도-설정-변경하기" id="toc-내보내기-해상도-설정-변경하기" class="nav-link" data-scroll-target="#내보내기-해상도-설정-변경하기">2. 내보내기 해상도 설정 변경하기</a></li>
-  <li><a href="#슬라이드를-고해상도-그림으로-내보내기" id="toc-슬라이드를-고해상도-그림으로-내보내기" class="nav-link" data-scroll-target="#슬라이드를-고해상도-그림으로-내보내기">3. 슬라이드를 고해상도 그림으로 내보내기</a></li>
-  </ul></li>
-  <li><a href="#정리" id="toc-정리" class="nav-link" data-scroll-target="#정리">정리</a></li>
+<li><a href="#officer-%ED%8C%A8%ED%82%A4%EC%A7%80%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4-%ED%8C%8C%EC%9B%8C%ED%8F%AC%EC%9D%B8%ED%8A%B8%EB%A1%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%80%EC%9E%A5%ED%95%98%EA%B8%B0" id="toc-officer-패키지를-사용해-파워포인트로-이미지-저장하기" class="nav-link" data-scroll-target="#officer-%ED%8C%A8%ED%82%A4%EC%A7%80%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4-%ED%8C%8C%EC%9B%8C%ED%8F%AC%EC%9D%B8%ED%8A%B8%EB%A1%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%80%EC%9E%A5%ED%95%98%EA%B8%B0">1. officer 패키지를 사용해 파워포인트로 이미지 저장하기</a></li>
+  <li><a href="#%EB%82%B4%EB%B3%B4%EB%82%B4%EA%B8%B0-%ED%95%B4%EC%83%81%EB%8F%84-%EC%84%A4%EC%A0%95-%EB%B3%80%EA%B2%BD%ED%95%98%EA%B8%B0" id="toc-내보내기-해상도-설정-변경하기" class="nav-link" data-scroll-target="#%EB%82%B4%EB%B3%B4%EB%82%B4%EA%B8%B0-%ED%95%B4%EC%83%81%EB%8F%84-%EC%84%A4%EC%A0%95-%EB%B3%80%EA%B2%BD%ED%95%98%EA%B8%B0">2. 내보내기 해상도 설정 변경하기</a></li>
+  <li><a href="#%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C%EB%A5%BC-%EA%B3%A0%ED%95%B4%EC%83%81%EB%8F%84-%EA%B7%B8%EB%A6%BC%EC%9C%BC%EB%A1%9C-%EB%82%B4%EB%B3%B4%EB%82%B4%EA%B8%B0" id="toc-슬라이드를-고해상도-그림으로-내보내기" class="nav-link" data-scroll-target="#%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C%EB%A5%BC-%EA%B3%A0%ED%95%B4%EC%83%81%EB%8F%84-%EA%B7%B8%EB%A6%BC%EC%9C%BC%EB%A1%9C-%EB%82%B4%EB%B3%B4%EB%82%B4%EA%B8%B0">3. 슬라이드를 고해상도 그림으로 내보내기</a></li>
   </ul>
-</nav>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</li>
+  <li><a href="#%EC%A0%95%EB%A6%AC" id="toc-정리" class="nav-link" data-scroll-target="#%EC%A0%95%EB%A6%AC">정리</a></li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
-<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
-<script>
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script>
-
-
-
-
-
-<section id="개요" class="level2">
-<h2 class="anchored" data-anchor-id="개요">개요</h2>
+</script><section id="개요" class="level2"><h2 class="anchored" data-anchor-id="개요">개요</h2>
 <p><a href="https://blog.zarathu.com/posts/2023-07-01-officer/" target="_blank"> 지난 게시글</a>에서 <code>officer</code> 패키지를 활용해 R으로 만든 그림을을 벡터 이미지로 저장하는 방법을 다루었습니다. 이렇게 저장한 벡터 이미지는 확대를 해도 깨지지 않고 파워포인트에서 편집이 가능하다는 장점이 있습니다. 하지만 파워포인트 슬라이드를 그림으로 내보내기하면 저해상도의 이미지로 저장된다는 문제가 있습니다. 따라서 이번 글에서는 파워포인트로 저장한 벡터 이미지를 300DPI의 고해상도로 내보내는 방법을 알아보고자 합니다.</p>
-</section>
-<section id="dpi란" class="level2">
-<h2 class="anchored" data-anchor-id="dpi란">DPI란?</h2>
+</section><section id="dpi란" class="level2"><h2 class="anchored" data-anchor-id="dpi란">DPI란?</h2>
 <div style="text-align: center;">
-<figure style="display: inline-block;" class="figure">
-<img src="img/DPI.png" text-align="center" class="figure-img">
-<figcaption>
+<figure style="display: inline-block;" class="figure"><img src="img/DPI.png" text-align="center" class="figure-img"><figcaption>
 이미지 출처: https://itwiki.kr/w/DPI
-</figcaption>
-</figure>
+</figcaption></figure>
 </div>
 <p>DPI란 <strong>Dot Per Inch</strong>의 약자로, 인쇄물에서 1인치(= 2.54cm)에 몇 개의 점이 찍히는지를 나타내는 단위입니다. DPI 값이 높을 수록 고해상도의 결과물을 얻을 수 있으며, 깨끗한 이미지를 얻기 위해서는 300DPI 이상이 권장됩니다.</p>
-</section>
-<section id="고해상도로-슬라이드-내보내기" class="level2">
-<h2 class="anchored" data-anchor-id="고해상도로-슬라이드-내보내기">고해상도로 슬라이드 내보내기</h2>
-<section id="officer-패키지를-사용해-파워포인트로-이미지-저장하기" class="level3">
-<h3 class="anchored" data-anchor-id="officer-패키지를-사용해-파워포인트로-이미지-저장하기">1. officer 패키지를 사용해 파워포인트로 이미지 저장하기</h3>
+</section><section id="고해상도로-슬라이드-내보내기" class="level2"><h2 class="anchored" data-anchor-id="고해상도로-슬라이드-내보내기">고해상도로 슬라이드 내보내기</h2>
+<section id="officer-패키지를-사용해-파워포인트로-이미지-저장하기" class="level3"><h3 class="anchored" data-anchor-id="officer-패키지를-사용해-파워포인트로-이미지-저장하기">1. officer 패키지를 사용해 파워포인트로 이미지 저장하기</h3>
 <p>우선 지난 게시글에서 다루었던 <code>officer</code>과 <code>rvg</code> 패키지를 활용해 벡터 이미지를 파워포인트로 저장하겠습니다.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(officer)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvg)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 이미지 생성</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>plotObj <span class="ot">&lt;-</span> iris <span class="sc">|&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Sepal.Length, <span class="at">y =</span> Sepal.Width, <span class="at">color =</span> Species)) <span class="sc">+</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ppt</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">read_pptx</span>() <span class="sc">|&gt;</span> <span class="co"># ppt 생성, 별도의 오브젝트로 저장하지 않아도 됨.</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">add_slide</span>() <span class="sc">|&gt;</span> <span class="co"># 슬라이드 추가</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ph_with</span>( <span class="co"># 이미지 추가</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dml</span>(<span class="at">ggobj =</span> plotObj), </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">location =</span> <span class="fu">ph_location_fullsize</span>() </span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">'image.pptx'</span>) <span class="co"># ppt 저장 </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/officeverse/">officer</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/officeverse/">rvg</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 이미지 생성</span></span>
+<span><span class="va">plotObj</span> <span class="op">&lt;-</span> <span class="va">iris</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Sepal.Length</span>, y <span class="op">=</span> <span class="va">Sepal.Width</span>, color <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ppt</span></span>
+<span><span class="fu"><a href="https://davidgohel.github.io/officer/reference/read_pptx.html">read_pptx</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># ppt 생성, 별도의 오브젝트로 저장하지 않아도 됨.</span></span>
+<span><span class="fu"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># 슬라이드 추가</span></span>
+<span>  <span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op">(</span> <span class="co"># 이미지 추가</span></span>
+<span>    <span class="fu"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op">(</span>ggobj <span class="op">=</span> <span class="va">plotObj</span><span class="op">)</span>, </span>
+<span>    location <span class="op">=</span> <span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_location_fullsize.html">ph_location_fullsize</a></span><span class="op">(</span><span class="op">)</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="st">'image.pptx'</span><span class="op">)</span> <span class="co"># ppt 저장 </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>파워포인트의 <strong>파일</strong> 탭에서 <strong>다른 이름으로 저장/이미지로 저장</strong>을 선택하면 슬라이드가 각각 JPEG 파일로 저장됩니다. 저장된 이미지의 속성을 살펴보면 파워포인트 이미지 내보내기의 디폴드 해상도인 <strong>96DPI</strong>로 저장된 것을 확인할 수 있습니다.</p>
 <div class="columns" style="text-align: center;">
 <div class="column" style="width:70%;">
-<figure class="figure">
-<img src="img/lowResolution.png" width="80%" class="figure-img">
-</figure>
+<figure class="figure"><img src="img/lowResolution.png" width="80%" class="figure-img"></figure>
 </div><div class="column" style="width:30%;">
-<figure class="figure">
-<img src="img/dpi96.png" width="90%" class="figure-img">
-</figure>
+<figure class="figure"><img src="img/dpi96.png" width="90%" class="figure-img"></figure>
 </div>
 </div>
-</section>
-<section id="내보내기-해상도-설정-변경하기" class="level3">
-<h3 class="anchored" data-anchor-id="내보내기-해상도-설정-변경하기">2. 내보내기 해상도 설정 변경하기</h3>
+</section><section id="내보내기-해상도-설정-변경하기" class="level3"><h3 class="anchored" data-anchor-id="내보내기-해상도-설정-변경하기">2. 내보내기 해상도 설정 변경하기</h3>
 <p>슬라이드를 고해상도 이미지로 저장하려면, 파워포인트의 내보내기 해상도 설정을 변경해야 합니다. 설정을 변경하기에 앞서, 모든 Windows 기반 프로그램을 종료하시길 바랍니다. 실행 중인 프로그램은 <code>Ctrl + Shift + ESC</code> 단축키를 통해 확인할 수 있습니다.</p>
 <ol type="1">
 <li><p><strong>시작</strong> 단추를 우클릭한 뒤, <strong>실행</strong>을 선택합니다.</p></li>
 <li><p><strong>열기</strong> 상자에 <strong>regedit</strong>을 입력한 다음 <strong>확인</strong>을 선택합니다.</p></li>
-<li><p>사용 중인 파워포인트 버전에 따라 아래 레지스트리 하위 키를 찾습니다.</p>
+<li>
+<p>사용 중인 파워포인트 버전에 따라 아래 레지스트리 하위 키를 찾습니다.</p>
 <p>파워포인트 버전별 레지스트리 하위 키는 다음과 같습니다.</p>
-<figure class="figure">
-<p><img src="img/key.png" width="80%" class="figure-img"></p>
-</figure></li>
+<figure class="figure"><p><img src="img/key.png" width="80%" class="figure-img"></p>
+</figure>
+</li>
 <li><p><strong>Option</strong> 하위 키를 선택하고, <strong>편집</strong> 탭의 <strong>새로 만들기/DWORD(32비트) 값</strong>을 선택합니다</p></li>
 <li><p><strong>ExportBitmapResolution</strong>을 입력한 다음 엔터키를 누릅니다.</p></li>
 <li><p><strong>ExportBitmapResolution</strong>이 선택되어 있는지 확인한 다음 <strong>편집</strong> 탭의 <strong>수정</strong>을 선택합니다.</p></li>
 <li><p><strong>DWORD 값 편집</strong> 대화 상자에서 <strong>10진수</strong>를 선택한 뒤, <strong>값 데이터</strong>에 <strong>300</strong>을 입력하고 <strong>확인</strong>을 선택합니다.</p></li>
 </ol>
-<figure style="text-align: center;" class="figure">
-<img src="img/editor.png" width="70%" class="figure-img">
-</figure>
-<ol start="8" type="1">
-<li><strong>파일</strong> 메뉴에서 <strong>끝내기</strong>를 선택해 레지스트리 편집기를 종료합니다.</li>
-</ol>
-</section>
-<section id="슬라이드를-고해상도-그림으로-내보내기" class="level3">
-<h3 class="anchored" data-anchor-id="슬라이드를-고해상도-그림으로-내보내기">3. 슬라이드를 고해상도 그림으로 내보내기</h3>
+<figure style="text-align: center;" class="figure"><img src="img/editor.png" width="70%" class="figure-img"></figure><ol start="8" type="1">
+<li>
+<strong>파일</strong> 메뉴에서 <strong>끝내기</strong>를 선택해 레지스트리 편집기를 종료합니다.</li>
+</ol></section><section id="슬라이드를-고해상도-그림으로-내보내기" class="level3"><h3 class="anchored" data-anchor-id="슬라이드를-고해상도-그림으로-내보내기">3. 슬라이드를 고해상도 그림으로 내보내기</h3>
 <p>앞서 저장했던 파워포인트 파일을 다시 열어 <strong>파일</strong> 탭의 <strong>다른 이미지로 저장/이미지로 저장</strong>을 선택해 다시 슬라이드를 JPEG 파일로 저장합니다. 이번에는 <strong>300DPI</strong>의 고해상도 이미지로 잘 저장된 것을 확인할 수 있습니다.</p>
 <div class="columns" style="text-align: center;">
 <div class="column" style="width:70%;">
-<figure class="figure">
-<img src="img/highResolution.png" width="80%" class="figure-img">
-</figure>
+<figure class="figure"><img src="img/highResolution.png" width="80%" class="figure-img"></figure>
 </div><div class="column" style="width:30%;">
-<figure class="figure">
-<img src="img/dpi300.png" width="90%" class="figure-img">
-</figure>
+<figure class="figure"><img src="img/dpi300.png" width="90%" class="figure-img"></figure>
 </div>
 </div>
-</section>
-</section>
-<section id="정리" class="level2">
-<h2 class="anchored" data-anchor-id="정리">정리</h2>
+</section></section><section id="정리" class="level2"><h2 class="anchored" data-anchor-id="정리">정리</h2>
 <p>이번 글에서는 레지스트리 편집기에서 해상도 설정을 변경하여 파워포인트 슬라이드를 고해상도 이미지로 내보내는 방법에 대해 알아보았습니다. <code>officer</code> 패키지를 다룬 지난 글과 함께 R을 통해 이미지를 자유자재로 다루는 데 도움이 되기를 기대합니다.</p>
 
 
-</section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{han2023,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{han2023,
   author = {Han, Jihee},
   title = {R로 {만든} {PPT} {슬라이드} {고해상도로} {저장하기}},
+  pages = {undefined},
   date = {2023-09-27},
   url = {https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide},
   langid = {en}
@@ -398,8 +339,7 @@ ga('send', {
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-han2023" class="csl-entry quarto-appendix-citeas" role="listitem">
 Han, Jihee. 2023. <span>“R로 만든 PPT 슬라이드 고해상도로
 저장하기.”</span> September 27, 2023. <a href="https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide">https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide</a>.
-</div></div></section></div></main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -527,28 +467,38 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
+    const typesetMath = (el) => {
+      if (window.MathJax) {
+        // MathJax Typeset
+        window.MathJax.typeset([el]);
+      } else if (window.katex) {
+        // KaTeX Render
+        var mathElements = el.getElementsByClassName("math");
+        var macros = [];
+        for (var i = 0; i < mathElements.length; i++) {
+          var texText = mathElements[i].firstChild;
+          if (mathElements[i].tagName == "SPAN") {
+            window.katex.render(texText.data, mathElements[i], {
+              displayMode: mathElements[i].classList.contains('display'),
+              throwOnError: false,
+              macros: macros,
+              fleqn: false
+            });
+          }
+        }
+      }
+    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
-          }
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
-        }
+        typesetMath(container);
         return container.innerHTML
       } else {
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(note);
-        }
+        typesetMath(note);
         return note.innerHTML;
       }
     } else {
@@ -557,9 +507,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
+      typesetMath(note);
       return note.innerHTML;
     }
   }
@@ -780,14 +728,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script>
-<input type="hidden" id="giscus-base-theme" value="light">
-<input type="hidden" id="giscus-alt-theme" value="dark">
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
 <p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
 </div>   
@@ -799,8 +743,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
-
-
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>

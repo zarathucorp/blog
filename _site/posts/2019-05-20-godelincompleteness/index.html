@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.534">
-
+<meta name="generator" content="quarto-1.4.398">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2019-05-22">
 <meta name="description" content="괴델(Kurt Gödel)의 불완전성 정리가 나온 배경을 소개하고 증명의 핵심 아이디어를 수학과 메타수학(meta-mathematics), 괴델수(Gödel number), 그리고 메타수학의 수학화 3가지로 나누어 설명하였습니다. 본 내용은 “제주대학교 경영정보학과 산업·직무 특화 전문가 특강” 에서 발표할 예정입니다.">
-
 <title>Zarathu Blog - 괴델의 불완전성 정리</title>
 <style>
 code{white-space: pre-wrap;}
@@ -24,7 +21,6 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 </style>
-
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
@@ -42,8 +38,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -51,9 +46,7 @@ ul.task-list li input[type="checkbox"] {
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
+    null
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -63,14 +56,11 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
-    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-
-<script type="text/javascript">
+}</script><script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -82,52 +72,16 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script>
-<style>html{ scroll-behavior: smooth; }</style>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../../styles.css">
+</script><style>html{ scroll-behavior: smooth; }</style>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
 </head>
-
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo">
-    </a>
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Zarathu Blog</span>
     </a>
@@ -138,7 +92,7 @@ window.Quarto = {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -150,8 +104,8 @@ window.Quarto = {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
-        <li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
+<li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
@@ -164,7 +118,7 @@ window.Quarto = {
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item">
     <a class="nav-link" href="../../contributors.html"> 
 <span class="menu-text">Contributors</span></a>
@@ -173,8 +127,8 @@ window.Quarto = {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
-        <li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
+<li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
@@ -183,7 +137,7 @@ window.Quarto = {
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
@@ -200,15 +154,11 @@ window.Quarto = {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
+</div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">괴델의 불완전성 정리</h1>
                   <div>
@@ -231,12 +181,12 @@ window.Quarto = {
       <div class="quarto-title-meta-contents">
       <p class="author"><a href="https://github.com/jinseob2kim">Jinseob Kim</a> </p>
     </div>
-    <div class="quarto-title-meta-contents">
+      <div class="quarto-title-meta-contents">
           <p class="affiliation">
               Zarathu Co.,Ltd
             </p>
         </div>
-    </div>
+      </div>
 
   <div class="quarto-title-meta">
 
@@ -254,49 +204,37 @@ window.Quarto = {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#요약" id="toc-요약" class="nav-link active" data-scroll-target="#요약">요약</a></li>
+<li><a href="#%EC%9A%94%EC%95%BD" id="toc-요약" class="nav-link active" data-scroll-target="#%EC%9A%94%EC%95%BD">요약</a></li>
   <li><a href="#slide" id="toc-slide" class="nav-link" data-scroll-target="#slide">Slide</a></li>
-  <li><a href="#강의록" id="toc-강의록" class="nav-link" data-scroll-target="#강의록">강의록</a>
+  <li>
+<a href="#%EA%B0%95%EC%9D%98%EB%A1%9D" id="toc-강의록" class="nav-link" data-scroll-target="#%EA%B0%95%EC%9D%98%EB%A1%9D">강의록</a>
   <ul class="collapse">
-  <li><a href="#서론" id="toc-서론" class="nav-link" data-scroll-target="#서론">서론</a></li>
-  <li><a href="#수학mathematics과-메타수학meta-mathematics" id="toc-수학mathematics과-메타수학meta-mathematics" class="nav-link" data-scroll-target="#수학mathematics과-메타수학meta-mathematics">수학(mathematics)과 메타수학(meta-mathematics)</a></li>
-  <li><a href="#괴델수gödel-number" id="toc-괴델수gödel-number" class="nav-link" data-scroll-target="#괴델수gödel-number">괴델수(Gödel number)</a></li>
-  <li><a href="#메타수학의-수학화" id="toc-메타수학의-수학화" class="nav-link" data-scroll-target="#메타수학의-수학화">메타수학의 수학화</a></li>
-  <li><a href="#불완전성-정리" id="toc-불완전성-정리" class="nav-link" data-scroll-target="#불완전성-정리">불완전성 정리</a></li>
-  <li><a href="#마치며" id="toc-마치며" class="nav-link" data-scroll-target="#마치며">마치며</a></li>
-  <li><a href="#참고문헌" id="toc-참고문헌" class="nav-link" data-scroll-target="#참고문헌">참고문헌</a></li>
-  </ul></li>
+<li><a href="#%EC%84%9C%EB%A1%A0" id="toc-서론" class="nav-link" data-scroll-target="#%EC%84%9C%EB%A1%A0">서론</a></li>
+  <li><a href="#%EC%88%98%ED%95%99mathematics%EA%B3%BC-%EB%A9%94%ED%83%80%EC%88%98%ED%95%99meta-mathematics" id="toc-수학mathematics과-메타수학meta-mathematics" class="nav-link" data-scroll-target="#%EC%88%98%ED%95%99mathematics%EA%B3%BC-%EB%A9%94%ED%83%80%EC%88%98%ED%95%99meta-mathematics">수학(mathematics)과 메타수학(meta-mathematics)</a></li>
+  <li><a href="#%EA%B4%B4%EB%8D%B8%EC%88%98g%C3%B6del-number" id="toc-괴델수gödel-number" class="nav-link" data-scroll-target="#%EA%B4%B4%EB%8D%B8%EC%88%98g%C3%B6del-number">괴델수(Gödel number)</a></li>
+  <li><a href="#%EB%A9%94%ED%83%80%EC%88%98%ED%95%99%EC%9D%98-%EC%88%98%ED%95%99%ED%99%94" id="toc-메타수학의-수학화" class="nav-link" data-scroll-target="#%EB%A9%94%ED%83%80%EC%88%98%ED%95%99%EC%9D%98-%EC%88%98%ED%95%99%ED%99%94">메타수학의 수학화</a></li>
+  <li><a href="#%EB%B6%88%EC%99%84%EC%A0%84%EC%84%B1-%EC%A0%95%EB%A6%AC" id="toc-불완전성-정리" class="nav-link" data-scroll-target="#%EB%B6%88%EC%99%84%EC%A0%84%EC%84%B1-%EC%A0%95%EB%A6%AC">불완전성 정리</a></li>
+  <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">마치며</a></li>
+  <li><a href="#%EC%B0%B8%EA%B3%A0%EB%AC%B8%ED%97%8C" id="toc-참고문헌" class="nav-link" data-scroll-target="#%EC%B0%B8%EA%B3%A0%EB%AC%B8%ED%97%8C">참고문헌</a></li>
   </ul>
-</nav>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
-<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
-<script>
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script>
-
-
-
-
-
-<p><a href="https://github.com/jinseob2kim">김진섭</a> 대표는 5월 30일(목) <strong><a href="http://mis.jejunu.ac.kr/">제주대학교 경영정보학과</a> 산업·직무 특화 전문가 특강</strong>에 참석, <strong>괴델(Kurt Gödel)의 불완전성 정리</strong>가 나온 배경을 소개하고 증명의 핵심 아이디어를 <strong>수학과 메타수학(meta-mathematics)</strong>, <strong>괴델수(Gödel number)</strong>, 그리고 <strong>메타수학의 수학화</strong> 3가지로 나누어 설명할 예정입니다. 정리한 슬라이드와 강의록을 미리 공유합니다. 초청해주신 <a href="http://news.jejunu.ac.kr/news/articleView.html?idxno=12780">현정석</a> 교수님께 감사드립니다.</p>
-<section id="요약" class="level2">
-<h2 class="anchored" data-anchor-id="요약">요약</h2>
+</script><p><a href="https://github.com/jinseob2kim">김진섭</a> 대표는 5월 30일(목) <strong><a href="http://mis.jejunu.ac.kr/">제주대학교 경영정보학과</a> 산업·직무 특화 전문가 특강</strong>에 참석, <strong>괴델(Kurt Gödel)의 불완전성 정리</strong>가 나온 배경을 소개하고 증명의 핵심 아이디어를 <strong>수학과 메타수학(meta-mathematics)</strong>, <strong>괴델수(Gödel number)</strong>, 그리고 <strong>메타수학의 수학화</strong> 3가지로 나누어 설명할 예정입니다. 정리한 슬라이드와 강의록을 미리 공유합니다. 초청해주신 <a href="http://news.jejunu.ac.kr/news/articleView.html?idxno=12780">현정석</a> 교수님께 감사드립니다.</p>
+<section id="요약" class="level2"><h2 class="anchored" data-anchor-id="요약">요약</h2>
 <ol type="1">
 <li><p>18/19 세기 미적분학, 해석학의 발전으로, 수학은 점점 기존의 직관과 상식에서 벗어나 추상화되면서 많은 문제점들이 생겼다.</p></li>
 <li><p>특히 무한의 개념을 엄밀하게 다룰 필요성이 있었는데, <strong>칸토어(Georg Cantor)</strong>는 집합론의 논법으로 무한을 엄밀하게 정의하고 그것들의 크기를 비교하였다.</p></li>
@@ -305,48 +243,34 @@ window.Quarto = {
 <li><p>그러나 <strong>괴델(Kurt Gödel)</strong>은 이 부분을 파고들어 메타수학의 명제를 수학의 명제로 바꾸는 <strong>괴델수(Gödel number)</strong> 라는 독창적인 아이디어를 제안, 메타수학의 명제를 수학 체계로 갖고 온 후 자기언급의 역설을 보여주었다. 즉, “<strong>자기언급의 역설</strong>” 을 피하기 위해 아무리 세심하게 공리계를 설계해도 그것을 피할 수는 없다는 것을 증명하였으며, 이것이 불완전성 정리이다.</p></li>
 <li><p>불완전성 정리로 인해 “<strong>참이지만 증명불가능한 명제가 존재</strong>” 하고 나아가 “<strong>수학의 무모순성을 수학 자체적으로는 증명할 수 없음</strong>” 이 증명되어 모순없는 완전한 수학체계의 꿈은 결국 산산조각이 난다.</p></li>
 <li><p>불완전성 정리를 <strong>인간 이성의 한계</strong>로만 해석하고 실의에 빠지지 말자. 어떤 기계보다도 더 <strong>복잡하고 정교한 인간의 정신구조와 능력</strong>을 긍정하며 <strong>창조적 이성의 힘</strong>을 인정할 때이다.</p></li>
-</ol>
-</section>
-<section id="slide" class="level2">
-<h2 class="anchored" data-anchor-id="slide">Slide</h2>
+</ol></section><section id="slide" class="level2"><h2 class="anchored" data-anchor-id="slide">Slide</h2>
 <p>아래 슬라이드를 보거나 <a href="https://jinseob2kim.github.io/LectureGodel/">https://jinseob2kim.github.io/LectureGodel/</a> 를 클릭하면 볼 수 있다.</p>
 <iframe src="https://jinseob2kim.github.io/LectureGodel/" width="900" height="600" style="border: none;">
 </iframe>
-</section>
-<section id="강의록" class="level2">
-<h2 class="anchored" data-anchor-id="강의록">강의록</h2>
+</section><section id="강의록" class="level2"><h2 class="anchored" data-anchor-id="강의록">강의록</h2>
 <p>본 강의록은 과거 https://jinseob2kim.github.io/godel.html 에 정리했던 내용을 약간만 수정하였습니다.</p>
-<section id="서론" class="level3">
-<h3 class="anchored" data-anchor-id="서론">서론</h3>
+<section id="서론" class="level3"><h3 class="anchored" data-anchor-id="서론">서론</h3>
 <p>괴델의 불완전성 정리에 대한 많은 책들이 시중에 출판되어 있다. 허나 대부분이 역사와 증명의 의미에 치중되어 있고 실제 증명의 아이디어를 설명한 책은 거의 없으며, 있다고 하더라도 외국 서적을 번역하면서 난해한 표현이 많이 나와 이해하기가 어렵다. 이에 본 글에서는 불완전성 정리 증명의 핵심적인 아이디어를 크게 <strong>수학(mathematics)과 메타수학(meta-mathematics)</strong>, <strong>괴델수(Gödel number)</strong>, <strong>메타수학의 수학화</strong>의 3가지로 나누어 설명하겠다. 본 글이 불완전성정리의 아름다움을 느끼는 데 도움이 되길 바란다.</p>
-</section>
-<section id="수학mathematics과-메타수학meta-mathematics" class="level3">
-<h3 class="anchored" data-anchor-id="수학mathematics과-메타수학meta-mathematics">수학(mathematics)과 메타수학(meta-mathematics)</h3>
+</section><section id="수학mathematics과-메타수학meta-mathematics" class="level3"><h3 class="anchored" data-anchor-id="수학mathematics과-메타수학meta-mathematics">수학(mathematics)과 메타수학(meta-mathematics)</h3>
 <p>보통 불완전성 정리에 대한 책들에서는 간략하게 증명의 개요만 언급하는데 그것은 아래와 같다.</p>
 <p><span class="math display">\[G: G는 \:증명불가능하다.\]</span></p>
 <p>만약 <span class="math inline">\(G\)</span>가 증명 가능하다면 그것은 참이고, 내용은 “<span class="math inline">\(G\)</span>는 증명 불가능하다.” 므로 모순이다. 따라서 <span class="math inline">\(G\)</span>는 증명 불가능하며, <span class="math inline">\(G\)</span>의 내용은 “<span class="math inline">\(G\)</span>가 증명 불가능하다”는 것이므로 참이다. 따라서 <span class="math inline">\(G\)</span>는 참이지만 증명불가능한 명제라는 것이다. 이 설명을 보고 고개를 끄덕 인 후 증명이 끝난 것 아닌가? 라는 생각을 할 수도 있을 것이다. 그러나 명제 내부에 명제 자신을 언급한 순환논리부분을 해결하지 않으면 안되고 사실 불완전성정리의 핵심부분도 이 부분이며 수학의 명제와 메타수학의 명제를 구분하는 것이 이해의 시작이 된다.</p>
-<section id="수학-명제와-메타수학-명제의-차이점" class="level4">
-<h4 class="anchored" data-anchor-id="수학-명제와-메타수학-명제의-차이점">수학 명제와 메타수학 명제의 차이점</h4>
+<section id="수학-명제와-메타수학-명제의-차이점" class="level4"><h4 class="anchored" data-anchor-id="수학-명제와-메타수학-명제의-차이점">수학 명제와 메타수학 명제의 차이점</h4>
 <p>아주 간단한 수학 명제 하나를 살펴보자.</p>
 <p><span class="math display">\[1+1=2\]</span></p>
 <p>이 표현은 수학에 속한 표현이다. 이제 다음 명제를 살펴보면</p>
 <p><span class="math display">\["1+1=2"는 \:수학\: 명제이다.\]</span></p>
 <p>이 진술은 앞에 나온 수학명제에 대해 무엇인가를 주장하고 있으며 따라서 수학이 아니라 메타수학의 명제라고 할 수 있다. 비슷하게 “<strong><span class="math inline">\(x\)</span>는 변수이다</strong>”, “<span class="math inline">\(x=1\)</span><strong>은 방정식이다</strong>” 들도 수학 명제가 아니라 메타수학의 명제이다. 수학과 메타수학을 구별하는 것은 몇 번을 강조해도 지나치지 않은데 이 구별에 소홀한 것이 수많은 역설이 만들어지는 이유이기 때문이다. 힐베르트를 포함한 당시의 수학자들은 이를 잘 구별하면 역설을 제거할 수 있다고 보았다. 이제 다시 처음 식을 살펴보자. <span class="math inline">\(G\)</span>가 수학명제라면 <strong>“<span class="math inline">\(G\)</span>는 증명불가능하다”</strong> 는 수학의 명제가 아니라 메타수학의 명제이므로, 이것이 수학명제인 <span class="math inline">\(G\)</span>가 될 수는 없다. 따라서 자기언급의 역설은 발생하지 않는다.</p>
 <p>그러나 괴델은 이 부분을 파고들어 메타수학의 명제를 수학의 명제로 바꾸는 <strong>괴델수(Gödel number)</strong> 라는 독창적인 아이디어를 제안, 메타수학의 명제를 수학 체계로 갖고 온 후 자기언급의 역설을 보여주었다. 괴델수부터 차근차근 알아보도록 하자.</p>
-</section>
-</section>
-<section id="괴델수gödel-number" class="level3">
-<h3 class="anchored" data-anchor-id="괴델수gödel-number">괴델수(Gödel number)</h3>
+</section></section><section id="괴델수gödel-number" class="level3"><h3 class="anchored" data-anchor-id="괴델수gödel-number">괴델수(Gödel number)</h3>
 <p>괴델수는 모든 기호, 변수, 명제, 명제묶음(증명)들에 유일한 숫자를 부여하는 것인데 몇가지 예를 들어보면 다음과 같다.</p>
 <table class="table">
 <caption>상항기호</caption>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th style="text-align: right;">기호</th>
 <th style="text-align: center;">괴델수</th>
 <th style="text-align: center;">의미</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: right;"><span class="math inline">\(\sim\)</span></td>
@@ -361,12 +285,14 @@ window.Quarto = {
 <tr class="odd">
 <td style="text-align: right;"><span class="math inline">\(\supset\)</span></td>
 <td style="text-align: center;">3</td>
-<td style="text-align: center;"><span class="math inline">\(\cdots\)</span>라면 <span class="math inline">\(\cdots\)</span>다</td>
+<td style="text-align: center;">
+<span class="math inline">\(\cdots\)</span>라면 <span class="math inline">\(\cdots\)</span>다</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;"><span class="math inline">\(\exists\)</span></td>
 <td style="text-align: center;">4</td>
-<td style="text-align: center;"><span class="math inline">\(\cdots\)</span>이 존재한다</td>
+<td style="text-align: center;">
+<span class="math inline">\(\cdots\)</span>이 존재한다</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;"><span class="math inline">\(=\)</span></td>
@@ -413,14 +339,12 @@ window.Quarto = {
 <p>위의 표에 나와있는 기호들을 <strong>상항기호</strong>라고 하며, 이와 대응되는 개념은 <strong>변항(variable)기호</strong>인데 숫자 변항, 문장 변항, 술어 변항으로 나눌 수 있다. 숫자 변항에는 12보다 큰 소수, 문장 변항에는 12보다 큰 소수의 제곱수, 술어변항에는 12보다 큰 소수의 세제곱수를 부여하게 되며 예는 아래의 표와 같다.</p>
 <table class="table">
 <caption>변항기호</caption>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th style="text-align: right;"></th>
 <th style="text-align: center;">변항</th>
 <th style="text-align: center;">괴델수</th>
 <th style="text-align: center;">대입 예</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">숫자변항</td>
@@ -462,7 +386,8 @@ window.Quarto = {
 <td style="text-align: right;">술어변항</td>
 <td style="text-align: center;"><span class="math inline">\(P\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(13^3\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(P(x)\)</span>: <span class="math inline">\(x\)</span>는 소수이다.</td>
+<td style="text-align: center;">
+<span class="math inline">\(P(x)\)</span>: <span class="math inline">\(x\)</span>는 소수이다.</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;"></td>
@@ -481,9 +406,7 @@ window.Quarto = {
 <p>이제 문장 (<span class="math inline">\(\exists x\)</span>)(<span class="math inline">\(x=sy\)</span>) 를 살펴보자. 이것은 <span class="math inline">\(y\)</span> 다음 수가 존재한다고 읽으며, 기본기호 하나하나의 괴델수를 살펴보면 8, 4, 13, 9, 8, 13, 5, 7, 17, 9이고 문장 전체의 괴델수는 다음과 같이 소수를 이용하여 표현한다.</p>
 <p><span class="math display">\[2^8 \times 3^4 \times 5^{13} \times 7^9 \times 11^8 \times 13^{13} \times 17^5 \times 19^7 \times 23^{17} \times 29^9\]</span></p>
 <p>마찬가지로 증명에 대해서도 괴델수를 부여할 수 있는데 예를들어 증명이 두 서술로 되어 있고 각 서술의 괴델수가 <span class="math inline">\(m\)</span>과 <span class="math inline">\(n\)</span>이라면 증명의 괴델수는 <span class="math inline">\(2^m \times 3^n\)</span> 으로 표현한다. 이런식으로 모든 수학적 표현에 대해서 겹치지 않고 유일하게 괴델수를 부여할 수 있다. 한가지 예를 더 들면 괴델수 243,000,000은 <span class="math inline">\(2^6 \times 3^5 \times 5^6\)</span>으로 소인수분해 되며 지수부분인 6,5,6은 각각 0, <span class="math inline">\(=\)</span>, 0에 대응되므로 결국 <strong><span class="math inline">\(0=0\)</span></strong>이라는 수학명제를 나타내게 된다.</p>
-</section>
-<section id="메타수학의-수학화" class="level3">
-<h3 class="anchored" data-anchor-id="메타수학의-수학화">메타수학의 수학화</h3>
+</section><section id="메타수학의-수학화" class="level3"><h3 class="anchored" data-anchor-id="메타수학의-수학화">메타수학의 수학화</h3>
 <p>괴델은 괴델수를 이용하여 메타수학의 명제를 수학의 명제로 바꾸는 데 성공하였는데 간단한 예를 들어보겠다.</p>
 <p><span class="math display">\[\sim(0=0)\]</span></p>
 <p>는 “<strong>0은 0이 아니다.</strong>” 라는 단순한 수학 명제인 반면</p>
@@ -493,18 +416,13 @@ window.Quarto = {
 <p>와 같이 수학명제로 바뀌게 된다. 기호로 표현하기 위해 표현을 바꾸면 <strong>“<span class="math inline">\(y=z\times 2\)</span>인 <span class="math inline">\(z\)</span>가 존재하고, <span class="math inline">\(y=z\times 2 \times 2\)</span>인 <span class="math inline">\(z\)</span>는 존재하지 않는다.”</strong> 가 되며 실제로 이를 기호로 표현하면 다음과 같다.</p>
 <p><span class="math display">\[(\exists z) (sss\cdots sss0=z\times ss0) \cdot \sim(\exists z) (sss\cdots sss0=z\times (ss0 \times ss0))\]</span></p>
 <p>(<span class="math inline">\(sss\cdots sss0\)</span>에서 <span class="math inline">\(s\)</span>는 정확히 <span class="math inline">\(a\)</span>번 나타난다.) 이와 비슷한 방법으로 <strong>모든 메타수학의 명제를 괴델수를 이용하여 수학의 명제로 바꿀 수 있다</strong>.</p>
-</section>
-<section id="불완전성-정리" class="level3">
-<h3 class="anchored" data-anchor-id="불완전성-정리">불완전성 정리</h3>
+</section><section id="불완전성-정리" class="level3"><h3 class="anchored" data-anchor-id="불완전성-정리">불완전성 정리</h3>
 <p>이제 불완전성 정리를 천천히 이해해보자. <strong>Dem/dem</strong>과 <strong>Sub/sub</strong>의 개념을 정의한 후 증명의 핵심 아이디어로 들어가 보겠다.</p>
-<section id="dem" class="level4">
-<h4 class="anchored" data-anchor-id="dem">Dem</h4>
+<section id="dem" class="level4"><h4 class="anchored" data-anchor-id="dem">Dem</h4>
 <p><strong>dem</strong>은 증명을 뜻하는 demonstration의 약자로 <strong>dem</strong>(<span class="math inline">\(x\)</span>, <span class="math inline">\(z\)</span>)은</p>
 <p><span class="math display">\[\text{괴델수 } x \text{를 가진 문장묶음이 괴델수 } z \text{를 가진 명제의 증명이다}.\]</span></p>
 <p>의 축약표현으로 정의한다. 예를 들어 “피타고라스 정리 증명”의 괴델수가 <span class="math inline">\(m\)</span>이고 “피타고라스 정리”의 괴델수가 <span class="math inline">\(n\)</span>이라면 dem(<span class="math inline">\(m\)</span>, <span class="math inline">\(n\)</span>)이라고 쓸 수 있는 것이다. 한편, <strong>Dem(<span class="math inline">\(x\)</span>, <span class="math inline">\(z\)</span>)</strong>은 <span class="math inline">\(x\)</span>와 <span class="math inline">\(z\)</span>의 관계 <strong>dem</strong>을 <strong>형식적 표기법으로 표현하는 형식문</strong>으로 정의한다.</p>
-</section>
-<section id="sub" class="level4">
-<h4 class="anchored" data-anchor-id="sub">Sub</h4>
+</section><section id="sub" class="level4"><h4 class="anchored" data-anchor-id="sub">Sub</h4>
 <p><strong>Sub</strong>은 치환 혹은 대입을 의미하며 소문자로 표현한 <strong>sub</strong>(<span class="math inline">\(x\)</span>,17,<span class="math inline">\(x\)</span>)는</p>
 <p><span class="math display">\[\text{괴델수 } x \text{를 가진 문장에 등장하는} \textbf{ 변수 } y \textbf{들에 전부 숫자 } x \textbf{를 대입} \text{해서 만들어진 명제의 괴델수}\]</span></p>
 <p>로 정의한다(17은 <span class="math inline">\(y\)</span>의 괴델수임을 기억하자). 한 편, <span class="math inline">\(s\)</span>를 대문자로 표시한 <strong>Sub</strong>(<span class="math inline">\(x\)</span>,17,<span class="math inline">\(x\)</span>)는</p>
@@ -515,22 +433,15 @@ window.Quarto = {
 <p><span class="math display">\[2^8 \times 3^4 \times 5^{13} \times 7^9 \times 11^8 \times 13^{13} \times 17^5 \times 19^7 \times 23^{7} \times 29^7 \times 31^7 \times 37^7 \times \cdots (P_{k+10})^9\]</span></p>
 <p>(<span class="math inline">\(P_{k+10}\)</span>: <span class="math inline">\(k+10\)</span>번 째 소수)</p>
 <p>얼핏 보기에 문장의 괴델수를 문장 그 자체에 대입한다는 것이 순환논리같은 느낌을 주는데 이것이 바로 괴델의 핵심적인 아이디어 중 하나이다. 이제부터 본격적인 증명의 내용으로 들어가기로 하자.</p>
-</section>
-<section id="불완전성-정리-1" class="level4">
-<h4 class="anchored" data-anchor-id="불완전성-정리-1">불완전성 정리</h4>
+</section><section id="불완전성-정리-1" class="level4"><h4 class="anchored" data-anchor-id="불완전성-정리-1">불완전성 정리</h4>
 <p>불완전성 정리의 증명은 <strong>“괴델수 <span class="math inline">\(z\)</span>를 가진 명제는 증명불가능하다”</strong>라는 메타수학의 명제를 수학의 명제로 바꾼 후, 이 명제의 특별한 경우가 증명될 수 없다는 것을 보이는것으로 이루어진다. 이제 다음의 형식문을 살펴보자.</p>
 <p><span class="math display">\[\sim(\exists x)\text{Dem}(x,\text{Sub}(y, 17, y))\]</span></p>
 <p>이 수학의 형식문은 <strong>“Sub(<span class="math inline">\(y\)</span> ,17, <span class="math inline">\(y\)</span>) 의 증명은 존재하지 않는다, 즉 증명불가능하다”는 메타수학적 의미</strong>를 갖는다. 이 형식문의 괴델수를 <span class="math inline">\(n\)</span>이라 하고, 형식문에 포함된 변수 <span class="math inline">\(y\)</span>를 숫자 <span class="math inline">\(n\)</span>으로 바꾼 형식문 <span class="math inline">\(G\)</span>를 살펴보자.</p>
 <p><span class="math display">\[\text{G}: \sim(\exists x)\text{Dem}(x,\text{Sub}(n, 17, n))\]</span></p>
 <p><span class="math inline">\(G\)</span>는 변수가 포함되어 있지 않으므로 수학명제이며, 이것의 메타수학적 의미를 살펴보면 <strong>“괴델수 sub(<span class="math inline">\(n\)</span>, 17, <span class="math inline">\(n\)</span>)을 가진 명제는 증명 불가능하다.”</strong>이다. <span class="math inline">\(G\)</span>의 괴델수를 <span class="math inline">\(g\)</span>라고 하고 <span class="math inline">\(g\)</span>는 어떤 숫자일지 생각해보자. 놀랍게도 <span class="math inline">\(g=\text{sub}(n, 17, n)\)</span>임을 알 수 있다. <strong><span class="math inline">\(G\)</span>는 괴델수 <span class="math inline">\(n\)</span>을 가진 형식문에서 <span class="math inline">\(y\)</span>에 숫자 <span class="math inline">\(n\)</span>을 대입하여 만든 명제이므로, 이것의 괴델수 <span class="math inline">\(g\)</span>는 정확히 sub(<span class="math inline">\(n\)</span>, 17, <span class="math inline">\(n\)</span>)의 정의와 일치하게 된다</strong>. 이제 <span class="math inline">\(G\)</span>의 메타수학적 의미를 다시 살펴보면 <strong>“괴델 수 <span class="math inline">\(g\)</span>를 가진 명제는 증명 불가능하다.”</strong>이고 즉, “<span class="math inline">\(G\)</span>는 증명 불가능하다”는 의미가 된다. 맨 처음으로 돌아가면, <span class="math inline">\(G\)</span>는 참이지만 증명 불가능한 명제가 되어 불완전성의 정리가 증명된다.</p>
-</section>
-</section>
-<section id="마치며" class="level3">
-<h3 class="anchored" data-anchor-id="마치며">마치며</h3>
+</section></section><section id="마치며" class="level3"><h3 class="anchored" data-anchor-id="마치며">마치며</h3>
 <p>필자는 고등학생때부터 괴델의 불완전성정리를 이해해보려고 괴델의 논문원본도 찾아보고 여러 교양서적을 많이 읽어보았었다. 그러나 논문을 다 보는것은 이해하기가 어렵고 교양서적은 겉핥기식으로만 나와있어서 최근까지도 증명의 핵심을 이해하지 못했었는데 출판사 승산에서 나온 <strong>괴델의 증명</strong>을 읽으면서 한층 이해수준을 올릴 수 있었다. 이 책은 외국서적을 번역한 것으로 번역하면서 생소한 단어와 표현들이 많이나와 읽기가 어려운 부분이 있어 이번기회에 잘 풀어서 설명해볼 목적으로 글을 쓰게 되었다. 본 글이 논문과 교양서적 사이에서 가교 역할을 하여 불완전성 정리를 이해하는데 도움이 되길 기대한다.</p>
-</section>
-<section id="참고문헌" class="level3">
-<h3 class="anchored" data-anchor-id="참고문헌">참고문헌</h3>
+</section><section id="참고문헌" class="level3"><h3 class="anchored" data-anchor-id="참고문헌">참고문헌</h3>
 <ol type="1">
 <li><p><a href="https://book.naver.com/bookdb/book_detail.nhn?bid=12235969">괴델, 에셔, 바흐 : 영원한 황금 노끈</a> / 지은이: 더글러스 호프스태터 ; 옮긴이: 박여성, 안병서</p></li>
 <li><p><a href="https://book.naver.com/bookdb/book_detail.nhn?bid=6395428">(호프스태터가 서문을 쓰고 개정한) 괴델의 증명</a> / 지은이: 어니스트 네이글, 제임스 뉴먼 ; 옮긴이: 곽강제, 고중숙</p></li>
@@ -538,12 +449,10 @@ window.Quarto = {
 </ol>
 
 
-</section>
-</section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2019,
+</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2019,
   author = {Kim, Jinseob},
   title = {괴델의 {불완전성} {정리}},
+  pages = {undefined},
   date = {2019-05-22},
   url = {https://blog.zarathu.com/posts/2019-05-20-godelincompleteness},
   langid = {en}
@@ -551,8 +460,7 @@ window.Quarto = {
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2019" class="csl-entry quarto-appendix-citeas" role="listitem">
 Kim, Jinseob. 2019. <span>“괴델의 불완전성 정리.”</span> May 22, 2019.
 <a href="https://blog.zarathu.com/posts/2019-05-20-godelincompleteness">https://blog.zarathu.com/posts/2019-05-20-godelincompleteness</a>.
-</div></div></section></div></main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -680,28 +588,38 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
+    const typesetMath = (el) => {
+      if (window.MathJax) {
+        // MathJax Typeset
+        window.MathJax.typeset([el]);
+      } else if (window.katex) {
+        // KaTeX Render
+        var mathElements = el.getElementsByClassName("math");
+        var macros = [];
+        for (var i = 0; i < mathElements.length; i++) {
+          var texText = mathElements[i].firstChild;
+          if (mathElements[i].tagName == "SPAN") {
+            window.katex.render(texText.data, mathElements[i], {
+              displayMode: mathElements[i].classList.contains('display'),
+              throwOnError: false,
+              macros: macros,
+              fleqn: false
+            });
+          }
+        }
+      }
+    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
-          }
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
-        }
+        typesetMath(container);
         return container.innerHTML
       } else {
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(note);
-        }
+        typesetMath(note);
         return note.innerHTML;
       }
     } else {
@@ -710,9 +628,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
+      typesetMath(note);
       return note.innerHTML;
     }
   }
@@ -933,14 +849,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script>
-<input type="hidden" id="giscus-base-theme" value="light">
-<input type="hidden" id="giscus-alt-theme" value="dark">
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
 <p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
 </div>   
@@ -952,8 +864,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
-
-
 
 
 <script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
