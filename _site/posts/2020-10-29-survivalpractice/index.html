@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.398">
+<meta name="generator" content="quarto-1.4.525">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2020-10-31">
@@ -80,7 +80,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    null
+    "f",
+    "/",
+    "s"
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -90,6 +92,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -116,7 +119,7 @@ ga('send', {
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
     <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
@@ -220,12 +223,12 @@ ga('send', {
       <div class="quarto-title-meta-contents">
       <p class="author"><a href="https://github.com/jinseob2kim">Jinseob Kim</a> </p>
     </div>
-      <div class="quarto-title-meta-contents">
+    <div class="quarto-title-meta-contents">
           <p class="affiliation">
               Zarathu Co.,Ltd
             </p>
         </div>
-      </div>
+    </div>
 
   <div class="quarto-title-meta">
 
@@ -243,7 +246,7 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
 <li><a href="#%EC%9A%94%EC%95%BD" id="toc-요약" class="nav-link active" data-scroll-target="#%EC%9A%94%EC%95%BD">요약</a></li>
@@ -267,7 +270,7 @@ ga('send', {
 </li>
   <li><a href="#%EB%AA%A8%EC%88%98%EC%A0%81parametric-%EC%83%9D%EC%A1%B4%EB%B6%84%EC%84%9D" id="toc-모수적parametric-생존분석" class="nav-link" data-scroll-target="#%EB%AA%A8%EC%88%98%EC%A0%81parametric-%EC%83%9D%EC%A1%B4%EB%B6%84%EC%84%9D">모수적(parametric) 생존분석</a></li>
   </ul></nav>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
@@ -322,14 +325,20 @@ details:hover { cursor: pointer }
 <div class="cell" data-layout-align="center">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/jskm/man/jskm.html">jskm</a></span><span class="op">(</span><span class="va">sfit</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>라벨을 수정하고, risk table 과 log-rank p-value 를 추가하자.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/jskm/man/jskm.html">jskm</a></span><span class="op">(</span><span class="va">sfit</span>, ystrataname <span class="op">=</span> <span class="st">"Treat"</span>, ystratalabs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Standard"</span>, <span class="st">"Test"</span><span class="op">)</span>, table <span class="op">=</span> <span class="cn">T</span>, pval <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>십자가 무늬는 실제 censoring 이 발생한 부분이며 <code>mark = F</code> 로 숨길 수 있다. 생존율이 아닌 누적발생률을 %로 보는 코드는 아래와 같다.</p>
@@ -337,7 +346,10 @@ details:hover { cursor: pointer }
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/jskm/man/jskm.html">jskm</a></span><span class="op">(</span><span class="va">sfit</span>, ystrataname <span class="op">=</span> <span class="st">"Treat"</span>, ystratalabs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Standard"</span>, <span class="st">"Test"</span><span class="op">)</span>, table <span class="op">=</span> <span class="cn">T</span>, pval <span class="op">=</span> <span class="cn">T</span>, </span>
 <span>     marks <span class="op">=</span> <span class="cn">F</span>, cumhaz <span class="op">=</span> <span class="cn">T</span>, surv.scale <span class="op">=</span> <span class="st">"percent"</span> <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>p-value 위치는 <code>pval.coord</code> legend 위치는 <code>legendposition</code> 옵션을 이용한다. 선을 흑백으로 바꾸려면 <code>linecols = "black"</code> 을 추가한다. <code>legendposition</code> 은 x,y 값 모두 0~1 scale 임을 주의하자.</p>
@@ -345,7 +357,10 @@ details:hover { cursor: pointer }
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/jskm/man/jskm.html">jskm</a></span><span class="op">(</span><span class="va">sfit</span>, ystrataname <span class="op">=</span> <span class="st">"Treat"</span>, ystratalabs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Standard"</span>, <span class="st">"Test"</span><span class="op">)</span>, table <span class="op">=</span> <span class="cn">T</span>, pval <span class="op">=</span> <span class="cn">T</span>, </span>
 <span>     marks <span class="op">=</span> <span class="cn">F</span>, pval.coord <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">0.1</span><span class="op">)</span>, legendposition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.85</span>, <span class="fl">0.6</span><span class="op">)</span>, linecols <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>마지막으로 특정 시간을 기준으로 나누어보는 landmark analysis 옵션을 소개한다.</p>
@@ -356,7 +371,10 @@ details:hover { cursor: pointer }
 <pre><code>Warning: Removed 2 row(s) containing missing values (geom_path).</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="연속변수의-최적-cut-off-구하기" class="level2"><h2 class="anchored" data-anchor-id="연속변수의-최적-cut-off-구하기">연속변수의 최적 cut-off 구하기</h2>
@@ -381,7 +399,10 @@ estimated cutpoint
 <span><span class="va">sfit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">karno_cat</span>, data <span class="op">=</span> <span class="va">veteran</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/jskm/man/jskm.html">jskm</a></span><span class="op">(</span><span class="va">sfit2</span>, ystrataname <span class="op">=</span> <span class="st">"Karno"</span>, ystratalabs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"&lt;"</span>, <span class="st">"≥"</span><span class="op">)</span>, <span class="va">cut</span><span class="op">)</span>, table <span class="op">=</span> <span class="cn">T</span>, pval <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="비례위험가정-확인" class="level2"><h2 class="anchored" data-anchor-id="비례위험가정-확인">비례위험가정 확인</h2>
@@ -393,7 +414,10 @@ estimated cutpoint
 <span>     ylab<span class="op">=</span><span class="st">"log-log survival"</span>, xlab<span class="op">=</span><span class="st">"Time (log scale)"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"bottomright"</span>,lty<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Standard"</span>, <span class="st">"Test"</span><span class="op">)</span>, bty<span class="op">=</span><span class="st">"n"</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Black"</span>, <span class="st">"Grey50"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>두 선이 평행한지 확인하면 되고 <strong>직선인지 곡선인지는 상관없다</strong>. 모수적 생존분석에서 다룰 weibull 모형에서는 직선인지도 확인해야 한다.</p>
@@ -410,7 +434,10 @@ estimated cutpoint
 <span><span class="va">kmfit.exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span><span class="op">(</span><span class="va">exp</span>, newdata <span class="op">=</span> <span class="va">new_df</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">kmfit.exp</span>, lty <span class="op">=</span> <span class="st">"solid"</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Blue"</span>, <span class="st">"Red"</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">2</span>, font.lab<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="goodness-of-fit" class="level3"><h3 class="anchored" data-anchor-id="goodness-of-fit">Goodness of fit</h3>
@@ -425,7 +452,10 @@ GLOBAL  3.54  1 0.06</code></pre>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/cox.zph.html">cox.zph</a></span><span class="op">(</span><span class="va">exp</span><span class="op">)</span>, var <span class="op">=</span> <span class="st">"trt"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0</span>, lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>선이 시간 상관없이 일정할수록, 즉 <strong>x축과 평행할수록 비례위험가정을 만족</strong>한다고 판단한다. 위 그림은 x축과 평행은 아니지만 경향성이 있다고 볼수도 없는 애매한 느낌이며 p 는 0.06 이다.</p>
@@ -552,7 +582,7 @@ Score (logrank) test = 71.33  on 5 df,   p=5e-14</code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">N</span><span class="op">=</span><span class="fl">100</span> <span class="co">#number of patients</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
-<span><span class="va">df.tf</span><span class="op">&lt;-</span><span class="fu">simple.surv.sim</span><span class="op">(</span><span class="co">#baseline time fixed</span></span>
+<span><span class="va">df.tf</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/survsim/man/simple.surv.sim.html">simple.surv.sim</a></span><span class="op">(</span><span class="co">#baseline time fixed</span></span>
 <span> n<span class="op">=</span><span class="va">N</span>, foltime<span class="op">=</span><span class="fl">500</span>,</span>
 <span> dist.ev<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'llogistic'</span><span class="op">)</span>,</span>
 <span> anc.ev<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.68</span><span class="op">)</span>, beta0.ev<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5.8</span><span class="op">)</span>,</span>
@@ -669,7 +699,10 @@ Score (logrank) test = 4.18  on 3 df,   p=0.2,   Robust = 4.55  p=0.2
 <p>아래는 대표적인 분포들이며 본 글에서는 흔히 쓰는 weibull 을 다루려 한다.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<p><img src="paratable.png" class="img-fluid quarto-figure-center" style="width:200.0%"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="paratable.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:200.0%"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>아까 비례위험가정 얘기할 때 weibull 모형은 <strong>log-log 그래프가 직선인지도 확인</strong>해야 한다고 했는데, 그 이유는 아래 식에 나와있듯이 <span class="math inline">\(\log(-\log(S(t)))\)</span> 와 <span class="math inline">\(\log(t)\)</span> 가 정비례관계이기 때문이다.</p>
@@ -710,7 +743,10 @@ n= 137 </code></pre>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html">matplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">ptime</span><span class="op">$</span><span class="va">fit</span>, <span class="va">ptime</span><span class="op">$</span><span class="va">fit</span> <span class="op">+</span> <span class="fl">1.96</span><span class="op">*</span><span class="va">ptime</span><span class="op">$</span><span class="va">se.fit</span>, <span class="va">ptime</span><span class="op">$</span><span class="va">fit</span> <span class="op">-</span> <span class="fl">1.96</span><span class="op">*</span><span class="va">ptime</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span>, <span class="fl">1</span> <span class="op">-</span> <span class="va">pcut</span>,</span>
 <span>        xlab <span class="op">=</span> <span class="st">"Days"</span>, ylab <span class="op">=</span> <span class="st">"Survival"</span>, type <span class="op">=</span> <span class="st">'l'</span>, lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, col<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 <p><span class="math inline">\(S(t)\)</span> 를 구할 수 없는 cox model 의 그림과 비교해보자.</p>
@@ -719,7 +755,10 @@ n= 137 </code></pre>
 <span><span class="va">kmfit.exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span><span class="op">(</span><span class="va">exp</span>, newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>trt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">kmfit.exp</span>, lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, col<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">2</span>, xlab <span class="op">=</span> <span class="st">"Days"</span>, ylab <span class="op">=</span> <span class="st">"Survival"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid quarto-figure-center" width="768"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>지금까지 생존분석 때 고려할 내용을 다루었으며 처음의 요약을 반복하면 아래와 같다.</p>
@@ -733,10 +772,9 @@ n= 137 </code></pre>
 <p>자세한 내용은 중간중간 링크한 자료들을 참고하기 바란다.</p>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2020,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2020,
   author = {Kim, Jinseob},
   title = {생존분석 {실습}},
-  pages = {undefined},
   date = {2020-10-31},
   url = {https://blog.zarathu.com/posts/2020-10-29-survivalpractice},
   langid = {en}
@@ -896,8 +934,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
         typesetMath(container);
         return container.innerHTML

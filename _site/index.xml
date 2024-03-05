@@ -9,8 +9,559 @@
 <link>https://blog.zarathu.com/</link>
 <atom:link href="https://blog.zarathu.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>News, insights, and in-depth case studies from Zarathu</description>
-<generator>quarto-1.4.398</generator>
-<lastBuildDate>Mon, 22 Jan 2024 15:00:00 GMT</lastBuildDate>
+<generator>quarto-1.4.525</generator>
+<lastBuildDate>Mon, 04 Mar 2024 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>shinylive 를 활용한 quarto 블로그에 shiny 추가 방법</title>
+  <dc:creator>Jinhwan Kim</dc:creator>
+  <link>https://blog.zarathu.com/posts/2024-03-04-shinylive/</link>
+  <description><![CDATA[ <!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="review-wasm" class="level2"><h2 class="anchored" data-anchor-id="review-wasm">Review wasm</h2>
+<p>이전에 작성한 <a href="https://blog.zarathu.com/posts/2023-09-10-wasm2/" target="_blank">글</a>에서 별도의 서버 없이 작동하는 정적 페이지에서 어떻게 shiny application을 사용할 수 있는 방법을 소개한 적 있다.</p>
+<p>이 방법의 핵심은 <strong>wasm</strong>이라는 기술로, 웹 브라우저에서 사용할 수 있게 변환 된 R과 Shiny 관련 라이브러리, 파일들을 불러오고 이를 활용하는 방법이었는데, wasm의 가장 큰 문제는 R 개발자들에게도 환경 설정 자체가 어렵다는 것이었다.</p>
+<p>다행히 몇개월 정도의 시간이 지나고 이 환경 설정을 해결해주는 R 패키지가 나왔고, 이를 활용하여 정적 페이지에 shiny application을 추가하는 방법을 소개하고자 한다.</p>
+</section><section id="shinylive" class="level2"><h2 class="anchored" data-anchor-id="shinylive">shinylive</h2>
+<p>shinylive는 <a href="https://github.com/posit-dev/py-shinylive" target="_blank">python 버전</a>과 <a href="https://github.com/posit-dev/r-shinylive" target="_blank">r 버전</a>이 있으며, 이 글에서는 r 버전을 기준으로 소개한다.</p>
+<p>shinylive는 웹 페이지 생성에 필요한 HTML, Javscript, CSS 등의 요소와 shiny 를 사용하기 위한 wasm 관련 파일들을 생성하는 일을 한다.</p>
+<p>shinylive로 만든 예시는 <a href="https://shinylive.io/r/examples/" target="_blank">이 링크</a>에서 확인할 수 있다.</p>
+<p><img src="https://blog.zarathu.com/posts/2024-03-04-shinylive/img/shinylive.png" width="100%"></p>
+<section id="shinylive-설치" class="level3"><h3 class="anchored" data-anchor-id="shinylive-설치">shinylive 설치</h3>
+<p>shinylive는 CRAN에 올라가 있기도 하지만 최근 릴리즈 된 버전이 0.1.1인만큼 수시로 업데이트 될 수 있어 github의 최신 버전을 사용하는 것을 권장한다. 추가로 <code>pak</code>는 최근 posit에서 R 패키지를 설치하기 위해 권장하는 R 패키지로, 기존의 <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>, <code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github()</a></code> 등의 함수를 대체할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># install.packages("pak")</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pak</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://pak.r-lib.org/reference/pak.html">pak</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"posit-dev/r-shinylive"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" data-appearnce="simple">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Version
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>통상적으로 1.0 이전의 버전은 아직 개발 중인 버전이라고 생각해도 좋다.</p>
+</div>
+</div>
+</section><section id="shinylive-사용방법" class="level3"><h3 class="anchored" data-anchor-id="shinylive-사용방법">shinylive 사용방법</h3>
+<p>shinylive는 기존에 만든 shiny application에 wasm을 추가하는 것으로 생각할 수 있다. 즉, 먼저 shiny application을 만들어야 한다.</p>
+<p>예시 실습을 위해 shiny에서 기본으로 제공하는 코드를 사용한다.(이는 Rstudio 콘솔에서 <code>shiny::runExample("01_hello")</code>를 입력해서 확인할 수도 있다.)</p>
+<div class="cell">
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://shiny.posit.co/">shiny</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html">titlePanel</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Hello Shiny!"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html">sidebarLayout</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html">sidebarPanel</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html">sliderInput</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>        inputId <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bins"</span>,</span>
+<span>        label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Number of bins:"</span>,</span>
+<span>        min <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,</span>
+<span>        max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>,</span>
+<span>        value <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span></span>
+<span>      <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html">mainPanel</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">plotOutput</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>outputId <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"distPlot"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">server</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">input</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">distPlot</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">faithful</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">waiting</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bins</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, length.out <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">input</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bins</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>,</span>
+<span>      breaks <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bins</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#75AADB"</span>, border <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>,</span>
+<span>      xlab <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Waiting time to next eruption (in mins)"</span>,</span>
+<span>      main <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Histogram of waiting times"</span></span>
+<span>    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>ui <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ui</span>, server <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">server</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
+<p>이 코드는 아래 그림과 같이 사용자의 입력에 반응하여 갯수만큼 histogram을 만드는 간단한 shiny application을 만들어 낸다.</p>
+<p><img src="https://blog.zarathu.com/posts/2024-03-04-shinylive/img/hello.png" width="100%"></p>
+<p>이 코드를 shinylive를 사용해 정적인 페이지를 만드는 방법은 2가지가 있는데 하나는 별도의 웹페이지로 만들어내는 것이고, 다른 하나는 이 기술 블로그 같은 quarto 블로그 페이지에 내부 콘텐츠로 심는 것이다.</p>
+<p>먼저 별도의 웹페이지를 만드는 방법은 다음과 같다.</p>
+</section></section><section id="shinylive-via-web-page" class="level2"><h2 class="anchored" data-anchor-id="shinylive-via-web-page">shinylive via Web page</h2>
+<p>별도의 정적 웹페이지에서 shiny를 제공하려면, 이전에 설치했던 shinylive 패키지를 사용하여 app.R을 웹페이지로 변환하는 과정이 필요하다.</p>
+<p>내 문서(Documents)의 shinylive라는 폴더를 만들고 이 안에 app.R을 저장했을 때를 기준으로, <code>export</code> 함수의 사용 예시는 다음과 같다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># library(shinylive)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">shinylive</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://posit-dev.github.io/r-shinylive/reference/export.html">export</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'~/Documents/shinylive'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'~/Documents/shinylive_out'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
+<p>이 코드를 실행하면 shinylive와 동일한 위치, 즉 내 문서(Documents)에 shinylive_out이라는 폴더를 새롭게 만들고 그 안에 shinylive 패키지를 사용해 변환된 wasm 버전의 shiny 코드를 생성한다.</p>
+<p>이 shinylive_out 폴더의 내용물을 확인해보면 다음과 같으며 이전 글에서 언급했던 webr, serviceworker 등이 포함되어 있는 것을 확인할 수 있다.</p>
+<p><img src="https://blog.zarathu.com/posts/2024-03-04-shinylive/img/out.png" width="100%"></p>
+<p>조금 더 구체적으로 <code>export</code> 함수는 현재 R studio를 실행하고 있는 로컬 PC에서 shinylive 패키지의 파일들, 즉 shiny와 관련된 라이브러리 파일들을 out 디렉토리에 추가하는 역할을 한다.</p>
+<p><img src="https://blog.zarathu.com/posts/2024-03-04-shinylive/img/console.png" width="100%"></p>
+<p>이제 이 폴더의 내용물을 기준으로 github page등을 만들면 shiny 를 제공하는 정적인 웹페이지를 제공할 수 있으며 그 결과는 아래의 명령어를 통해 미리 확인해 볼 수 있다.</p>
+<div class="callout callout-style-default callout-tip callout-titled" data-appearnce="simple">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+github page
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>깃허브 페이지 배포를 위해서는 이전에 작성했던 <a href="https://blog.zarathu.com/posts/2023-03-17-pkgdown/#%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8-%EB%B9%8C%EB%93%9C-%EB%B0%B0%ED%8F%AC" target="_blank"> pkgdown의 글 </a>을 참고하길 권장하며, 이를 위해 shinylive_out 대신 docs 폴더로 결과를 내보내길 권장한다.</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">httpuv</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/httpuv/man/runStaticServer.html">runStaticServer</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"~/Documents/shinylive_out"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
+</section><section id="shinylive-in-quarto" class="level2"><h2 class="anchored" data-anchor-id="shinylive-in-quarto">shinylive in Quarto</h2>
+<p>quarto 블로그에 shiny application을 추가하기 위해서는 별도의 extension을 사용해야한다. quarto extension은 quarto의 기능을 확장하는 별도의 패키지로, 기본 R에 R 패키지를 사용해 기능을 추가하는 것과 유사하다.</p>
+<p>먼저 Rstudio의 터미널에서 다음 코드를 실행하여 quarto extenstion을 추가해야 한다.</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">quarto</span> add quarto-ext/shinylive</span></code></pre></div>
+<p>quarto 블로그에 shiny 를 심기 위해서 별도의 파일을 만들 필요는 없으며, <code>{shinylive-r}</code>이라는 코드 블록을 사용한다. 추가로 index.qmd의 yaml에 shinylive 를 설정해야만 한다.</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filters</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span></span>
+<span id="cb6-2"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">  </span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">-</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> shinylive</span></span></code></pre></div>
+<p>이후 <code>shinylive-r</code> 블록에 앞서 만든 app.R 의 내용을 작성한다.</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```{shinylive-r}</span></span>
+<span id="cb7-2"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| standalone: true</span></span>
+<span id="cb7-3"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| viewerHeight: 800</span></span>
+<span id="cb7-4"></span>
+<span id="cb7-5"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">library(shiny)</span></span>
+<span id="cb7-6"></span>
+<span id="cb7-7"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">ui &lt;- fluidPage(</span></span>
+<span id="cb7-8"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  titlePanel("Hello Shiny!"),</span></span>
+<span id="cb7-9"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  sidebarLayout(</span></span>
+<span id="cb7-10"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    sidebarPanel(</span></span>
+<span id="cb7-11"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">      sliderInput(</span></span>
+<span id="cb7-12"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        inputId = "bins",</span></span>
+<span id="cb7-13"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        label = "Number of bins:",</span></span>
+<span id="cb7-14"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        min = 1,</span></span>
+<span id="cb7-15"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        max = 50,</span></span>
+<span id="cb7-16"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        value = 30</span></span>
+<span id="cb7-17"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">      )</span></span>
+<span id="cb7-18"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    ),</span></span>
+<span id="cb7-19"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    mainPanel(</span></span>
+<span id="cb7-20"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">      plotOutput(outputId = "distPlot")</span></span>
+<span id="cb7-21"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    )</span></span>
+<span id="cb7-22"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  )</span></span>
+<span id="cb7-23"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span id="cb7-24"></span>
+<span id="cb7-25"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">server &lt;- function(input, output) {</span></span>
+<span id="cb7-26"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  output$distPlot &lt;- renderPlot({</span></span>
+<span id="cb7-27"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    x &lt;- faithful$waiting</span></span>
+<span id="cb7-28"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    bins &lt;- seq(min(x), max(x), length.out = input$bins + 1)</span></span>
+<span id="cb7-29"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    hist(x,</span></span>
+<span id="cb7-30"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">         breaks = bins, col = "#75AADB", border = "white",</span></span>
+<span id="cb7-31"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">         xlab = "Waiting time to next eruption (in mins)",</span></span>
+<span id="cb7-32"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">         main = "Histogram of waiting times"</span></span>
+<span id="cb7-33"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    )</span></span>
+<span id="cb7-34"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  })</span></span>
+<span id="cb7-35"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb7-36"></span>
+<span id="cb7-37"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">shinyApp(ui = ui, server = server)</span></span>
+<span id="cb7-38"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```</span></span></code></pre></div>
+<p>아래는 실제 코드 블록이 어플리케이션으로 실행되는 결과이며 slider를 움직일때 반응하여 histogram을 그리는 것을 확인할 수 있다.</p>
+<pre class="shinylive-r" data-engine="r"><code><a href="https://shiny.posit.co/">#| standalone: true
+#| viewerHeight: 800
+
+library(shiny)
+
+ui &lt;- fluidPage(
+  titlePanel("Hello Shiny!"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput(
+        inputId = "bins",
+        label = "Number of bins:",
+        min = 1,
+        max = 50,
+        value = 30
+      )
+    ),
+    mainPanel(
+      plotOutput(outputId = "distPlot")
+    )
+  )
+)
+
+server &lt;- function(input, output) {
+  output$distPlot &lt;- renderPlot({
+    x &lt;- faithful$waiting
+    bins &lt;- seq(min(x), max(x), length.out = input$bins + 1)
+    hist(x,
+         breaks = bins, col = "#75AADB", border = "white",
+         xlab = "Waiting time to next eruption (in mins)",
+         main = "Histogram of waiting times"
+    )
+  })
+}
+
+shinyApp(ui = ui, server = server)</a></code></pre>
+</section><section id="정리" class="level2"><h2 class="anchored" data-anchor-id="정리">정리</h2>
+<p>shinylive는 wasm을 활용해 깃허브 페이지 또는 quarto 블로그 같은 정적 페이지에서 shiny를 실행할 수 있게 하는 기능으로 각각 R 패키지와 quarto extension을 통해 사용할 수 있다.</p>
+<p>물론 아직 나온지 1년이 되지 않은 기능인만큼 모든 기능이 제공되는 것은 아니며 정적 페이지를 사용하는 만큼 별도의 shiny server를 활용하는 것에 비하면 단점이 있기도 하다.</p>
+<p>그러나 shiny 사용법이나 간단한 통계 분석을 소개하고, 이를 웹사이트에서 별도의 R 설치 없이도 바로 실습할 수 있다는 점에서 많이 사용되고 있으며 앞으로도 더 많은 기능이 추가될 것으로 기대된다.</p>
+<p>이 블로그에 사용한 코드는 <a href="https://github.com/zarathucorp/blog/blob/master/posts/2024-03-04-shinylive/index.qmd" target="_blank">링크</a>에서 확인할 수 있다.</p>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2024,
+  author = {Kim, Jinhwan},
+  title = {Shinylive {를} {활용한} Quarto {블로그에} Shiny {추가}
+    {방법}},
+  date = {2024-03-05},
+  url = {https://blog.zarathu.com/posts/2024-03-04-shinylive},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
+Kim, Jinhwan. 2024. <span>“Shinylive 를 활용한 Quarto 블로그에 Shiny
+추가 방법.”</span> March 5, 2024. <a href="https://blog.zarathu.com/posts/2024-03-04-shinylive">https://blog.zarathu.com/posts/2024-03-04-shinylive</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>shiny</category>
+  <category>githubpage</category>
+  <category>documentation</category>
+  <category>website</category>
+  <category>quarto</category>
+  <guid>https://blog.zarathu.com/posts/2024-03-04-shinylive/</guid>
+  <pubDate>Mon, 04 Mar 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://blog.zarathu.com/posts/2024-03-04-shinylive/img/logo.png" medium="image" type="image/png" height="66" width="144"/>
+</item>
 <item>
   <title>R&amp;D 시험인증 후기 및 개발, 행정 관련 느낀 점</title>
   <dc:creator>Changwoo Lim</dc:creator>
@@ -109,11 +660,10 @@
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lim2024,
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lim2024,
   author = {Lim, Changwoo},
   title = {R\&amp;D {시험인증} {후기} {및} {개발,} {행정} {관련} {느낀}
     {점}},
-  pages = {undefined},
   date = {2024-01-23},
   url = {https://blog.zarathu.com/posts/2024-01-23-RND-review},
   langid = {en}
@@ -232,10 +782,9 @@ docker restart internship</code></pre>
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lim2024,
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lim2024,
   author = {Lim, Changwoo},
   title = {RStudio {Server에} {2FA(OTP)} {도입하기}},
-  pages = {undefined},
   date = {2024-01-05},
   url = {https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA},
   langid = {en}
@@ -852,10 +1401,9 @@ font-style: inherit;">---</span></span></code></pre></div>
 <p><code>Quarto</code>와 사용 가능한 <code>R</code>이나 <code>Python을</code> 활용할 수 있다면 <code>Quarto Dashboard</code>를 사용해 정적 대시보드 구성과 공유가 더욱 편리하게 이루어지기를 기대하며 글을 마칩니다.</p>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Jinhwan},
   title = {Quarto {Dashboard를} {이용해} {대시보드} {개발하기}},
-  pages = {undefined},
   date = {2023-12-11},
   url = {https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard},
   langid = {en}
@@ -865,10 +1413,10 @@ Kim, Jinhwan. 2023. <span>“Quarto Dashboard를 이용해 대시보드
 개발하기.”</span> December 11, 2023. <a href="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard">https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
-  <category>Python</category>
-  <category>Quarto</category>
-  <category>Quarto dashboard</category>
-  <category>Dashboard</category>
+  <category>python</category>
+  <category>quarto</category>
+  <category>quarto dashboard</category>
+  <category>dashboard</category>
   <guid>https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/</guid>
   <pubDate>Sun, 10 Dec 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/logo.png" medium="image" type="image/png" height="35" width="144"/>
@@ -1183,10 +1731,9 @@ font-style: inherit;">)</span></span></code></pre></div>
 </div>
 
 
-</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Jinhwan},
   title = {Rstudio에서 {Copilot을} {활용해} {AI로} {코딩하기}},
-  pages = {undefined},
   date = {2023-11-21},
   url = {https://blog.zarathu.com/posts/2023-11-21-copilot},
   langid = {en}
@@ -1196,9 +1743,9 @@ Kim, Jinhwan. 2023. <span>“Rstudio에서 Copilot을 활용해 Ai로
 코딩하기.”</span> November 21, 2023. <a href="https://blog.zarathu.com/posts/2023-11-21-copilot">https://blog.zarathu.com/posts/2023-11-21-copilot</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
-  <category>Github</category>
-  <category>Rstudio</category>
-  <category>Copilot</category>
+  <category>github</category>
+  <category>rstudio</category>
+  <category>copilot</category>
   <guid>https://blog.zarathu.com/posts/2023-11-21-copilot/</guid>
   <pubDate>Mon, 20 Nov 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-11-21-copilot/img/logo.png" medium="image" type="image/png" height="62" width="144"/>
@@ -2117,10 +2664,9 @@ font-style: inherit;">$</span> /var/discourse-dev/launcher rebuild discourse-dev
 </section>
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Jisoo},
   title = {Discourse {기반} {커뮤니티} {구축}},
-  pages = {undefined},
   date = {2023-11-10},
   url = {https://blog.zarathu.com/posts/2023-11-10-discourse1},
   langid = {en}
@@ -2129,10 +2675,10 @@ font-style: inherit;">$</span> /var/discourse-dev/launcher rebuild discourse-dev
 Kim, Jisoo. 2023. <span>“Discourse 기반 커뮤니티 구축.”</span> November
 10, 2023. <a href="https://blog.zarathu.com/posts/2023-11-10-discourse1">https://blog.zarathu.com/posts/2023-11-10-discourse1</a>.
 </div></div></section></div> ]]></description>
-  <category>Docker</category>
-  <category>Website</category>
-  <category>Discourse</category>
-  <category>Community</category>
+  <category>docker</category>
+  <category>website</category>
+  <category>discourse</category>
+  <category>community</category>
   <guid>https://blog.zarathu.com/posts/2023-11-10-discourse1/</guid>
   <pubDate>Thu, 09 Nov 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-11-10-discourse1/img/logo.png" medium="image" type="image/png" height="42" width="144"/>
@@ -2699,10 +3245,9 @@ font-style: inherit;">/</span>acs</span></code></pre></div>
 <p>이번 게시글에서는 새롭게 공개된 Quarto Manuscript를 통해 학술 논문 원고를 작성하고 깃허브 페이지를 통해 웹으로 발행하는 방법을 알아보았습니다. Quarto Manuscript를 통해 논문 작성과 공유가 더욱 편리하게 이루어지기를 기대하며 글을 마칩니다.</p>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{han2023,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{han2023,
   author = {Han, Jihee},
   title = {Quarto {Manuscripts를} {이용해} {학술} {논문} {작성하기}},
-  pages = {undefined},
   date = {2023-10-18},
   url = {https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript},
   langid = {en}
@@ -2712,9 +3257,9 @@ Han, Jihee. 2023. <span>“Quarto Manuscripts를 이용해 학술 논문
 작성하기.”</span> October 18, 2023. <a href="https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript">https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
-  <category>Quarto</category>
-  <category>Quarto manuscript</category>
-  <category>Article</category>
+  <category>quarto</category>
+  <category>quarto manuscript</category>
+  <category>article</category>
   <guid>https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript/</guid>
   <pubDate>Tue, 17 Oct 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript/img/logo.png" medium="image" type="image/png" height="35" width="144"/>
@@ -2926,10 +3471,9 @@ font-style: inherit;"># ppt 저장 </span></span></code></pre></div>
 <p>이번 글에서는 레지스트리 편집기에서 해상도 설정을 변경하여 파워포인트 슬라이드를 고해상도 이미지로 내보내는 방법에 대해 알아보았습니다. <code>officer</code> 패키지를 다룬 지난 글과 함께 R을 통해 이미지를 자유자재로 다루는 데 도움이 되기를 기대합니다.</p>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{han2023,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{han2023,
   author = {Han, Jihee},
   title = {R로 {만든} {PPT} {슬라이드} {고해상도로} {저장하기}},
-  pages = {undefined},
   date = {2023-09-27},
   url = {https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide},
   langid = {en}
@@ -2939,8 +3483,8 @@ Han, Jihee. 2023. <span>“R로 만든 PPT 슬라이드 고해상도로
 저장하기.”</span> September 27, 2023. <a href="https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide">https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
-  <category>Powerpoint</category>
-  <category>Visualization</category>
+  <category>powerpoint</category>
+  <category>visualization</category>
   <guid>https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide/</guid>
   <pubDate>Tue, 26 Sep 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide/img/DPI.png" medium="image" type="image/png" height="86" width="144"/>
@@ -3143,11 +3687,10 @@ Han, Jihee. 2023. <span>“R로 만든 PPT 슬라이드 고해상도로
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Jinhwan},
   title = {Electron {forge를} {활용하여} {Standalone} {Shiny}
     {Application} {제작하기}},
-  pages = {undefined},
   date = {2023-09-18},
   url = {https://blog.zarathu.com/posts/2023-09-18-shinyexe},
   langid = {en}
@@ -3429,11 +3972,10 @@ font-style: inherit;">&gt;</span></span></code></pre></div>
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Jinhwan},
   title = {Web {assembly를} {이용하여} {웹페이지에서} {Shiny} {App}
     {활용하기}},
-  pages = {undefined},
   date = {2023-09-10},
   url = {https://blog.zarathu.com/posts/2023-09-10-wasm2},
   langid = {en}
@@ -3850,10 +4392,9 @@ Shiny
 </div>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Jinhwan},
   title = {Web {assembly를} {이용하여} {웹페이지에서} {R} {활용하기}},
-  pages = {undefined},
   date = {2023-09-09},
   url = {https://blog.zarathu.com/posts/2023-09-09-wasm},
   langid = {en}
@@ -3950,7 +4491,10 @@ font-style: inherit;">plotObj</span> <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 이미지 저장을 위한 코드</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-07-01-officer/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid quarto-figure-center" width="672"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-07-01-officer/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>위와 같은 코드로, 그림을 만들고 이를 외부로 저장하려는 상황을 생각해보겠습니다.</p>
@@ -4499,11 +5043,10 @@ font-style: inherit;"># ppt 저장 </span></span></code></pre></div>
 <p>한편, <code>officer</code>를 활용하여 더 자세한 ppt 생성과 편집도 가능하지만, 이 글에서는 다루지 않으며 <code>quarto</code>를 활용한 <code>revealjs</code> 슬라이드 생성하는 방법을 <a href="https://education.zarathu.com/day3/quartopres.html" target="_blank">링크</a>로 대신 첨부해드립니다.</p>
 
 
-</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Jinhwan},
   title = {R의 Officer {패키지를} {활용하여} {PPT} {편집을} {위한}
     {벡터} {그래픽스} {만들기}},
-  pages = {undefined},
   date = {2023-07-01},
   url = {https://blog.zarathu.com/posts/2023-07-01-officer},
   langid = {en}
@@ -4966,12 +5509,12 @@ font-style: inherit;">)</span></span></code></pre></div>
 <p>본 UI는 <code>shinydashboard</code>를 기반으로 구성되어있습니다. 따라서 header에 logout 버튼을 생성하려 했고, dashboradBody에 login UI를 배치해 메인 화면에 바로 로그인 화면이 나오도록 하였습니다. 또한 loginUI의 parameter를 원하는 텍스트로 설정하였고, 회원가입은 <code>additional_ui</code> parameter를 이용하여 추가적으로 <a href="https://shinyapps.dreamrs.fr/shinyWidgets/"><code>shinyWidgets::actionBttn</code></a> 에 따른 UI가 생성되도록 설계하였습니다. 아래는 로그인 화면과 회원가입 버튼 클릭 시의 화면입니다.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
+<div class="img-fluid quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR/img/login.png" class="img-fluid figure-img" style="width:50.0%"></p>
 <figcaption>로그인 화면</figcaption></figure>
 </div>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
+<div class="img-fluid quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR/img/Register.png" class="img-fluid figure-img" style="width:50.0%"></p>
 <figcaption>회원가입 화면</figcaption></figure>
 </div>
@@ -5337,7 +5880,7 @@ font-style: inherit;">"[Warning message]"</span>))</span></code></pre></div>
 <li>
 <code>add_rule</code>을 통한 <code>input variable</code>별 Warning Message 작성</li>
 </ol>
-<div class="quarto-figure quarto-figure-center">
+<div class="img-fluid quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR/img/validate.png" class="img-fluid figure-img" style="width:50.0%"></p>
 <figcaption>회원가입 시 shinyvalidate 사용 예시</figcaption></figure>
 </div>
@@ -5753,12 +6296,12 @@ font-style: inherit;">)</span></span></code></pre></div>
 <p>아래는 실제 UI에서 구현된 예시입니다.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
+<div class="img-fluid quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR/img/consulting_pre.png" class="img-fluid figure-img" style="width:150.0%"></p>
 <figcaption>변경 전</figcaption></figure>
 </div>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
+<div class="img-fluid quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR/img/consulting_post.png" class="img-fluid figure-img" style="width:100.0%"></p>
 <figcaption>변경 후</figcaption></figure>
 </div>
@@ -5767,7 +6310,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 </section><section id="이-외" class="level2"><h2 class="anchored" data-anchor-id="이-외">5. 이 외</h2>
 <section id="reactable-reactive-download-to-csv" class="level3"><h3 class="anchored" data-anchor-id="reactable-reactive-download-to-csv">(1) <code>reactable</code> : reactive download to csv</h3>
 <p>admin을 위한 web page 제작 과정에서, DB table 들로부터 받아온 사용자 정보를 <code>reactable</code>을 이용하여 다음과 같이 제작하였습니다.</p>
-<div class="quarto-figure quarto-figure-center">
+<div class="img-fluid quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR/img/userinfo.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <figcaption>사용자 정보</figcaption></figure>
 </div>
@@ -6143,10 +6686,9 @@ font-style: inherit;">)</span></span></code></pre></div>
 <p>이외에 여러 package를 공부해가며 나만의 Shiny Web App을 제작해보는 과정 역시 재미있으니, 많은 분들께서 <strong>R Shiny</strong>를 이용하여 멋진 웹 페이지 제작에 참여해보시길 바라겠습니다.</p>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Yeongho},
   title = {R {Shiny} {기반} {방역관리} {위험도} {평가} {대시보드}},
-  pages = {undefined},
   date = {2023-06-20},
   url = {https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR},
   langid = {en}
@@ -6156,7 +6698,7 @@ Kim, Yeongho. 2023. <span>“R Shiny 기반 방역관리 위험도 평가
 대시보드.”</span> June 20, 2023. <a href="https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR">https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
-  <category>Shiny</category>
+  <category>shiny</category>
   <guid>https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR/</guid>
   <pubDate>Mon, 19 Jun 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-05-24-surveyDashboardR/img/logo.png" medium="image" type="image/png" height="144" width="144"/>
@@ -6421,10 +6963,9 @@ Kim, Yeongho. 2023. <span>“R Shiny 기반 방역관리 위험도 평가
 </small></section><small>
 </small></section><small>
 
-</small><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</small><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Seoyoon},
   title = {ADaM in {CDISC} and {tidyCDISC}},
-  pages = {undefined},
   date = {2023-05-02},
   url = {https://blog.zarathu.com/posts/2023-04-28-tidycdisc},
   langid = {en}
@@ -6434,8 +6975,8 @@ Kim, Seoyoon. 2023. <span>“ADaM in CDISC and tidyCDISC.”</span> May 2,
 2023. <a href="https://blog.zarathu.com/posts/2023-04-28-tidycdisc">https://blog.zarathu.com/posts/2023-04-28-tidycdisc</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
-  <category>Rpackage</category>
-  <category>Shiny</category>
+  <category>rpackage</category>
+  <category>shiny</category>
   <guid>https://blog.zarathu.com/posts/2023-04-28-tidycdisc/</guid>
   <pubDate>Mon, 01 May 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-04-28-tidycdisc/img/logo.png" medium="image" type="image/png" height="66" width="144"/>
@@ -6460,13 +7001,17 @@ Kim, Seoyoon. 2023. <span>“ADaM in CDISC and tidyCDISC.”</span> May 2,
 </div>
 <div class="quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-figure quarto-figure-center quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="img-fluid quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://www.syncfusion.com/products/aspnetcore/control/images/sunburst/aspnet-core-sunburst-chart-with-levels.png" class="img-fluid figure-img"></p>
 <figcaption>sunburst chart</figcaption></figure>
 </div>
-<div class="quarto-figure quarto-figure-center quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="img-fluid quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://earo.me/publication/hts/featured_hubeebba943083c6a43a2fa79c680be887_56936_720x0_resize_lanczos_2.png" class="img-fluid figure-img"></p>
 <figcaption>hierarchical data</figcaption></figure>
+</div>
 </div>
 </div>
 </div>
@@ -6966,7 +7511,7 @@ font-style: inherit;">hierarchy</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">d3_nest</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/d3r/man/d3_nest.html">d3_nest</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -7040,7 +7585,7 @@ font-style: inherit;">sb</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sunburst</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/sunburstR/man/sunburst.html">sunburst</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span></span>
 <span>  <span class="va" style="color: #111111;
@@ -7502,7 +8047,7 @@ font-style: inherit;">hierarchy</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">d3_nest</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/d3r/man/d3_nest.html">d3_nest</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -7799,7 +8344,7 @@ background-color: null;
 font-style: inherit;">(</span></span>
 <span>                            <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sunburstOutput</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/sunburstR/man/sunburst-shiny.html">sunburstOutput</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -7825,7 +8370,7 @@ font-style: inherit;">)</span></span>
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 </div>
-<p>선버스트 차트를 output으로 보여줄 것이기 때문에 <code>sunburstOutput( )</code> 함수를 사용한다. <code><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput( )</a></code>은 <code>selection</code>을 문자열 인수로 설정한다.</p>
+<p>선버스트 차트를 output으로 보여줄 것이기 때문에 <code><a href="https://rdrr.io/pkg/sunburstR/man/sunburst-shiny.html">sunburstOutput( )</a></code> 함수를 사용한다. <code><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput( )</a></code>은 <code>selection</code>을 문자열 인수로 설정한다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
@@ -7897,18 +8442,18 @@ font-style: inherit;">sunburst</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">renderSunburst</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/sunburstR/man/sunburst-shiny.html">renderSunburst</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{</span></span>
 <span>    <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">add_shiny</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/sunburstR/man/add_shiny.html">add_shiny</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sunburst</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/sunburstR/man/sunburst.html">sunburst</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -8020,7 +8565,7 @@ font-style: inherit;">server</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 </div>
-<p><code>add_shiny( )</code> 함수를 통해 sunburst 차트를 shiny 앱에 추가한다. <code>selection</code>은 <code>input$sunburst_mouseover</code> 값에 반응하여 업데이트되도록 설정되어 있다. <code>output$selection</code> 은 sunburst 차트에서 유저가 선택한 항목의 이름을 출력한다.</p>
+<p><code><a href="https://rdrr.io/pkg/sunburstR/man/add_shiny.html">add_shiny( )</a></code> 함수를 통해 sunburst 차트를 shiny 앱에 추가한다. <code>selection</code>은 <code>input$sunburst_mouseover</code> 값에 반응하여 업데이트되도록 설정되어 있다. <code>output$selection</code> 은 sunburst 차트에서 유저가 선택한 항목의 이름을 출력한다.</p>
 <p>▶️Run App을 실행하면 선버스트 차트가 잘 나오는 것을 확인할 수 있다.</p>
 <p><img src="https://blog.zarathu.com/posts/2023-04-21-sunburst/img/shiny sunburst.png" width="701"></p>
 </section></section><section id="마치며" class="level2"><h2 class="anchored" data-anchor-id="마치며">마치며</h2>
@@ -8035,10 +8580,9 @@ font-style: inherit;">)</span></span></code></pre></div>
 <p></p>
 
 
-</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Seoyoon},
   title = {Sunburstr {패키지} {소개}},
-  pages = {undefined},
   date = {2023-04-21},
   url = {https://blog.zarathu.com/posts/2023-04-21-sunburst},
   langid = {en}
@@ -8245,14 +8789,14 @@ font-style: inherit;">}</span></span></code></pre></div>
   - /R
     - ttest.R
     - ttest2.R</code></pre>
-<p>이후 <code>pkgdown.tutorial</code>의 작업 디렉토리에서 (.Rproj를 열어) <code>usethis::use_pkgdown()</code>을 실행합니다.</p>
+<p>이후 <code>pkgdown.tutorial</code>의 작업 디렉토리에서 (.Rproj를 열어) <code><a href="https://usethis.r-lib.org/reference/use_pkgdown.html">usethis::use_pkgdown()</a></code>을 실행합니다.</p>
 <p>그 결과 아래 이미지처럼 <code>_pkgdown.yml</code>이라는 파일이 생기는 것을 확인 할 수 있습니다.</p>
 <p><img src="https://blog.zarathu.com/posts/2023-03-17-pkgdown/img/pkgdown1.png" width="600px"></p>
 <blockquote class="blockquote">
 <p>💡 <code>.gitignore</code>에서 <code>docs</code>를 삭제해주세요.</p>
 </blockquote>
 </section><section id="build_site" class="level3"><h3 class="anchored" data-anchor-id="build_site">build_site</h3>
-<p><code>pkgdown</code>의 핵심 코드를 하나만 고르라면 <code>pkgdown::build_site()</code>입니다.</p>
+<p><code>pkgdown</code>의 핵심 코드를 하나만 고르라면 <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code>입니다.</p>
 <p>이는 현재 작업된 내용들을 기반으로 <strong>웹사이트를 만드는 역할을 하는 함수</strong>입니다.</p>
 <p>바로 실행해보면 아래와 같은 결과를 확인할 수 있습니다.</p>
 <blockquote class="blockquote">
@@ -8501,14 +9045,14 @@ font-style: inherit;">#' @examples t.test(1:10, y = c(7:20))      # P = .0000185
 <span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#' @export</span></span></code></pre></div>
-<p>이후 <code>pkgdown::build_site()</code>를 실행하면 아래 이미지처럼 reference 페이지가 navbar에 생성 되는 것을 확인할 수 있습니다.</p>
+<p>이후 <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code>를 실행하면 아래 이미지처럼 reference 페이지가 navbar에 생성 되는 것을 확인할 수 있습니다.</p>
 <p><img src="https://blog.zarathu.com/posts/2023-03-17-pkgdown/img/pkgdown3.png" width="600px"></p>
 </section><section id="articles" class="level4"><h4 class="anchored" data-anchor-id="articles">2-3. articles</h4>
 <p><code>usethis::use_article(&lt;ARTICLENAME&gt;, &lt;PAGETITLE&gt;)</code>의 형태로 사용 할 수 있습니다.</p>
 <blockquote class="blockquote">
 <p>💡 여기서 <strong>ARTICLENAME</strong>에는 숫자, 문자 그리고 <code>-</code>와 <code>_</code> 만 활용할 수 있습니다. (소문자를 권장합니다)</p>
 </blockquote>
-<p><code>usethis::use_article("using-ttest", "perform t-test")</code> 코드를 실행하면 <code>using-ttest.Rmd</code>라는 파일이 생성되며 <code>build_site()</code>를 통해 그 결과를 반영 할 수 있습니다.</p>
+<p><code>usethis::use_article("using-ttest", "perform t-test")</code> 코드를 실행하면 <code>using-ttest.Rmd</code>라는 파일이 생성되며 <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">build_site()</a></code>를 통해 그 결과를 반영 할 수 있습니다.</p>
 <p><img src="https://blog.zarathu.com/posts/2023-03-17-pkgdown/img/pkgdown4.png" width="600px"></p>
 </section><section id="components-navbar-lv1" class="level4"><h4 class="anchored" data-anchor-id="components-navbar-lv1">3. components (navbar &gt; lv1)</h4>
 <p>navbar에서 소개 되지 않은, 기본 제공 되지 않는 구성요소는 아래처럼 작성하여 사용할 수 있습니다.</p>
@@ -8804,10 +9348,10 @@ font-style: inherit;"> https://github.com/jhk0530/pkgdown.tutorial</span></span>
 </ul></section></section></section><section id="메인-페이지-추가" class="level2"><h2 class="anchored" data-anchor-id="메인-페이지-추가">메인 페이지 추가</h2>
 <p>여기까지 잘 따라왔다면, 패키지의 구조는 아래 이미지와 같습니다.</p>
 <p><img src="https://blog.zarathu.com/posts/2023-03-17-pkgdown/img/pkgdown7.png" width="600px"></p>
-<p>이제 <code>usethis::use_readme_md()</code>를 사용하여 README.MD를 추가하여 메인 페이지를 만들어줍니다.</p>
+<p>이제 <code><a href="https://usethis.r-lib.org/reference/use_readme_rmd.html">usethis::use_readme_md()</a></code>를 사용하여 README.MD를 추가하여 메인 페이지를 만들어줍니다.</p>
 <p><em>github repository를 만들면서, add readme를 통해 만들었어도 상관 없지만, 위 함수를 사용하면 최소 템플릿을 만들어 주기 때문에 조금 더 편리할 수 있습니다.</em></p>
 <blockquote class="blockquote">
-<p>💡 rmd를 선호한다면 <code>usethis::use_readme_rmd()</code>를 사용해도 좋습니다.</p>
+<p>💡 rmd를 선호한다면 <code><a href="https://usethis.r-lib.org/reference/use_readme_rmd.html">usethis::use_readme_rmd()</a></code>를 사용해도 좋습니다.</p>
 </blockquote>
 <p>최종 결과는 아래 이미지와 같습니다.</p>
 <p><img src="https://blog.zarathu.com/posts/2023-03-17-pkgdown/img/pkgdown8.png" width="600px"></p>
@@ -8831,7 +9375,7 @@ font-style: inherit;"> https://github.com/jhk0530/pkgdown.tutorial</span></span>
 </div>
 <p>이후 <strong>Branch</strong>에서 <strong>main</strong>, <strong>/docs</strong>를 선택한뒤 <strong>save</strong>를 클릭합니다.</p>
 <p><img src="https://blog.zarathu.com/posts/2023-03-17-pkgdown/img/docs.png" width="600px"></p>
-<p>이제 github에서는 <code>pkgdown</code>이 <code>build_site()</code>로 <strong>/docs</strong>에 만든 html 파일들을 github page로 배포하는 작업을 시작합니다.</p>
+<p>이제 github에서는 <code>pkgdown</code>이 <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">build_site()</a></code>로 <strong>/docs</strong>에 만든 html 파일들을 github page로 배포하는 작업을 시작합니다.</p>
 <blockquote class="blockquote">
 <p>💡 페이지 반영에는 시간이 걸리기 때문에 몇분이 지난 후 새로고침을 해야 합니다.</p>
 </blockquote>
@@ -8848,10 +9392,9 @@ font-style: inherit;"> https://github.com/jhk0530/pkgdown.tutorial</span></span>
 </blockquote>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Jinhwan},
   title = {Pkgdown을 {활용한} {R} {패키지} {문서화}},
-  pages = {undefined},
   date = {2023-03-17},
   url = {https://blog.zarathu.com/posts/2023-03-17-pkgdown},
   langid = {en}
@@ -9086,7 +9629,7 @@ font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a><
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">shiny.likert</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://github.com/zarathucorp/shiny.likert">shiny.likert</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span>
 <span><span class="fu" style="color: #4758AB;
@@ -9107,7 +9650,7 @@ font-style: inherit;">pkgdown</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">build_article</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://pkgdown.r-lib.org/reference/build_articles.html">build_article</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -9122,10 +9665,9 @@ font-style: inherit;">)</span></span></code></pre></div>
 <p><img src="https://blog.zarathu.com/posts/2023-02-14-shiny.likert/img/shiny9.png" width="600px"></p>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Jinhwan},
   title = {Shiny.likert {패키지} {소개}},
-  pages = {undefined},
   date = {2023-02-15},
   url = {https://blog.zarathu.com/posts/2023-02-14-shiny.likert},
   langid = {en}
@@ -10322,10 +10864,9 @@ font-style: inherit;"># df.to_csv(f'{query_filename}_{today}.csv',index=False)  
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Won},
   title = {Python을 {이용한} {검색포털} {API} {활용}},
-  pages = {undefined},
   date = {2023-02-15},
   url = {https://blog.zarathu.com/posts/2023-02-15-searchAPI-with-python},
   langid = {en}
@@ -10988,10 +11529,9 @@ font-style: inherit;">3000</span>)</span></code></pre></div>
 </section>
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lim2023,
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lim2023,
   author = {Lim, Changwoo},
   title = {Python과 {Slack} {API를} {이용한} {대나무숲} {앱} {제작}},
-  pages = {undefined},
   date = {2023-02-07},
   url = {https://blog.zarathu.com/posts/2023-02-07-bambooforest-with-slack-api},
   langid = {en}
@@ -11059,7 +11599,10 @@ Lim, Changwoo. 2023. <span>“Python과 Slack Api를 이용한 대나무숲 앱
 <p>제일 먼저 해볼 수 있는 것은, 문항별로 개수를 보여주는 것입니다.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>이 방법 자체는 나쁘지는 않지만, 1개가 아닌 여러개 문항의 결과를 보여줘야 한다면 아쉬운 문제점이 생깁니다.</p>
@@ -11076,7 +11619,10 @@ Lim, Changwoo. 2023. <span>“Python과 Slack Api를 이용한 대나무숲 앱
 <p><em>Image from <a href="https://datavizcatalogue.com/methods/stacked_bar_graph.html">The Data Visualisation Catalogue</a></em></p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>문항별로 응답자 수는 같기 때문에 (<code>NA</code>는 고려하지 않습니다) 전부 높이가 동일한 결과가 나오게 됩니다.</p>
@@ -11218,7 +11764,7 @@ font-style: inherit;">ll</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">likert</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/likert/man/likert.html">likert</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -11322,7 +11868,10 @@ font-style: inherit;">ll</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>기본 <code>center</code>는 가운데, 이 경우 <code>2</code>와 <code>3</code>사이인 <code>2.5</code>를 기준으로 그려지고, 문항별 <code>High</code>, <code>Low</code>를 차트 양옆에 추가로 표기하게 됩니다.</p>
@@ -11351,7 +11900,10 @@ font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="colors" class="level3"><h3 class="anchored" data-anchor-id="colors">colors</h3>
@@ -11383,7 +11935,10 @@ font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="center" class="level3"><h3 class="anchored" data-anchor-id="center">center</h3>
@@ -11404,7 +11959,10 @@ font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="include.center" class="level3"><h3 class="anchored" data-anchor-id="include.center">include.center</h3>
@@ -11428,7 +11986,10 @@ font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="centered" class="level3"><h3 class="anchored" data-anchor-id="centered">centered</h3>
@@ -11448,7 +12009,10 @@ font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="na-info-histogram" class="level3"><h3 class="anchored" data-anchor-id="na-info-histogram">NA info (histogram)</h3>
@@ -11505,7 +12069,10 @@ font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="density-plot" class="level3"><h3 class="anchored" data-anchor-id="density-plot">density plot</h3>
@@ -11525,7 +12092,10 @@ font-style: inherit;">'density'</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>여러개의 density plot을 <code>facet</code>을 사용하여 하나로 겹치게 보여줄 수 있으며, 추가로 legend를 지정하는 예시입니다. (<em>구분은 잘 안가지만, fill의 색상은 미세하게 다르게 표현되어 있습니다</em>)</p>
@@ -11551,14 +12121,14 @@ background-color: null;
 font-style: inherit;">+</span> </span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">guides</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span></span>
 <span>    color <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">guide_legend</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>title<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -11571,7 +12141,7 @@ font-style: inherit;">)</span>,</span>
 background-color: null;
 font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">guide_legend</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>title<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -11584,7 +12154,10 @@ font-style: inherit;">)</span></span>
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="heat-map" class="level3"><h3 class="anchored" data-anchor-id="heat-map">Heat map</h3>
@@ -11604,7 +12177,10 @@ font-style: inherit;">'heat'</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section></section><section id="group-likert" class="level2"><h2 class="anchored" data-anchor-id="group-likert">Group Likert</h2>
@@ -11617,7 +12193,7 @@ font-style: inherit;">llg</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">likert</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/likert/man/likert.html">likert</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -11689,7 +12265,10 @@ font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <section id="group-horizontal-plot" class="level3"><h3 class="anchored" data-anchor-id="group-horizontal-plot">Group horizontal Plot</h3>
@@ -11713,7 +12292,10 @@ font-style: inherit;">20</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-02-05-likert/index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section></section></section><section id="likert-chart-with-shiny" class="level1"><h1>Likert chart with Shiny</h1>
@@ -11814,7 +12396,7 @@ font-style: inherit;">ll</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">likert</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/likert/man/likert.html">likert</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -12009,7 +12591,7 @@ font-style: inherit;">ll</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">likert</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/likert/man/likert.html">likert</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -12124,10 +12706,9 @@ font-style: inherit;">)</span></span></code></pre></div>
 </ul>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
   author = {Kim, Jinhwan},
   title = {Likert {패키지} {소개}},
-  pages = {undefined},
   date = {2023-02-05},
   url = {https://blog.zarathu.com/posts/2023-02-05-likert},
   langid = {en}
@@ -12144,1097 +12725,6 @@ Kim, Jinhwan. 2023. <span>“Likert 패키지 소개.”</span> February 5, 2023
   <guid>https://blog.zarathu.com/posts/2023-02-05-likert/</guid>
   <pubDate>Sat, 04 Feb 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-02-05-likert/img/hex.png" medium="image" type="image/png" height="162" width="144"/>
-</item>
-<item>
-  <title>Python Streamlit 패키지를 이용한 대시보드 만들기</title>
-  <dc:creator>Won Kim</dc:creator>
-  <link>https://blog.zarathu.com/posts/2023-02-01-streamlit/</link>
-  <description><![CDATA[ 
-<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-L0DYYSH9KM');
-</script>
-
-
-
-
-
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/logo.jpeg" class="img-fluid"></p>
-<p><a href="https://docs.streamlit.io/library/api-reference" class="uri">https://docs.streamlit.io/library/api-reference</a> 를 바탕으로 정리한 글입니다.</p>
-<p>2023년 2월 기준) <em>streamlit version 1.17.0</em> 을 기준으로 작성하였습니다.</p>
-<section id="streamlit-소개" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Streamlit 소개</h1>
-<p>언제 스트림릿을 사용해야할지 스트림릿이 타 프레임워크에 비하여 가질 수 있는 장점을 바탕으로 비교하여 보겠습니다.</p>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-1.png" class="img-fluid"></p>
-<ol type="1">
-<li><p>빠르게 개발이 가능하다 - 웹개발관련 지식이 부족해도 쉽게 웹페이지를 만들 수 있다.</p></li>
-<li><p>파이썬에서 분석한 내용을 옮길 필요 없이 바로바로 웹에 띄울 수 있다. + ML/DL 사용가능한 라이브러리들이 많다!</p></li>
-<li><p>interactive한 웹 개발이 가능하다. Dashboard 만들기 등</p></li>
-</ol>
-<p>단점 : 스트림릿으로 구현한 웹을 바로 product로 사용하기엔 다듬어야 할 부분들이 많고, 디테일한 layout 조정등은 어려움 -&gt; CSS hack을 통해 조정 가능하다!</p>
-<p>다른 대안 : pyscript라는 것이 인기를 끌고 있다. 하지만 아직 보완되어야 할 점이 정말 많다.</p>
-<p>(html 에서 작동하는 python) <a href="https://github.com/pyscript/pyscript" class="uri">https://github.com/pyscript/pyscript</a></p>
-<hr>
-<section id="streamlit과-shiny-예제-비교" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="streamlit과-shiny-예제-비교"><span class="header-section-number">1.1</span> streamlit과 shiny 예제 비교</h2>
-<ul>
-<li>streamlit 활용 사례</li>
-</ul>
-<p><a href="https://streamlit.io/gallery" class="uri">https://streamlit.io/gallery</a></p>
-<ul>
-<li>shiny 활용 사례</li>
-</ul>
-<p><a href="https://shiny.rstudio.com/gallery/" class="uri">https://shiny.rstudio.com/gallery/</a></p>
-<p><br></p>
-</section>
-</section>
-<section id="streamlit-따라-해보기" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Streamlit 따라 해보기</h1>
-<p>Streamlit에 어떤 기능이 있는지 따라 쳐보면서 확인해보자.</p>
-<section id="스트림릿-설치" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="스트림릿-설치"><span class="header-section-number">2.1</span> 스트림릿 설치</h2>
-<p>파이썬, 가상환경 설치와 관한 내용은 다른 게시물을 참고하시기 바랍니다.</p>
-<pre class="{terminal}"><code>pip install streamlit </code></pre>
-<p>파이썬 가상환경에 streamlit패키지를 설치합니다</p>
-<p>app.py를 생성한 후 다음 과 같이 수정하여 저장합니다.</p>
-<div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> streamlit <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> st</span>
-<span id="cb2-2"></span>
-<span id="cb2-3">st.title(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Hello Streamlit'</span>)</span></code></pre></div>
-</div>
-<p>이후 터미널에서</p>
-<pre class="{bash}"><code>streamlit run app.py </code></pre>
-<p>streamlit run app.py 명렁어를 실행하면, 로컬서버로 페이지가 만들어지게 됩니다.</p>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src2-1.png" class="img-fluid"></p>
-</section>
-<section id="스트림릿-기능-소개" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="스트림릿-기능-소개"><span class="header-section-number">2.2</span> 스트림릿 기능 소개</h2>
-<p>더 자세한 내용은 <a href="https://docs.streamlit.io/library/api-reference" class="uri">https://docs.streamlit.io/library/api-reference</a>에서 확인하실 수 있습니다.</p>
-<section id="강조-문구" class="level3" data-number="2.2.1">
-<h3 data-number="2.2.1" class="anchored" data-anchor-id="강조-문구"><span class="header-section-number">2.2.1</span> 강조 문구</h3>
-<ol type="1">
-<li>title</li>
-<li>header</li>
-<li>subheader</li>
-</ol>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> streamlit <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> st</span>
-<span id="cb4-2"></span>
-<span id="cb4-3">st.title(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'this is title'</span>)</span>
-<span id="cb4-4">st.header(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'this is header'</span>)</span>
-<span id="cb4-5">st.subheader(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'this is subheader'</span>)</span></code></pre></div>
-</div>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-header.png" class="img-fluid"></p>
-<p>제목과 헤더,서브헤더를 구현할 수 있다.</p>
-<ol start="4" type="1">
-<li>etc</li>
-</ol>
-<p>추가적으로 Markdown 문법을 st.markdown으로, caption, Latex Code block을 활용가능합니다</p>
-<p><br></p>
-</section>
-<section id="layout-짜기" class="level3" data-number="2.2.2">
-<h3 data-number="2.2.2" class="anchored" data-anchor-id="layout-짜기"><span class="header-section-number">2.2.2</span> layout 짜기</h3>
-<p>페이지의 공간을 레이아웃을 통해 웹페이지를 분할할 수 있다.</p>
-<ol type="1">
-<li>column</li>
-</ol>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> streamlit <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> st</span>
-<span id="cb5-2"></span>
-<span id="cb5-3">col1,col2 <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> st.columns([<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>])</span>
-<span id="cb5-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 공간을 2:3 으로 분할하여 col1과 col2라는 이름을 가진 컬럼을 생성합니다.  </span></span>
-<span id="cb5-5"></span>
-<span id="cb5-6"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">with</span> col1 :</span>
-<span id="cb5-7">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># column 1 에 담을 내용</span></span>
-<span id="cb5-8">  st.title(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'here is column1'</span>)</span>
-<span id="cb5-9"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">with</span> col2 :</span>
-<span id="cb5-10">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># column 2 에 담을 내용</span></span>
-<span id="cb5-11">  st.title(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'here is column2'</span>)</span>
-<span id="cb5-12">  st.checkbox(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'this is checkbox1 in col2 '</span>)</span>
-<span id="cb5-13"></span>
-<span id="cb5-14"></span>
-<span id="cb5-15"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># with 구문 말고 다르게 사용 가능 </span></span>
-<span id="cb5-16">col1.subheader(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">' i am column1  subheader !! '</span>)</span>
-<span id="cb5-17">col2.checkbox(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'this is checkbox2 in col2 '</span>) </span>
-<span id="cb5-18"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#=&gt;위에 with col2: 안의 내용과 같은 기능을합니다</span></span></code></pre></div>
-</div>
-<p><br></p>
-<p>결과물</p>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-columns.png" class="img-fluid"></p>
-<ol start="2" type="1">
-<li>tab</li>
-</ol>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> streamlit <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> st</span>
-<span id="cb6-2"></span>
-<span id="cb6-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 탭 생성 : 첫번째 탭의 이름은 Tab A 로, Tab B로 표시합니다. </span></span>
-<span id="cb6-4">tab1, tab2<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> st.tabs([<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Tab A'</span> , <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Tab B'</span>])</span>
-<span id="cb6-5"></span>
-<span id="cb6-6"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">with</span> tab1:</span>
-<span id="cb6-7">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#tab A 를 누르면 표시될 내용</span></span>
-<span id="cb6-8">  st.write(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'hello'</span>)</span>
-<span id="cb6-9">    </span>
-<span id="cb6-10"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">with</span> tab2:</span>
-<span id="cb6-11">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#tab B를 누르면 표시될 내용 </span></span>
-<span id="cb6-12">  st.write(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'hi'</span>)</span></code></pre></div>
-</div>
-<p><br> 다음을 실행하면 tab A 를 눌렀을 경우 hello, tab B를 눌렀을 경우 hi가 나오게 됩니다.</p>
-<p>탭의 특징으로는, 탭을 클릭과 동시에 데이터가 만들어지는 것이 아니라,탭에 표시될 데이터가 이미 만들어져 았는 것이 특징입니다. 장점이 될 수도 있고, 단점이 될 수도 있습니다.</p>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-tab1.png" class="img-fluid"> <img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-tab2.png" class="img-fluid"></p>
-<ol start="3" type="1">
-<li>sidebar</li>
-</ol>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> streamlit <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> st</span>
-<span id="cb7-2"></span>
-<span id="cb7-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#st.sidebar는 </span></span>
-<span id="cb7-4"></span>
-<span id="cb7-5">st.sidebar.title(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'this is sidebar'</span>)</span>
-<span id="cb7-6">st.sidebar.checkbox(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'체크박스에 표시될 문구'</span>)</span>
-<span id="cb7-7"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 사이드바에 체크박스, 버튼등 추가할 수 있습니다! </span></span></code></pre></div>
-</div>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-sidebar.png" class="img-fluid"> <img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-sidebar2.png" class="img-fluid"></p>
-<ol start="4" type="1">
-<li>etc</li>
-</ol>
-<p>추가적으로 Expander, Container ,Empty가 있습니다</p>
-</section>
-<section id="이미지-불러오기" class="level3" data-number="2.2.3">
-<h3 data-number="2.2.3" class="anchored" data-anchor-id="이미지-불러오기"><span class="header-section-number">2.2.3</span> 이미지 불러오기</h3>
-<div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> streamlit <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> st</span>
-<span id="cb8-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> PIL <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> Image</span>
-<span id="cb8-3"></span>
-<span id="cb8-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#PIL 패키지에 이미지 모듈을 통해 이미지 열기 </span></span>
-<span id="cb8-5"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Image.open('이미지 경로')</span></span>
-<span id="cb8-6">zarathu_img <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> Image.<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">open</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'zarathu.png'</span>)</span>
-<span id="cb8-7"></span>
-<span id="cb8-8">col1,col2 <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> st.columns([<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>])</span>
-<span id="cb8-9"></span>
-<span id="cb8-10"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">with</span> col1 :</span>
-<span id="cb8-11">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># column 1 에 담을 내용</span></span>
-<span id="cb8-12">  st.title(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'here is column1'</span>)</span>
-<span id="cb8-13"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">with</span> col2 :</span>
-<span id="cb8-14">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># column 2 에 담을 내용</span></span>
-<span id="cb8-15">  st.title(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'here is column2'</span>)</span>
-<span id="cb8-16">  st.checkbox(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'this is checkbox1 in col2 '</span>)</span>
-<span id="cb8-17"></span>
-<span id="cb8-18"></span>
-<span id="cb8-19"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 컬럼2에 불러온 사진 표시하기</span></span>
-<span id="cb8-20">col2.image(zarathu_img)</span></code></pre></div>
-</div>
-<p><br></p>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-image.png" class="img-fluid"></p>
-<p><br></p>
-</section>
-</section>
-<section id="웹사용자로부터-input-받기" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="웹사용자로부터-input-받기"><span class="header-section-number">2.3</span> 웹사용자로부터 input 받기</h2>
-<p>이제 UI적인 부분을 전반적으로 살펴봤기 때문에, 사용자로 하여금 input을 받아 interactive하게 데이터를 보여주는 페이지를 만들어보겠습니다</p>
-<p>데이터는 사이킷런의 아이리스 데이터를 가져와 사용하도록 하겠습니다. <br></p>
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> np</span>
-<span id="cb9-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> pd </span>
-<span id="cb9-3"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> sklearn.datasets <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> load_iris </span>
-<span id="cb9-4"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> plt</span>
-<span id="cb9-5"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> streamlit <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> st</span>
-<span id="cb9-6"></span>
-<span id="cb9-7">iris_dataset <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> load_iris()</span>
-<span id="cb9-8"></span>
-<span id="cb9-9">df<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> pd.DataFrame(data<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>iris_dataset.data,columns<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> iris_dataset.feature_names)</span>
-<span id="cb9-10">df.columns<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [ col_name.split(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">' (cm)'</span>)[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>] <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> col_name <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> df.columns] <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 컬럼명을 뒤에 cm 제거하였습니다</span></span>
-<span id="cb9-11">df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'species'</span>]<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> iris_dataset.target </span>
-<span id="cb9-12"></span>
-<span id="cb9-13"></span>
-<span id="cb9-14">species_dict <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> {<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span> :<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'setosa'</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span> :<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'versicolor'</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span> :<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'virginica'</span>} </span>
-<span id="cb9-15"></span>
-<span id="cb9-16"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">def</span> mapp_species(x):</span>
-<span id="cb9-17">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> species_dict[x]</span>
-<span id="cb9-18"></span>
-<span id="cb9-19">df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'species'</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'species'</span>].<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">apply</span>(mapp_species)</span>
-<span id="cb9-20"><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">print</span>(df)</span></code></pre></div>
-</div>
-<p><br></p>
-<p>streamlit 에서 데이터 프레임을 보여주는 방식은 table과 dataframe 두가지를 사용할 수 있습니다.</p>
-<p>dataframe의 head함수를 이용하여 첫 5행의 데이터에 대해 table과 dataframe으로 출력한 경우입니다.</p>
-<div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">st.subheader(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'this is table'</span>)</span>
-<span id="cb10-2">st.table(df.head())</span>
-<span id="cb10-3"></span>
-<span id="cb10-4">st.subheader(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'this is data frame'</span>)</span>
-<span id="cb10-5">st.dataframe(df.head())</span></code></pre></div>
-</div>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-table.png" class="img-fluid"></p>
-<p>이제 버튼을 동작시키는 방법을 배워보도록 하겠습니다.</p>
-<p><br> 1. Select Box</p>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 사이드바에 select box를 활용하여 종을 선택한 다음 그에 해당하는 행만 추출하여 데이터프레임을 만들고자합니다.</span></span>
-<span id="cb11-2">st.sidebar.title(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Iris Species🌸'</span>)</span>
-<span id="cb11-3"></span>
-<span id="cb11-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># select_species 변수에 사용자가 선택한 값이 지정됩니다</span></span>
-<span id="cb11-5">select_species <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> st.sidebar.selectbox(</span>
-<span id="cb11-6">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'확인하고 싶은 종을 선택하세요'</span>,</span>
-<span id="cb11-7">    [<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'setosa'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'versicolor'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'virginica'</span>]</span>
-<span id="cb11-8">)</span>
-<span id="cb11-9"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 원래 dataframe으로 부터 꽃의 종류가 선택한 종류들만 필터링 되어서 나오게 일시적인 dataframe을 생성합니다</span></span>
-<span id="cb11-10">tmp_df <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> df[df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'species'</span>]<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> select_species]</span>
-<span id="cb11-11"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 선택한 종의 맨 처음 5행을 보여줍니다 </span></span>
-<span id="cb11-12">st.table(tmp_df.head())</span></code></pre></div>
-</div>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-selectbox.png" class="img-fluid"></p>
-<p>사용자가 sidebar에서 종을 바꿀 때마다 자동으로 해당하는 종의 테이블 정보가 불러와지게 됩니다.</p>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src_selectbox2.png" class="img-fluid"></p>
-<p><br></p>
-<ol start="2" type="1">
-<li>multi select</li>
-</ol>
-<div class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 여러개 선택할 수 있을 때는 multiselect를 이용하실 수 있습니다 </span></span>
-<span id="cb12-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># return : list</span></span>
-<span id="cb12-3">select_multi_species <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> st.sidebar.multiselect(</span>
-<span id="cb12-4">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'확인하고자 하는 종을 선택해 주세요. 복수선택가능'</span>,</span>
-<span id="cb12-5">    [<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'setosa'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'versicolor'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'virginica'</span>]</span>
-<span id="cb12-6"></span>
-<span id="cb12-7">)</span>
-<span id="cb12-8"></span>
-<span id="cb12-9"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 원래 dataframe으로 부터 꽃의 종류가 선택한 종류들만 필터링 되어서 나오게 일시적인 dataframe을 생성합니다</span></span>
-<span id="cb12-10">tmp_df <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> df[df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'species'</span>].isin(select_multi_species)]</span>
-<span id="cb12-11"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 선택한 종들의 결과표를 나타냅니다.  </span></span>
-<span id="cb12-12">st.table(tmp_df)</span></code></pre></div>
-</div>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-multiselect.png" class="img-fluid"></p>
-<p><br></p>
-<ol start="3" type="1">
-<li>Radio / Slider</li>
-</ol>
-<div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 라디오에 선택한 내용을 radio select변수에 담습니다</span></span>
-<span id="cb13-2">radio_select <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>st.sidebar.radio(</span>
-<span id="cb13-3">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"what is key column?"</span>,</span>
-<span id="cb13-4">    [<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sepal length'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sepal width'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'petal length'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'petal width'</span>],</span>
-<span id="cb13-5">    horizontal<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">True</span></span>
-<span id="cb13-6">    )</span>
-<span id="cb13-7"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 선택한 컬럼의 값의 범위를 지정할 수 있는 slider를 만듭니다. </span></span>
-<span id="cb13-8">slider_range <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> st.sidebar.slider(</span>
-<span id="cb13-9">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"choose range of key column"</span>,</span>
-<span id="cb13-10">     <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.0</span>, <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#시작 값 </span></span>
-<span id="cb13-11">     <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10.0</span>, <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#끝 값  </span></span>
-<span id="cb13-12">    (<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2.5</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">7.5</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 기본값, 앞 뒤로 2개 설정 /  하나만 하는 경우 value=2.5 이런 식으로 설정가능</span></span>
-<span id="cb13-13">)</span>
-<span id="cb13-14"></span>
-<span id="cb13-15"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 필터 적용버튼 생성 </span></span>
-<span id="cb13-16">start_button <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> st.sidebar.button(</span>
-<span id="cb13-17">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"filter apply 📊 "</span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#"버튼에 표시될 내용"</span></span>
-<span id="cb13-18">)</span>
-<span id="cb13-19"></span>
-<span id="cb13-20"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># button이 눌리는 경우 start_button의 값이 true로 바뀌게 된다.</span></span>
-<span id="cb13-21"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 이를 이용해서 if문으로 버튼이 눌렸을 때를 구현 </span></span>
-<span id="cb13-22"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> start_button:</span>
-<span id="cb13-23">    tmp_df <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> df[df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'species'</span>].isin(select_multi_species)]</span>
-<span id="cb13-24">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#slider input으로 받은 값에 해당하는 값을 기준으로 데이터를 필터링합니다.</span></span>
-<span id="cb13-25">    tmp_df<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> tmp_df[ (tmp_df[radio_select] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> slider_range[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>]) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;</span> (tmp_df[radio_select] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;=</span> slider_range[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>])]</span>
-<span id="cb13-26">    st.table(tmp_df)</span>
-<span id="cb13-27">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 성공문구 + 풍선이 날리는 특수효과 </span></span>
-<span id="cb13-28">    st.sidebar.success(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Filter Applied!"</span>)</span>
-<span id="cb13-29">    st.balloons()</span></code></pre></div>
-</div>
-<p>slider_range : list 형식으로 2개의 값이 저장됩니다. 양쪽 앞뒤로 두개의 값을 저장합니다.</p>
-<pre class="{bash}"><code>slider_range[0] : 최솟값 
-slider_range[1] : 최댓값  </code></pre>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-slider-filter.png" class="img-fluid"></p>
-<p>petal_width 컬럼값이 0에서 1.38사이인 값들로 정보를 filtering한 결과물이 표시됩니다.</p>
-<p><br></p>
-</section>
-</section>
-<section id="시각화" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> 시각화</h1>
-<section id="plotly" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="plotly"><span class="header-section-number">3.1</span> plotly</h2>
-<p>python의 시각화로 자주 이용되는 패키지는 matplotlib,seaborn,bokeh,plotly 등이 있습니다.</p>
-<p>스트림릿에서는 bokeh, plotly, matplotlib 등의 패키지를 통해 생성한 그림(figure)를 streamlit을 통해 웹에서 표시하는 기능을 제공합니다. <br></p>
-<section id="st.plotly_chart" class="level3" data-number="3.1.1">
-<h3 data-number="3.1.1" class="anchored" data-anchor-id="st.plotly_chart"><span class="header-section-number">3.1.1</span> st.plotly_chart</h3>
-<div class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#st.plotly_chart(figure_or_data, use_container_width=False, theme="streamlit", **kwargs)</span></span></code></pre></div>
-</div>
-<p><br> 인자로 줄 수 있는 옵션들에 대해서 하나씩 설명해드리도록 하겠습니다.</p>
-<ul>
-<li>figure_or_data : 첫번째 인자로 plotly로 생성한 그림의 이름이 들어가는 위치입니다.</li>
-<li>use_container_width : 레이아웃으로 지정한 사이즈에 그림이 해상도를 조절해서 들어갈 것인지 (-&gt;‘True’) <br> 아니면 원래그림 크기대로 표시될 것인지 (-&gt; ‘False’) 선택하는 옵션입니다.</li>
-<li>theme : 스트림릿 웹에 어떻게 표시될지 테마를 설정합니다. 인자로는 “streamlit” 과 None(입력하지 않음)을 선택할 수 있습니다.</li>
-</ul>
-<p><br></p>
-<div class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> plotly.express <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> px</span>
-<span id="cb16-2"></span>
-<span id="cb16-3">df <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> px.data.gapminder()</span>
-<span id="cb16-4"></span>
-<span id="cb16-5">fig <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> px.scatter(</span>
-<span id="cb16-6">    df.query(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"year==2007"</span>),</span>
-<span id="cb16-7">    x<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gdpPercap"</span>,</span>
-<span id="cb16-8">    y<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"lifeExp"</span>,</span>
-<span id="cb16-9">    size<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"pop"</span>,</span>
-<span id="cb16-10">    color<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"continent"</span>,</span>
-<span id="cb16-11">    hover_name<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"country"</span>,</span>
-<span id="cb16-12">    log_x<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">True</span>,</span>
-<span id="cb16-13">    size_max<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">60</span>,</span>
-<span id="cb16-14">)</span>
-<span id="cb16-15">fig.show()</span>
-<span id="cb16-16"></span>
-<span id="cb16-17">tab1, tab2 <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> st.tabs([<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Streamlit theme (default)"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Plotly native theme"</span>])</span>
-<span id="cb16-18"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">with</span> tab1:</span>
-<span id="cb16-19">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Use the Streamlit theme.</span></span>
-<span id="cb16-20">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># This is the default. So you can also omit the theme argument.</span></span>
-<span id="cb16-21">    st.plotly_chart(fig, theme<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"streamlit"</span>, use_container_width<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">True</span>)</span>
-<span id="cb16-22"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">with</span> tab2:</span>
-<span id="cb16-23">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Use the native Plotly theme.</span></span>
-<span id="cb16-24">    st.plotly_chart(fig, theme<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">None</span>, use_container_width<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">True</span>)</span></code></pre></div>
-</div>
-<p><br></p>
-</section>
-</section>
-<section id="지도표시" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="지도표시"><span class="header-section-number">3.2</span> 지도표시</h2>
-<div class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> np</span>
-<span id="cb17-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> pd </span>
-<span id="cb17-3"></span>
-<span id="cb17-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#지도 위에 표시될 점 좌표 값을 위도경도에 담습니다 .</span></span>
-<span id="cb17-5">base_position <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>  [<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">37.5073423</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">127.0572734</span>]</span>
-<span id="cb17-6"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#중심점의 위도, 경도 좌표를 리스트에 담습니다.</span></span>
-<span id="cb17-7"></span>
-<span id="cb17-8"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># base_position에, 랜덤으로 생성한 값을 더하여 5개의 좌표를 데이터 프레임으로 생성하였고,</span></span>
-<span id="cb17-9"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 컬럼명은 위도 :lat  경도 lon으로 지정하였습니다. </span></span>
-<span id="cb17-10"></span>
-<span id="cb17-11"></span>
-<span id="cb17-12">map_data <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> pd.DataFrame(</span>
-<span id="cb17-13">    np.random.randn(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> [<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> base_position , </span>
-<span id="cb17-14">    columns<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'lat'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'lon'</span>])</span>
-<span id="cb17-15"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># map data 생성 : 위치와 경도 </span></span>
-<span id="cb17-16"></span>
-<span id="cb17-17"><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">print</span>(map_data)</span></code></pre></div>
-</div>
-<p>이어서 이 위도 경도 데이터를 스트림릿 웹 페이지에 지도로 나타내는 과정은 다음과 같습니다. <br></p>
-<div class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">st.code(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'st.map(map_data)'</span>)</span>
-<span id="cb18-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 웹사이트에 어떤 코드인지 표시해주기 </span></span>
-<span id="cb18-3">st.subheader(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Map of Data '</span>)</span>
-<span id="cb18-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 제목 생성 </span></span>
-<span id="cb18-5">st.<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">map</span>(map_data)</span>
-<span id="cb18-6"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 지도 생성 </span></span></code></pre></div>
-</div>
-<p>결과물</p>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-map.png" class="img-fluid"></p>
-<p><br></p>
-</section>
-</section>
-<section id="st.session_state-st.cache" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> st.session_State / st.cache</h1>
-<p><br> <a href="https://docs.streamlit.io/library/api-reference/performance/st.cache" class="uri">https://docs.streamlit.io/library/api-reference/performance/st.cache</a></p>
-<section id="st.session_state-세션-스테이트란" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="st.session_state-세션-스테이트란"><span class="header-section-number">4.1</span> st.session_state 세션 스테이트란?</h2>
-<p><strong>상태가 자꾸 변하는 것들을 세션스테이트에 관리해두면 바뀌는 값에 따라 내용이 바뀌는 것들을 기록할 수 있다.</strong></p>
-<p>** 아주 중요한 역할을 하는 기능입니다. **</p>
-</section>
-<section id="st.session_state-활용" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="st.session_state-활용"><span class="header-section-number">4.2</span> st.session_state 활용</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-whysession_state.png" class="img-fluid figure-img"></p>
-<figcaption>why we use sessionstate</figcaption>
-</figure>
-</div>
-<p>세션스테이트에 key값의 초기값이 없으면, 초기값을 생성하여 놓는 작업을 if문을 통해 진행합니다.</p>
-<p>세션스테이트에 사용자가 입력한 인풋에 따라서 dataframe이 재가공 되는데 이 값이 interactive하게 지정되게 하기 위해 st.session_state값으로 사용합니다.</p>
-<div class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 예시코드 </span></span>
-<span id="cb19-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># import streamlit as st</span></span>
-<span id="cb19-3"></span>
-<span id="cb19-4"></span>
-<span id="cb19-5"></span>
-<span id="cb19-6"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># if 'final_dataframe' not in st.session_state:</span></span>
-<span id="cb19-7"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#   # session state 에 final 이라는 값이 없으면, </span></span>
-<span id="cb19-8"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#   st.session_state['final_dataframe']= df</span></span>
-<span id="cb19-9"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#   # 초기 값 설정 : session_state에 final_dataframe키 값에 초기값 데이터를 집어넣습니다 .</span></span>
-<span id="cb19-10"></span>
-<span id="cb19-11"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># #아래 코드는 df의 테이블 값이 바뀌더라도 interactive하게 연동되서 바뀌지 않습니다</span></span>
-<span id="cb19-12"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># st.table(df)</span></span>
-<span id="cb19-13"></span>
-<span id="cb19-14"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># #  아래 코드는  이제 dataframe가 조작될 때 마다 session_state객체 안에 final_dataframe값을 변경하면, </span></span>
-<span id="cb19-15"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># #  수정 될 때  계속 바뀌어서 보여줍니다. </span></span>
-<span id="cb19-16"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># st.table(st.session_state.final_dataframe)</span></span></code></pre></div>
-</div>
-</section>
-<section id="cache-란-무엇인가" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="cache-란-무엇인가"><span class="header-section-number">4.3</span> cache 란 무엇인가?</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-whatiscache.png" class="img-fluid figure-img"></p>
-<figcaption>캐싱기능의 필요성</figcaption>
-</figure>
-</div>
-<p>캐싱에 관한 간단한 개념은 주문이 들어왔을 때 우리가 만들기 시작하면 코드가 결과물을 만들어내는데 시간이 오래 걸리는 경우 유저가 결과물을 오랜시간 기달려야하는 경우가 발생합니다.</p>
-<p>따라서 만들어내는데 오래걸리는 결과물을 미리 만들어두고, 보이지 않는 곳에 캐싱하여 필요할때 찾아 꺼내는 것을 cache기능이라고 간단히 설명하도록 하겠습니다.</p>
-</section>
-<section id="streamlit-에서-cache-기능-사용하기" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="streamlit-에서-cache-기능-사용하기"><span class="header-section-number">4.4</span> streamlit 에서 cache 기능 사용하기</h2>
-<p>streamlit에서는 시간이 오래걸리는 작업: 데이터 로드 등을 할때 위에 <code>@st.cache</code>를 추가하여 캐싱할 수 있게 할 수 있다.</p>
-<div class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> streamlit <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> st</span>
-<span id="cb20-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> pd </span>
-<span id="cb20-3"></span>
-<span id="cb20-4">file_path <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'~~~filepath'</span></span>
-<span id="cb20-5"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">@st.cache</span></span>
-<span id="cb20-6"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">def</span> load_data():</span>
-<span id="cb20-7">  data <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> pd.read_csv(file_path)</span>
-<span id="cb20-8">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> data</span></code></pre></div>
-</div>
-<p>큰 데이터를 로드하거나, 실행이 오래걸리는 복잡한 연산을 해야할 때 cache기능을 이용하면 용이하다.</p>
-</section>
-<section id="로딩상태-구현" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="로딩상태-구현"><span class="header-section-number">4.5</span> 로딩상태 구현</h2>
-<section id="st.progress" class="level3" data-number="4.5.1">
-<h3 data-number="4.5.1" class="anchored" data-anchor-id="st.progress"><span class="header-section-number">4.5.1</span> st.progress</h3>
-<div class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> time </span>
-<span id="cb21-2"></span>
-<span id="cb21-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 방법 1 progress bar </span></span>
-<span id="cb21-4">latest_iteration <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> st.empty()</span>
-<span id="cb21-5">bar <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> st.progress(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>)</span>
-<span id="cb21-6"></span>
-<span id="cb21-7"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>):</span>
-<span id="cb21-8">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Update the progress bar with each iteration.</span></span>
-<span id="cb21-9">  latest_iteration.text(<span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">f'Iteration </span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>i<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'</span>)</span>
-<span id="cb21-10">  bar.progress(i <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span>
-<span id="cb21-11">  time.sleep(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.05</span>)</span>
-<span id="cb21-12">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 0.05 초 마다 1씩증가</span></span>
-<span id="cb21-13"></span>
-<span id="cb21-14">st.balloons()</span>
-<span id="cb21-15"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 시간 다 되면 풍선 이펙트 보여주기 </span></span></code></pre></div>
-</div>
-<p>코드 수행 소요시간이 긴 경우, progress bar와 streamlit의 spinner를 통해서 로딩페이지를 만들 수 있다!</p>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-progress.png" class="img-fluid"> <img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-progressbar2.png" class="img-fluid"></p>
-</section>
-<section id="st.-spinner-사용" class="level3" data-number="4.5.2">
-<h3 data-number="4.5.2" class="anchored" data-anchor-id="st.-spinner-사용"><span class="header-section-number">4.5.2</span> st. spinner 사용</h3>
-<div class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#방법2  st.spinner 사용 </span></span>
-<span id="cb22-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> time </span>
-<span id="cb22-3"></span>
-<span id="cb22-4"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">with</span> st.spinner(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Wait for it...'</span>):</span>
-<span id="cb22-5">  time.sleep(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>)</span>
-<span id="cb22-6">  st.success(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Done!'</span>) </span></code></pre></div>
-</div>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-spinner.png" class="img-fluid"> <img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-spinner2.png" class="img-fluid"></p>
-</section>
-</section>
-</section>
-<section id="스트림릿의-단점" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> 스트림릿의 단점</h1>
-<section id="근본적-한계" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="근본적-한계"><span class="header-section-number">5.1</span> 근본적 한계</h2>
-<p>streamlit 에서 제공하는 UI들이 대부분 예쁘지만, 디테일적으로 맘에 들지 않을 수가 있다.</p>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-css.png" class="img-fluid"></p>
-<p>예를 들어 4.87로 표시된 부분의 폰트가 맘에들지 않는다고 하자. 그렇다면 streamlit를 markdown을 통해서 style을 직접 수정해주어야한다.</p>
-</section>
-<section id="극복방안-css-hack" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="극복방안-css-hack"><span class="header-section-number">5.2</span> 극복방안 : CSS hack</h2>
-<p>이 작업을 streamlit CSS hack이라고 한다</p>
-<p><img src="https://blog.zarathu.com/posts/2023-02-01-streamlit/src-csshack.png" class="img-fluid"></p>
-<p>브라우저에 검사기능을 이용하여 css해당하는 부분을 마크다운으로 직접 style tag를 넣어서 수정하면 된다.</p>
-<p>아래 유튜브를 통해서 더욱 자세한 내용을 배울 수 있습니다.</p>
-<p><a href="https://www.youtube.com/watch?v=gr_KyGfO_eU" class="uri">https://www.youtube.com/watch?v=gr_KyGfO_eU</a></p>
-</section>
-</section>
-<section id="소개하지-못했지만-중요한-기능" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> 소개하지 못했지만 중요한 기능</h1>
-<ul>
-<li><p>DB를 연결하는 부분 streamlit은 다양한 DBMS 연결을 지원합니다.<br> 제공하는 tutorial을 통해 연결해보세요 <br> <a href="https://docs.streamlit.io/knowledge-base/tutorials/databases" class="uri">https://docs.streamlit.io/knowledge-base/tutorials/databases</a></p></li>
-<li><p>배포하는 부분<br>
-streamlit을 로컬에서 말고 링크를 만들어 배포할 수 있습니다 <a href="https://docs.streamlit.io/knowledge-base/tutorials/deploy" class="uri">https://docs.streamlit.io/knowledge-base/tutorials/deploy</a></p></li>
-</ul>
-</section>
-<section id="파이썬-streamlit을-활용한-전공의-실태조사-대시보드-제작기" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> 파이썬 streamlit을 활용한 전공의 실태조사 대시보드 제작기</h1>
-<iframe class="slide-deck" src="../../posts/2023-02-01-streamlit/streamlit_slide.html" width="750px" height="500px" style="border: solid 1px black">
-</iframe>
-<!-- <https://kimkimwonwon.github.io/zarathu> 를 클릭하시면 슬라이드를 볼 수 있습니다. -->
-
-
-</section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
-  author = {Kim, Won},
-  title = {Python {Streamlit} {패키지를} {이용한} {대시보드} {만들기}},
-  pages = {undefined},
-  date = {2023-02-01},
-  url = {https://blog.zarathu.com/posts/2023-02-01-streamlit},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
-Kim, Won. 2023. <span>“Python Streamlit 패키지를 이용한 대시보드
-만들기.”</span> February 1, 2023. <a href="https://blog.zarathu.com/posts/2023-02-01-streamlit">https://blog.zarathu.com/posts/2023-02-01-streamlit</a>.
-</div></div></section></div> ]]></description>
-  <category>python</category>
-  <category>streamlit</category>
-  <guid>https://blog.zarathu.com/posts/2023-02-01-streamlit/</guid>
-  <pubDate>Tue, 31 Jan 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://blog.zarathu.com/posts/2023-02-01-streamlit/logo.jpeg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>

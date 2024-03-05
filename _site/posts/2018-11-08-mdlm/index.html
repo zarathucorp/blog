@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.398">
+<meta name="generator" content="quarto-1.4.525">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2018-11-08">
@@ -66,7 +66,9 @@ div.csl-indent {
   "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
-    null
+    "f",
+    "/",
+    "s"
   ],
   "language": {
     "search-no-results-text": "No results",
@@ -76,6 +78,7 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -98,7 +101,7 @@ ga('send', {
 <body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
     <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
@@ -202,12 +205,12 @@ ga('send', {
       <div class="quarto-title-meta-contents">
       <p class="author"><a href="https://github.com/jinseob2kim">Jinseob Kim</a> </p>
     </div>
-      <div class="quarto-title-meta-contents">
+    <div class="quarto-title-meta-contents">
           <p class="affiliation">
               ANPANMAN Co.,Ltd
             </p>
         </div>
-      </div>
+    </div>
 
   <div class="quarto-title-meta">
 
@@ -225,7 +228,7 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
 <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract</a></li>
@@ -256,7 +259,7 @@ ga('send', {
   <li><a href="#apply-to-real-data" id="toc-apply-to-real-data" class="nav-link" data-scroll-target="#apply-to-real-data">Apply to Real data</a></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
   </ul></nav>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
@@ -285,8 +288,8 @@ ga('send', {
 \]</span> <span class="math inline">\(\boldsymbol{\vec{g}}_i\)</span>들은 <span class="math inline">\(X_i\)</span>방향으로의 단위벡터로서 크기는 모두 1이며 Figure @ref(fig:fig1)에 그림으로 표현되어 있다.</p>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/fig1_b2be827d26aa839512c334c960726e1f">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="index_files/figure-html/fig1-1.png" class="img-fluid figure-img" width="2100"></p>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/fig1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2100"></p>
 <figcaption>MDLM with 2 variables, 2 dimensions</figcaption></figure>
 </div>
 </div>
@@ -536,8 +539,8 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 <p>MDLM을 이용하여 Intercept와 MAP의 2차원공간으로 log(LOS)를 <span class="math inline">\(\text{log(LOS)}^2 = 2.3669^2 + (-2.4276 + 0.0295\cdot\text{MAP})^2\)</span>의 모형으로 추정할 수 있었고 AIC값은 <span class="math inline">\(2413\)</span>였다. 이것은 선형모형으로 추정한 <span class="math inline">\(\text{log(LOS)} = 2.2624 + 0.0027 \cdot \text{MAP}\)</span>(AIC <span class="math inline">\(2434\)</span>), quadratic항을 추가한 <span class="math inline">\(\text{log(LOS)} = 3.3742 -0.0246 \cdot \text{MAP} + 2\times 10^{-4} \cdot \text{MAP}^2\)</span>(AIC <span class="math inline">\(2414\)</span>)보다 좋은 추정 결과이다(Figure @ref(fig:fig2)). 또한 U shape의 cutoff값을 <span class="math inline">\(\dfrac{2.4276}{0.0295} = 82.29\)</span>로 간단히 계산할 수 있었다.</p>
 <div class="cell" data-layout-align="center" data-hash="index_cache/html/fig2_fb6b6e4ac2b8e62c3567e690648233e8">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="index_files/figure-html/fig2-1.png" class="img-fluid figure-img" width="2100"></p>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="index_files/figure-html/fig2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2100"></p>
 <figcaption>Relation between mean arterial pressure(mmHg) and length of stay day(log scale)</figcaption></figure>
 </div>
 </div>
@@ -577,7 +580,7 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-buja1989linear" class="csl-entry" role="listitem">
 Buja, Andreas, Trevor Hastie, and Robert Tibshirani. 1989. <span>“Linear Smoothers and Additive Models.”</span> <em>The Annals of Statistics</em> 17 (2): 453–510. <a href="http://www.jstor.org/stable/2241560">http://www.jstor.org/stable/2241560</a>.
 </div>
@@ -638,11 +641,10 @@ Verlinde, Erik. 2011. <span>“On the Origin of Gravity and the Laws of Newton.�
 <div id="ref-wood2001mgcv" class="csl-entry" role="listitem">
 Wood, Simon N. 2001. <span>“Mgcv: <span>GAM</span>s and Generalized Ridge Regression for <span>R</span>.”</span> <em>R News</em> 1 (2): 20–25. <a href="http://CRAN.R-project.org/doc/Rnews/">http://CRAN.R-project.org/doc/Rnews/</a>.
 </div>
-</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2018,
+</div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2018,
   author = {Kim, Jinseob},
   title = {선형모형의 {다차원공간으로의} {확장} {(Linear} {Model} in
     {Multidimensional} {Space)}},
-  pages = {undefined},
   date = {2018-11-08},
   url = {https://blog.zarathu.com/posts/2018-11-08-mdlm},
   langid = {en}
@@ -803,8 +805,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
         typesetMath(container);
         return container.innerHTML
