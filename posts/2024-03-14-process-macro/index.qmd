@@ -1,0 +1,225 @@
+---
+title: "Process macro 소개"
+description: 조절효과, 매개효과 분석을 위한 도구인 process macro를 소개합니다.
+categories: [R]
+author: 
+  name: Heeseok Choi
+  url: https://github.com/DilutionChoi
+date: 03-14-2024
+draft: false
+---
+
+# 개요
+
+Process macro에 대해 알아보고 R에서 사용가능한 패키지를 소개합니다.
+
+# Process macro
+
+Process macro는 회귀분석을 바탕으로 하는 매개효과, 조절효과 분석을 위한 도구입니다.
+
+사회과학, 경영학, 보건학 등에서 광범위하게 직접효과, 간접효과, 상호작용 등을 확인하기 위해 쓰입니다.
+
+## 매개효과
+
+```{r}
+#| eval: true
+#| echo: false
+#| include: false
+#| message: false
+#| warning: false
+library(processR)
+library(lavaan)
+```
+
+매개효과 분석은 설명변수가 반응변수에 영향을 미치는 경로, 매커니즘을 확인하기 위한 분석방법입니다. 단순매개모형(4번 모델)은 다음과 같은 다이아그램으로 표현할 수 있습니다.
+
+```{r, fig.cap = "Figure.1"}
+#| eval: true
+#| echo: false
+pmacroModel(no = 4)
+```
+
+먼저 R에서 process macro를 사용하려면 패키지를 설치하거나 파일을 다운받아야 합니다. 패키지로는 가톨릭대학교 문건웅 교수님이 만든 [processR](https://github.com/cardiomoon/processR)이라는 패키지를 다음과 같이 다운로드하고 불러올 수 있습니다.
+
+```{r}
+#| eval: false
+#| echo: true
+devtools::install_github("cardiomoon/processR")
+library(processR)
+```
+
+`processR` 패키지를 사용하려면 `lavaan` 패키지가 필요합니다. 아래 코드로 다운로드하고 불러올 수 있습니다.
+
+```{r}
+#| eval: false
+#| echo: true
+install.packages("lavaan")
+library(lavaan)
+```
+
+아래 코드로 `processR` 패키지에서 지원하는 모델의 번호를 확인할 수 있습니다.
+
+```{r}
+#| eval: true
+#| echo: true
+pmacro$no
+```
+
+직접 다운받아 사용하시려면 process macro를 개발한 Andrew F. Hayes가 제공하는 파일을 [여기](https://haskayne.ucalgary.ca/CCRAM/resource-hub)서 내려받을 수 있습니다. `process.R`파일을 실행시키거나 분석을 진행할 R파일 상단에 `source("process.R")`코드를 실행하면 함수를 사용할 수 있습니다. `processR`패키지와 `process.R`파일은 서로 다른 도구이니 혼동하지 않도록 주의해야 합니다. 이 포스트에서 `processR` 패키지에서 제공하는 함수는 코드 상단에 `# processR`로, `process.R`에서 제공하는 함수는 `# process.R`로 주석을 달아놓겠습니다.
+
+```{r}
+#| eval: true
+#| echo: false
+#| include: false
+#| message: false
+#| warning: false
+source("process.R")
+```
+
+예시 데이터로 단순매개효과를 설명해보겠습니다.
+
+미국의 1,338명의 의료비용에 대한 데이터입니다.
+```{r}
+#| eval: true
+#| echo: true
+cost <- read.csv("Medical_Cost.csv")
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+knitr::kable(cost[1:5, ])
+```
+
+`process.R`의 `process()`함수를 실행해보겠습니다. 인자는 다음과 같습니다.
+
+-   data = 데이터셋
+
+-   x = 설명변수
+
+-   y = 반응변수
+
+-   m = 매개변수
+
+-   model = 모델번호
+
+-   boot = 부트스트래핑 횟수
+
+-   total = 총효과 출력(0이면 출력하지 않음)
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+cost$sex <- ifelse(cost$sex == "male", 1, 0)
+cost$smoker <- ifelse(cost$smoker == "yes", 1, 0)
+
+# process.R
+process(data = cost, x = "smoker", y = "charges", m = "bmi", model = 4, boot = 0, total = 1)
+```
+
+우선 Figure.1에서 보았던 경로의 이름을 정하겠습니다.<br> $X → M : a$<br> $M → Y : b$<br> $X → Y : c'$<br> 단순매개모형에서 설명변수가 0, 1로 이루어진 변수일때, $a = [\bar{M}|(X = 1)] - [\bar{M}|(X = 0)] = 0.0567$이며 X가 1일때 M의 평균과 X가 0일때 M의 평균의 차이와 같고 `lm(bmi ~ smoker, data = cost)`의 기울기와 같습니다.<br> $b = [\hat{Y}|(M = m, X = x)] - [\hat{Y}|(M = m - 1, X = x)] = 388.0152$이며 이는 `lm(charges ~ smoker + bmi, data = cost)`에서 bmi의 기울기와 같고 아래처럼 계산할 수도 있습니다.
+
+```{r}
+model <- lm(charges ~ bmi + smoker, data = cost)
+
+cost.1 <- cost
+cost.1$bmi <- cost.1$bmi - 1
+
+predict(model, cost)[1] - predict(model, cost.1)[1]
+```
+
+$c' = [\hat{Y}|(X = x, M = m)] - [\hat{Y}|(X = x - 1, M = m)] = 23593.9810$이며 `lm(charges ~ smoker + bmi, data = cost)`의 smoker의 기울기와 같고 다음과 같이 계산할 수도 있습니다.
+
+```{r}
+model <- lm(charges ~ bmi + smoker, data = cost)
+
+smoke1 <- cost
+smoke1$smoker <- 1
+
+smoke0 <- cost
+smoke0$smoker <- 0
+
+predict(model, smoke1)[1] - predict(model, smoke0)[1]
+```
+
+단순매개모형에서 $ab$를 간접효과, $c'$을 직접효과, 이 둘을 더한 값을 $c$(총효과)라고 하며 총효과는 `lm(charges ~ smoker, data = cost)`의 기울기와 같습니다.<br> 간접효과는 매개변수를 통했을 때 흡연자는 비흡연자보다 의료비용이 21.9825만큼 높다는 것을 의미하며, 직접효과는 매개변수가 고정되어있을 때 흡연자는 의료비용이 23593.981만큼 더 높다는 것을 의미합니다.<br> 이제 `processR` 패키지를 실행해보겠습니다.
+
+```{r}
+# processR
+labels <- list(X = "smoker", Y = "charges", M = "bmi")
+meanSummaryTable(labels = labels, data = cost)
+```
+
+Adjusted mean은 $adjusted\;mean(\bar{Y}^*) = i_{Y} + b\bar{M} + c'X$로 계산할 수 있습니다. 설명변수가 0일때는 $\bar{Y}^* = -3459.10 + 388.02 * 30.6634 + 23593.98 * 0$이고 설명변수가 1일때는 $\bar{Y}^* = -3459.10 + 388.02 * 30.6634 + 23593.98 * 1$로 계산할 수 있습니다. 보정평균은 $X$일때 평균적인 $M$의 값을 가지는 사람은 보정평균만큼의 $Y$를 갖는다는 것을 의미합니다.
+
+아래처럼 각 계수를 깔끔하게 출력하는 함수도 존재합니다.
+
+```{r}
+# processR
+modelsSummaryTable(labels = labels, data = cost)
+```
+
+간접효과, 직접효과, 총효과를 다음 함수로 출력할 수 있습니다.
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+# processR
+model <- tripleEquation(labels = labels)
+semfit <- sem(model = model, data = cost)
+
+medSummaryTable(semfit)
+```
+
+## 조절효과
+
+조절효과는 설명변수가 반응변수에 미치는 영향이 다른 변수에 의해 변화될 때, 이 변화를 조절효과라고 하며, 이러한 영향을 주는 변수를 조절변수라고 합니다.
+
+단순조절효과(1번모델)는 다음의 다이아그램으로 나타낼 수 있습니다.
+
+```{r, fig.cap = "Figure.2"}
+#| eval: true
+#| echo: false
+pmacroModel(1)
+```
+
+`process()`함수로 단순조절효과를 알아보겠습니다. `plot` 인자는 출력결과 하단에 테이블을 만드어줍니다.
+
+```{r}
+# process.R
+process(data = cost, x = "smoker", y = "charges", w = "age", model = 1, plot = 1)
+```
+
+단순조절효과의 계수는 `lm(charges ~ smoker + age + smoker * charges, data = cost)`의 계수와 동일합니다.
+
+$\hat{Y} = i_{Y} + b_{1}X + b_{2}W + b_{3}XW$일때, $b_{1} = 23385.55$, $b_{2} = 267.25$, $b_{3} = 37.99$이며 각 계수를 다음과 같은 의미를 가지고 있습니다.
+
+-   $b_{1} = W$가 $0$일때 $X$가 $Y$에 미치는 조건부 효과이고 $X$가 $Y$에 미치는 조건부 효과는 $\theta_{X→Y} = b_{1} + b_{3}W$로 계산합니다.
+
+-   $b_{2} = X$가 $0$일때 $W$가 $Y$에 미치는 조건부 효과이고 $W$가 $Y$에 미치는 조건부 효과는 $\theta_{W→Y} = b_{2} + b_{3}X$로 계산합니다.
+
+-   $b_{3} = W$가 한 단위 바뀔 때, $X$의 한 단위 변화가 $Y$에 영향을 미치는 정도의 차이입니다.
+
+`proceeR` 패키지로 확인해보겠습니다.
+```{r}
+labels <- list(X = "smoker", Y = "charges", W = "age")
+model <- lm(charges ~ smoker + age + smoker * age, data = cost)
+
+# processR
+m.summary <- modelsSummary(list(model), labels = labels)
+modelsSummaryTable(m.summary)
+```
+
+# 마치며
+
+이 포스트에서는 간단한 모델만을 다뤘기 때문에 사용하지 못한 함수나 개념이 많습니다.
+
+추후에 기회가 된다면 포스트를 수정보완하여 좀 더 복잡한 모델을 소개할 수 있기를 바랍니다.
+
+Process macro에 대해 좀 더 알고 싶으신 분들은 문재성 교수님의 [processRWorkshop](https://github.com/cardiomoon/processRWorkshop) 또는 Andrew F. Hayes의 "Introduction to Mediation, Moderation, and Conditional Process Analysis"를 참고하시면 도움이 될 수 있습니다.
