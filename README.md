@@ -28,8 +28,6 @@ categories:
   - githubpage
   - documentation
   - website
-aliases:
-  - pkgdown.html
 author:
   name: "Jinhwan Kim"
   email: jinhwan@zarathu.com
