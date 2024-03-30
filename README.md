@@ -13,8 +13,10 @@ Zarathu Official Blog - <https://blog.zarathu.com>
 5.  아티클을 담을 디렉토리 **생성**, 이때 형식은 `YYYY-MM-DD-TITLE` (다른 예시 참조)
 6.  생성한 디렉토리로 이동 후 `index.qmd` 생성
 7.  YAML 작성 예시 (render 에러가 날 경우 **Indent**, **tab** 확인)
-수정 해야 하는 것은 `title`, `description`, `categories`, `alliases`, `author`, `date`
-8. categories는 R이나 API 와 같이 대문자가 원어인 경우를 제외하고 전부 소문자로 표기
+수정 해야 하는 것은 `title`, `description`, `categories`, `author`, `date`
+
+> [!IMPORTANT]  
+> categories는 R이나 API 와 같이 대문자가 원어인 경우를 제외하고 전부 소문자로 표기
 
 ``` {yaml}
 ---
@@ -43,12 +45,12 @@ license: CC BY-NC
 ---
 ```
 
-9.  아티클을 `index.qmd`에 이어서 작성 후 **Knit**
-10.  이때 이미지는 디렉토리내의 `/img`를 활용하길 권장
-11. 로컬에 **Commit**
-12. zarathucorp/blog에 **Pull Request** 생성
-13. 검토 후 **Merge**
-14. 끝
+8.  아티클을 `index.qmd`에 이어서 작성 후 **Knit**
+9.  이때 이미지는 디렉토리내의 `/img`를 활용하길 권장
+10. 로컬에 **Commit**
+11. zarathucorp/blog에 **Pull Request** 생성
+12. 검토 후 **Merge**
+13. 끝
 
 ## 아티클에 revealjs (quarto 슬라이드) 올리는 방법
 
