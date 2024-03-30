@@ -10,7 +10,689 @@
 <atom:link href="https://blog.zarathu.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>News, insights, and in-depth case studies from Zarathu</description>
 <generator>quarto-1.4.525</generator>
-<lastBuildDate>Wed, 13 Mar 2024 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 29 Mar 2024 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>bslib: input_task_button 소개</title>
+  <dc:creator>Jinhwan Kim</dc:creator>
+  <link>https://blog.zarathu.com/posts/2024-03-30-input-task-button/</link>
+  <description><![CDATA[ <!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="bslib" class="level2"><h2 class="anchored" data-anchor-id="bslib">bslib</h2>
+<p>bslib이란 bootstrap의 css를 R에서 사용할 수 있도록 만든 패키지입니다. 정확한 원문 설명은 <strong>Tools for theming Shiny and R Markdown via Bootstrap 3, 4, or 5.</strong> 으로, Shiny와 Rmarkdown (당연히 Quarto를 포함)에서 여러 테마를 활용할 수 있게 합니다.</p>
+<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/themer.gif" width="100%"></p>
+<p>이 글에서는 bslib의 활용 방법들중 Shiny에 집중하여 설명합니다.</p>
+<p>사실 Shiny는 기본적으로 디자인을 위해 bootstrap을 사용합니다. 그런데 Shiny는 패키지를 이루고 있는 구성 요소들과, 관계가 너무 복잡하게 얽혀 있는 상당히 <strong>무거운</strong> 패키지가 되어버렸고 이로 인해 업데이트에 영향을 받는 부분이 많아, 기능 위주의 업데이트를 하는 것으로 알려져 있습니다.</p>
+<p>즉, UI를 주로 다루는 bootstrap 부분은 5년 전의 버전인 3.4.1 버전을 사용하고 있고, 별도의 테마 설정을 하지 않는다면 특유의 파랑 / 회색 테마를 기본적으로 사용하게 됩니다.(최근 버전은 5.3.3)</p>
+<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/shiny-bootstrap.png" width="100%"></p>
+<p>그래서 shiny에서는 정체된 UI를 업데이트 하기 위해 UI를 다루는 별도의 R 패키지를 만들어 덮어 씌우듯 최근 bootstrap의 기능들을 제공하게 됩니다.</p>
+<div class="callout callout-style-simple callout-warning">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>이 글에서는 bslib의 주요 사용법은 다루지 않습니다.</p>
+</div>
+</div>
+</div>
+</section><section id="actionbutton" class="level2"><h2 class="anchored" data-anchor-id="actionbutton">actionButton</h2>
+<p>Shiny에서 제공하는 기능들은 정말 다양하지만, 핵심 기능을 꼽으라면 <code>actionButton</code>을 꼽을 수 있습니다.</p>
+<p><code>actionButton</code>이란 사용자가 버튼을 누르면 server에서 미리 선언한 특정 동작을 수행하도록 하는 기능으로 보통은 사용자가 데이터를 업로드 하고 나면, 이 데이터를 활용해 계산 결과를 만들어내게 하는 것에 쓰입니다.</p>
+<p>actionButton의 사용 예시로는 아래의 코드와 같이 (<code><a href="https://rdrr.io/pkg/shiny/man/actionButton.html">?shiny::actionButton</a></code>으로 확인할 수 있습니다) 사용자의 선택한 관측수에 맞는 히스토그램을 그릴 수 있게 합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://shiny.posit.co/">shiny</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html">sliderInput</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"obs"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Number of observations"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html">actionButton</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"goButton"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Go!"</span>, class <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"btn-success"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">plotOutput</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"distPlot"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">server</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">input</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">distPlot</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">input</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">goButton</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dist</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/isolate.html">isolate</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">input</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">obs</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dist</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ui</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">server</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
+<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/action.png" width="100%"></p>
+</section><section id="long-actionbutton" class="level2"><h2 class="anchored" data-anchor-id="long-actionbutton">long actionButton</h2>
+<p>그런데 이 <code>actionButton</code>의 문제점 중 하나는 만약 연산에 시간이 오래걸린다면 사용자는 버튼을 누르고 결과를 기다리는 동안 아무것도 할 수 없다는 것입니다.</p>
+<p>심지어 단순히 아무것도 할 수 없는 것을 넘어, 버튼이 클릭되지 않은 것으로 오해하고 버튼을 여러번 클릭하기도 합니다.</p>
+<p>만약 대용량 유전체 데이터를 활용한 계산을 위한 Shiny라면 연산 한번에 분 단위 시간이 필요할 수도 있는데 이는 여러가지 문제점을 초래할 수 있습니다.</p>
+<p>특히 여러번 클릭을 했다면 오랜 시간을 거쳐 연산을 마친 직후 다시 동일한 연산을 또 하고, 또 기다리고, … 의 악순환에 빠지기도 합니다.</p>
+<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/waiting.jpg" width="100%"></p>
+</section><section id="shiny-with-loading" class="level2"><h2 class="anchored" data-anchor-id="shiny-with-loading">shiny with loading</h2>
+<p><code>actionButton</code>의 이 문제를 해결하기 위해 여러 방법들이 존재했습니다.</p>
+<ol type="1">
+<li>
+<a href="https://shiny.posit.co/r/articles/build/progress/"><strong>progress indicator</strong></a>를 사용</li>
+</ol>
+<p>이 방법은 shiny에서 기본적으로 제공하는 Progress Indicator UI를 활용하는 방법으로 연산의 과정 / 단계가 진행됨에 따라 진행 정도를 사용자에게 보여줄 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">server</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">input</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">plot</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">input</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">goPlot</span> </span>
+<span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dat</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/withProgress.html">withProgress</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>message <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Making plot'</span>, value <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>      <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span></span>
+<span></span>
+<span>      <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">i</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dat</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dat</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/withProgress.html">incProgress</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, detail <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Doing part"</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">i</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>      <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span>    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dat</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dat</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">y</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/shinyUI.html">shinyUI</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/bootstrapPage.html">basicPage</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">plotOutput</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'plot'</span>, width <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"300px"</span>, height <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"300px"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html">actionButton</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'goPlot'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Go plot'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>ui <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ui</span>, server <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">server</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
+<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/progress.png" width="100%"></p>
+<p>그러나 이는 <code>withProgress</code>, <code>incProgress</code> 또는 <code>Progress</code>등의 함수와 오브젝트를 시간이 오래걸리는 연산에 <strong>추가로 코드를 작성해야한다</strong>는 단점이 있습니다.</p>
+<ol start="2" type="1">
+<li>별도의 R 패키지 사용</li>
+</ol>
+<p>R의 생태계에는 해결하려는 여러 문제가 있고, 그 문제마다의 R 패키지가 있다고 생각해도 과언이 아닌데요. actionButton과 연산 결과 사이의 긴 공백을 UI에 표기하기 위한 기능 또한 마찬가지입니다.</p>
+<p>이전의 progress indicator와 유사하게 <strong>추가 코드를 작성하여 해결해야하며</strong> 조금 더 디자인이나 세부 설정을 할 수 있는 커스텀 기능이 있다고 생각하면 좋습니다.</p>
+<p>아래는 몇가지 예시 패키지와 사례입니다 (알파벳순).</p>
+<ul>
+<li><a href="https://github.com/dreamRs/shinybusy/">shinybusy</a></li>
+</ul>
+<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/shinybusy.gif" width="100%"></p>
+<ul>
+<li><a href="https://github.com/daattali/shinycssloaders">shinycssloaders</a></li>
+</ul>
+<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/shinycssloaders.gif" width="100%"></p>
+<ul>
+<li><a href="https://github.com/emitanaka/shinycustomloader">shinycustomloader</a></li>
+</ul>
+<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/shinycustomloader.gif" width="100%"></p>
+<ul>
+<li><a href="https://github.com/JohnCoene/waiter/">waiter</a></li>
+</ul>
+<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/waiter-basic.gif" width="100%"></p>
+</section><section id="input_task_button" class="level2"><h2 class="anchored" data-anchor-id="input_task_button">input_task_button</h2>
+<p><code>input_task_button</code>은 위의 방법들과는 다르게 <code>actionButton</code>을 확장한 기능으로, <code>actionButton</code>을 누르면 연산이 진행중임을 알리며 버튼이 비활성화 되며, 연산이 끝나면 다시 버튼이 활성화되는 기능을 제공합니다.</p>
+<p>무엇보다도 가장 큰 차이점은 <code>actionButton</code>을 대체할 수 있기에 추가 코드를 사용할 필요가 없다는 것입니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(shiny)</span>
+<span id="cb3-2"></span>
+<span id="cb3-3">ui <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fluidPage</span>(</span>
+<span id="cb3-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sliderInput</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"obs"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Number of observations"</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500</span>),</span>
+<span id="cb3-5">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># actionButton("goButton", "Go!", class = "btn-success"),</span></span>
+<span id="cb3-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">input_task_button</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"goButton"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Go!"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"success"</span>),</span>
+<span id="cb3-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plotOutput</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"distPlot"</span>)</span>
+<span id="cb3-8">)</span>
+<span id="cb3-9"></span>
+<span id="cb3-10">server <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(input, output) {</span>
+<span id="cb3-11">  output<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>distPlot <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">renderPlot</span>({</span>
+<span id="cb3-12">    input<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>goButton</span>
+<span id="cb3-13">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Sys.sleep</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)</span>
+<span id="cb3-14">    dist <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">isolate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(input<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>obs))</span>
+<span id="cb3-15">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hist</span>(dist)</span>
+<span id="cb3-16">  })</span>
+<span id="cb3-17">}</span>
+<span id="cb3-18"></span>
+<span id="cb3-19"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">shinyApp</span>(ui, server)</span></code></pre></div>
+</div>
+<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/input_task_button.gif" width="100%"></p>
+<p><code>input_task_button</code>의 사용을 위해 5번째 줄의 <code>actionButton</code>을 6번째 줄의 <code>input_task_button</code>으로 대체하였고, 추가로 의도적으로 오래 걸리는 연산을 만들기 위해 13번째 줄의 <code><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep()</a></code> 코드를 활용하여 5초를 지연시켰습니다.</p>
+<p>input_task_button 사용 방법은 다음과 같습니다.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><code>input_task_button</code>은 <code>actionButton</code>을 무리없이 대체할 수 있지만 약간의 parameter 수정이 필요합니다.</p>
+</div>
+</div>
+</div>
+<table class="table">
+<thead><tr class="header">
+<th style="text-align: center;">actionButton</th>
+<th style="text-align: center;">input_task_button</th>
+<th style="text-align: center;">역할</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">inputId</td>
+<td style="text-align: center;">id</td>
+<td style="text-align: center;">버튼 id</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">label</td>
+<td style="text-align: center;">label</td>
+<td style="text-align: center;">버튼 라벨</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">icon</td>
+<td style="text-align: center;">icon</td>
+<td style="text-align: center;">버튼 아이콘</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;">label_busy</td>
+<td style="text-align: center;">버튼 비활성화시 라벨</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"></td>
+<td style="text-align: center;">icon_busy</td>
+<td style="text-align: center;">버튼 비활성화시 아이콘</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">class</td>
+<td style="text-align: center;">type</td>
+<td style="text-align: center;">버튼 테마 / 색상</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><a href="https://github.com/rstudio/bslib/releases/tag/v0.7.0">릴리스 노트 원본</a></li>
+<li><a href="https://rstudio.github.io/bslib/reference/input_task_button.html">input_task_button 매뉴얼</a></li>
+</ul></section><section id="정리" class="level2"><h2 class="anchored" data-anchor-id="정리">정리</h2>
+<p>이번 글에서는 bslib의 최신 기능인 input_task_button과 간단한 사용 사례를 소개했습니다.</p>
+<p>이는 잠재적으로 사용자 경험을 향상시키는 기능이며, 기존의 shiny에서는 추가 코드를 작성해야하는 번거로움을 해결해주는 기능이라고 생각합니다.</p>
+<p>특히 다른 웹 어플리케이션과 다르게 Shiny에서는 대용량 데이터 연산으로 인해 시간이 오래 걸리는 경우가 많지만, 상대적으로 빈약한 UI/UX를 가지고 있어 기존의 <code>actionButton</code>을 <code>input_task_button</code>으로 대체할 경우 이를 보완하는데 큰 도움이 될 것입니다.</p>
+<p>이번 글이 도움이 되었길 바라며, 다음 글에서 또 만나요!</p>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2024,
+  author = {Kim, Jinhwan},
+  title = {Bslib: Input\_task\_button {소개}},
+  date = {2024-03-30},
+  url = {https://blog.zarathu.com/posts/2024-03-30-input-task-button},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
+Kim, Jinhwan. 2024. <span>“Bslib: Input_task_button 소개.”</span> March
+30, 2024. <a href="https://blog.zarathu.com/posts/2024-03-30-input-task-button">https://blog.zarathu.com/posts/2024-03-30-input-task-button</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>shiny</category>
+  <category>bslib</category>
+  <category>ux</category>
+  <guid>https://blog.zarathu.com/posts/2024-03-30-input-task-button/</guid>
+  <pubDate>Fri, 29 Mar 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/button.png" medium="image" type="image/png" height="88" width="144"/>
+</item>
 <item>
   <title>Process macro 소개</title>
   <dc:creator>Heeseok Choi</dc:creator>
@@ -10612,688 +11294,6 @@ March 17, 2023. <a href="https://blog.zarathu.com/posts/2023-03-17-pkgdown">http
   <guid>https://blog.zarathu.com/posts/2023-03-17-pkgdown/</guid>
   <pubDate>Thu, 16 Mar 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-03-17-pkgdown/img/logo.png" medium="image" type="image/png" height="167" width="144"/>
-</item>
-<item>
-  <title>bslib: input_task_button 소개</title>
-  <dc:creator>Jinhwan Kim</dc:creator>
-  <link>https://blog.zarathu.com/posts/2024-03-30-input-task-button/</link>
-  <description><![CDATA[ <!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-L0DYYSH9KM');
-</script><section id="bslib" class="level2"><h2 class="anchored" data-anchor-id="bslib">bslib</h2>
-<p>bslib이란 bootstrap의 css를 R에서 사용할 수 있도록 만든 패키지입니다. 정확한 원문 설명은 <strong>Tools for theming Shiny and R Markdown via Bootstrap 3, 4, or 5.</strong> 으로, Shiny와 Rmarkdown (당연히 Quarto를 포함)에서 여러 테마를 활용할 수 있게 합니다.</p>
-<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/themer.gif" width="100%"></p>
-<p>이 글에서는 bslib의 활용 방법들중 Shiny에 집중하여 설명합니다.</p>
-<p>사실 Shiny는 기본적으로 디자인을 위해 bootstrap을 사용합니다. 그런데 Shiny는 패키지를 이루고 있는 구성 요소들과, 관계가 너무 복잡하게 얽혀 있는 상당히 <strong>무거운</strong> 패키지가 되어버렸고 이로 인해 업데이트에 영향을 받는 부분이 많아, 기능 위주의 업데이트를 하는 것으로 알려져 있습니다.</p>
-<p>즉, UI를 주로 다루는 bootstrap 부분은 5년 전의 버전인 3.4.1 버전을 사용하고 있고, 별도의 테마 설정을 하지 않는다면 특유의 파랑 / 회색 테마를 기본적으로 사용하게 됩니다.(최근 버전은 5.3.3)</p>
-<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/shiny-bootstrap.png" width="100%"></p>
-<p>그래서 shiny에서는 정체된 UI를 업데이트 하기 위해 UI를 다루는 별도의 R 패키지를 만들어 덮어 씌우듯 최근 bootstrap의 기능들을 제공하게 됩니다.</p>
-<div class="callout callout-style-simple callout-warning">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>이 글에서는 bslib의 주요 사용법은 다루지 않습니다.</p>
-</div>
-</div>
-</div>
-</section><section id="actionbutton" class="level2"><h2 class="anchored" data-anchor-id="actionbutton">actionButton</h2>
-<p>Shiny에서 제공하는 기능들은 정말 다양하지만, 핵심 기능을 꼽으라면 <code>actionButton</code>을 꼽을 수 있습니다.</p>
-<p><code>actionButton</code>이란 사용자가 버튼을 누르면 server에서 미리 선언한 특정 동작을 수행하도록 하는 기능으로 보통은 사용자가 데이터를 업로드 하고 나면, 이 데이터를 활용해 계산 결과를 만들어내게 하는 것에 쓰입니다.</p>
-<p>actionButton의 사용 예시로는 아래의 코드와 같이 (<code><a href="https://rdrr.io/pkg/shiny/man/actionButton.html">?shiny::actionButton</a></code>으로 확인할 수 있습니다) 사용자의 선택한 관측수에 맞는 히스토그램을 그릴 수 있게 합니다.</p>
-<div class="cell">
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;"><a href="https://shiny.posit.co/">shiny</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html">sliderInput</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"obs"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Number of observations"</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1000</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">500</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html">actionButton</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"goButton"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Go!"</span>, class <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"btn-success"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">plotOutput</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"distPlot"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">server</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">input</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span>  <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">distPlot</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span>    <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">input</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">goButton</span></span>
-<span>    <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">dist</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/isolate.html">isolate</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">input</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">obs</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">dist</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span></span>
-<span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ui</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">server</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-</div>
-<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/action.png" width="100%"></p>
-</section><section id="long-actionbutton" class="level2"><h2 class="anchored" data-anchor-id="long-actionbutton">long actionButton</h2>
-<p>그런데 이 <code>actionButton</code>의 문제점 중 하나는 만약 연산에 시간이 오래걸린다면 사용자는 버튼을 누르고 결과를 기다리는 동안 아무것도 할 수 없다는 것입니다.</p>
-<p>심지어 단순히 아무것도 할 수 없는 것을 넘어, 버튼이 클릭되지 않은 것으로 오해하고 버튼을 여러번 클릭하기도 합니다.</p>
-<p>만약 대용량 유전체 데이터를 활용한 계산을 위한 Shiny라면 연산 한번에 분 단위 시간이 필요할 수도 있는데 이는 여러가지 문제점을 초래할 수 있습니다.</p>
-<p>특히 여러번 클릭을 했다면 오랜 시간을 거쳐 연산을 마친 직후 다시 동일한 연산을 또 하고, 또 기다리고, … 의 악순환에 빠지기도 합니다.</p>
-<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/waiting.jpg" width="100%"></p>
-</section><section id="shiny-with-loading" class="level2"><h2 class="anchored" data-anchor-id="shiny-with-loading">shiny with loading</h2>
-<p><code>actionButton</code>의 이 문제를 해결하기 위해 여러 방법들이 존재했습니다.</p>
-<ol type="1">
-<li>
-<a href="https://shiny.posit.co/r/articles/build/progress/"><strong>progress indicator</strong></a>를 사용</li>
-</ol>
-<p>이 방법은 shiny에서 기본적으로 제공하는 Progress Indicator UI를 활용하는 방법으로 연산의 과정 / 단계가 진행됨에 따라 진행 정도를 사용자에게 보여줄 수 있습니다.</p>
-<div class="cell">
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">server</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">input</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span>  <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">output</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">plot</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span>    <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">input</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">goPlot</span> </span>
-<span></span>
-<span>    <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">dat</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>, y <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span>    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/withProgress.html">withProgress</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>message <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Making plot'</span>, value <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span>      <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">n</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span></span>
-<span></span>
-<span>      <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">i</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span>        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">dat</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">dat</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>, y <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>        <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/withProgress.html">incProgress</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">n</span>, detail <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Doing part"</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">i</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>        <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>      <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span>    <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span>    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">dat</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">x</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">dat</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">y</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/shinyUI.html">shinyUI</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/bootstrapPage.html">basicPage</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">plotOutput</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'plot'</span>, width <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"300px"</span>, height <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"300px"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html">actionButton</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'goPlot'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Go plot'</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>ui <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ui</span>, server <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">server</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-</div>
-<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/progress.png" width="100%"></p>
-<p>그러나 이는 <code>withProgress</code>, <code>incProgress</code> 또는 <code>Progress</code>등의 함수와 오브젝트를 시간이 오래걸리는 연산에 <strong>추가로 코드를 작성해야한다</strong>는 단점이 있습니다.</p>
-<ol start="2" type="1">
-<li>별도의 R 패키지 사용</li>
-</ol>
-<p>R의 생태계에는 해결하려는 여러 문제가 있고, 그 문제마다의 R 패키지가 있다고 생각해도 과언이 아닌데요. actionButton과 연산 결과 사이의 긴 공백을 UI에 표기하기 위한 기능 또한 마찬가지입니다.</p>
-<p>이전의 progress indicator와 유사하게 <strong>추가 코드를 작성하여 해결해야하며</strong> 조금 더 디자인이나 세부 설정을 할 수 있는 커스텀 기능이 있다고 생각하면 좋습니다.</p>
-<p>아래는 몇가지 예시 패키지와 사례입니다 (알파벳순).</p>
-<ul>
-<li><a href="https://github.com/dreamRs/shinybusy/">shinybusy</a></li>
-</ul>
-<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/shinybusy.gif" width="100%"></p>
-<ul>
-<li><a href="https://github.com/daattali/shinycssloaders">shinycssloaders</a></li>
-</ul>
-<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/shinycssloaders.gif" width="100%"></p>
-<ul>
-<li><a href="https://github.com/emitanaka/shinycustomloader">shinycustomloader</a></li>
-</ul>
-<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/shinycustomloader.gif" width="100%"></p>
-<ul>
-<li><a href="https://github.com/JohnCoene/waiter/">waiter</a></li>
-</ul>
-<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/waiter-basic.gif" width="100%"></p>
-</section><section id="input_task_button" class="level2"><h2 class="anchored" data-anchor-id="input_task_button">input_task_button</h2>
-<p><code>input_task_button</code>은 위의 방법들과는 다르게 <code>actionButton</code>을 확장한 기능으로, <code>actionButton</code>을 누르면 연산이 진행중임을 알리며 버튼이 비활성화 되며, 연산이 끝나면 다시 버튼이 활성화되는 기능을 제공합니다.</p>
-<p>무엇보다도 가장 큰 차이점은 <code>actionButton</code>을 대체할 수 있기에 추가 코드를 사용할 필요가 없다는 것입니다.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(shiny)</span>
-<span id="cb3-2"></span>
-<span id="cb3-3">ui <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fluidPage</span>(</span>
-<span id="cb3-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sliderInput</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"obs"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Number of observations"</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1000</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">500</span>),</span>
-<span id="cb3-5">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># actionButton("goButton", "Go!", class = "btn-success"),</span></span>
-<span id="cb3-6">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">input_task_button</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"goButton"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Go!"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"success"</span>),</span>
-<span id="cb3-7">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plotOutput</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"distPlot"</span>)</span>
-<span id="cb3-8">)</span>
-<span id="cb3-9"></span>
-<span id="cb3-10">server <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(input, output) {</span>
-<span id="cb3-11">  output<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>distPlot <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">renderPlot</span>({</span>
-<span id="cb3-12">    input<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>goButton</span>
-<span id="cb3-13">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">Sys.sleep</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>)</span>
-<span id="cb3-14">    dist <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">isolate</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rnorm</span>(input<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>obs))</span>
-<span id="cb3-15">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">hist</span>(dist)</span>
-<span id="cb3-16">  })</span>
-<span id="cb3-17">}</span>
-<span id="cb3-18"></span>
-<span id="cb3-19"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">shinyApp</span>(ui, server)</span></code></pre></div>
-</div>
-<p><img src="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/input_task_button.gif" width="100%"></p>
-<p><code>input_task_button</code>의 사용을 위해 5번째 줄의 <code>actionButton</code>을 6번째 줄의 <code>input_task_button</code>으로 대체하였고, 추가로 의도적으로 오래 걸리는 연산을 만들기 위해 13번째 줄의 <code><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep()</a></code> 코드를 활용하여 5초를 지연시켰습니다.</p>
-<p>input_task_button 사용 방법은 다음과 같습니다.</p>
-<div class="callout callout-style-simple callout-note">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p><code>input_task_button</code>은 <code>actionButton</code>을 무리없이 대체할 수 있지만 약간의 parameter 수정이 필요합니다.</p>
-</div>
-</div>
-</div>
-<table class="table">
-<thead><tr class="header">
-<th style="text-align: center;">actionButton</th>
-<th style="text-align: center;">input_task_button</th>
-<th style="text-align: center;">역할</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">inputId</td>
-<td style="text-align: center;">id</td>
-<td style="text-align: center;">버튼 id</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">label</td>
-<td style="text-align: center;">label</td>
-<td style="text-align: center;">버튼 라벨</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">icon</td>
-<td style="text-align: center;">icon</td>
-<td style="text-align: center;">버튼 아이콘</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"></td>
-<td style="text-align: center;">label_busy</td>
-<td style="text-align: center;">버튼 비활성화시 라벨</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"></td>
-<td style="text-align: center;">icon_busy</td>
-<td style="text-align: center;">버튼 비활성화시 아이콘</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">class</td>
-<td style="text-align: center;">type</td>
-<td style="text-align: center;">버튼 테마 / 색상</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><a href="https://github.com/rstudio/bslib/releases/tag/v0.7.0">릴리스 노트 원본</a></li>
-<li><a href="https://rstudio.github.io/bslib/reference/input_task_button.html">input_task_button 매뉴얼</a></li>
-</ul></section><section id="정리" class="level2"><h2 class="anchored" data-anchor-id="정리">정리</h2>
-<p>이번 글에서는 bslib의 최신 기능인 input_task_button과 간단한 사용 사례를 소개했습니다.</p>
-<p>이는 잠재적으로 사용자 경험을 향상시키는 기능이며, 기존의 shiny에서는 추가 코드를 작성해야하는 번거로움을 해결해주는 기능이라고 생각합니다.</p>
-<p>특히 다른 웹 어플리케이션과 다르게 Shiny에서는 대용량 데이터 연산으로 인해 시간이 오래 걸리는 경우가 많지만, 상대적으로 빈약한 UI/UX를 가지고 있어 기존의 <code>actionButton</code>을 <code>input_task_button</code>으로 대체할 경우 이를 보완하는데 큰 도움이 될 것입니다.</p>
-<p>이번 글이 도움이 되었길 바라며, 다음 글에서 또 만나요!</p>
-
-
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
-  author = {Kim, Jinhwan},
-  title = {Bslib: Input\_task\_button {소개}},
-  date = {2023-03-15},
-  url = {https://blog.zarathu.com/posts/2024-03-30-input-task-button},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
-Kim, Jinhwan. 2023. <span>“Bslib: Input_task_button 소개.”</span> March
-15, 2023. <a href="https://blog.zarathu.com/posts/2024-03-30-input-task-button">https://blog.zarathu.com/posts/2024-03-30-input-task-button</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>shiny</category>
-  <category>bslib</category>
-  <category>ux</category>
-  <guid>https://blog.zarathu.com/posts/2024-03-30-input-task-button/</guid>
-  <pubDate>Tue, 14 Mar 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/button.png" medium="image" type="image/png"/>
 </item>
 <item>
   <title>shiny.likert 패키지 소개</title>
