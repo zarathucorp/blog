@@ -23,32 +23,113 @@ license: CC BY-NC
 
 ## bslib
 
+::: {.content-visible when-profile="en"}
+
+bslib is a package that makes bootstrap's css available for use in R. The exact original description is **Tools for theming Shiny and R Markdown via Bootstrap 3, 4, or 5.** It allows you to utilize multiple themes in Shiny and Rmarkdown (including Quarto, naturally).
+:::
+
+::: {.content-visible when-profile="jp"}
+bslibとはbootstrapのcssをRで使えるようにしたパッケージです。
+
+正確な原文の説明は**Tools for theming Shiny and R Markdown via Bootstrap 3, 4, or 5.** で、ShinyとRmarkdown(もちろんQuartoを含む)で色んなテーマを活用することができます。
+::: 
+
+::: {.content-visible when-profile="ko"}
 bslib이란 bootstrap의 css를 R에서 사용할 수 있도록 만든 패키지입니다. 
 정확한 원문 설명은 **Tools for theming Shiny and R Markdown via Bootstrap 3, 4, or 5.** 으로, Shiny와 Rmarkdown (당연히 Quarto를 포함)에서 여러 테마를 활용할 수 있게 합니다.
+::: 
 
 <img src='img/themer.gif' width = '100%'></img>
 
+::: {.content-visible when-profile="en"}
+In this article, we'll focus on Shiny as an example of how bslib can be utilized. In fact, Shiny uses bootstrap for its design by default. However, Shiny is known for its feature-oriented updates, as it has become a very **heavy** package with a lot of components and relationships that are affected by updates.This means that the bootstrap part, which mainly deals with the UI, is using version 3.4.1, which is 5 years old, and it defaults to a distinctive blue/gray theme unless you set a separate theme (the latest version is 5.3.3).
+:::
+
+::: {.content-visible when-profile="jp"}
+この記事ではbslibの活用方法の中でShinyに集中して説明します。
+
+実際、Shinyは基本的にデザインのためbootstrapを使います。 しかし、Shinyはパッケージを構成してるコンポーネントと、関係が複雑に絡まっていて、かなり**重い**パッケージになってしまい、このため、アップデートで影響を受ける部分が多く、機能中心のアップデートをすることが知られています。
+
+つまり、UIを主に扱うbootstrapの部分は5年前のバージョンである3.4.1バージョンを使っていて、別のテーマ設定をしない場合、特有のブルー/グレーのテーマを基本的に使うことになります。(最近のバージョンは5.3.3)
+::: 
+
+::: {.content-visible when-profile="ko"}
 이 글에서는 bslib의 활용 방법들중 Shiny에 집중하여 설명합니다. 
 
 사실 Shiny는 기본적으로 디자인을 위해 bootstrap을 사용합니다. 그런데 Shiny는 패키지를 이루고 있는 구성 요소들과, 관계가 너무 복잡하게 얽혀 있는 상당히 **무거운** 패키지가 되어버렸고 이로 인해 업데이트에 영향을 받는 부분이 많아, 기능 위주의 업데이트를 하는 것으로 알려져 있습니다.
 
 즉, UI를 주로 다루는 bootstrap 부분은 5년 전의 버전인 3.4.1 버전을 사용하고 있고, 별도의 테마 설정을 하지 않는다면 특유의 파랑 / 회색 테마를 기본적으로 사용하게 됩니다.(최근 버전은 5.3.3)
+::: 
 
 <img src='img/shiny-bootstrap.png' width = '100%'></img>
 
+::: {.content-visible when-profile="en"}
+So in order to update the stagnant UI, shiny creates a separate R package that deals with the UI and overwrites it to provide the latest bootstrap features. 
+:::
+
+::: {.content-visible when-profile="jp"}
+それでshinyでは停滞したUIをアップデートするため、UIを扱う別のRパッケージを作って上書きするように最近bootstrapの機能を提供するようになりました。
+::: 
+
+::: {.content-visible when-profile="ko"}
 그래서 shiny에서는 정체된 UI를 업데이트 하기 위해 UI를 다루는 별도의 R 패키지를 만들어 덮어 씌우듯 최근 bootstrap의 기능들을 제공하게 됩니다. 
+::: 
+
+::: {.content-visible when-profile='en'}
+
+:::{.callout-warning appearance='simple'}
+This article does not cover the main uses of bslib.
+:::
+
+:::
+
+::: {.content-visible when-profile='jp'}
+
+:::{.callout-warning appearance='simple'}
+この記事ではbslibの主な使い方は説明しません。
+:::
+
+:::
+
+::: {.content-visible when-profile='ko'}
 
 :::{.callout-warning appearance='simple'}
 이 글에서는 bslib의 주요 사용법은 다루지 않습니다.
 :::
 
+:::
+
 ## actionButton
+
+::: {.content-visible when-profile="en"}
+
+Shiny has a lot of features, but one of the key ones is the `actionButton`.
+
+An `actionButton` is a feature that allows the user to press a button to perform a specific pre-declared action on the server, most commonly used for uploading data and then using that data to generate a calculation result.
+
+An example use of an actionButton is to allow the user to plot a histogram of the user's selected observations, as shown in the code below (which can be found at `?shiny::actionButton`).
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+Shinyが提供する機能は本当に多様ですが、核心的な機能を挙げるなら、`actionButton`を挙げることができます。
+
+actionButton`とはユーザがボタンを押すとserverで予め宣言した特定の動作を実行する機能で、普通はユーザがデータをアップロードしたら、このデータを活用して計算結果を生成するために使います。
+
+actionButtonの使用例としては下記のコードのように(`?shiny::actionButton`で確認することができます)ユーザーが選択した観測数に合うヒストグラムを描くことができます。
+
+::: 
+
+::: {.content-visible when-profile="ko"}
 
 Shiny에서 제공하는 기능들은 정말 다양하지만, 핵심 기능을 꼽으라면 `actionButton`을 꼽을 수 있습니다.
 
 `actionButton`이란 사용자가 버튼을 누르면 server에서 미리 선언한 특정 동작을 수행하도록 하는 기능으로 보통은 사용자가 데이터를 업로드 하고 나면, 이 데이터를 활용해 계산 결과를 만들어내게 하는 것에 쓰입니다.
 
 actionButton의 사용 예시로는 아래의 코드와 같이 (`?shiny::actionButton`으로 확인할 수 있습니다) 사용자의 선택한 관측수에 맞는 히스토그램을 그릴 수 있게 합니다.
+
+::: 
 
 ```{r}
 #| eval: false
@@ -75,6 +156,33 @@ shinyApp(ui, server)
 
 ## long actionButton
 
+::: {.content-visible when-profile="en"}
+
+One of the problems with this `actionButton` is that if the computation takes a long time, the user can't do anything while pressing the button and waiting for the result.
+
+Worse than just not being able to do anything, they might think the button hasn't been clicked and click it multiple times.
+
+If your Shiny is for computations with large amounts of genomic data, you might need minutes per computation, which can cause a lot of problems. 
+
+Especially if you click multiple times, you can get stuck in a vicious cycle of waiting, waiting, waiting, waiting... right after finishing a calculation.
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+ところで、この `actionButton` の問題点の一つは、もし演算に時間がかかる場合、ユーザーはボタンを押して結果を待っている間は何もできないということです。
+
+さらに、単純に何もできないだけでなく、ボタンがクリックされなかったと勘違いしてボタンを何度もクリックすることもあります。
+
+もし、大容量の誘電体データを活用した計算のためのShinyであれば、1回の計算に分単位の時間が必要な場合もあり、これは様々な問題を引き起こす可能性があります。
+
+特に、何度もクリックした場合、長い時間をかけて演算を終えた直後にまた同じ演算をまたやって、また待って、...という悪循環に陥ることもあります。
+
+::: 
+
+
+::: {.content-visible when-profile="ko"}
+
 그런데 이 `actionButton`의 문제점 중 하나는 만약 연산에 시간이 오래걸린다면 사용자는 버튼을 누르고 결과를 기다리는 동안 아무것도 할 수 없다는 것입니다.
 
 심지어 단순히 아무것도 할 수 없는 것을 넘어, 버튼이 클릭되지 않은 것으로 오해하고 버튼을 여러번 클릭하기도 합니다.
@@ -82,16 +190,41 @@ shinyApp(ui, server)
 만약 대용량 유전체 데이터를 활용한 계산을 위한 Shiny라면 연산 한번에 분 단위 시간이 필요할 수도 있는데 이는 여러가지 문제점을 초래할 수 있습니다. 
 
 특히 여러번 클릭을 했다면 오랜 시간을 거쳐 연산을 마친 직후 다시 동일한 연산을 또 하고, 또 기다리고, ... 의 악순환에 빠지기도 합니다.
+::: 
 
 <img src='img/waiting.jpg' width = '100%'></img>
 
 ## shiny with loading
+
+::: {.content-visible when-profile="en"}
+
+There have been several ways to solve this issue with `actionButton`: 
+
+1. Using a [**progress indicator**](https://shiny.posit.co/r/articles/build/progress/) 
+
+is a way to utilize the Progress Indicator UI provided by shiny natively, which allows you to show the user the progress as the process/step of the operation progresses.
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+actionButton`のこの問題を解決するため、色んな方法がありました。
+
+1. [**progress indicator](https://shiny.posit.co/r/articles/build/progress/)を使う方法
+
+この方法はshinyで基本的に提供するProgress Indicator UIを活用する方法で、演算の過程/段階が進むにつれて進行度をユーザーに見せることができます。
+
+::: 
+
+::: {.content-visible when-profile="ko"}
 
 `actionButton`의 이 문제를 해결하기 위해 여러 방법들이 존재했습니다. 
 
 1. [**progress indicator**](https://shiny.posit.co/r/articles/build/progress/)를 사용
 
 이 방법은 shiny에서 기본적으로 제공하는 Progress Indicator UI를 활용하는 방법으로 연산의 과정 / 단계가 진행됨에 따라 진행 정도를 사용자에게 보여줄 수 있습니다.
+
+::: 
 
 ```{r}
 #| eval: false
@@ -125,6 +258,36 @@ shinyApp(ui = ui, server = server)
 
 <img src='img/progress.png' width = '100%'></img>
 
+::: {.content-visible when-profile="en"}
+
+However, this has the disadvantage that functions and objects such as `withProgress`, `incProgress`, or `Progress` require **extra code** for time-consuming operations.
+
+2. Use separate R packages
+
+In R's ecosystem, it's safe to assume that there are many problems to solve, and each problem has its own R package. The same is true for the ability to display the long gap between an actionButton and the result of an operation in the UI.
+
+Similar to the progress indicator before, think of it as a custom feature that **needs to be solved by writing additional code** and allows for a little more design or customization. 
+
+Here are some example packages and examples (in alphabetical order)
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+しかし、これは `withProgress`, `incProgress` または `Progress` などの関数やオブジェクトを時間がかかる演算に**追加でコードを書かなければならない**というデメリットがあります。
+
+2.別のRパッケージを使う
+
+Rのエコシステムには解決しようとする色んな問題があり、その問題毎のRパッケージがあると考えても過言ではないですが、actionButtonと演算結果の間の長い空白をUIに表記するための機能も同じです。
+
+以前のprogress indicatorと似て**追加コードを書いて解決する必要があり**もう少しデザインや詳細設定をすることができるカスタム機能があると思ってください。
+
+以下はいくつかの例示パッケージと事例です(アルファベット順)。
+
+::: 
+
+::: {.content-visible when-profile="ko"}
+
 그러나 이는 `withProgress`, `incProgress` 또는 `Progress`등의 함수와 오브젝트를 시간이 오래걸리는 연산에 **추가로 코드를 작성해야한다**는 단점이 있습니다.
 
 2. 별도의 R 패키지 사용
@@ -134,6 +297,8 @@ R의 생태계에는 해결하려는 여러 문제가 있고, 그 문제마다�
 이전의 progress indicator와 유사하게 **추가 코드를 작성하여 해결해야하며** 조금 더 디자인이나 세부 설정을 할 수 있는 커스텀 기능이 있다고 생각하면 좋습니다. 
 
 아래는 몇가지 예시 패키지와 사례입니다 (알파벳순).
+
+::: 
 
 - [shinybusy](https://github.com/dreamRs/shinybusy/)
 
@@ -151,12 +316,31 @@ R의 생태계에는 해결하려는 여러 문제가 있고, 그 문제마다�
 
 <img src='img/waiter-basic.gif' width = '100%'></img>
 
-
 ## input_task_button
+
+::: {.content-visible when-profile="en"}
+
+Unlike the above methods, `input_task_button` is an extension of `actionButton` that provides the ability to deactivate the button when pressed to indicate that a task is in progress, and re-activate the button when the task is finished.
+
+The biggest difference is that it can replace `actionButton`, so you don't need to use any additional code. 
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+input_task_button` は上の方法とは違って `actionButton` を拡張した機能で、`actionButton`を押すと演算が進行中であることを知らせてボタンが無効になり、演算が終わったら再びボタンが有効になる機能を提供します。
+
+何より一番大きな違いは`actionButton`を置き換えることができるので追加コードを使う必要がないことです。
+
+::: 
+
+::: {.content-visible when-profile="ko"}
 
 `input_task_button`은 위의 방법들과는 다르게 `actionButton`을 확장한 기능으로, `actionButton`을 누르면 연산이 진행중임을 알리며 버튼이 비활성화 되며, 연산이 끝나면 다시 버튼이 활성화되는 기능을 제공합니다.
 
 무엇보다도 가장 큰 차이점은 `actionButton`을 대체할 수 있기에 추가 코드를 사용할 필요가 없다는 것입니다. 
+
+::: 
 
 ```{r}
 #| eval: false
@@ -184,16 +368,86 @@ shinyApp(ui, server)
 
 <img src='img/input_task_button.gif' width = '100%'></img>
 
+::: {.content-visible when-profile="en"}
+
+To use `input_task_button`, we replaced `actionButton` on line 5 with `input_task_button` on line 6, and additionally, to make the operation intentionally long, we utilized the `Sys.sleep()` code on line 13 to delay it by 5 seconds. 
+
+Here's how to use input_task_button
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+`input_task_button` の使用のため、5行目の `actionButton` を6行目の `input_task_button` に置き換え、さらに、意図的に長くかかる演算を作るため、13行目の `Sys.sleep()` コードを活用して5秒を遅延させました。
+
+input_task_buttonの使い方は次のようになります。
+
+::: 
+
+::: {.content-visible when-profile="ko"}
+
 `input_task_button`의 사용을 위해 5번째 줄의 `actionButton`을 6번째 줄의 `input_task_button`으로 대체하였고, 
 추가로 의도적으로 오래 걸리는 연산을 만들기 위해 13번째 줄의 `Sys.sleep()` 코드를 활용하여 5초를 지연시켰습니다. 
-
 input_task_button 사용 방법은 다음과 같습니다.
+
+::: 
+
+::: {.content-visible when-profile="en"}
+
+:::{.callout-note appearance='simple'}
+The `input_task_button` can replace the `actionButton` without any difficulty, but requires some parameter modifications.
+:::
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+:::{.callout-note appearance='simple'}
+input_task_button` は `actionButton` を無理なく置き換えることができますが、若干のパラメータ修正が必要です。
+:::
+
+:::
+
+::: {.content-visible when-profile="ko"}
 
 :::{.callout-note appearance='simple'}
 `input_task_button`은 `actionButton`을 무리없이 대체할 수 있지만 약간의 parameter 수정이 필요합니다.
 :::
 
+:::
 
+::: {.content-visible when-profile="en"}
+|actionButton|input_task_button|role|
+|:-:|:-:|:-:|
+|inputId|id|button id|
+|label|label|button label|
+|icon|icon|button icon|
+||label_busy|inactive button label|
+||icon_busy|inactive button icon|
+|class|type|button theme/color|
+
+- [Original release notes](https://github.com/rstudio/bslib/releases/tag/v0.7.0) 
+- [Input_task_button manual](https://rstudio.github.io/bslib/reference/input_task_button.html)
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+actionButton|input_task_button|役割|
+|:-:|:-:|:-:|:-:|
+|inputId|id|ボタンID|
+|label|label|ボタンラベル|
+|icon|icon|ボタンアイコン|
+||label_busy|ボタン非アクティブ時のラベル|
+||icon_busy|ボタン非アクティブ時のアイコン|
+|class|type|ボタンテーマ/色|
+
+- [リリースノート原文](https://github.com/rstudio/bslib/releases/tag/v0.7.0) 
+- [input_task_buttonマニュアル](https://rstudio.github.io/bslib/reference/input_task_button.html)
+
+::: 
+
+::: {.content-visible when-profile="ko"}
 |actionButton|input_task_button|역할|
 |:-:|:-:|:-:|
 |inputId|id|버튼 id|
@@ -203,9 +457,40 @@ input_task_button 사용 방법은 다음과 같습니다.
 ||icon_busy|버튼 비활성화시 아이콘|
 |class|type|버튼 테마 / 색상|
 
-
 - [릴리스 노트 원본](https://github.com/rstudio/bslib/releases/tag/v0.7.0)
 - [input_task_button 매뉴얼](https://rstudio.github.io/bslib/reference/input_task_button.html)
+
+::: 
+
+::: {.content-visible when-profile="en"}
+
+## Summary
+
+In this post, we introduced the newest feature in bslib, input_task_button, and a simple use case.
+
+This is a feature that potentially improves the user experience, and I think it solves a problem that traditionally requires additional code to be written in shiny.
+
+In particular, unlike other web applications, Shiny often takes a long time due to large data operations, but it has a relatively poor UI/UX, so replacing the existing `actionButton` with `input_task_button` will go a long way to compensate for this.
+
+I hope you found this article helpful, and I'll see you in the next installment!
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+## まとめ
+
+今回はbslibの最新機能であるinput_task_buttonと簡単な使用事例を紹介しました。
+
+これは潜在的にユーザーエクスペリエンスを向上させる機能であり、既存のshinyでは追加コードを書かなければならない手間を解決してくれる機能だと思います。
+
+特に、他のウェブアプリケーションとは違ってShinyでは大容量データ演算のため時間が長くかかる場合が多いですが、比較的貧弱なUI/UXを持っていて、既存の`actionButton`を`input_task_button`に置き換える場合、これを補完するのに大きな助けになると思います。
+
+今回の記事が参考になったかと思いますが、次の記事でまたお会いしましょう！
+
+::: 
+
+::: {.content-visible when-profile="ko"}
 
 ## 정리
 
@@ -216,3 +501,6 @@ input_task_button 사용 방법은 다음과 같습니다.
 특히 다른 웹 어플리케이션과 다르게 Shiny에서는 대용량 데이터 연산으로 인해 시간이 오래 걸리는 경우가 많지만, 상대적으로 빈약한 UI/UX를 가지고 있어 기존의 `actionButton`을 `input_task_button`으로 대체할 경우 이를 보완하는데 큰 도움이 될 것입니다.
 
 이번 글이 도움이 되었길 바라며, 다음 글에서 또 만나요!
+
+::: 
+
