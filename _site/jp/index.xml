@@ -10,7 +10,130 @@
 <atom:link href="https://blog.zarathu.com/jp/index.xml" rel="self" type="application/rss+xml"/>
 <description>Zarathuからのニュース、洞察、詳細なケーススタディ</description>
 <generator>quarto-1.4.553</generator>
-<lastBuildDate>Fri, 29 Mar 2024 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 12 May 2024 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>rhub와 Github action를 활용한 OS별 R 패키지 검증</title>
+  <dc:creator>Jinhwan Kim</dc:creator>
+  <link>https://blog.zarathu.com/jp/posts/2024-05-13-rhub/</link>
+  <description><![CDATA[ 
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script>
+
+
+
+
+
+<section id="r-cmd-check" class="level2">
+<h2 class="anchored" data-anchor-id="r-cmd-check">R CMD CHECK</h2>
+<p><code>R CMD CHECK</code>は、Rパッケージを開発した後に「正常に開発されているか」を検証するために、約50以上のチェックリストを実行するプロセスです。関数の使用方法が適切に記述されているか、関数のパラメータが適切に記述されているかなどが含まれます。</p>
+<p>もちろん、<code>R CMD CHECK</code>を厳密に実行せずにgithubを介してパッケージを配布して実行することに問題はありませんが、パッケージのエラーを最小限に抑え、安定したパッケージをユーザーに提供できることが証明された後に、CRANなどの公式リポジトリを介してのみパッケージを共有するべきです。</p>
+<p>この投稿では具体的な内容には触れませんが、興味がある場合はHadley Wickhamの<a href="https://r-pkgs.org/R-CMD-check.html" target="_blank">R Packages</a>を参照することもできます。</p>
+<p>いずれにせよ、<code>R CMD CHECK</code>は、<code>devtools</code>パッケージを使用してRパッケージを作成した場合、<code>devtools::check()</code>関数またはRstudioの<code>Check</code>ボタンを使用して実行でき、警告、エラー、ノートなどで修正が推奨される問題を確認できます。</p>
+<p><img src="https://blog.zarathu.com/jp/posts/2024-05-13-rhub/img/check.png" width="100%"></p>
+<p>しかし、<code>R CMD CHECK</code>の特徴の1つは、パッケージを開発しているPCの環境を基準にチェックを行うということです。つまり、下の画像のようにmacOS（Apple clang）環境でパッケージがテストされ、実行が保証されていますが、ユーザーのOSがmac以外のwindow、linuxなどの場合、パッケージが正常に動作しない可能性があります。</p>
+<p>CRANは基本OSを指定していませんが、Windows、macOS、linuxの少なくとも2つのOSでのテストに問題がないことを要求するため、Rパッケージの開発にはさまざまなOSでのテストが含まれることがよくあります。</p>
+<p>このため、さまざまなOSハードウェア、つまりWindows PC、mac、Linuxサーバーがあればベストですが、このようなケースは多くなく、ほとんどの場合、Githubアクション、AppVeyor、Travis CIなどのCI/CDサービスを使用してさまざまなOSでのテストを実行します。</p>
+</section>
+<section id="github-action" class="level2">
+<h2 class="anchored" data-anchor-id="github-action">Github action</h2>
+<p>この投稿では、参考としてGithubアクションを紹介しますが、他のサービスでもプロセスはほぼ同じです。</p>
+<p>Githubアクションは、Githubが提供するCI/CDサービスで、Githubが提供するさまざまなアクションを使用して（Githubが提供するサーバーでコマンドを実行することにより）、自動化されたテスト、ビルド、デプロイなどを実行できます。</p>
+<p><img src="https://blog.zarathu.com/jp/posts/2024-05-13-rhub/img/gha.png" width="100%"></p>
+<p>アクションは、サーバーにRをインストールしたり、Rパッケージをインストールしたり、R CMD CHECKを実行したりするなど、ymlファイルで構成されたコマンドのコレクションと考えることができます。</p>
+<p><a href="https://github.com/r-hub/actions" target="_blank">R-hub actions</a>, <a href="https://github.com/r-lib/actions" target="_blank">R-lib actions</a> 参考までに。</p>
+<p><img src="https://blog.zarathu.com/jp/posts/2024-05-13-rhub/img/yml.png" width="100%"></p>
+</section>
+<section id="r-hub2" class="level2">
+<h2 class="anchored" data-anchor-id="r-hub2">r-hub2</h2>
+<p>r-hubプロジェクトは、Rコンソーシアムのプロジェクトの1つであり、R開発者がRパッケージをより良く開発できるようにすることを目的としています。 さまざまなOSでのテストを実行することを支援することもその1つで、上記で言及したGithub Actionを開発したり、インフラを提供したり、コミュニティが問題を解決するのを支援したりする役割があります。</p>
+<p>しかし、R-hubプロジェクトは最近、このGHAを設定するのを助けるためのRパッケージ、<code>rhub</code>を開発してリリースしました。</p>
+<p>公式ブログで説明されているように、すでにGithub Actionを使用していなくても、さまざまなOSで<code>R CMD CHECK</code>を簡単に実行できるGithub Actionを設定できます。</p>
+<p>最初にやるべきことは、もちろん<code>rhub</code>パッケージをインストールすることです。 ここで、<code>pak</code>は、<code>install.packages</code>や<code>remotes::install_github</code>などの従来のパッケージインストール方法を統合し、さまざまなソースからRパッケージをインストールするための関数を提供することを推奨しています。</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">pak<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pkg_install</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rhub"</span>)</span></code></pre></div>
+<p><code>rhub</code>パッケージは、公式バージョンが2であるにもかかわらず、<code>rhub2</code>ではなく<code>rhub</code>としてインストールおよび実行する必要があることに注意してください。</p>
+<p>この投稿では、それを<code>rhub</code>と呼びます。この<code>rhub</code>パッケージを実行するには、以下の3つが必要ですが、Rパッケージを開発してgithubに共有した経験がある場合、新たに準備する必要はありません。</p>
+<ol type="1">
+<li>githubアカウント</li>
+<li>Rパッケージをアップロードしたリポジトリ。CRANを目指す場合は、もちろんPublicである必要があります。</li>
+<li>Github PAT（Personal Access Token）、githubから取得でき、<code>gitcreds</code>という別のRパッケージを使用してもかまいません。</li>
+</ol>
+<section id="setup" class="level3">
+<h3 class="anchored" data-anchor-id="setup">Setup</h3>
+<p><code>rhub</code>パッケージを終えた後に最初に行うべきことは、<strong>Rパッケージディレクトリ</strong>で<code>rhub_setup</code>関数を実行することです。この関数はディレクトリ内のgitリポジトリを認識し、Github Action用のymlファイルを生成します。</p>
+<p>以下の画像では、以前に作成した<code>gemini.R</code>パッケージを例にしています。</p>
+<p><img src="https://blog.zarathu.com/jp/posts/2024-05-13-rhub/img/setup.png" width="100%"></p>
+<p>すべてがうまくいけば、rhubパッケージは次のステップについても案内してくれます。つまり、追加されたymlファイルをgithubにコミットして更新を反映させた後、<code>rhub_doctor</code>関数を実行します。</p>
+</section>
+<section id="doctor" class="level3">
+<h3 class="anchored" data-anchor-id="doctor">Doctor</h3>
+<p><code>rhub_doctor</code>関数は、Github PATが正しく設定されているかどうかを確認します。後で紹介する<code>rhub</code>の<code>rhub_check</code>関数は、Rstudioのコンソールで言及されたGithub PATを使用してGithub Actionを手動で実行するため、PATの設定を確認する必要があります。</p>
+<p>Github PATは 「https://github.com/settings/tokens 」のリンクから作成できますが、<code>repo</code>と<code>workflow</code>のパーミッションを付与して作成した場合に限ります。</p>
+<p><img src="https://blog.zarathu.com/jp/posts/2024-05-13-rhub/img/pat.png" width="100%"></p>
+<p>RstudioでGithub PATを設定する方法は、<code>credential</code>パッケージの<code>set_github_pat</code>関数を使用します。 <a href="https://forum.posit.co/t/how-to-i-use-a-new-github-pat/112700" target="_blank">リンク</a></p>
+<p><code>rhub_doctor</code>関数が正常に動作した場合、残りの作業は<code>rhub_check</code>関数を実行することです。</p>
+<p><img src="https://blog.zarathu.com/jp/posts/2024-05-13-rhub/img/doctor.png" width="100%"></p>
+</section>
+<section id="check" class="level3">
+<h3 class="anchored" data-anchor-id="check">Check</h3>
+<p>前のステップは、この関数のための準備作業であったと言っても過言ではありません。</p>
+<p><img src="https://blog.zarathu.com/jp/posts/2024-05-13-rhub/img/check2.png" width="100%"></p>
+<p><code>rhub_check</code>関数は、githubリポジトリとPATを認識し、次に<code>R CMD CHECK</code>を実行するOSを入力値として受け取ります。</p>
+<p>この時、Windows、macOS、Linuxに加えて、画像のように（rhubプロジェクトで提供される）さまざまなOSを数字とカンマで区切って選択することができます。</p>
+<p>関数を実行した後、GHAページに接続できるリンクを提供し、進行状況を確認できます。</p>
+<p><img src="https://blog.zarathu.com/jp/posts/2024-05-13-rhub/img/actionpage.png" width="100%"></p>
+<p>最終的に、rhubとGHAを使用してテストパスをリポジトリにバッジとして追加すると、以下のようになります。</p>
+<p><img src="https://blog.zarathu.com/jp/posts/2024-05-13-rhub/img/badge.png" width="100%"></p>
+<p>バッジアイコンをreadmeに追加するには、次のように書く必要があります。</p>
+<pre><code>![example workflow](https://github.com/&lt;OWNER&gt;/&lt;REPOSITORY&gt;/actions/workflows/&lt;WORKFLOW_FILE&gt;/badge.svg)</code></pre>
+<p>使用した例では、<owner>をjhk0530、<repository>をgemini.R、<workflow_file>をrhub.yamlに置き換えます。</workflow_file></repository></owner></p>
+<p>このGithub Actionを介した<code>R CMD CHECK</code>には時間がかかるため、開発中のPCで<code>R CMD CHECK</code>を完了した後に実行することをお勧めします。</p>
+<p>もちろん、rhubはgithubやpublicリポジトリ以外の場合についてのガイダンスも提供していますが、これはほとんどのRパッケージ、特にCRANとはあまり関係がないため、別途説明しません。</p>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>この投稿では、Rパッケージ開発者が Github Actionを使用するための<code>rhub</code>パッケージを紹介しました。これにより、Rパッケージ開発者はローカル環境だけでなく、さまざまなOSでの<code>R CMD CHECK</code>を通じてパッケージエラーを最小限に抑え、より良いパッケージを作成することができます。</p>
+<p>詳細な情報は、<a href="https://blog.r-hub.io/2024/04/11/rhub2/" target="_blank">rhubブログ</a>でも確認できます。</p>
+<p><strong>DeepL TranslatorおよびGithub Copilotで翻訳されたコンテンツ</strong></p>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2024,
+  author = {Kim, Jinhwan},
+  title = {Rhub와 {Github} {action를} {활용한} {OS별} {R} {패키지}
+    {검증}},
+  date = {2024-05-13},
+  url = {https://blog.zarathu.com/jp/posts/2024-05-13-rhub},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
+Kim, Jinhwan. 2024. <span>“Rhub와 Github Action를 활용한 Os별 R 패키지
+검증.”</span> May 13, 2024. <a href="https://blog.zarathu.com/jp/posts/2024-05-13-rhub">https://blog.zarathu.com/jp/posts/2024-05-13-rhub</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>rpackage</category>
+  <category>github</category>
+  <category>github action</category>
+  <category>rhub</category>
+  <category>rcmdcheck</category>
+  <guid>https://blog.zarathu.com/jp/posts/2024-05-13-rhub/</guid>
+  <pubDate>Sun, 12 May 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://blog.zarathu.com/jp/posts/2024-05-13-rhub/img/logo.png" medium="image" type="image/png" height="63" width="144"/>
+</item>
 <item>
   <title>bslib: input_task_button 소개</title>
   <dc:creator>Jinhwan Kim</dc:creator>
@@ -11575,1199 +11698,6 @@ Kim, Jinhwan. 2023. <span>“Shiny.likert 패키지 소개.”</span> February
   <guid>https://blog.zarathu.com/jp/posts/2023-02-14-shiny.likert/</guid>
   <pubDate>Tue, 14 Feb 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/jp/posts/2023-02-14-shiny.likert/img/hex.png" medium="image" type="image/png" height="167" width="144"/>
-</item>
-<item>
-  <title>Python을 이용한 검색포털 API 활용</title>
-  <dc:creator>Won Kim</dc:creator>
-  <link>https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/</link>
-  <description><![CDATA[ 
-<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-L0DYYSH9KM');
-</script>
-
-
-
-
-
-<section id="task의-목적" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Task의 목적</h1>
-<p><img src="https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/img/GND.png" width="800"></p>
-<p>이번 태스크의 목적은 바로 구글, 네이버, 다음 API를 모두 이용하여 검색결과를 DB화 시키는 작업입니다.</p>
-<p>사용자로 부터 query와 크롤링 원하는 검색 글 수를 인풋으로 입력받아서, API로 부터 제공받은 데이터를 가공하여 새로운 데이터프레임으로 만드는 작업을 수행합니다. 데이터 프레임의 컬럼은</p>
-<p>[Title] - 글 제목, [Link] - 글 링크 , [Description] - 글 미리보기 내용, [Search engine] - 검색결과를 제공한 포털 (naver,google,daumkakao), [search_date] -글을 검색한 날짜</p>
-<p>입니다.</p>
-<p>전체 JupyterNoteBook Source Code</p>
-<p><a href="https://github.com/zarathucorp/blog/blob/master/source_code/Custom_Search_Zarathu.ipynb" class="uri">https://github.com/zarathucorp/blog/blob/master/source_code/Custom_Search_Zarathu.ipynb</a></p>
-<p><img src="https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/img/final_data.png" width="1000"></p>
-<section id="왜-크롤링을-하지-않았는지" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="왜-크롤링을-하지-않았는지"><span class="header-section-number">1.1</span> 왜 크롤링을 하지 않았는지</h2>
-<p>흔히 동적 크롤러로 Selenium을 많이 활용합니다. 하지만 이런 크롤링에는 기업의 자산인 데이터 자산을 침해한다는 문제점이 있습니다. 이와 관련하여 부동산 정보 플랫폼 직방의 데이터를 크롤링한 경위로 스타트업 방픽은 소송에서 얻은 데이터를 폐기하고, 직방에 2000만원을 지급하도록 2월 3일에 판결을 내려졌습니다. 따라서 홈페이지를 통해 정보가 공개됐다고 하더라도, 이런 타 사이트에 대한 데이터 베이스를 수집하는 행위는 위험하다고 생각합니다. 따라서 크롤링을 해야한다면 해도 되는지 확인을 하고 하거나, 개발자를 위한 도구로 제공된 API가 먼저 있는지 없는지 검토를 하는 것이 안전해 보입니다. (특히 얻은 데이터로 수익을 창출하는 경우는 더 더욱)</p>
-<p><img src="https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/img/dangerous_crawling.png" width="800"></p>
-<p><a href="https://www.joongang.co.kr/article/25139935#home" class="uri">https://www.joongang.co.kr/article/25139935#home</a></p>
-</section>
-<section id="api란" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="api란"><span class="header-section-number">1.2</span> API란?</h2>
-<p>API란 무엇인지 위키백과의 설명을 통하면, “API(application programming interface 애플리케이션 프로그래밍 인터페이스[*], 응용 프로그램 프로그래밍 인터페이스)는 컴퓨터나 컴퓨터 프로그램 사이의 연결이다. 일종의 소프트웨어 인터페이스이며 다른 종류의 소프트웨어에 서비스를 제공한다”라고 설명하고 있습니다. 즉 컴퓨터끼리 연결하고 소통하는 방식인데, 주로 우리가 API를 연결해서 쓸 때는 클라이언트와 서버를 연결하여 원하는 요청을 처리하는 것이 보통입니다. 오늘 이 글에서 사용할 API는 REST API라고 합니다. API와 구별되는 REST API의 특징으로는 API를 이용할 때 규칙이 정해져 있다는 특징이 있습니다.</p>
-<p>URL을 통해 소통할 방법을 서버와 클라이언트 사이에 주고 받는다. 그때 어떤 자원에 대해 어떤 행위를 요청받을지 URL에 명시를 해주는 것이 원칙입니다.</p>
-<ul>
-<li>GET : 리소스 생성</li>
-<li>POST: 조회</li>
-<li>PUT : 수정</li>
-<li>DELETE: 삭제</li>
-</ul>
-<p>등이 있고, 서버는 요청에 대해 상태코드로 응답합니다</p>
-<p>상태코드에 따라 정상과 비정상적으로 처리했는지 response 개체를 받아옵니다.</p>
-<ul>
-<li>200: 정상</li>
-<li>400: 비정상</li>
-</ul>
-<p><img src="https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/img/how_api_works.png" width="800"></p>
-</section>
-</section>
-<section id="구글-api-사용법" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> 구글 API 사용법</h1>
-<p>API를 통해 서버로 부터 응답을 받기 위해선 api key가 필요합니다. 구글에서는 검색한 내용을 반환시켜주는 API로 custom_search_engine cse를 사용해서 검색 결과를 가져올 수 있습니다. (일일 100개의 쿼리제한이 걸려있습니다.)</p>
-<p>구글 API 키 발급받는 방법은 아래 링크를 참조하세요</p>
-<ul>
-<li><a href="https://gomgomi.tistory.com/3" class="uri">https://gomgomi.tistory.com/3</a></li>
-</ul>
-<hr>
-<p>구글 CSE 공식문서를 참고하여 작성하였습니다.</p>
-<p><a href="https://developers.google.com/custom-search/v1/using_rest?hl=ko" class="uri">https://developers.google.com/custom-search/v1/using_rest?hl=ko</a></p>
-<p>예시코드로</p>
-<pre class="{terminal}"><code>GET https://www.googleapis.com/customsearch/v1?key=INSERT_YOUR_API_KEY&amp;cx=017576662512468239146:omuauf_lfve&amp;q=lectures</code></pre>
-<p>이런 코드가 적혀있는 것을 알 수 있습니다. 이것은 터미널에서 리눅스 명령어로 앞에 curl을 호출해서 url로 부터 응답을 받아오는 코드를 의미합니다</p>
-<p>자세히 보시면 중간에 key=INSERT_YOUR_API_KEY로 발급받은 키가 들어가는 자리이고, cx= google_search_engine의 id값이 들어갑니다. 또 &amp;q= query로 검색할 검색어를 입력하는 것을 알 수 있습니다.</p>
-<p>이외에도 request 요청을 할 때 다양한 인자들을 줄 수 있습니다.</p>
-<p>더욱 자세한 인자들을 모두 소개하는 것은 한계가 있으니 링크를 통하여 <a href="https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list?hl=ko&amp;apix_params=%7B%22cx%22%3A%22sadasda%22%2C%22q%22%3A%22react%22%2C%22start%22%3A1%7D" class="uri">https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list?hl=ko&amp;apix_params=%7B%22cx%22%3A%22sadasda%22%2C%22q%22%3A%22react%22%2C%22start%22%3A1%7D</a> 확인하시기 바랍니다.</p>
-<p>파이썬에서는 curl이라는 명령어가 없습니다. 따라서 우리는 url에 대한 응답을 요청하고 받아오기 위해서 python의 패키지인 urllib와 requests를 활용해야합니다.</p>
-<p>curl에 대한 명렁어는 파이썬에서 requests 패키지와 urllib을 통해서 요청할 수 있습니다.</p>
-<p>요청을 보내는 코드는 아래와 같습니다.</p>
-<div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> requests</span>
-<span id="cb2-2"></span>
-<span id="cb2-3"></span>
-<span id="cb2-4">Google_SEARCH_ENGINE_ID <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Search Engine ID </span></span>
-<span id="cb2-5">Google_API_KEY <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Custom Search Engine API KEY </span></span>
-<span id="cb2-6">query <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 검색할 쿼리</span></span>
-<span id="cb2-7">start_page <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 몇 페이지를 검색할 것인지. 한 페이지 당 10개의 게시물을 받아들일 수 있습니다. </span></span>
-<span id="cb2-8"></span>
-<span id="cb2-9">url <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">f"https://www.googleapis.com/customsearch/v1?key=</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>Google_API_KEY<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">&amp;cx=</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>Google_SEARCH_ENGINE_ID<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">&amp;q=</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>query<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">&amp;start=</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>start_page<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span></span>
-<span id="cb2-10"></span>
-<span id="cb2-11">response <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> requests.get(url).json()</span></code></pre></div>
-</div>
-<p>이렇게 요청하는 url을 우리는 작성하면 얻는 response를 한번 확인해 보겠습니다.</p>
-<p><a href="https://developers.google.com/custom-search/v1/reference/rest/v1/Search?hl=ko" class="uri">https://developers.google.com/custom-search/v1/reference/rest/v1/Search?hl=ko</a> 응답에 대한 양식에 대한 링크이며 응답을 테스트 해볼 수 있습니다.</p>
-<p>이때 우리는 응답에 대해서 response 객체로 JSON 형식의 데이터를 반환하는 것을 알 수 있습니다. JSON 형식의 데이터는 key-value로 이루어진 딕셔너리 형태의 데이터 타입으로, value 값을 얻기 위해 get 메서드를 많이 사용합니다.</p>
-<p>이렇게 서버로 부터 응답해온 결과 중 우리가 원하는 정보를 추출해서, 데이터프레임에 담아내는 것이 목적입니다. response 객체 중, items의 키값을 통해 요청한 결과물들이 담겨 있는 것을 확인했습니다.</p>
-<p><img src="https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/img/response_google.png" width="800"></p>
-<section id="구글-크롤링-코드-전체" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="구글-크롤링-코드-전체"><span class="header-section-number">2.1</span> 구글 크롤링 코드 전체</h2>
-<p>응답받은 response 이 코드에선 data로 변수명을 저장했습니다. 이 객체에 접근해서 우리의 목표에 맞게 데이터에 접근해서 한 줄 한 줄 데이터 프레임에 입력하여 저장하는 작업을 하겠습니다.</p>
-<section id="url에-내용의-신뢰도가-낮은-사이트의-검색결과는-저장하지-않도록-예외처리를-합니다.-선택사항" class="level3" data-number="2.1.1">
-<h3 data-number="2.1.1" class="anchored" data-anchor-id="url에-내용의-신뢰도가-낮은-사이트의-검색결과는-저장하지-않도록-예외처리를-합니다.-선택사항"><span class="header-section-number">2.1.1</span> url에 내용의 신뢰도가 낮은 사이트의 검색결과는 저장하지 않도록 예외처리를 합니다. (선택사항)</h3>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1">Trash_Link <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"tistory"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"kin"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"youtube"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"blog"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"book"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"news"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"dcinside"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"fmkorea"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"ruliweb"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"theqoo"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"clien"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"mlbpark"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"instiz"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"todayhumor"</span>] </span></code></pre></div>
-</div>
-<p>url 링크에, 티스토리, 지식인,유튜브, 블로그,책,뉴스,디시인사이드,에펨코리아,루리엡,더쿠,클리앙,엠엘비파크,인스티즈,오늘의유머의 검색결과는 제거하도록 했습니다.</p>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">def</span> Google_API(query, wanted_row):</span>
-<span id="cb4-2">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">"""</span></span>
-<span id="cb4-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">    input : </span></span>
-<span id="cb4-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">        query : str  검색하고 싶은 검색어 </span></span>
-<span id="cb4-5"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">        wanted_row : str 검색 결과를 몇 행 저장할 것인지 </span></span>
-<span id="cb4-6"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">    output : </span></span>
-<span id="cb4-7"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">        df_google : dataframe / column = title, link,description  </span></span>
-<span id="cb4-8"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">        사용자로 부터 입력받은 쿼리문을 통해 나온 검색 결과를 wanted_row만큼 (100행을 입력받았으면) 100행이 저장된 데이터 프레임을 return합니다.</span></span>
-<span id="cb4-9"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">    """</span></span>
-<span id="cb4-10"></span>
-<span id="cb4-11">    query<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> query.replace(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"|"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"OR"</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#쿼리에서 입력받은 | 기호를 OR 로 바꿉니다 </span></span>
-<span id="cb4-12">    query <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"-filetype:pdf"</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 검색식을 사용하여 file type이 pdf가 아닌 것을 제외시켰습니다 </span></span>
-<span id="cb4-13">    start_pages<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[] <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># start_pages 라는 리스트를 생성합니다. </span></span>
-<span id="cb4-14"></span>
-<span id="cb4-15">    df_google<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> pd.DataFrame(columns<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Title'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Link'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Description'</span>]) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># df_Google이라는 데이터 프레임에 컬럼명은 Title, Link, Description으로 설정했습니다.</span></span>
-<span id="cb4-16"></span>
-<span id="cb4-17">    row_count <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># dataframe에 정보가 입력되는 것을 카운트 하기 위해 만든 변수입니다. </span></span>
-<span id="cb4-18"></span>
-<span id="cb4-19"></span>
-<span id="cb4-20">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,wanted_row<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1000</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>):</span>
-<span id="cb4-21">        start_pages.append(i) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#구글 api는 1페이지당 10개의 결과물을 보여줘서 1,11,21순으로 로드한 페이지를 리스트에 담았습니다. </span></span>
-<span id="cb4-22"></span>
-<span id="cb4-23">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> start_page <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> start_pages:</span>
-<span id="cb4-24">      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 1페이지, 11페이지,21페이지 마다, </span></span>
-<span id="cb4-25">        url <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">f"https://www.googleapis.com/customsearch/v1?key=</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>Google_API_KEY<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">&amp;cx=</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>Google_SEARCH_ENGINE_ID<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">&amp;q=</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>query<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">&amp;start=</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>start_page<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span></span>
-<span id="cb4-26">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 요청할 URL에 사용자 정보인 API key, CSE ID를 저장합니다. </span></span>
-<span id="cb4-27">        data <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> requests.get(url).json()</span>
-<span id="cb4-28">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># request를 requests 라이브러리를 통해서 요청하고, 결과를 json을 호출하여 데이터에 담습니다.</span></span>
-<span id="cb4-29">        search_items <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> data.get(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"items"</span>)</span>
-<span id="cb4-30">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># data의 하위에 items키로 저장돼있는 값을 불러옵니다. </span></span>
-<span id="cb4-31">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># search_items엔 검색결과 [1~ 10]개의 아이템들이 담겨있다.  start_page = 11 ~ [11~20] </span></span>
-<span id="cb4-32">        </span>
-<span id="cb4-33">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">try</span>:</span>
-<span id="cb4-34">          <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#try 구문을 하는 이유: 검색 결과가 null인 경우 link를 가져올 수가 없어서 없으면 없는대로 예외처리</span></span>
-<span id="cb4-35">            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> i, search_item <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">enumerate</span>(search_items, start<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>):</span>
-<span id="cb4-36">              <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># link 가져오기 </span></span>
-<span id="cb4-37">                link <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> search_item.get(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"link"</span>)</span>
-<span id="cb4-38">                <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">any</span>(trash <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> link <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> trash <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> Trash_Link):</span>
-<span id="cb4-39">                  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 링크에 dcinside, News 등을 포함하고 있으면 데이터를 데이터프레임에 담지 않고, 다음 검색결과로 </span></span>
-<span id="cb4-40">                    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">pass</span></span>
-<span id="cb4-41">                <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">else</span>: </span>
-<span id="cb4-42">                    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 제목저장</span></span>
-<span id="cb4-43">                    title <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> search_item.get(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"title"</span>)</span>
-<span id="cb4-44">                    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 설명 저장 </span></span>
-<span id="cb4-45">                    descripiton <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> search_item.get(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"snippet"</span>)</span>
-<span id="cb4-46">                    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># df_google에 한줄한줄 append </span></span>
-<span id="cb4-47">                    df_google.loc[start_page <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> i] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [title,link,descripiton] </span>
-<span id="cb4-48">                    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 저장하면 행 갯수 카운트 </span></span>
-<span id="cb4-49">                    row_count<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb4-50">                    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> (row_count <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> wanted_row) <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">or</span> (row_count <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">300</span>) :</span>
-<span id="cb4-51">                      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#원하는 갯수만큼 저장끝나면</span></span>
-<span id="cb4-52">                        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> df_google</span>
-<span id="cb4-53">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">except</span>:</span>
-<span id="cb4-54">          <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 더 이상 검색결과가 없으면 df_google 리턴 후 종료 </span></span>
-<span id="cb4-55">            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> df_google</span>
-<span id="cb4-56"></span>
-<span id="cb4-57">    </span>
-<span id="cb4-58">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> df_google</span></code></pre></div>
-</div>
-<p>link를 입력 받을 때 try except구문을 활용하여 예외처리를 하였습니다.이를 자세히 설명하게 되면, 특정 키워드로 검색했을 때 나오는 검색결과가 충분하지 않는 경우 response객체에 items 값이 null이 되게 됩니다. 따라서 이후의 작업들이 문제가 생기게 되는데, 이를 try except 구문을 통해 처리했습니다.</p>
-</section>
-</section>
-</section>
-<section id="네이버-검색-api-사용법" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> 네이버 검색 API 사용법</h1>
-<p>네이버 API 키를 발급받는 방법은 아래를 참고하세요.</p>
-<p>일 허용 한도 25000건을 제공합니다 더 많은 요청을 보내기 위해선 제휴를 신청해야합니다.</p>
-<ul>
-<li><a href="https://zerosecu.tistory.com/18" class="uri">https://zerosecu.tistory.com/18</a></li>
-</ul>
-<p>네이버 웹문서 검색 API 공식문서</p>
-<p><a href="https://developers.naver.com/docs/serviceapi/search/web/web.md#%EC%9B%B9%EB%AC%B8%EC%84%9C" class="uri">https://developers.naver.com/docs/serviceapi/search/web/web.md#%EC%9B%B9%EB%AC%B8%EC%84%9C</a></p>
-<section id="네이버-크롤링-코드" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="네이버-크롤링-코드"><span class="header-section-number">3.1</span> 네이버 크롤링 코드</h2>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Naver_client_id = '~~~~' # 발급받은 ID를 입력해주세요 </span></span>
-<span id="cb5-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Naver_client_secret = '~~~' </span></span>
-<span id="cb5-3"></span>
-<span id="cb5-4"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">def</span> Naver_API(query,wanted_row):</span>
-<span id="cb5-5">    query <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> urllib.parse.quote(query)</span>
-<span id="cb5-6"></span>
-<span id="cb5-7">    display<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span> </span>
-<span id="cb5-8">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#네이버 검색 API는 한 페이지를 요청했을 때 몇개의 건수를 보여줄 것인지 인자로 표시할 수 있습니다. </span></span>
-<span id="cb5-9">    start<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb5-10">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># start page를 1로 설정합니다.</span></span>
-<span id="cb5-11">    end<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>wanted_row<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10000</span></span>
-<span id="cb5-12">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 끝내는 페이지를 원하는 행의 갯수보다 더 많이 설정했는데 이유는 , trashlink 보다 많은 데이터를 저장합니다.  </span></span>
-<span id="cb5-13">    sort<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sim'</span></span>
-<span id="cb5-14">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 네이버 API 검색 결과는 검색결과 데이터를 정렬하는 순서의 기준을 정합니다. </span></span>
-<span id="cb5-15"></span>
-<span id="cb5-16">    df<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> pd.DataFrame(columns<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Title'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Link'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Description'</span>])</span>
-<span id="cb5-17">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 마찬가지로 title,link,description의 컬럼을 가진 데이터프레임을 생성합니다. </span></span>
-<span id="cb5-18">    row_count<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span> </span>
-<span id="cb5-19">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># dataframe에 정보가 입력되는 것을 카운트 하기 위해 만든 변수입니다. </span></span>
-<span id="cb5-20">    </span>
-<span id="cb5-21">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> start_index <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">range</span>(start,end,display):</span>
-<span id="cb5-22">        url <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"https://openapi.naver.com/v1/search/webkr?query="</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> query <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+\</span></span>
-<span id="cb5-23">            <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"&amp;display="</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">str</span>(display)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">\</span></span>
-<span id="cb5-24">            <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"&amp;start="</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">str</span>(start_index) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">\</span></span>
-<span id="cb5-25">            <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"&amp;sort="</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> sort</span>
-<span id="cb5-26"></span>
-<span id="cb5-27">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#url에 요청할 정보에 대한 내용을 담아 변수 선언하고, </span></span>
-<span id="cb5-28">        request <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> urllib.request.Request(url)</span>
-<span id="cb5-29">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#urllib.request 모듈을 통해 요청을만들고,  </span></span>
-<span id="cb5-30">        request.add_header(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"X-Naver-Client-Id"</span>,Naver_client_id)</span>
-<span id="cb5-31">        request.add_header(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"X-Naver-Client-Secret"</span>,Naver_client_secret)</span>
-<span id="cb5-32">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 그 요청에 헤더를 만들어서 클라이언트 아이디와, 비밀번호를 헤더에 입력합니다. </span></span>
-<span id="cb5-33">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">try</span>:</span>
-<span id="cb5-34">            response <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> urllib.request.urlopen(request)</span>
-<span id="cb5-35">            <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 요청하여 받은 내용을 response로 저장합니다.</span></span>
-<span id="cb5-36">            rescode <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> response.getcode()</span>
-<span id="cb5-37">            <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># response 객체에 담긴 응답 코드를 받아옵니다</span></span>
-<span id="cb5-38">            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span>(rescode<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">200</span>):</span>
-<span id="cb5-39">                response_body <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> response.read()</span>
-<span id="cb5-40">                <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># response 내용을 읽어들여 response_body에 저장합니다. </span></span>
-<span id="cb5-41">                items<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> json.loads(response_body.decode(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'utf-8'</span>))[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'items'</span>]</span>
-<span id="cb5-42">                <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 전체 response를 json화 한 뒤 key값이 items로 되어있는 값에 저장을 합니다. </span></span>
-<span id="cb5-43">                remove_tag <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> re.<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">compile</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'&lt;.*?&gt;'</span>)</span>
-<span id="cb5-44">                <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># html문법의 태그들을 제거하는 컴파일러를 정규식을 패키지를 통해 생성합니다.</span></span>
-<span id="cb5-45">                <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> item_index <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">len</span>(items)):</span>
-<span id="cb5-46">                    link <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> items[item_index][<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'link'</span>]</span>
-<span id="cb5-47">                    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 아이템에 링크에 접근합니다</span></span>
-<span id="cb5-48">                    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">any</span>(trash <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> link <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> trash <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> Trash_Link):</span>
-<span id="cb5-49">                      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># link url에 출처가 신뢰도가 낮은 사이트의 정보라면 데이터프레임에 저장하지 않고 넘어갑니다. </span></span>
-<span id="cb5-50">                        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">pass</span></span>
-<span id="cb5-51">                    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">else</span>:</span>
-<span id="cb5-52">                        title <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> re.sub(remove_tag, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">''</span>, items[item_index][<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'title'</span>])</span>
-<span id="cb5-53">                        description <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> re.sub(remove_tag, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">''</span>, items[item_index][<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'description'</span>])</span>
-<span id="cb5-54">                        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># html 태그를 제거한 후, 제목 설명,링크 저장 </span></span>
-<span id="cb5-55">                        df.loc[row_count] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[title,link,description]</span>
-<span id="cb5-56">                        row_count<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb5-57">                        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> (row_count <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> wanted_row) <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">or</span> (row_count <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">300</span>):</span>
-<span id="cb5-58">                            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> df</span>
-<span id="cb5-59">                        </span>
-<span id="cb5-60">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">except</span>:</span>
-<span id="cb5-61">            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> df</span></code></pre></div>
-</div>
-<p>큰 흐름은 구글에서 작성한 코드와 유사합니다.</p>
-<p>먼저 네이버 클라이언트 ID와 KEY값을 변수로 넣어줍니다. 경우에 따라 자기 혼자 쓰는 건 상관없겠지만 , 보통 키를 저렇게 코드에 보이게 노출하는 것 보다는 INPUT을 통해 보이지 않게 입력하는 것이 좋을 것 같습니다. 그리고 구글에서는 URL에 서비스 요청할 정보와 요청자의 신원을 확인할 수 있는 정보들을 모두 입력했습니다. 네이버에서는 조금 다르게 URL에 넣는 인자로는 어떤 검색결과를 받을지 표시하고, 몇 건이 출력될지 등 파라미터를 줘서 코드를 작성할 수 있습니다. 또 URL에 통해 사용자를 키값 정보를 같이 담지 않고 요청에 헤더를 추가하여 그곳에 담아 요청합니다.</p>
-<p>이후는 이전과 동일하게 네이버 웹문서 검색 API가 제공하는 JSON 데이터 형식을 보고 필요한 키-밸류값에 접근하여 데이터를 수집한 뒤 데이터프레임을 반환합니다.</p>
-<p>구글에서는 요청에 대한 응답(response) items에 데이터가 불용어와 html문법의 태그로 돼있는 것들이 나와있지 않았지만, 네이버에서 보낸 응답에는 불용어가 많이 섞여있어서 그것을 제거하기 위해 re 패키지의 정규식을 이용하여 글자만 남기도록 했습니다.</p>
-</section>
-</section>
-<section id="다음-검색-api-사용법" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> 다음 검색 API 사용법</h1>
-<p>카카오 API 키 발급받는 방법은 해당 링크름 참조하세요</p>
-<ul>
-<li><a href="https://kadosholy.tistory.com/25" class="uri">https://kadosholy.tistory.com/25</a></li>
-</ul>
-<p>다음 검색 API 공식문서</p>
-<p><a href="https://developers.kakao.com/docs/latest/ko/daum-search/dev-guide" class="uri">https://developers.kakao.com/docs/latest/ko/daum-search/dev-guide</a></p>
-<section id="다음-api-활용-파이썬-코드" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="다음-api-활용-파이썬-코드"><span class="header-section-number">4.1</span> 다음 API 활용 파이썬 코드</h2>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Kakao_API_key = '~~~~' # 발급받은 api키를 입력해주세요 </span></span>
-<span id="cb6-2"></span>
-<span id="cb6-3"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">def</span> Daum_API(query,wanted_row):</span>
-<span id="cb6-4">    pages<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> wanted_row<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">//</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span> </span>
-<span id="cb6-5">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 검색해야할 페이지를 10으로 나눈 몫으로 구합니다 </span></span>
-<span id="cb6-6">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 예: 100 행 검색이면 10페이지</span></span>
-<span id="cb6-7"></span>
-<span id="cb6-8">    method <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"GET"</span></span>
-<span id="cb6-9">    url <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"https://dapi.kakao.com/v2/search/web"</span></span>
-<span id="cb6-10">    header <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> {<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'authorization'</span>: <span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">f'KakaoAK </span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>Kakao_API_key<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'</span>}</span>
-<span id="cb6-11">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 다음 카카오 API를 호출할 때는, header 딕셔너리로 생성하여 정해진 형식으로  API키를 넘겨줘야합니다. 형식은 위와 같습니다. </span></span>
-<span id="cb6-12"></span>
-<span id="cb6-13">    df<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> pd.DataFrame(columns<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Title'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Link'</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Description'</span>])</span>
-<span id="cb6-14">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#데이터프레임을 생성합니다 </span></span>
-<span id="cb6-15">    row_count<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span></span>
-<span id="cb6-16">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># row_count 변수를 생성합니다</span></span>
-<span id="cb6-17"></span>
-<span id="cb6-18">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> page <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,pages<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>):</span>
-<span id="cb6-19">      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#여유있게 10페이지더 검색합니다 이유는 Link가 버려지는 경우를 위해서입니다. </span></span>
-<span id="cb6-20">        params <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> {<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'query'</span> : query, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'page'</span> : page}</span>
-<span id="cb6-21">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 다른 API 호출방식과 달리 url string에 담아서 넘겨주는 형식이 아니라, 딕셔너리형태로 </span></span>
-<span id="cb6-22">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># params와 header에 담아서 리퀘스트를 요청합니다. </span></span>
-<span id="cb6-23">        request <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> requests.get( url, params<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> params, headers<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>header)</span>
-<span id="cb6-24">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#요청한 내용을 받은 것을 request에 저장합니다. 변수명 request이지만 사실은 response</span></span>
-<span id="cb6-25">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> i, item <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">enumerate</span>(request.json()[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"documents"</span>], start<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>):</span>
-<span id="cb6-26">          <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#아이템 객체에서 url을 받아옵니다.</span></span>
-<span id="cb6-27">            link <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> item[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'url'</span>]</span>
-<span id="cb6-28">            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">try</span>:</span>
-<span id="cb6-29">              <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># date time이 null인 경우가 많아서 예외처리를 해서 경우를 나눴습니다. 앞의 4글자 년도 YYYY를 저장합니다. </span></span>
-<span id="cb6-30">                written_year<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">int</span>(item[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'datetime'</span>][:<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>])</span>
-<span id="cb6-31">            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">except</span>:</span>
-<span id="cb6-32">              <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 작성일자가 null인 경우, 2023년으로 저장합니다.  </span></span>
-<span id="cb6-33">                written_year <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2023</span></span>
-<span id="cb6-34"></span>
-<span id="cb6-35">            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> (<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">any</span>(trash <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> link <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> trash <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> Trash_Link) <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">or</span> (written_year <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2020</span>)):</span>
-<span id="cb6-36">              <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 출처가 신뢰도가 낮은 사이트거나, 작성된지 오래된 글의 경우</span></span>
-<span id="cb6-37">                <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">pass</span></span>
-<span id="cb6-38">            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">else</span>:</span>
-<span id="cb6-39">                title<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> item[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"title"</span>]</span>
-<span id="cb6-40">                description <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> item[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"contents"</span>]</span>
-<span id="cb6-41">                df.loc[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>page<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span>i] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[title,link,description]</span>
-<span id="cb6-42">                <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#title과  본문 설명을 담아서 데이터프레임에 한줄한줄 append합니다. </span></span>
-<span id="cb6-43">                row_count<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb6-44">                <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> (row_count <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> wanted_row) <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">or</span> (row_count <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">300</span>):</span>
-<span id="cb6-45">                  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 행수가 원하는 로우만큼 채워지거나, Maximum_row개수인 300에 도달하면</span></span>
-<span id="cb6-46">                  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># html태그들을 제거한 후 반환합니다.</span></span>
-<span id="cb6-47">                    remove_tag <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> re.<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">compile</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'&lt;.*?&gt;'</span>)</span>
-<span id="cb6-48">                    df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Title'</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Title'</span>].<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">apply</span>(<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">lambda</span> x :re.sub(remove_tag, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">''</span>,x))</span>
-<span id="cb6-49">                    df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Description'</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Description'</span>].<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">apply</span>(<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">lambda</span> x :re.sub(remove_tag, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">''</span>,x))</span>
-<span id="cb6-50"></span>
-<span id="cb6-51">                    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> df</span>
-<span id="cb6-52"></span>
-<span id="cb6-53">                </span>
-<span id="cb6-54"></span>
-<span id="cb6-55">    remove_tag <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> re.<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">compile</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'&lt;.*?&gt;'</span>)</span>
-<span id="cb6-56">    df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Title'</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Title'</span>].<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">apply</span>(<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">lambda</span> x :re.sub(remove_tag, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">''</span>,x))</span>
-<span id="cb6-57">    df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Description'</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>df[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Description'</span>].<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">apply</span>(<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">lambda</span> x :re.sub(remove_tag, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">''</span>,x))</span>
-<span id="cb6-58">    </span>
-<span id="cb6-59">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> df </span></code></pre></div>
-</div>
-<p>카카오 API는 요청을 하면 보내주는 response 중 우리가 원하는 내용을 구글과 네이버는 items에 내용들이 담겨있었습니다. 카카오 다음검색 api는 보낸 응답에 documents라는 키값에 저장돼있음을 문서를 통해 확인할 수 있습니다. 문서를 통해 확인할 수 있고, 보통 api를 제공하는 사이트에서 테스트해볼 수 있어 입력물과 결과물의 형식을 요청해보지 않아도 확인가능합니다. 조금 다른 점이라면 이번에는 카카오 api에서 담겨있는 내용 중 작성일자를 Document-datetime에 저장돼있어서 검색 기간을 설정할 수 있는 기능을 구현했습니다.</p>
-<p>이렇게 나온 결과물에서 한번 더 필터링하는 것도 있을 수 있지만, 애초에 검색식을 이용하여 검색결과로 반환해야할 데이터를 줄일 수 있는데, 기간검색은 검색식으로 제어가 되지 않았습니다.</p>
-</section>
-</section>
-<section id="최종-코드" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> 최종 코드</h1>
-<div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">def</span> final(query,wanted_row<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>):</span>
-<span id="cb7-2">    df_google <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> Google_API(query,wanted_row)</span>
-<span id="cb7-3">    df_google[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'search_engine'</span>]<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Google'</span></span>
-<span id="cb7-4">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 서치엔진 구글을 통해 얻었음을 기록 </span></span>
-<span id="cb7-5">    df_naver <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> Naver_API(query,wanted_row)</span>
-<span id="cb7-6">    df_naver[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'search_engine'</span>]<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Naver'</span></span>
-<span id="cb7-7">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 서치엔진 기록 </span></span>
-<span id="cb7-8">    df_daum <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> Daum_API(query,wanted_row)</span>
-<span id="cb7-9">    df_daum[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'search_engine'</span>]<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Daum'</span></span>
-<span id="cb7-10">    df_final<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> pd.concat([df_google,df_naver,df_daum])</span>
-<span id="cb7-11">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 전체 네이버 구글 카카오에서 크롤링한 내용을 수평으로 결합 rowbind </span></span>
-<span id="cb7-12">    df_final[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'search_date'</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> today</span>
-<span id="cb7-13">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 검색한 날자 저장 </span></span>
-<span id="cb7-14">    df_final.reset_index(inplace<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">True</span>,drop<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">True</span>)</span>
-<span id="cb7-15">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#인덱스 초기화 </span></span>
-<span id="cb7-16">    </span>
-<span id="cb7-17">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span> df_final</span>
-<span id="cb7-18"></span>
-<span id="cb7-19"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">############### 검색할 검색어를 query에, 검색엔진당 추출할 문서의 개수를 wanted_row 에 적어주세요####################</span></span>
-<span id="cb7-20"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">## 아래 코드를 실행시키기 위해선 위의 함수들이 모두 불러와져 있어야 합니다!</span></span>
-<span id="cb7-21"></span>
-<span id="cb7-22"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># today = datetime.today().strftime("%Y%m%d")</span></span>
-<span id="cb7-23"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># query = "뇌진탕 | 외상성 뇌손상 | 두부외상" </span></span>
-<span id="cb7-24"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># wanted_row = 100</span></span>
-<span id="cb7-25"></span>
-<span id="cb7-26"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># df = final(query=query, wanted_row=wanted_row) #최종함수를 호출하여 dataframe을 받습니다.</span></span>
-<span id="cb7-27"></span>
-<span id="cb7-28"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># query_filename =  re.sub(r"[^\uAC00-\uD7A30-9a-zA-Z\s]", "", query) #저장할때 파일명에는 특수문자 제거  </span></span>
-<span id="cb7-29"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># df.to_csv(f'{query_filename}_{today}.csv',index=False)  #파일이름을 지정하여 저장합니다.</span></span></code></pre></div>
-</div>
-</section>
-<section id="개발-후기" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> 개발 후기</h1>
-<p>역시 데이터 분석가의 업무 중 가장 시간이 오래걸리는 것은 전처리가 아닐까 싶습니다. 이 API를 호출하는 과정을 통해서 API에 어떻게 요청하고 응답의 형태를 고려해서 원하는 데이터를 저장하기 위해 어떤 코드를 작성해야하는지 알게됐습니다.</p>
-<p>저는 컴퓨터공학 비전공자로 먼저 API라는 것이 이름을 들으면 잘 모르는 것이였어서 두려운 마음이 컸었습니다. 하지만 이번에 실제로 사용을해보니, API 기술의 무엇인지와 이것이 왜 필요한지에 대해서 알게 됐고, 어떤 원리로 동작하는지 알 수 있어서 좋았습니다. 하지만 본문의 내용에서 RESTful한 API, API에 대해서 설명이 깊이있지 못하여 조금 아쉬움이 남습니다.</p>
-<p>또 이렇게 앞으로 API를 직접 만들일이 생긴다면, FAST API를 통해 만들 수 있다는 것을 알게됐고 추후에 그 쪽에 대해서도 나중에 더 깊게 공부해보고 싶어졌습니다.</p>
-<p>그리고 검색API마다 결국 기본적으로 타이틀과 url ,설명들을 제공하고 있어서 검색 API들이 검색 포털 별로 데이터 규격을 쉽게 맞출 수 있어서 좋았습니다. 공식문서를 정독하는 것이 다른 개발의 과정에서도 중요하지만 특히 API를 사용하는데 있어서 가장 중요한 역할을 한다는 것을 느꼈습니다.</p>
-<p>모든 소스코드는 차라투 깃허브에 같이 포스팅 해놓았고 아래 링크에서 확인 가능합니다.</p>
-<p>Source Code</p>
-<p><a href="https://github.com/zarathucorp/blog/blob/master/source_code/Custom_Search_Zarathu.ipynb" class="uri">https://github.com/zarathucorp/blog/blob/master/source_code/Custom_Search_Zarathu.ipynb</a></p>
-
-
-</section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
-  author = {Kim, Won},
-  title = {Python을 {이용한} {검색포털} {API} {활용}},
-  date = {2023-02-15},
-  url = {https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
-Kim, Won. 2023. <span>“Python을 이용한 검색포털 API 활용.”</span>
-February 15, 2023. <a href="https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python">https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python</a>.
-</div></div></section></div> ]]></description>
-  <category>python</category>
-  <category>API</category>
-  <guid>https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/</guid>
-  <pubDate>Tue, 14 Feb 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/img/GND.png" medium="image" type="image/png" height="96" width="144"/>
 </item>
 </channel>
 </rss>
