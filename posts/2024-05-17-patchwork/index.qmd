@@ -1,0 +1,827 @@
+---
+title: "patchwork를 활용한 고급 시각화"
+description: | 
+  ggplot2을 활용한 R 시각화의 결과물을 MS 파워포인트로 만들어내는 과정에서 쓰이는 R 패키지와 방법을 소개합니다.
+categories:
+  - R
+  - cowpot
+  - ggplot2
+  - officer
+  - patchwork
+  - powerpoint
+author:
+  name: "Jinhwan Kim"
+  email: jinhwan@zarathu.com
+  url: https://github.com/jhk0530
+image: img/logo.png
+fig_width: 400
+fig-cap-location: top
+highlight-style: arrow
+date: 2024-05-17
+format: html
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+
+## data visualization
+
+::: {.content-visible when-profile="ko"}
+
+데이터 시각화는 데이터 분석에서 중요한 역할을 한다. 다행히 R은 이 방면에서는 `ggplot2`를 필두로 다른 프로그래밍 언어들 이상의 뛰어난 여러 기능들을 사용할 수 있다는 장점이 있다.
+
+한편 데이터 시각화는 제작 이후 색상이나 레이아웃 등의 **추가적인 커스텀 수정**을 필요로 하기도 한다. 이를 위해 R 내에서 할 수 있다면 더할 나위 없이 좋지만 떄로는 단순한 작업을 위해 여러줄 코드를 사용하는 것보다 간단히 ppt 같은 외부 프로그램을 활용하는 것이 더 간편한 경우도 많다.
+
+이전의 다른 <a href='https://blog.zarathu.com/posts/2023-07-01-officer/' target="_blank">아티클</a>에서 `officer` 패키지를 활용해 MS powerpoint로 벡터 이미지를 만들고 편집하는 방법을 소개하였는데, 이번 글에서는 여러 장의 이미지를 대상으로 R에서 할 수 있는 고급 방법들과 이에 쓰이는 R 패키지를 소개한다.
+
+:::
+
+::: {.content-visible when-profile="en"}
+
+Data visualization plays an important role in data analysis. Fortunately, R has many advantages over other programming languages, led by `ggplot2`, in this regard.
+
+On the other hand, data visualization sometimes requires **additional custom modifications** such as color or layout. Although it would be great if you could do this within R, sometimes it is more convenient to use an external program like ppt for simple tasks than to use multiple lines of code.
+
+In a previous <a href='https://blog.zarathu.com/posts/2023-07-01-officer/' target = "_blank">article</a>, I introduced how to create and edit vector images in MS powerpoint using the `officer` package. In this article, I will introduce advanced methods in R and R packages used to create and edit multiple images.
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+データの可視化はデータ分析において重要な役割を果たします。幸いなことに、Rはこの点で他のプログラミング言語よりも優れた機能を持っており、`ggplot2`をはじめとする多くの機能を利用することができます。
+
+一方、データの可視化は、色やレイアウトなどの**追加のカスタム修正**が必要な場合もあります。これをR内で行うことができれば素晴らしいのですが、時には複数行のコードを使用するよりも、pptなどの外部プログラムを使用した方が簡単な場合もあります。
+
+以前の<a href='https://blog.zarathu.com/posts/2023-07-01-officer/' target="_blank">記事</a>では、`officer`パッケージを使用してMSパワーポイントでベクター画像を作成および編集する方法を紹介しました。この記事では、Rで複数の画像を作成および編集するために使用されるRおよびRパッケージの高度な方法を紹介します。
+
+:::
+
+## result
+
+::: {.content-visible when-profile="ko"}
+이번 글에서 소개하는 방법들을 적용한 ppt 결과물을 먼저 소개한다.
+:::
+
+::: {.content-visible when-profile="en"}
+First, let me introduce the ppt results using the methods introduced in this article.
+:::
+
+::: {.content-visible when-profile="jp"}
+この記事で紹介する方法を適用したpptの結果を最初に紹介します。
+:::
+
+<img src="img/res2.png" width="100%"></img>
+
+::: {.content-visible when-profile="ko"}
+우선 위 이미지는 
+
+1. R에서 `ggplot2`를 사용하여 만든 **시각화**를 
+2. `cowplot`을 이용하여 **박스**로 감싸고
+3. `patchwork`와 를 사용해 **시각화**와 설명을 위한 **텍스트**를 **레이아웃**에 따라 배치한 뒤
+4. `officer`를 활용하여 와이드스크린(혹은 16:9) 해상도 크기의 **MS powerpoint**로 만들어 낸 결과물이다.
+
+이 결과물들은 벡터 그래픽스를 활용한 만큼, 다음 이미지처럼 ppt에서 편리하게 커스텀 수정이 가능하다.
+:::
+
+::: {.content-visible when-profile="en"}
+
+First, the above image is the result of
+
+1. **Visualization** created using `ggplot2` in R
+2. Wrapped in a **box** using `cowplot`
+3. **Layout** using `patchwork` to arrange **visualization** and **text** for explanation
+4. Created in **MS powerpoint** with wide screen (or 16:9) resolution using `officer`.
+
+Since these results use vector graphics, they can be easily customized in ppt as shown in the following image.
+:::
+
+::: {.content-visible when-profile="jp"}
+
+まず、上記の画像は、次のような結果です。
+
+1. Rで作成された **可視化**を使用して `ggplot2`
+2. `cowplot`を使用して **ボックス**で囲み
+3. **レイアウト**を使用して **可視化**と説明のための **テキスト**を配置するために `patchwork`を使用
+4. `officer`を使用して、ワイドスクリーン（または16：9）解像度を使用して **MSパワーポイント**で作成されました。
+
+これらの結果はベクターグラフィックスを使用しているため、次の画像に示すように、pptで簡単にカスタマイズできます。
+:::
+
+<img src="img/tuning.png" width="100%"></img>
+
+## patchwork
+
+::: {.content-visible when-profile="ko"}
+예시에서 사용할 이미지는 `ggplot2`의 `mtcars` 데이터셋을 사용하는 `patchwork`의 예시 코드를 사용한다. `ggplot2`과 각 차트에 대해서는 별도로 설명하지 않는다. 
+:::
+
+::: {.content-visible when-profile="en"}
+The example images used in this article are based on the example code of `patchwork` using the `mtcars` dataset of `ggplot2`. I will not explain `ggplot2` and each chart separately.
+:::
+
+::: {.content-visible when-profile="jp"}
+この記事で使用する例の画像は、`ggplot2`の`mtcars`データセットを使用した`patchwork`の例コードに基づいています。`ggplot2`と各チャートについては別途説明しません。
+:::
+
+```{r}
+#| echo: false
+#| fig-cap: "mtcars"
+#| message: false
+library(ggplot2)
+library(patchwork)
+library(reactable)
+library(cowplot)
+library(officer)
+reactable(mtcars)
+```
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "ggplot2 code"
+library(ggplot2)
+
+p1 <- ggplot(mtcars) + geom_point(aes(mpg, disp))
+p2 <- ggplot(mtcars) + geom_boxplot(aes(gear, disp, group = gear))
+p3 <- ggplot(mtcars) + geom_bar(aes(gear)) + facet_wrap(~cyl)
+p4 <- ggplot(mtcars) + geom_bar(aes(carb))
+p5 <- ggplot(mtcars) + geom_violin(aes(cyl, mpg, group = cyl))
+p6 <- ggplot(mtcars) + geom_point(aes(mpg, disp)) + facet_wrap( ~ cyl)
+```
+
+::: {.content-visible when-profile="ko"}
+`patchwork`는 여러 개의 ggplot 결과물들을 하나(한장)의 그래픽에 간단하게 배치할 수 있게 하는 R 패키지이다. 유사한 목적으로 `patchwork`외에 `gridExtra`나 `cowplot`등의 다른 패키지도 사용할 수 있다.
+
+`patchwork`의 사용법은 크게 `+`, `|`, `( )`, `/`로 구성된다.
+:::
+
+::: {.content-visible when-profile="en"}
+`patchwork` is an R package that allows you to easily arrange multiple ggplot results on one (page) graphic. For similar purposes, other packages such as `gridExtra` or `cowplot` can also be used.
+
+The usage of `patchwork` consists of `+`, `|`, `( )`, and `/`.
+:::
+
+::: {.content-visible when-profile="jp"}
+`patchwork`は、複数のggplot結果を1つ（ページ）のグラフィックに簡単に配置できるようにするRパッケージです。同様の目的のために、`gridExtra`や`cowplot`などの他のパッケージも使用できます。
+
+`patchwork`の使用法は、`+`、`|`、`（）`、`/`で構成されています。
+:::
+
+### | (vertical bar)
+
+::: {.content-visible when-profile="ko"}
+먼저 `|` 는 여러 이미지를 **하나의 행**에 배치하는 역할을 한다.
+:::
+
+::: {.content-visible when-profile="en"}
+First, `|` is used to arrange multiple images in **one row**.
+:::
+
+::: {.content-visible when-profile="jp"}
+最初に、`|`は複数の画像を**1行**に配置するために使用されます。
+:::
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "patchwork - vertical bar"
+p1 | p2 | p3 | p4
+```
+
+### + 
+
+::: {.content-visible when-profile="ko"}
+두번째로 `+`는 여러 이미지를 배치하는데 이때 행과 열은 **grid** 형태로, **행 순서**로 채우는 방식을 사용한다.
+:::
+
+::: {.content-visible when-profile="en"}
+Second, `+` is used to arrange multiple images, filling the rows and columns in **grid** form, in **row order**.
+:::
+
+::: {.content-visible when-profile="jp"}
+次に、`+`は、**グリッド**形式で**行順**に行と列を埋めるために複数の画像を配置するために使用されます
+:::
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "patchwork - plus"
+p1 + p2 + p3 + p4
+```
+
+::: {.content-visible when-profile="ko"}
+이때 이미지 배치를 특별히 지정을 하기 위해서는 `plot_layout`이라는 함수를 사용한다.
+:::
+
+::: {.content-visible when-profile="en"}
+To specify the image layout, use the `plot_layout` function
+:::
+
+::: {.content-visible when-profile="jp"}
+画像のレイアウトを指定するには、`plot_layout`関数を使用します
+:::
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "patchwork - plot_layout"
+p1 + p2 + p3 + p4 + p5 +
+  plot_layout(ncol = 3, byrow = FALSE)
+```
+
+### / 
+
+::: {.content-visible when-profile="ko"}
+이어서 `/`를 사용하면 이미지를 **열**로 이어서 배치할 수 있다.
+:::
+
+::: {.content-visible when-profile="en"}
+Next, using `/` allows you to arrange images **vertically**
+:::
+
+::: {.content-visible when-profile="jp"}
+次に、`/`を使用すると画像を**縦に**配置できます
+:::
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "patchwork - slash"
+p1 / p2 
+```
+
+### ( )
+
+::: {.content-visible when-profile="ko"}
+마지막으로 `( )`를 사용하면 이미지를 **하나의 그룹**으로 묶어서 배치할 수 있다.
+:::
+
+::: {.content-visible when-profile="en"}
+Finally, using `( )` allows you to group images into **one group**
+:::
+
+::: {.content-visible when-profile="jp"}
+最後に、`( )`を使用すると画像を**1つのグループ**にグループ化して配置できます
+:::
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "patchwork - parenthesis"
+p1 | (p2 / p3)
+```
+
+::: {.content-visible when-profile="ko"}
+물론 이 외에도 `patchwork`는 다양한 기능을 제공하는데, 자세한 내용은 <a href='https://patchwork.data-imaginist.com/' target = "_blank">공식 문서</a>를 참고하자.
+
+이를 활용해서 이제 앞에서 만들었던 예시 이미지 6개를 한장의 ppt에 배치해보자.
+:::
+
+::: {.content-visible when-profile="en"}
+Of course, `patchwork` provides various functions. For more information, refer to the <a href='https://patchwork.data-imaginist.com/' target = "_blank">official documentation</a>.
+
+Now, let's use this to arrange the 6 example images we created earlier on one page of a ppt.
+:::
+
+::: {.content-visible when-profile="jp"}
+もちろん、`patchwork`にはさまざまな機能が用意されています。詳細については、<a href='https://patchwork.data-imaginist.com/' target = "_blank">公式ドキュメント</a>を参照してください。
+
+これを使用して、前に作成した6つの例の画像をpptの1ページに配置してみましょう。
+:::
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "patchwork - combined"
+combined_plot <- (p1 | p2 | p3) /
+  (p4 | p5 | p6) +
+  theme(plot.margin = margin(1, 10, 1, 10)) 
+
+combined_plot
+```
+
+## cowplot
+
+::: {.content-visible when-profile="ko"}
+이어서 `cowplot`을 사용해 이미지 사이에 **캡션**과 **박스**를 추가하는 방법을 다루겠다.
+
+우선 첫 이미지 3장을 표현하는 가상의 캡션을 `list` 형태로 생성한다. 참고로 `<br>`은 줄넘김을 의미한다.
+
+*내용은 <a href='https://www.lipsum.com/' target = "_blank">lorem ipsum</a>을 활용했다.*
+:::
+
+::: {.content-visible when-profile="en"}
+Next, we will cover how to add **captions** and **boxes** between images using `cowplot`.
+
+First, create a virtual caption representing the first three images in the form of a `list`. Note that `<br>` means a line break.
+
+*The content uses <a href='https://www.lipsum.com/' target = "_blank">lorem ipsum</a>.*
+:::
+
+::: {.content-visible when-profile="jp"}
+
+次に、`cowplot`を使用して、画像間に**キャプション**と**ボックス**を追加する方法について説明します。
+
+まず、最初の画像3枚を表現する架空のキャプションを `list` 形式で生成します。ちなみに `<br>` は改行を意味します。
+
+*内容は <a href='https://www.lipsum.com/' target = "_blank">lorem ipsum</a>を使用しました。*
+:::
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "cowplot - caption"
+text <- list(
+  p1 = "Lorem ipsum dolor sit amet <br> consectetur adipiscing elit.",
+  p2 = "Integer lectus risus, <br> tincidunt eget felis non.",
+  p3 = "Cras varius sapien et est consectetur porttitor."
+)
+```
+
+::: {.content-visible when-profile="ko"}
+이를 이전 `combined_plot`에 추가한다. 
+:::
+
+::: {.content-visible when-profile="en"}
+Add this to the previous `combined_plot`
+:::
+
+::: {.content-visible when-profile="jp"}
+これを前の `combined_plot` に追加します。
+:::
+
+```{r}
+#| eval: false
+#| echo: true 
+#| fig-cap: "cowplot - combined with caption"
+combined_plot <- (p1 | p2 | p3) /
+  ( text$p1 | text$p2 | text$p3 ) /
+  (p4 | p5 | p6) +
+  theme(plot.margin = margin(1, 10, 1, 10)) 
+
+# combined_plot 
+# ERROR !!
+```
+
+::: {.content-visible when-profile="ko"}
+그러나 이 상태로는 text 오브젝트가 ggplot 결과가 아닌 단순 텍스트만을 포함하기 때문에 에러가 발생한다. 
+이를 해결하기 위해 `cowplot`의 `ggdraw` 함수를 사용한다.
+:::
+
+::: {.content-visible when-profile="en"}
+However, in this state, an error occurs because the text object contains only simple text, not ggplot results.
+To resolve this, use the `ggdraw` function in `cowplot`.
+:::
+
+::: {.content-visible when-profile="jp"}
+しかし、この状態では、テキストオブジェクトには単純なテキストのみが含まれているため、エラーが発生します。
+これを解決するには、`cowplot`の `ggdraw` 関数を使用します。
+:::
+
+### ggdraw
+
+::: {.content-visible when-profile="ko"}
+우선 `cowplot`은 ggplot2의 결과물에 annotation, theme를 추가하는 기능등을 제공하는 R 패키지로, 
+`ggdraw`는 ggplot2의 결과물에 추가적인 그래픽을 그릴 수 있게 제일 상위 레벨에 레이어를 추가한다고 생각하면 편하다.
+:::
+
+::: {.content-visible when-profile="en"}
+First, `cowplot` is an R package that provides functions to add annotations and themes to ggplot2 results.
+Think of `ggdraw` as adding a top-level layer to ggplot2 results so that you can draw additional graphics
+:::
+
+::: {.content-visible when-profile="jp"}
+まず、`cowplot`はggplot2の結果に注釈やテーマを追加する機能を提供するRパッケージです。
+`ggdraw`は、ggplot2の結果に追加のグラフィックを描画できるように、最上位レベルのレイヤーを追加すると考えてください。
+:::
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "cowplot - ggdraw"
+
+scatter <- ggplot(mpg, aes(displ, cty)) +
+  geom_point() +
+  theme_minimal_grid()
+
+draft <- ggdraw(scatter) + 
+  draw_label("Draft", colour = "#80404080", size = 120, angle = 45)
+
+scatter | draft
+```
+
+::: {.content-visible when-profile="ko"}
+이 `ggdraw`를 사용해 이전의 text 내용 중 **첫번째 라벨(p1)을 label로 갖는 ggplot 오브젝트**를 생성하고 이를 `combined_plot`에 추가한다.
+:::
+
+::: {.content-visible when-profile="en"}
+Use `ggdraw` to create a **ggplot object with the first label (p1) as a label** from the previous text content and add it to `combined_plot`.
+:::
+
+::: {.content-visible when-profile="jp"}
+前のテキストコンテンツから**最初のラベル（p1）をラベルとして持つggplotオブジェクト**を作成し、それを `combined_plot` に追加
+:::
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "cowplot - combined with caption"
+
+combined_plot <- (p1 | p2 | p3) /
+  ( 
+    ggdraw() + 
+      labs(subtitle = text$p1) + 
+      theme_void() +
+      theme(
+        text = element_text(size = 8),
+        plot.subtitle = ggtext::element_textbox_simple(
+          hjust = 0,
+          halign = 0,
+          margin = margin(3, 0, 0, 0)
+        ),
+        plot.margin = margin(0, 0, 0, 0)
+      ) 
+  ) /
+  (p4 | p5 | p6) +
+  theme(plot.margin = margin(1, 10, 1, 10)) 
+
+combined_plot
+```
+
+::: {.content-visible when-profile="ko"}
+이어서 남은 라벨을 추가하기 전, 라벨 커스텀에 반복적으로 쓰이는 기능들을 별도의 함수로 만들어 사용하자.
+추가로 caption과 그래프를 동일한 1:1:1의 높이로 할당하지 않고 caption 부분을 줄이기 위해 `plot_layout`의 `height`로 높이를 조절한다. 
+:::
+
+::: {.content-visible when-profile="en"}
+Next, let's create a separate function for the features that are repeatedly used in customizing labels before adding the remaining labels.
+In addition, to reduce the caption part, adjust the height using `height` of `plot_layout` instead of assigning the same height to the caption and graph in a 1:1:1 ratio.
+:::
+
+::: {.content-visible when-profile="jp"}
+次に、残りのラベルを追加する前に、ラベルのカスタマイズに繰り返し使用される機能を別の関数にしてみましょう。
+さらに、キャプション部分を縮小するために、`plot_layout`の`height`を使用して高さを調整します。
+:::
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-cap: "cowplot - caption function"
+cap <- function(text){
+  ggdraw() + 
+    labs(subtitle = text) +
+    theme_void() +
+    theme(
+      text = element_text(size = 8),
+      plot.subtitle = ggtext::element_textbox_simple(
+        hjust = 0,
+        halign = 0,
+        margin = margin(3, 0, 0, 0)
+      ),
+      plot.margin = margin(0, 0, 0, 0)
+    )
+}
+
+combined_plot <- (p1 | p2 | p3) /
+  ( cap(text$p1) | cap(text$p2) | cap(text$p3) ) /
+  (p4 | p5 | p6) +
+  plot_layout(heights = c(5, 0.1, 5)) +
+  theme(plot.margin = margin(1, 10, 1, 10)) 
+
+combined_plot
+```
+
+::: {.content-visible when-profile="ko"}
+다음은 각 시각화를 박스(테두리)로 감싸는 방법을 다룬다.
+이를 위해 각 시각화에 `ggdraw`를 사용하여 레이어를 만들고, 
+그 레이어에 `draw_line` 함수를 사용해 (0,0) 부터 (1,1)을 지나는 직선을 추가하는 방법을 사용한다.
+
+추가로 각 시각화에 text 속성을 조절하기 위해 `theme` 함수를 사용한다.
+:::
+
+::: {.content-visible when-profile="en"}
+
+Next, we will cover how to wrap each visualization in a box (border).
+To do this, we use `ggdraw` to create a layer for each visualization and use the `draw_line` function to add a line passing through (0,0) to (1,1) to that layer.
+
+In addition, we use the `theme` function to adjust the text properties for each visualization
+:::
+
+::: {.content-visible when-profile="jp"}
+次に、各可視化をボックス（境界）で囲む方法について説明します。
+これを行うには、各可視化にレイヤーを作成するために `ggdraw` を使用し、
+そのレイヤーに `draw_line` 関数を使用して (0,0) から (1,1) を通る線を追加します。
+
+さらに、各可視化のテキストプロパティを調整するために `theme` 関数を使用します。
+:::
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "cowplot - box"
+
+text_theme <- theme(
+  text = element_text(size = 6), 
+  axis.text = element_text(size = 6), 
+  axis.title = element_text(size = 6),
+  axis.title.x = element_text(size = 6), 
+  axis.title.y = element_text(size = 6), 
+  plot.title = element_text(size = 6),
+  legend.text = element_text(size = 6),
+  legend.title = element_text(size = 6)
+)
+
+(
+  p1 | 
+  ggdraw(p1 + text_theme) +
+    draw_line(
+      x = c(0, 1, 1, 0, 0), 
+        y = c(0, 0, 1, 1, 0), 
+        color = "black", 
+        size = 0.5
+    )
+)
+```
+
+::: {.content-visible when-profile="ko"}
+이전과 마찬가지로 (반복되는) 박스를 만드는 기능들을 함수로 만들어 사용하자.
+:::
+
+::: {.content-visible when-profile="en"}
+As before, let's create functions for creating (repeating) boxes and use them.
+:::
+
+::: {.content-visible when-profile="jp"}
+前述のように、(繰り返し)ボックスを作成するための関数を作成して使用しましょう。
+:::
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-cap: "cowplot - box function"
+
+with.box <- function(p){
+  ggdraw(p + text_theme) +
+    cowplot::draw_line(
+      x = c(0, 1, 1, 0, 0), 
+      y = c(0, 0, 1, 1, 0), 
+      color = "black", 
+      size = 0.5
+    ) 
+}
+
+combined_plot <- (with.box(p1) | with.box(p2) | with.box(p3)) /
+  ( cap(text$p1) | cap(text$p2) | cap(text$p3) ) /
+  (with.box(p4) | with.box(p5) | with.box(p6)) +
+  plot_layout(heights = c(5, 0.1, 5)) +
+  theme(plot.margin = margin(1, 10, 1, 10)) 
+
+combined_plot
+```
+
+## officer
+
+::: {.content-visible when-profile="ko"}
+이제 `officer` 패키지를 사용해 위에서 만든 그래프를 ppt에 추가해보자.
+
+기본적인 `officer`에 대한 소개는 이전 <a href='https://blog.zarathu.com/posts/2023-07-01-officer/' target="_blank">아티클</a>을 참고하면 좋다.
+
+`officer`에서는 `read_pptx` 함수로 ppt 오브젝트를 생성하는데 이때 읽을 파일을 입력하지 않으면 너비와 높이가 **4:3 비율**인 새로운 오브젝트를 생성하여 사용한다. 
+
+만약 이를 그대로 사용한다면 다음 그림과 같이 애써만든 레이아웃이 깨지는 상황이 발생할 수 있기 때문에, ppt에서 임의의 사이즈를 갖는 템플릿을 만들고 이를 파일로 읽어 사용한다.
+:::
+
+::: {.content-visible when-profile="en"}
+Now let's add the graphs we created above to a ppt using the `officer` package.
+
+For a basic introduction to `officer`, refer to the previous <a href='https://blog.zarathu.com/posts/2023-07-01-officer/' target="_blank">article</a>.
+
+In `officer`, the `read_pptx` function creates a ppt object, and if no file is specified, it creates a new object with a **4:3 ratio** for width and height.
+
+If you use this as is, the carefully crafted layout may break, so create a template with an arbitrary size in ppt and read it as a file.
+
+:::
+
+::: {.content-visible when-profile="jp"}
+次に、上で作成したグラフを `officer` パッケージを使用して ppt に追加してみましょう。
+
+`officer` の基本的な紹介については、以前の <a href='https://blog.zarathu.com/posts/2023-07-01-officer/' target="_blank">記事</a>を参照してください.
+
+`officer` では、`read_pptx` 関数を使用して ppt オブジェクトを作成し、ファイルが指定されていない場合は、幅と高さが **4:3 比率** の新しいオブジェクトを作成します。
+
+これをそのまま使用すると、慎重に作成したレイアウトが壊れる可能性があるため、ppt で任意のサイズのテンプレートを作成し、ファイルとして読み込みます。
+
+:::
+
+<img src="img/11.png" width="100%"></img>
+
+::: {.content-visible when-profile="ko"}
+
+::: {.callout-note appearance="simple"}
+ppt를 생성한 다음, `페이지 설정`에서 **16:9** 혹은 **와이드 스크린**으로 변경하는 방법도 있지만, 
+이 방법 또한 마찬가지로 그래프 요소들을 다시 배치해야 한다는 점은 동일하다.
+:::
+
+:::
+
+::: {.content-visible when-profile="en"}
+
+::: {.callout-note appearance="simple"}
+After creating the ppt, you can change the size to **16:9** or **wide screen** in `Page Setup`, but you will still need to rearrange the graph elements.
+:::
+
+:::
+
+::: {.content-visible when-profile="jp"}
+
+::: {.callout-note appearance="simple"}
+ppt を作成した後、`ページ設定` でサイズを **16:9** または **ワイドスクリーン** に変更することができますが、グラフ要素を再配置する必要があります。
+:::
+
+:::
+
+<img src="img/ws.png" width="100%"></img>
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-cap: "officer - add slide"
+#| code-line-numbers: true
+read_pptx("~/Documents/template.pptx") |>
+  remove_slide(1) |>
+  add_slide() |>
+  ph_with(
+    value = "Example Title (baseline ~ X)", 
+    location = ph_location_type(type = "title")
+  ) |> 
+  ph_with(
+    rvg::dml(ggobj = combined_plot), 
+    location = ph_location(left = 0, top = 1.5, height = 6, width = 13.333)
+  ) |>
+  print(target = "output2.pptx")
+```
+
+::: {.content-visible when-profile="ko"}
+위 코드에서 2번째 줄 `remove_slide` 함수를 사용하지 않으면, 기존 템플릿의 슬라이드 **이후** 에 ggplot 결과를 담는 슬라이드를 만들기 때문에 아래와 같이 불필요한 첫페이지를 가지고 시작하게 된다.
+:::
+
+::: {.content-visible when-profile="en"}
+If you don't use the `remove_slide` function in the above code, a slide containing the ggplot result will be created **after** the existing template slide, so you will start with an unnecessary first page as shown below.
+:::
+
+::: {.content-visible when-profile="jp"}
+上記のコードで `remove_slide` 関数を使用しない場合、既存のテンプレートスライド **後** に ggplot 結果を含むスライドが作成されるため、以下のように不要な最初のページから始まります。
+:::
+
+<img src="img/empty.png" width="100%"></img>
+
+::: {.content-visible when-profile="ko"}
+한편 `remove_slide`와 `add_slide`를 둘 다 제거하고 `ph_with`으로 이미지만 더하게 되면 아래와 같이
+템플릿의 제목과 새로 추가한 제목이 겹쳐서 보여지게 된다.
+:::
+
+::: {.content-visible when-profile="en"}
+On the other hand, if you remove both `remove_slide` and `add_slide` and only add an image with `ph_with`, the title of the template and the newly added title will overlap as shown below.
+:::
+
+::: {.content-visible when-profile="jp"}
+一方、`remove_slide` と `add_slide` の両方を削除し、`ph_with` で画像のみを追加すると、以下のようにテンプレートのタイトルと新しく追加されたタイトルが重なります。
+:::
+
+```{r}
+#| eval: false
+#| echo: true
+#| fig-cap: "officer - overlap"
+read_pptx("~/Documents/template.pptx") |>
+  ph_with(
+    value = "Example Title (baseline ~ X)", 
+    location = ph_location_type(type = "title")
+  ) |> 
+  ph_with(
+    rvg::dml(ggobj = combined_plot), 
+    location = ph_location(left = 0, top = 1.5, height = 6, width = 13.333)
+  ) |>
+  print(target = "output2.pptx")
+```
+
+<img src="img/overlap.png" width="100%"></img>
+
+::: {.content-visible when-profile="ko"}
+그러므로 템플릿을 사용하는 경우에는 `remove_slide`와 `add_slide`를 활용하는 것을 권장한다.
+:::
+
+::: {.content-visible when-profile="en"}
+Therefore, it is recommended to use `remove_slide` and `add_slide` when using a template.
+:::
+
+::: {.content-visible when-profile="jp"}
+そのため、テンプレートを使用する場合は、`remove_slide` と `add_slide` を使用することをお勧めします。
+:::
+
+## summary
+
+::: {.content-visible when-profile="ko"}
+이번 아티클에서는 `patchwork`와 `cowplot`을 사용해 여러 그래프를 하나로 합치고 약간의 커스텀을 거쳐, `officer`를 사용해 ppt에 추가하는 방법을 알아보았다. 이처럼 R의 기능과 ppt를 연결하는 방법은 다양하게 활용할 수 있으며, 이를 통해 보다 효율적인 작업을 할 수 있을 것이다.
+:::
+
+::: {.content-visible when-profile="en"}
+In this article, we learned how to combine multiple graphs using `patchwork` and `cowplot`, make slight customizations, and add them to a ppt using `officer`. There are various ways to connect R's functions with ppt, and through this, you will be able to work more efficiently.
+:::
+
+::: {.content-visible when-profile="jp"}
+この記事では、`patchwork` と `cowplot` を使用して複数のグラフを組み合わせ、軽微なカスタマイズを行い、`officer` を使用して ppt に追加する方法を学びました。 R の機能と ppt を結びつける方法はさまざまであり、これによりより効率的に作業できるようになるでしょう。
+:::
+
+<img src="img/res2.png" width="100%"></img>
+
+::: {.content-visible when-profile="ko"}
+최종 코드는 다음과 같다.
+:::
+
+::: {.content-visible when-profile="en"}
+The final code is as follows.
+
+*This content is translated with github copilot*
+:::
+
+::: {.content-visible when-profile="jp"}
+最終的なコードは以下
+
+*このコンテンツは github copilot で翻訳されました*
+:::
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-fold: true
+
+library(ggplot2)
+library(patchwork)
+library(cowplot)
+library(officer)
+
+p1 <- ggplot(mtcars) + geom_point(aes(mpg, disp))
+p2 <- ggplot(mtcars) + geom_boxplot(aes(gear, disp, group = gear))
+p3 <- ggplot(mtcars) + geom_bar(aes(gear)) + facet_wrap(~cyl)
+p4 <- ggplot(mtcars) + geom_bar(aes(carb))
+p5 <- ggplot(mtcars) + geom_violin(aes(cyl, mpg, group = cyl))
+p6 <- ggplot(mtcars) + geom_point(aes(mpg, disp)) + facet_wrap( ~ cyl)
+
+text <- list(
+  p1 = "Lorem ipsum dolor sit amet <br> consectetur adipiscing elit.",
+  p2 = "Integer lectus risus, <br> tincidunt eget felis non.",
+  p3 = "Cras varius sapien et est consectetur porttitor."
+)
+
+cap <- function(text){
+  ggdraw() + 
+    labs(subtitle = text) +
+    theme_void() +
+    theme(
+      text = element_text(size = 8),
+      plot.margin = margin(0, 0, 0, 0)
+    )
+}
+
+text_theme <- theme(
+  text = element_text(size = 6), 
+  axis.text = element_text(size = 6), 
+  axis.title = element_text(size = 6),
+  axis.title.x = element_text(size = 6), 
+  axis.title.y = element_text(size = 6), 
+  plot.title = element_text(size = 6),
+  legend.text = element_text(size = 6),
+  legend.title = element_text(size = 6)
+)
+
+with.box <- function(p){
+  ggdraw(p + text_theme) +
+    cowplot::draw_line(
+      x = c(0, 1, 1, 0, 0), 
+      y = c(0, 0, 1, 1, 0), 
+      color = "black", 
+      size = 0.5
+    ) 
+}
+
+combined_plot <- (with.box(p1) | with.box(p2) | with.box(p3)) /
+  ( cap(text$p1 + text_theme) | cap(text$p2 + text_theme) | cap(text$p3 + text_theme) ) /
+  (with.box(p4) | with.box(p5) | with.box(p6)) +
+  plot_layout(heights = c(5, 0.1, 5)) +
+  theme(plot.margin = margin(1, 10, 1, 10)) 
+
+combined_plot
+
+read_pptx("~/Documents/template.pptx") |>
+  ph_with(
+    value = "Example Title (baseline ~ X)", 
+    location = ph_location_type(type = "title")
+  ) |> 
+  ph_with(
+    rvg::dml(ggobj = combined_plot), 
+    location = ph_location(left = 0, top = 1.5, height = 6, width = 13.333)
+  ) |>
+  print(target = "output2.pptx")
+```
+
