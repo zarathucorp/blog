@@ -421,7 +421,7 @@ ga('send', {
 <div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#datatable을 hierarchy로 convert</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/timelyportfolio/d3r">d3r</a></span><span class="op">)</span></span>
-<span><span class="va">hierarchy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/d3r/man/d3_nest.html">d3_nest</a></span><span class="op">(</span><span class="va">data2</span>, value_cols <span class="op">=</span> <span class="st">"size"</span><span class="op">)</span></span>
+<span><span class="va">hierarchy</span> <span class="op">&lt;-</span> <span class="fu">d3_nest</span><span class="op">(</span><span class="va">data2</span>, value_cols <span class="op">=</span> <span class="st">"size"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">hierarchy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -437,7 +437,7 @@ ga('send', {
 <span></span>
 <span><span class="co"># setting data as 'hierarchy', then setting legend, width, height, count</span></span>
 <span></span>
-<span><span class="va">sb</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/sunburstR/man/sunburst.html">sunburst</a></span><span class="op">(</span></span>
+<span><span class="va">sb</span><span class="op">&lt;-</span><span class="fu">sunburst</span><span class="op">(</span></span>
 <span>  <span class="va">hierarchy</span>,</span>
 <span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  width <span class="op">=</span> <span class="st">"100%"</span>,</span>
@@ -499,7 +499,7 @@ ga('send', {
 <span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/timelyportfolio/d3r">d3r</a></span><span class="op">)</span></span>
-<span><span class="va">hierarchy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/d3r/man/d3_nest.html">d3_nest</a></span><span class="op">(</span><span class="va">data2</span>, value_cols <span class="op">=</span> <span class="st">"size"</span><span class="op">)</span></span>
+<span><span class="va">hierarchy</span> <span class="op">&lt;-</span> <span class="fu">d3_nest</span><span class="op">(</span><span class="va">data2</span>, value_cols <span class="op">=</span> <span class="st">"size"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#colors</span></span>
 <span><span class="va">colors</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'#FFAA00'</span>, <span class="st">'#2D5F91'</span>,<span class="st">'#91D4D2'</span>, <span class="st">'#E8655F'</span><span class="op">)</span></span>
@@ -558,13 +558,13 @@ ga('send', {
 <span>                 <span class="op">)</span>,</span>
 <span>                 <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/tabPanel.html">tabPanel</a></span><span class="op">(</span><span class="st">"Plot"</span>,</span>
 <span>                          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html">mainPanel</a></span><span class="op">(</span></span>
-<span>                            <span class="fu"><a href="https://rdrr.io/pkg/sunburstR/man/sunburst-shiny.html">sunburstOutput</a></span><span class="op">(</span><span class="st">"sunburst"</span><span class="op">)</span>,</span>
+<span>                            <span class="fu">sunburstOutput</span><span class="op">(</span><span class="st">"sunburst"</span><span class="op">)</span>,</span>
 <span>                            <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput</a></span><span class="op">(</span><span class="st">"selection"</span><span class="op">)</span></span>
 <span>                          <span class="op">)</span></span>
 <span>                 <span class="op">)</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>선버스트 차트를 output으로 보여줄 것이기 때문에 <code><a href="https://rdrr.io/pkg/sunburstR/man/sunburst-shiny.html">sunburstOutput( )</a></code> 함수를 사용한다. <code><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput( )</a></code>은 <code>selection</code>을 문자열 인수로 설정한다.</p>
+<p>선버스트 차트를 output으로 보여줄 것이기 때문에 <code>sunburstOutput( )</code> 함수를 사용한다. <code><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput( )</a></code>은 <code>selection</code>을 문자열 인수로 설정한다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
@@ -572,8 +572,8 @@ ga('send', {
 <span>    <span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op">(</span><span class="va">a</span>, rownames <span class="op">=</span> <span class="cn">F</span>,  caption <span class="op">=</span> <span class="st">"Pathway 리포트"</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span>  </span>
-<span>  <span class="va">output</span><span class="op">$</span><span class="va">sunburst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sunburstR/man/sunburst-shiny.html">renderSunburst</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/pkg/sunburstR/man/add_shiny.html">add_shiny</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sunburstR/man/sunburst.html">sunburst</a></span><span class="op">(</span><span class="va">hierarchy</span>, legend <span class="op">=</span> <span class="cn">FALSE</span>, width <span class="op">=</span> <span class="st">"100%"</span>, colors<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>range <span class="op">=</span> <span class="va">colors</span>, domain <span class="op">=</span> <span class="va">labels</span><span class="op">)</span>, height <span class="op">=</span> <span class="fl">400</span>, count<span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">sunburst</span> <span class="op">&lt;-</span> <span class="fu">renderSunburst</span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu">add_shiny</span><span class="op">(</span><span class="fu">sunburst</span><span class="op">(</span><span class="va">hierarchy</span>, legend <span class="op">=</span> <span class="cn">FALSE</span>, width <span class="op">=</span> <span class="st">"100%"</span>, colors<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>range <span class="op">=</span> <span class="va">colors</span>, domain <span class="op">=</span> <span class="va">labels</span><span class="op">)</span>, height <span class="op">=</span> <span class="fl">400</span>, count<span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="va">selection</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html">reactive</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -585,7 +585,7 @@ ga('send', {
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op">(</span>ui <span class="op">=</span> <span class="va">ui</span>, server <span class="op">=</span> <span class="va">server</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code><a href="https://rdrr.io/pkg/sunburstR/man/add_shiny.html">add_shiny( )</a></code> 함수를 통해 sunburst 차트를 shiny 앱에 추가한다. <code>selection</code>은 <code>input$sunburst_mouseover</code> 값에 반응하여 업데이트되도록 설정되어 있다. <code>output$selection</code> 은 sunburst 차트에서 유저가 선택한 항목의 이름을 출력한다.</p>
+<p><code>add_shiny( )</code> 함수를 통해 sunburst 차트를 shiny 앱에 추가한다. <code>selection</code>은 <code>input$sunburst_mouseover</code> 값에 반응하여 업데이트되도록 설정되어 있다. <code>output$selection</code> 은 sunburst 차트에서 유저가 선택한 항목의 이름을 출력한다.</p>
 <p>▶️Run App을 실행하면 선버스트 차트가 잘 나오는 것을 확인할 수 있다.</p>
 <p><img src="img/shiny sunburst.png" width="701"></p>
 </section></section><section id="마치며" class="level2"><h2 class="anchored" data-anchor-id="마치며">마치며</h2>
