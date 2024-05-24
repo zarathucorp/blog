@@ -97,37 +97,37 @@ Signing Secret은 api.slack.com에서 자신의 앱을 선택한 후 Basic Infor
 이제 실제로 코드를 만들어 보겠습니다. src/app,py를 생성합니다.
 
 ```{python}
-if False:
-    import os
-    from dotenv import load_dotenv
-    load_dotenv(verbose=True)
+#| eval: false
+import os
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
-    SLACK_SIGNING_SECRET = os.getenv('SLACK_SIGNING_SECRET')
-    SLACK_BOT_TOKEN = os.getenv('SLACK_BOT_TOKEN')
-    CHANNEL_NAME=os.getenv("CHANNEL_NAME")
+SLACK_SIGNING_SECRET = os.getenv('SLACK_SIGNING_SECRET')
+SLACK_BOT_TOKEN = os.getenv('SLACK_BOT_TOKEN')
+CHANNEL_NAME=os.getenv("CHANNEL_NAME")
 ```
 
 로 dotenv 환경을 불러오고, 변수에 .env의 내용을 불러옵니다.
 
 다음으로,
 
-```{python engine.path="/opt/homebrew/Cellar/python@3.10/3.10.9/Frameworks/Python.framework/Versions/3.10/bin/python3.10"}
-if False:
-    import logging
-    logging.basicConfig(level=logging.DEBUG)
+```{python}
+#| eval: false
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
-    from slack_bolt import App
-    from slack_sdk.errors import SlackApiError
+from slack_bolt import App
+from slack_sdk.errors import SlackApiError
 ```
 
 로 logging 기능과 Slack API를 불러옵니다. SlackApiError는 추후 Error Handling에 사용 될 에정입니다.
 
 ```{python}
-if False:
-    app = App(
-        token=SLACK_BOT_TOKEN,
-        signing_secret=SLACK_SIGNING_SECRET
-    )
+#| eval: false
+app = App(
+    token=SLACK_BOT_TOKEN,
+    signing_secret=SLACK_SIGNING_SECRET
+)
 ```
 
 위 코드로, Slack API를 초기화합니다.
@@ -143,60 +143,61 @@ Slack API는 Decorator를 통해 각각의 Action에 따른 기능을 수행합�
 우리는 - "reply" action - "port" shortcut - "reply" shortcut 을 받은 경우 modal이 필요하므로 아래와 같은 Decorator를 작성합니다.
 
 ```{python}
-if False:
-    @app.action("reply")
-    @app.shortcut("post")
-    @app.shortcut("reply")
-    def open_modal(ack, body, client, logger):
-        ...
+#| eval: false
+@app.action("reply")
+@app.shortcut("post")
+@app.shortcut("reply")
+def open_modal(ack, body, client, logger):
+  ...
 ```
 
-Slack API는 요청을 받는 경우 `ack()`를 실행하도록 요청하고 있습니다. 그러므로, open_modal(...)이 호출되는 경우 `{python} ack()`가 실행되어야 합니다.
+Slack API는 요청을 받는 경우 `ack()`를 실행하도록 요청하고 있습니다. 그러므로, open_modal(...)이 호출되는 경우 `{{python}} ack()`가 실행되어야 합니다.
 
 ```{python}
-if False:
-    def open_modal(ack, body, client, logger):
-        ack()
+#| eval: false
+def open_modal(ack, body, client, logger):
+  ack()
 ```
 
 다음으로, open_modal이 끝난 경우, 즉 유저가 Modal에 무엇인가를 입력하여 반환 된 경우를 보겠습니다. Modal이 닫히면, 그 내용을 대나무숲 봇이 #bambooforest 채널에 포스팅/댓글 작성 해야합니다. 이를 위해, Modal에 callback_id를 설정해야 합니다. 우리는 "view_post"라고 하겠습니다.
 
+
 ```{python}
-if False:
-    def open_modal(ack, body, shortcut, client, logger, block_actions):
-        ack()
+#| eval: false
+def open_modal(ack, body, shortcut, client, logger, block_actions):
+    ack()
+    try:
         try:
             try:
-                try:
-                    message_ts=body['message_ts']
-                except:
-                    message_ts=body['container']['message_ts']
+                message_ts=body['message_ts']
             except:
-                message_ts="" # Global의 경우 message_ts가 없음
-            result = client.views_open(
-                trigger_id=body["trigger_id"],
-                view={
-                    # View 위 내용 생략
-                    "callback_id": "view_post",
-                    "private_metadata": message_ts
-                }
-            )
-            logger.info(result)
-        except SlackApiError as e:
-            logger.error("Error creating conversation: {}".format(e))
+                message_ts=body['container']['message_ts']
+        except:
+            message_ts="" # Global의 경우 message_ts가 없음
+        result = client.views_open(
+            trigger_id=body["trigger_id"],
+            view={
+                # View 위 내용 생략
+                "callback_id": "view_post",
+                "private_metadata": message_ts
+            }
+        )
+        logger.info(result)
+    except SlackApiError as e:
+        logger.error("Error creating conversation: {}".format(e))
 ```
 
 그러면 위 "view_post" 콜백를 처리할 수 있는 함수를 만들어 보겠습니다. 마찬가지로 Decorator을 사용합니다.
 
 ```{python}
-if False:
-    @app.view("view_post")
-    def handle_submission(ack, body, client, view, logger):
-        ack()
-        logger.info(body)
-        message_ts=view['private_metadata']
-        content=view['state']['values']['post_input_block']['post_content_input']['value']
-        username=view["state"]["values"]["name_input_block"]["name_input"]['value']
+#| eval: false
+@app.view("view_post")
+def handle_submission(ack, body, client, view, logger):
+  ack()
+  logger.info(body)
+  message_ts=view['private_metadata']
+  content=view['state']['values']['post_input_block']['post_content_input']['value']
+  username=view["state"]["values"]["name_input_block"]["name_input"]['value']
 ```
 
 "view_post" 콜백이 실행된 경우, ack() 하고 body를 logging 합니다. 이후, 복잡한 경로에 있는 값을 접근하기 쉽도록 값을 변수에 대입합니다. 우리는 message_ts를 private_metadata로 전달했습니다. 또, content와 username의 값은 view\["state"\]\["values"\]의 \['post_input_block'\]\['post_content_input'\]\['value'\] 및 \["name_input_block"\]\["name_input"\]\['value'\]에 존재합니다.
@@ -204,65 +205,66 @@ if False:
 익명 게시판이므로, Username을 작성하지 않은 경우가 많을 것입니다. 이 경우, 아래에서 만들 username() 함수를 통해 랜덤한 username을 생성합니다. 또한, 게시글의 경우 message_ts 값이 없습니다(위에서 ""를 대입합니다). 경우에 따라 type="게시글" 또는 type="댓글"을 저장합니다.
 
 ```{python}
-if False:
-    if username is None:
-            username=randname()
+#| eval: false
+if username is None:
+  username=randname()
 
-    if message_ts == "":
-        type="게시글"
-    else:
-        type="댓글"
+if message_ts == "":
+  type="게시글"
+else:
+  type="댓글"
 ```
 
 위에서 정리된 내용을 바탕으로 메시지를 발송합니다. message_ts가 있으면(즉 댓글이면) 메시지를 해당 thread에, 아니면 .env에서 지정한 채널에 발송합니다.
 
 ```{python}
-if False:
-    send_message=[
-                    {
-                        "type": "header",
-                        "text": {
-                            "type": "plain_text",
-                            "text": ":bamboo: 익명 메시지 :bamboo:"
-                        }
-                    },
-                    {
-                        "type": "divider"
-                    },
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": f"*{username}님의 {type}입니다.*"
-                        }
-                    },
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "plain_text",
-                            "text": f"{content}"
-                        },
-                        "accessory": {
-                            "type": "button",
-                            "action_id": "reply",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "댓글 달기",
-                                "emoji": True
-                            }
-                        }
-                    }
-                ]
-    
-    if message_ts == "":
-        client.chat_postMessage(channel=CHANNEL_NAME, blocks=send_message)
-    else: 
-        client.chat_postMessage(channel=CHANNEL_NAME, thread_ts=message_ts, blocks=send_message)
+#| eval: false
+send_message=[
+  {
+    "type": "header",
+    "text": {
+      "type": "plain_text",
+      "text": ":bamboo: 익명 메시지 :bamboo:"
+      }
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": f"*{username}님의 {type}입니다.*"
+      }
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "plain_text",
+      "text": f"{content}"
+  },
+  "accessory": {
+      "type": "button",
+      "action_id": "reply",
+      "text": {
+        "type": "plain_text",
+        "text": "댓글 달기",
+        "emoji": True
+      }
+    }
+  }
+]
+
+if message_ts == "":
+    client.chat_postMessage(channel=CHANNEL_NAME, blocks=send_message)
+else: 
+    client.chat_postMessage(channel=CHANNEL_NAME, thread_ts=message_ts, blocks=send_message)
 ```
 
 src/name.py는 다음과 같습니다.
 
 ```{python}
+#| eval: false
 import random
 
 firstNames = [
@@ -288,8 +290,8 @@ randname()은 firstNames와 lastNames의 원소를 각각 랜덤으로 추출하
 src/app.py 상단에
 
 ```{python}
-if False:
-    from name import randname
+#| eval: false
+from name import randname
 ```
 
 을 추가합니다.
@@ -297,9 +299,9 @@ if False:
 마지막으로, src/app.py 마지막에
 
 ```{python}
-if False:
-    if __name__ == "__main__":
-        app.start(3000)
+#| eval: false
+if __name__ == "__main__":
+  app.start(3000)
 ```
 
 을 추가하고, 서버에서 python3 src/app.py를 실행하면 정상적으로 작동하는 것을 알 수 있습니다.

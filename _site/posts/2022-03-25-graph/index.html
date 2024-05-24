@@ -7,7 +7,7 @@
 <meta name="author" content="Yumin Kim">
 <meta name="dcterms.date" content="2022-03-25">
 <meta name="description" content="R 기본 함수, ggplot2 패키지, ggpubr 패키지를 활용해 의학논문에 필요한 그래프를 만들어보자.">
-<title>차라투 블로그 - R로 논문용 그래프 그리기</title>
+<title>チャラトゥブログ - R로 논문용 그래프 그리기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -121,7 +121,7 @@ ga('send', {
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
     <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">차라투 블로그</span>
+    <span class="navbar-title">チャラトゥブログ</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -131,18 +131,18 @@ ga('send', {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
-<span class="menu-text">Home</span></a>
+    <a class="nav-link" href="../../../jp/index.html"> 
+<span class="menu-text">ホーム</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
-<span class="menu-text">Applications</span></a>
+<span class="menu-text">アプリケーション</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">R packages</span>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-パッケージ" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R パッケージ</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-パッケージ">
 <li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
@@ -158,14 +158,14 @@ ga('send', {
     </ul>
 </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html"> 
-<span class="menu-text">Contributors</span></a>
+    <a class="nav-link" href="../../../jp/contributors.html"> 
+<span class="menu-text">投稿者</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Partners</span>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">パートナー</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-">
 <li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
@@ -227,7 +227,7 @@ ga('send', {
       </div>
                           <div class="quarto-categories">
                 <div class="quarto-category">R</div>
-                <div class="quarto-category">Rpackage</div>
+                <div class="quarto-category">rpackage</div>
               </div>
                   </div>
   </div>
@@ -512,7 +512,11 @@ ga('send', {
 <span>      name <span class="op">=</span> <span class="st">"Exam year"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>color<span class="op">=</span><span class="st">"brown"</span>, size<span class="op">=</span><span class="fl">0.8</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using method = 'loess' and formula 'y ~ x'</code></pre>
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using method = 'loess' and formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -525,7 +529,7 @@ ga('send', {
 <p>ggplot의 문법을 이해하고 나면 이를 응용해서 다양한 그래프를 그릴 수 있다.<br>
 앞서 만들었던 흡연 여부에 따른 수축기 혈압의 분포 그래프를 다시 만들어 보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span>, y<span class="op">=</span><span class="va">BP_SYS</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"SBP average by smoking"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"SBP(mmHg)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Smoking"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -539,7 +543,7 @@ ga('send', {
 </div>
 <p>여기에 하나의 변수를 더 추가해서, <strong>facet</strong>으로 구분된 그래프를 만들 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data2</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Q_PHX_DX_HTN</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data2</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Q_PHX_DX_HTN</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span>, y<span class="op">=</span><span class="va">BP_SYS</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"SBP average by smoking"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"SBP(mmHg)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Smoking"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -554,7 +558,7 @@ ga('send', {
 </div>
 <p><strong>facet_grid</strong>를 이용해 2X2 grid 형태로 그래프를 그릴 수 있다. 고혈압 과거력 변수에 더해, 당뇨 과거력 변수에 따라서도 구분해서 그래프가 나타난다. <strong>labeller</strong> 함수를 사용해 facet의 label도 원하는 대로 설정할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data2</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Q_PHX_DX_DM</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data2</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Q_PHX_DX_DM</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">HTN.labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"No HTN"</span>, <span class="st">"HTN"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">HTN.labs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"1"</span><span class="op">)</span></span>
@@ -577,7 +581,7 @@ ga('send', {
 </section><section id="barplot-1" class="level2"><h2 class="anchored" data-anchor-id="barplot-1">Barplot</h2>
 <p>앞서 만들었던 바 그래프도 ggplot 패키지를 이용하면 table 변환 과정 없이 바로 그릴 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"grey"</span>, color<span class="op">=</span><span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Distribution of smoking"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Smoking"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html">scale_x_discrete</a></span><span class="op">(</span>labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Ex-smoker"</span>, <span class="st">"Current"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -590,7 +594,7 @@ ga('send', {
 </div>
 <p>연도에 따른 흡연 여부의 분포도 table 변환 과정 없이 그릴 수 있다. geom_bar()의 <strong>position=‘fill’</strong> 옵션을 설정하면 100% 누적 비율 바 그래프가 그려진다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">EXMD_BZ_YYYY</span>, fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">EXMD_BZ_YYYY</span>, fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>position<span class="op">=</span><span class="st">"fill"</span>, color<span class="op">=</span><span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Distribution of smoking by year"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Year"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"proportion"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span></span>
@@ -608,7 +612,7 @@ ga('send', {
 <p>누적 비율이 아닌 count를 나타내고 싶다면 geom_bar()의 옵션을 <strong>position=‘stack’</strong>으로 변경한다. 적층형 그래프가 아닌 그룹형 그래프로 나타내고 싶다면 <strong>position=‘dodge’</strong>로 변경한다.</p>
 <p>그래프의 X축과 Y축 위치를 뒤집고 싶을 때는 <strong>coord_flip()</strong> 함수를 이용한다. X축과 Y축의 위치가 서로 바뀌는데, 축의 scale과 label을 다시 설정하지 않아도 되기 때문에 편리하다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">EXMD_BZ_YYYY</span>, fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">EXMD_BZ_YYYY</span>, fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>position<span class="op">=</span><span class="st">"dodge"</span>, color<span class="op">=</span><span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Distribution of smoking by year"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Year"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"count"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span></span>
@@ -627,21 +631,21 @@ ga('send', {
 </section></section><section id="ggpubr-이용하기" class="level1"><h1>3. ggpubr 이용하기</h1>
 <p><strong>ggpubr</strong> 패키지는 ggplot2의 문법을 활용해 논문 작성을 위한 데이터 시각화에 최적화된 기능을 제공하는 패키지이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"ggpubr"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"ggpubr"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/">ggpubr</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>ggpubr 패키지를 이용하면 그래프 위에 자동으로 p-value나 통계적 유의성을 표시할 수 있고, 여러 종류의 그래프를 한 페이지로 보여주도록 배열할 수 있다.</p>
 <section id="histogram-1" class="level2"><h2 class="anchored" data-anchor-id="histogram-1">Histogram</h2>
 <p>ggpubr 패키지의 기본 문법을 활용해서 히스토그램을 그려보자. 고혈압 병력이 있는 군과 없는 군 간에 체중 분포에 차이가 있을지 확인해본다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data3</span> <span class="op">&lt;-</span> <span class="va">data2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>HTN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">Q_PHX_DX_HTN</span><span class="op">==</span><span class="fl">1</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data3</span> <span class="op">&lt;-</span> <span class="va">data2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>HTN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">Q_PHX_DX_HTN</span><span class="op">==</span><span class="fl">1</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/gghistogram.html">gghistogram</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"WGHT"</span>,</span>
 <span>                     color<span class="op">=</span><span class="st">"HTN"</span>, fill <span class="op">=</span> <span class="st">"HTN"</span>, add<span class="op">=</span><span class="st">"mean"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Using `bins = 30` by default. Pick better value with the argument
 `bins`.</code></pre>
 </div>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">plot1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggpar.html">ggpar</a></span><span class="op">(</span><span class="va">p</span>,</span>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">plot1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggpar.html">ggpar</a></span><span class="op">(</span><span class="va">p</span>,</span>
 <span>               main<span class="op">=</span><span class="st">"Weight distrubution by HTN history"</span>,</span>
 <span>               xlab<span class="op">=</span><span class="st">"Weight(kg)"</span>,</span>
 <span>               legend.title<span class="op">=</span><span class="st">"HTN Dx history"</span><span class="op">)</span></span>
@@ -656,7 +660,7 @@ ga('send', {
 </section><section id="boxplot-2" class="level2"><h2 class="anchored" data-anchor-id="boxplot-2">Boxplot</h2>
 <p>같은 분포를 박스 그래프로도 나타낼 수 있다. 여기에 <strong>stat_compare_means()</strong> 함수를 활용하면, 고혈압 병력군 간 체중 평균에 통계적으로 유의한 차이가 있는지 확인할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggboxplot.html">ggboxplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"HTN"</span>, y<span class="op">=</span><span class="st">"WGHT"</span>, color<span class="op">=</span><span class="st">"HTN"</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggboxplot.html">ggboxplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"HTN"</span>, y<span class="op">=</span><span class="st">"WGHT"</span>, color<span class="op">=</span><span class="st">"HTN"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>        <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/stat_compare_means.html">stat_compare_means</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"t.test"</span>, label.x.npc <span class="op">=</span> <span class="st">"middle"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">plot2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggpar.html">ggpar</a></span><span class="op">(</span><span class="va">p</span>,</span>
@@ -675,7 +679,7 @@ ga('send', {
 </div>
 <p>세 개 이상의 범주로 나누어졌을 때도 마찬가지로 통계적 유의성을 검정할 수 있다. <strong>scale_x_discrete()</strong> 함수의 사용에서 확인할 수 있듯이, ggpubr 패키지는 ggplot의 문법을 기반으로 하고 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_comparisons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"2"</span>, <span class="st">"3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"3"</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_comparisons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"2"</span>, <span class="st">"3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"3"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggboxplot.html">ggboxplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"Q_SMK_YN"</span>, y<span class="op">=</span><span class="st">"WGHT"</span>, color<span class="op">=</span><span class="st">"Q_SMK_YN"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>        <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/stat_compare_means.html">stat_compare_means</a></span><span class="op">(</span>comparisons <span class="op">=</span> <span class="va">my_comparisons</span><span class="op">)</span> <span class="op">+</span></span>
 <span>        <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/stat_compare_means.html">stat_compare_means</a></span><span class="op">(</span>label.y <span class="op">=</span> <span class="fl">150</span><span class="op">)</span> <span class="op">+</span></span>
@@ -698,7 +702,7 @@ ga('send', {
 </section><section id="scatter-plot-2" class="level2"><h2 class="anchored" data-anchor-id="scatter-plot-2">Scatter plot</h2>
 <p>위에서 여러번 만들었던 신장과 체중의 산점도를 다시 그려보자. <strong>add = “reg.line”</strong> 옵션을 이용해 그래프 위에 추세선을 그린 뒤, <strong>stat_cor()</strong> 함수로 두 변수 간의 상관계수와 p value를 구할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggscatter.html">ggscatter</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"HGHT"</span>, y<span class="op">=</span><span class="st">"WGHT"</span>, </span>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggscatter.html">ggscatter</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data3</span>, x<span class="op">=</span><span class="st">"HGHT"</span>, y<span class="op">=</span><span class="st">"WGHT"</span>, </span>
 <span>               add <span class="op">=</span> <span class="st">"reg.line"</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>               add.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"navy"</span>, fill <span class="op">=</span> <span class="st">"lightgray"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>        <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/stat_cor.html">stat_cor</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span></span>
@@ -708,9 +712,6 @@ ga('send', {
 <span>               xlab<span class="op">=</span><span class="st">"Height(cm)"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">plot4</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="index_files/figure-html/ggscatter-1.png" class="img-fluid figure-img" width="672"></p>
@@ -729,9 +730,6 @@ ga('send', {
 <span>               xlab<span class="op">=</span><span class="st">"Height(cm)"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">plot5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="index_files/figure-html/ggscatter2-1.png" class="img-fluid figure-img" width="672"></p>
@@ -741,7 +739,7 @@ ga('send', {
 </div>
 <p><strong>ggarange</strong> 함수를 사용하면 여러 개의 그래프를 한 페이지에 배열해서 보여줄 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html">ggarrange</a></span><span class="op">(</span><span class="va">plot2</span>, <span class="va">plot3</span>,</span>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html">ggarrange</a></span><span class="op">(</span><span class="va">plot2</span>, <span class="va">plot3</span>,</span>
 <span>          labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>,</span>
 <span>          ncol <span class="op">=</span> <span class="fl">2</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -754,13 +752,13 @@ ga('send', {
 </section></section><section id="그래프-저장하기" class="level1"><h1>4. 그래프 저장하기</h1>
 <p>이렇게 만들어진 그래프는 그림 파일 또는 PPT 파일로 저장해서 편집, 공유할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"rvg"</span>, <span class="st">"officer"</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"rvg"</span>, <span class="st">"officer"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/officeverse/">rvg</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/officeverse/">officer</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>rvg</strong> 패키지는 그래프를 편집 가능한 그림 형태로 만들어주고, <strong>officer</strong> 패키지는 그림을 microsoft PPT 파일로 저장하는 기능을 제공한다.</p>
 <p>아래 코드를 이용해 plot_file이라는 이름의 pptx 파일을 생성하고, 순서대로 슬라이드를 추가하고, 제작한 그래프를 <strong>dml(ggobj =)</strong> 함수를 이용해 편집 가능한 그림 형태로 슬라이드에 삽입하고, plot_file.pptx 파일로 로컬 드라이브에 저장하는 일련의 과정을 실행해 보자.</p>
 <div class="cell">
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">plot_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://davidgohel.github.io/officer/reference/read_pptx.html">read_pptx</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">plot_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://davidgohel.github.io/officer/reference/read_pptx.html">read_pptx</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op">(</span><span class="fu"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op">(</span>ggobj <span class="op">=</span> <span class="va">plot1</span><span class="op">)</span>, location<span class="op">=</span><span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_location_type.html">ph_location_type</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"body"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op">(</span><span class="fu"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op">(</span>ggobj <span class="op">=</span> <span class="va">plot4</span><span class="op">)</span>, location<span class="op">=</span><span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_location_type.html">ph_location_type</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"body"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op">(</span><span class="fu"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op">(</span>ggobj <span class="op">=</span> <span class="va">plot5</span><span class="op">)</span>, location<span class="op">=</span><span class="fu"><a href="https://davidgohel.github.io/officer/reference/ph_location_type.html">ph_location_type</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"body"</span><span class="op">)</span><span class="op">)</span></span>
@@ -773,12 +771,12 @@ ga('send', {
   author = {Kim, Yumin},
   title = {R로 {논문용} {그래프} {그리기}},
   date = {2022-03-25},
-  url = {https://blog.zarathu.com/posts/2022-03-25-graph},
+  url = {https://blog.zarathu.com/jp/posts/2022-03-25-graph},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2022" class="csl-entry quarto-appendix-citeas" role="listitem">
 Kim, Yumin. 2022. <span>“R로 논문용 그래프 그리기.”</span> March 25,
-2022. <a href="https://blog.zarathu.com/posts/2022-03-25-graph">https://blog.zarathu.com/posts/2022-03-25-graph</a>.
+2022. <a href="https://blog.zarathu.com/jp/posts/2022-03-25-graph">https://blog.zarathu.com/jp/posts/2022-03-25-graph</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -860,7 +858,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com");
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com\/jp");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }

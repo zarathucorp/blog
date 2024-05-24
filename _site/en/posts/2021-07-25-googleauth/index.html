@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.4.553">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<meta name="author" content="HyunJun Ko">
+<meta name="author" content="Hyunjun Ko">
 <meta name="dcterms.date" content="2021-07-25">
 <meta name="description" content="Follow up assignment of ShinyProxy lecture">
 <title>Zarathu Blog - googleAuth</title>
@@ -236,7 +236,7 @@ ga('send', {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p><a href="https://github.com/ghj20345">HyunJun Ko</a> </p>
+               <p><a href="https://github.com/ghj20345">Hyunjun Ko</a> </p>
             </div>
     </div>
       
@@ -340,51 +340,49 @@ ga('send', {
 <li>구체적인 과정은 <a href="http://yoonbumtae.com/?p=2631">네이버 블로그</a>를 따라하세요</li>
 </ul></section><section id="shinyproxy-setting" class="level3"><h3 class="anchored" data-anchor-id="shinyproxy-setting">ShinyProxy Setting</h3>
 <ul>
-<li><p>application.yml : Authentication 방법을 정의하는 파일로 simple, LDAP, openid, social 등의 방법 선택 가능 (authentication: {원하는 로그인 방식})</p></li>
-<li>
-<p>RStudio server에서 홈 디렉토리에 application.yml 파일 생성(아래 코드를 복사하세요)</p>
+<li>application.yml : Authentication 방법을 정의하는 파일로 simple, LDAP, openid, social 등의 방법 선택 가능 (authentication: {원하는 로그인 방식})</li>
+<li>RStudio server에서 홈 디렉토리에 application.yml 파일 생성(아래 코드를 복사하세요)</li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>proxy<span class="sc">:</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  title<span class="sc">:</span> Shiny App</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  logo<span class="sc">-</span>url<span class="sc">:</span> https<span class="sc">:</span><span class="er">//</span>www.openanalytics.eu<span class="sc">/</span>shinyproxy<span class="sc">/</span>logo.png</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  landing<span class="sc">-</span>page<span class="sc">:</span> <span class="er">/</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  heartbeat<span class="sc">-</span>rate<span class="sc">:</span> <span class="dv">10000</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  heartbeat<span class="sc">-</span>timeout<span class="sc">:</span> <span class="dv">60000</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  port<span class="sc">:</span> <span class="dv">8080</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  authentication<span class="sc">:</span> social</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  admin<span class="sc">-</span>groups<span class="sc">:</span> scientists</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  openid<span class="sc">:</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    auth<span class="sc">-</span>url<span class="sc">:</span> https<span class="sc">:</span><span class="er">//</span>accounts.google.com<span class="sc">/</span>o<span class="sc">/</span>oauth2<span class="sc">/</span>v2<span class="sc">/</span>auth</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    token<span class="sc">-</span>url<span class="sc">:</span> https<span class="sc">:</span><span class="er">//</span>www.googleapis.com<span class="sc">/</span>oauth2<span class="sc">/</span>v4<span class="sc">/</span>token</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    jwks<span class="sc">-</span>url<span class="sc">:</span> https<span class="sc">:</span><span class="er">//</span>www.googleapis.com<span class="sc">/</span>oauth2<span class="sc">/</span>v3<span class="sc">/</span>certs</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    client<span class="sc">-</span>id<span class="sc">:</span>     <span class="dv">528600301937</span><span class="sc">-</span>aic4b7n55ka3ac9he6g4d67fb6cdrkc6.apps.googleusercontent.com</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    client<span class="sc">-</span>secret<span class="sc">:</span> x7KIiNvJcwh4cl2eouPJ3IiS</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Docker configuration</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  social<span class="sc">:</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    google<span class="sc">:</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      app<span class="sc">-</span>id<span class="sc">:</span>     <span class="dv">528600301937</span><span class="sc">-</span>aic4b7n55ka3ac9he6g4d67fb6cdrkc6.apps.googleusercontent.com</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      app<span class="sc">-</span>secret<span class="sc">:</span> x7KIiNvJcwh4cl2eouPJ3IiS</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  docker<span class="sc">:</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    url<span class="sc">:</span> http<span class="sc">:</span><span class="er">//</span>localhost<span class="sc">:</span><span class="dv">2375</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    port<span class="sc">-</span>range<span class="sc">-</span>start<span class="sc">:</span> <span class="dv">20000</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  specs<span class="sc">:</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span> id<span class="sc">:</span> <span class="dv">01</span>_hello</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    display<span class="sc">-</span>name<span class="sc">:</span> Hello Application</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    description<span class="sc">:</span> Application which demonstrates the basics of a Shiny app</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    container<span class="sc">-</span>cmd<span class="sc">:</span> [<span class="st">"R"</span>, <span class="st">"-e"</span>, <span class="st">"shinyproxy::run_01_hello()"</span>]</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    container<span class="sc">-</span>image<span class="sc">:</span> openanalytics<span class="sc">/</span>shinyproxy<span class="sc">-</span>demo</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    access<span class="sc">-</span>groups<span class="sc">:</span> [scientists, mathematicians]</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span> id<span class="sc">:</span> <span class="dv">06</span>_tabsets</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    container<span class="sc">-</span>cmd<span class="sc">:</span> [<span class="st">"R"</span>, <span class="st">"-e"</span>, <span class="st">"shinyproxy::run_06_tabsets()"</span>]</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    container<span class="sc">-</span>image<span class="sc">:</span> openanalytics<span class="sc">/</span>shinyproxy<span class="sc">-</span>demo</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    access<span class="sc">-</span>groups<span class="sc">:</span> scientists</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    title<span class="sc">:</span> Shiny App</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    logo<span class="sc">-</span>url<span class="sc">:</span> https<span class="sc">:</span><span class="er">//</span>www.openanalytics.eu<span class="sc">/</span>shinyproxy<span class="sc">/</span>logo.png</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    landing<span class="sc">-</span>page<span class="sc">:</span> <span class="er">/</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    heartbeat<span class="sc">-</span>rate<span class="sc">:</span> <span class="dv">10000</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    heartbeat<span class="sc">-</span>timeout<span class="sc">:</span> <span class="dv">60000</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    port<span class="sc">:</span> <span class="dv">8080</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    authentication<span class="sc">:</span> social</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    admin<span class="sc">-</span>groups<span class="sc">:</span> scientists</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    openid<span class="sc">:</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      auth<span class="sc">-</span>url<span class="sc">:</span> https<span class="sc">:</span><span class="er">//</span>accounts.google.com<span class="sc">/</span>o<span class="sc">/</span>oauth2<span class="sc">/</span>v2<span class="sc">/</span>auth</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      token<span class="sc">-</span>url<span class="sc">:</span> https<span class="sc">:</span><span class="er">//</span>www.googleapis.com<span class="sc">/</span>oauth2<span class="sc">/</span>v4<span class="sc">/</span>token</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      jwks<span class="sc">-</span>url<span class="sc">:</span> https<span class="sc">:</span><span class="er">//</span>www.googleapis.com<span class="sc">/</span>oauth2<span class="sc">/</span>v3<span class="sc">/</span>certs</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      client<span class="sc">-</span>id<span class="sc">:</span>     <span class="dv">528600301937</span><span class="sc">-</span>aic4b7n55ka3ac9he6g4d67fb6cdrkc6.apps.googleusercontent.com</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      client<span class="sc">-</span>secret<span class="sc">:</span> x7KIiNvJcwh4cl2eouPJ3IiS</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Docker configuration</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    social<span class="sc">:</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      google<span class="sc">:</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        app<span class="sc">-</span>id<span class="sc">:</span>     <span class="dv">528600301937</span><span class="sc">-</span>aic4b7n55ka3ac9he6g4d67fb6cdrkc6.apps.googleusercontent.com</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        app<span class="sc">-</span>secret<span class="sc">:</span> x7KIiNvJcwh4cl2eouPJ3IiS</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    docker<span class="sc">:</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      url<span class="sc">:</span> http<span class="sc">:</span><span class="er">//</span>localhost<span class="sc">:</span><span class="dv">2375</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      port<span class="sc">-</span>range<span class="sc">-</span>start<span class="sc">:</span> <span class="dv">20000</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    specs<span class="sc">:</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span> id<span class="sc">:</span> <span class="dv">01</span>_hello</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>      display<span class="sc">-</span>name<span class="sc">:</span> Hello Application</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>      description<span class="sc">:</span> Application which demonstrates the basics of a Shiny app</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>      container<span class="sc">-</span>cmd<span class="sc">:</span> [<span class="st">"R"</span>, <span class="st">"-e"</span>, <span class="st">"shinyproxy::run_01_hello()"</span>]</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>      container<span class="sc">-</span>image<span class="sc">:</span> openanalytics<span class="sc">/</span>shinyproxy<span class="sc">-</span>demo</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>      access<span class="sc">-</span>groups<span class="sc">:</span> [scientists, mathematicians]</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span> id<span class="sc">:</span> <span class="dv">06</span>_tabsets</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>      container<span class="sc">-</span>cmd<span class="sc">:</span> [<span class="st">"R"</span>, <span class="st">"-e"</span>, <span class="st">"shinyproxy::run_06_tabsets()"</span>]</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>      container<span class="sc">-</span>image<span class="sc">:</span> openanalytics<span class="sc">/</span>shinyproxy<span class="sc">-</span>demo</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>      access<span class="sc">-</span>groups<span class="sc">:</span> scientists</span>
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>logging<span class="sc">:</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  file<span class="sc">:</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    shinyproxy.log</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  logging<span class="sc">:</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    file<span class="sc">:</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>      shinyproxy.log</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</li>
-</ul>
 <ol type="1">
 <li>authenticaiton을 openid로 설정할 경우</li>
 </ol>

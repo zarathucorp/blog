@@ -239,7 +239,7 @@ window.Quarto = {
                 <div class="quarto-category">article</div>
                 <div class="quarto-category">statistics</div>
                 <div class="quarto-category">R</div>
-                <div class="quarto-category">Rpackage</div>
+                <div class="quarto-category">rpackage</div>
               </div>
                   </div>
   </div>
@@ -320,7 +320,7 @@ window.Quarto = {
 <p><strong>keywords</strong> : Multidimension, Linear Model, Vector Space, Metric Tensor</p>
 </section><section id="introduction" class="level2"><h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>이전 연구에서 선형모형을 다차원 벡터공간으로 확장한 Multidimensional Vectorized Linear Model(MDVLM)을 제안하였는데, 변수들간의 dependency를 적절하게 조절하여 기존 선형모형에서 정확히 표현하기 어려웠던 관계를 표현할 수 있었다<span class="citation" data-cites="jkim2017MDVLM">(<a href="#ref-jkim2017MDVLM" role="doc-biblioref">Jinseob Kim 2017</a>)</span>. 특히 MDVLM을 통해 점점 느리게 감소하는 혹은 점점 빠르게 증가하는 모양을 표현할 수 있는데, 이는 MDVLM의 표현식 <span class="math inline">\(Y^2= \beta_1^2X_1^2 + 2r\beta_1\beta_2X_1X_2+ \beta_2^2X_2^2 = (\beta_1X_1+r\beta_2X_2)^2 + (1-r^2)\beta_2^2X_2^2\)</span>에서 <span class="math inline">\(X_1\)</span>과 <span class="math inline">\(Y\)</span>의 관계가 쌍곡선 모양을 보이기 때문이다(Figure 1).</p>
-<div class="cell" data-layout-align="center" data-hash="index_cache/html/f1_950580b6c2cf04a25cecb536aaa8dc60">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/f1-1.png" class="img-fluid figure-img" width="960"></p>
@@ -331,7 +331,7 @@ window.Quarto = {
 <p>이제 자연스러운 질문이 생긴다. “MDVLM은 점점 빠르게 감소하는 혹은 느리게 증가하는 관계를 표현할 수 있을까?” <span class="math inline">\(Y^2=X_1^2 - X_2^2\)</span>의 간단한 예를 통해 이를 살펴보도록 하자.</p>
 <section id="linear-relationship-cant-explained-via-mdvlm" class="level3"><h3 class="anchored" data-anchor-id="linear-relationship-cant-explained-via-mdvlm">Linear relationship can’t explained via MDVLM</h3>
 <p><span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>의 그래프(<span class="math inline">\(X, Y &gt; 0\)</span>)를 살펴보면 <span class="math inline">\(Y\)</span>와 <span class="math inline">\(X_2\)</span>는 타원모양(이 예시에서는 원)으로 감소하는 관계를 보이고 MDVLM으로 잘 표현할 수 없다(Figure 2(a)). MDVLM은 직선 혹은 쌍곡선 모양만 표현할 수 있기 때문이다.</p>
-<div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-1_e081cbdc57133bb15d179beb9c923d2d">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="1056"></p>
@@ -350,7 +350,7 @@ window.Quarto = {
 <p>일반적으로 <span class="math inline">\(p\)</span>개의 실수축과 <span class="math inline">\(q\)</span>개의 허수축으로 구성된 manifold를 pseudo-Riemannian manifolds라 하고 거리 <span class="math inline">\(g\)</span>는 아래와 같이 정의한다<span class="citation" data-cites="kulkarni1981proper">(<a href="#ref-kulkarni1981proper" role="doc-biblioref">Kulkarni 1981</a>)</span>.</p>
 <p><span class="math display">\[g = dx_1^2 + \cdots + dx_p^2 - dx_{p+1}^2 - \cdots - dx_{p+q}^2\]</span></p>
 <p>점점 느리게 증가하는 타원모양도 마찬가지로 MDVLM으로는 표현하기 어려우며 <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>인 원을 예로 들 수 있다(Figure 3(a), 3(b)).</p>
-<div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-2_c73e1e345dd3cc47c94865ddae362351">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="1056"></p>
@@ -389,20 +389,19 @@ Y^2 = (\vec{Y})\cdot(\vec{Y}) &amp;= (\sum_{i=1}^{p}(\beta_iX_i+\beta_{i0})\vec{
 <p><span class="math display">\[d\vec{Y} = \beta_1dX_1\vec{e_1} + \cdots + \beta_pdX_p\vec{e_p} + \beta_{p+1}dX_{p+1}\vec{e_{p+1}} + \cdots + \beta_{p+q}dX_{p+q}\vec{e_{p+q}}\]</span></p>
 <p>이며 <span class="math inline">\(\dfrac{\partial\vec{Y}}{\partial X_i} = \beta_i\vec{e_i}\)</span>가 된다. 이는 <span class="math inline">\(X_i\)</span>만 변하고 나머지는 고정되어 있을 때 <span class="math inline">\(\vec{Y}\)</span>는 <span class="math inline">\(X_i\)</span>의 방향(<span class="math inline">\(\vec{e_i}\)</span>)으로 <span class="math inline">\(\beta_i\)</span>만큼 증가한다고 해석할 수 있고 이는 MDVLM에서의 해석과 동일하다.</p>
 <p>추정을 위한 스칼라 관계식은 MDVLM때와 비슷하게 아래와 같이 표현할 수 있다.</p>
-$$
-<span class="math display">\[\begin{aligned}
+<p><span class="math display">\[
+\begin{aligned}
 Y^2 &amp;= (\sum_{i=1}^{p}(\beta_iX_i+\beta_{0i})\vec{e_i} + \sum_{i=p+1}^{p+q}(\beta_iX_i+\beta_{0i})\vec{e_i})\cdot (\sum_{i=1}^{p}(\beta_iX_i+\beta_{0i})\vec{e_i} + \sum_{i=p+1}^{p+q}(\beta_iX_i+\beta_{0i})\vec{e_i}) \\
 &amp;=(\sum_{i=1}^p(\beta_iX_i+\beta_{0i})^2 + \sum_{1\le i&lt;j \le p}2r_{ij}(\beta_iX_i+\beta_{0i})(\beta_jX_j+\beta_{0j})) - (\sum_{i=p+1}^{p+q}(\beta_iX_i+\beta_{0i})^2 + \sum_{p&lt; i&lt;j\le p+q}2r_{ij}(\beta_iX_i+\beta_{0i})(\beta_jX_j+\beta_{0j}))\\
-\end{aligned}\]</span>
-<p><span class="math display">\[ $Y$의 값의 변화량 $dY$는 \]</span></p>
-<span class="math display">\[\begin{aligned}
+\end{aligned}
+\]</span> <span class="math inline">\(Y\)</span>의 값의 변화량 <span class="math inline">\(dY\)</span>는 <span class="math display">\[
+\begin{aligned}
 (dY)^2 &amp;= (\sum_{i=1}^{p}\beta_idX_i\vec{e_i} + \sum_{i=p+1}^{p+q}\beta_idX_i\vec{e_i})\cdot (\sum_{i=1}^{p}\beta_idX_i\vec{e_i} + \sum_{i=p+1}^{p+q}\beta_idX_i\vec{e_i}) \\
 &amp;=(\sum_{i=1}^p\beta_i^2(dX_i)^2 + \sum_{1 \le i&lt;j \le p}2r_{ij}\beta_i\beta_jdX_idX_j) - (\sum_{i=p+1}^{p+q}\beta_i^2(dX_i)^2 + \sum_{p &lt; i&lt;j \le p+q}2r_{ij}\beta_i\beta_jdX_idX_j)\\
-\end{aligned}\]</span>
-<p>$$</p>
+\end{aligned}
+\]</span></p>
 <p>이고, 모든 <span class="math inline">\(r_{ij}\)</span>들이 0이라면 <span class="math inline">\(\sum_{i=1}^p\beta_i^2(dX_i)^2 - \sum_{i=p+1}^{p+q}\beta_i^2(dX_i)^2\)</span>로 간단히 표현할 수 있다.</p>
-<p>최소제곱 추정을 위한 <span class="math inline">\(SSE(\beta)\)</span>값도 비슷하게 정의할 수 있으며 추정방법은 MDVLM의 경우와 같이 optimization technique를 이용한다.<br></p>
-<p><span class="math display">\[
+<p>최소제곱 추정을 위한 <span class="math inline">\(SSE(\beta)\)</span>값도 비슷하게 정의할 수 있으며 추정방법은 MDVLM의 경우와 같이 optimization technique를 이용한다.<br><span class="math display">\[
 \begin{aligned}
 f(\beta,X_k) &amp;= (\sum_{i=1}^p(\beta_iX_{ki}+\beta_{0i})^2 + \sum_{1\le i&lt;j \le p}2r_{ij}(\beta_iX_{ki}+\beta_{0i})(\beta_jX_{kj}+\beta_{0j})) - (\sum_{i=p+1}^{p+q}(\beta_iX_{ki}+\beta_{0i})^2 + \sum_{p&lt; i&lt;j\le p+q}2r_{ij}(\beta_iX_{ki}+\beta_{0i})(\beta_jX_{kj}+\beta_{0j})) \\
 SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
@@ -414,7 +413,7 @@ SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
 <section id="example-1-y2-x_12---x_22" class="level3"><h3 class="anchored" data-anchor-id="example-1-y2-x_12---x_22">Example 1: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>
 </h3>
 <p><span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>인 양수 <span class="math inline">\(Y, X_1, X_2\)</span>의 쌍을 100번 random sampling 해서 MDVLM과 본 연구의 모형을 비교해 보았다.</p>
-<div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-3_944083de5032163515a044774cd3202f">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
@@ -422,7 +421,7 @@ SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-4_3f4872d63d777fe6cde78f8c911f461b">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <caption>Result comparison: <span class="math inline">\(Y^2 = X_1^2 - X_2^2\)</span>
@@ -455,7 +454,7 @@ SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
 <p>실제로 <span class="math inline">\(Y^2\)</span>과 <span class="math inline">\(X_1^2, X_2^2\)</span>의 값을 이용해서 선형모형으로 추정하면 정확한 추정 결과를 얻는다. 그러나 제곱한 값이 아닌 원래값을 이용해서 선형모형에 적용하면 <span class="math inline">\(Y =\)</span> <span class="math inline">\(-0.224\)</span> <span class="math inline">\(+\)</span> <span class="math inline">\(1.163\)</span> <span class="math inline">\(X_1 +\)</span> <span class="math inline">\(-0.634\)</span> <span class="math inline">\(X_2\)</span>이 되어 정확한 추정을 얻지 못하고, MDVLM으로 확장해도 이보다 정확한 추정은 얻을 수 없다.</p>
 </section><section id="example-2-y2-x_12---5-x_22" class="level3"><h3 class="anchored" data-anchor-id="example-2-y2-x_12---5-x_22">Example 2: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>
 </h3>
-<div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-5_626dcbb8e4b110b3b9bdb3cf7c555140">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="960"></p>
@@ -463,7 +462,7 @@ SSE(\beta) &amp;= \sum_{k=1}^N (Y_k - \sqrt{f(\beta,X_k)})^2
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="index_cache/html/unnamed-chunk-6_ad63ac7cb8f1016306d4dbd3ef44f751">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <caption>Result comparison: <span class="math inline">\(Y^2 = X_1^2 - (5-X_2)^2\)</span>

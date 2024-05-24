@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.4.553">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<meta name="author" content="beomsu Park">
+<meta name="author" content="Beomsu Park">
 <meta name="dcterms.date" content="2022-07-25">
 <meta name="description" content="collapse 패키지를 소개하고 data.table 패키지와 비교하여 파악해보겠습니다.">
 <title>차라투 블로그 - collapse 패키지 소개</title>
@@ -239,7 +239,7 @@ ga('send', {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p><a href="https://github.com/qkrqjatn218/">beomsu Park</a> </p>
+               <p><a href="https://github.com/qkrqjatn218/">Beomsu Park</a> </p>
             </div>
     </div>
       
@@ -497,6 +497,7 @@ ga('send', {
 <span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/quick-conversion.html">qDT</a></span><span class="op">(</span><span class="va">colvars1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         colvars1
+           &lt;char&gt;
 1:   Q_PHX_DX_STK
 2:  Q_PHX_DX_HTDZ
 3:   Q_PHX_DX_HTN
@@ -514,6 +515,7 @@ ga('send', {
 <span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/quick-conversion.html">qDT</a></span><span class="op">(</span><span class="va">colvars2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         colvars2
+           &lt;char&gt;
 1:   Q_PHX_DX_STK
 2:  Q_PHX_DX_HTDZ
 3:   Q_PHX_DX_HTN
@@ -826,33 +828,33 @@ accurate nanosecond times to avoid potential integer overflows</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr    min      lq     mean  median     uq     max neval cld
- data.table 43.091 43.8905 46.85316 44.4645 45.756 173.512   100   b
-   collapse  5.084  5.6990  6.12294  5.9655  6.232  15.703   100  a </code></pre>
+       expr    min     lq     mean  median      uq     max neval cld
+ data.table 37.105 38.089 39.72203 38.6425 39.2165 113.816   100  a 
+   collapse  5.207  5.699  6.20945  5.9860  6.2730  16.154   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fl">2009</span><span class="op">:</span><span class="fl">2012</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">BMI</span> <span class="op">&gt;=</span> <span class="fl">25</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fsubset.html">fsubset</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">EXMD_BZ_YYYY</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fl">2009</span><span class="op">:</span><span class="fl">2012</span> <span class="op">&amp;</span> <span class="va">BMI</span> <span class="op">&gt;=</span> <span class="fl">25</span> <span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr    min      lq     mean  median      uq     max neval cld
- data.table 67.732 70.6225 74.87338 72.2830 74.8455 196.636   100   b
-   collapse 25.994 29.4995 31.62248 30.4835 32.1235  48.339   100  a </code></pre>
+       expr    min      lq     mean median      uq     max neval cld
+ data.table 57.933 59.4500 63.93294 62.607 64.6980 163.057   100  a 
+   collapse 24.887 26.0965 29.42037 28.864 30.5655  71.545   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">HME_YYYYMM</span>, <span class="op">-</span><span class="va">HGHT</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/roworder.html">roworder</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">HME_YYYYMM</span>, <span class="op">-</span><span class="va">HGHT</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr     min       lq      mean  median       uq      max neval cld
- data.table 136.653 142.5365 190.75250 148.543 154.8775 3990.366   100   b
-   collapse  56.744  62.3405  66.85255  65.764  68.7570  109.429   100  a </code></pre>
+       expr     min       lq      mean  median      uq      max neval cld
+ data.table 125.993 135.0950 142.07648 137.678 142.680  265.229   100   a
+   collapse  50.840  60.5365  99.57834  62.197  65.805 3644.490   100   a</code></pre>
 </div>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fl">2009</span><span class="op">:</span><span class="fl">2012</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">BMI</span> <span class="op">&gt;=</span> <span class="fl">25</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">HGHT</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/roworder.html">roworder</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">HGHT</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fsubset.html">fsubset</a></span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fl">2009</span><span class="op">:</span><span class="fl">2012</span> <span class="op">&amp;</span> <span class="va">BMI</span> <span class="op">&gt;=</span> <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
        expr     min       lq     mean   median       uq      max neval cld
- data.table 131.200 135.2795 144.9817 139.8920 142.9875  347.475   100   a
-   collapse  62.402  68.2445 110.8259  75.7065  78.4330 3636.495   100   a</code></pre>
+ data.table 113.734 122.6720 129.0024 124.9475 129.1910  363.014   100   a
+   collapse  62.771  76.2805 124.0972  78.7405  82.7585 4428.492   100   a</code></pre>
 </div>
 </div>
 <hr></section><section id="기본-열-연산" class="level2"><h2 class="anchored" data-anchor-id="기본-열-연산">기본 열 연산</h2>
@@ -862,50 +864,50 @@ accurate nanosecond times to avoid potential integer overflows</code></pre>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr    min      lq     mean  median     uq     max neval cld
- data.table 32.472 33.3945 37.27023 34.8705 37.720 112.258   100   b
-   collapse  3.649  4.0590  4.56576  4.3460  4.674  18.286   100  a </code></pre>
+       expr    min     lq     mean  median     uq     max neval cld
+ data.table 34.932 35.998 38.94426 38.0685 40.098 105.903   100  a 
+   collapse  3.690  4.100  4.59774  4.4280  4.674  19.926   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>Height <span class="op">=</span> <span class="va">HGHT</span>, Weight <span class="op">=</span> <span class="va">WGHT</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>, Height <span class="op">=</span> <span class="va">HGHT</span>, Weight <span class="op">=</span> <span class="va">WGHT</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr     min       lq      mean   median      uq     max neval cld
- data.table 145.837 149.6705 156.56383 152.2945 156.333 334.888   100   b
-   collapse   4.510   5.1455   6.05652   5.8630   6.560  18.040   100  a </code></pre>
+       expr     min       lq      mean   median       uq     max neval cld
+ data.table 148.379 150.3675 154.76434 151.5155 153.3605 314.634   100  a 
+   collapse   5.084   5.6990   6.44725   6.3960   6.8060  18.696   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#base::grep() more faster </span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">colvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"Q_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="va">colvars</span> <span class="op">&lt;-</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">get_vars</a></span><span class="op">(</span><span class="va">dt</span>, <span class="st">"Q_"</span>,regex <span class="op">=</span> <span class="cn">TRUE</span>, return <span class="op">=</span> <span class="st">"names"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr   min    lq    mean median     uq    max neval cld
- data.table 4.633 4.715 4.82078  4.715 4.8380  8.405   100  a 
-   collapse 5.658 5.781 6.05119  5.863 5.9655 22.058   100   b</code></pre>
+       expr   min    lq    mean median    uq    max neval cld
+ data.table 4.715 4.879 5.02783  4.961 5.043  8.856   100  a 
+   collapse 5.945 6.109 6.49481  6.232 6.396 25.338   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span>, <span class="va">..colvars</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">get_vars</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">colvars</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr    min      lq     mean  median      uq     max neval cld
- data.table 31.570 32.3695 34.59252 33.1895 34.0505 121.401   100   b
-   collapse  2.501  2.9520  4.11599  3.2390  3.4645  85.813   100  a </code></pre>
+       expr    min     lq     mean median      uq     max neval cld
+ data.table 33.333 35.096 38.16239 37.187 39.5445 108.650   100  a 
+   collapse  2.665  2.952  4.09180  3.321  3.5670  81.754   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span>, <span class="va">..colvars</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">colvars</span><span class="op">)</span> <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr    min     lq     mean median      uq     max neval cld
- data.table 31.980 32.636 34.10544 33.087 33.7020 101.844   100   b
-   collapse  4.141  4.879  5.43537  5.248  5.5555  21.566   100  a </code></pre>
+       expr    min     lq     mean  median      uq     max neval cld
+ data.table 32.923 33.579 34.96234 33.9070 34.3990 102.008   100  a 
+   collapse  4.633  4.961  5.60757  5.3095  5.5965  26.527   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fl">2009</span><span class="op">:</span><span class="fl">2012</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">BMI</span> <span class="op">&gt;=</span> <span class="fl">25</span><span class="op">)</span>, <span class="va">..colvars</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fsubset.html">fsubset</a></span><span class="op">(</span><span class="va">dt</span>,<span class="va">EXMD_BZ_YYYY</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fl">2009</span><span class="op">:</span><span class="fl">2012</span> <span class="op">&amp;</span> <span class="va">BMI</span> <span class="op">&gt;=</span> <span class="fl">25</span>, <span class="va">colvars</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr    min     lq     mean median      uq     max neval cld
- data.table 72.775 74.333 78.30959 75.809 78.7200 204.959   100   b
-   collapse 23.575 24.764 25.98047 25.133 26.2605  46.125   100  a </code></pre>
+       expr    min     lq     mean  median     uq     max neval cld
+ data.table 66.871 68.019 70.97633 68.9415 70.889 176.546   100  a 
+   collapse 24.149 24.928 26.59219 25.4610 27.060  48.995   100   b</code></pre>
 </div>
 </div>
 <hr></section><section id="평균-연산" class="level2"><h2 class="anchored" data-anchor-id="평균-연산">평균 연산</h2>
@@ -915,25 +917,25 @@ accurate nanosecond times to avoid potential integer overflows</code></pre>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>,<span class="va">HGHT</span>,<span class="va">WGHT</span>,<span class="va">BMI</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr     min       lq      mean   median      uq     max neval cld
- data.table 174.414 179.0265 184.97683 181.1175 184.336 386.015   100   b
-   collapse   7.216   7.9335   8.94415   8.6920   9.266  35.014   100  a </code></pre>
+       expr     min       lq      mean   median       uq     max neval cld
+ data.table 177.735 181.8145 193.35108 184.1720 190.8960 364.326   100  a 
+   collapse   9.963  10.7215  12.25162  11.3775  11.8285  43.706   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>HGHT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">HGHT</span><span class="op">)</span>, WGHT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">WGHT</span><span class="op">)</span>, BMI <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">BMI</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>               collaspe <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>,<span class="va">HGHT</span>,<span class="va">WGHT</span>,<span class="va">BMI</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr     min       lq      mean   median       uq     max neval cld
- data.table 170.027 172.1180 178.54762 174.1475 177.3045 343.211   100   b
-   collaspe   7.380   8.0975   9.17539   8.9585   9.4915  31.816   100  a </code></pre>
+       expr     min       lq      mean   median      uq    max neval cld
+ data.table 172.897 175.5825 180.01378 177.0995 179.416 349.32   100  a 
+   collaspe   9.717  10.3935  11.31395  11.0905  11.890  27.47   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">mean</span><span class="op">)</span>, .SDcols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">13</span>, <span class="fl">14</span>, <span class="fl">16</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/dapply.html">dapply</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>,<span class="va">HGHT</span>,<span class="va">WGHT</span>,<span class="va">BMI</span><span class="op">)</span>,<span class="va">fmean</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
        expr     min       lq      mean   median       uq     max neval cld
- data.table 176.710 179.8260 185.93008 181.5275 185.0740 321.686   100   b
-   collapse  13.858  14.6575  16.01911  15.4775  16.6255  35.178   100  a </code></pre>
+ data.table 185.607 187.4930 192.08377 189.3380 191.3060 350.714   100  a 
+   collapse  16.605  17.2815  18.78169  18.3885  19.3725  52.357   100   b</code></pre>
 </div>
 </div>
 <hr></section><section id="그룹별-통계-연산" class="level2"><h2 class="anchored" data-anchor-id="그룹별-통계-연산">그룹별 통계 연산</h2>
@@ -944,22 +946,18 @@ accurate nanosecond times to avoid potential integer overflows</code></pre>
 <span>               collapse.fmean <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>,<span class="va">EXMD_BZ_YYYY</span>,<span class="va">HGHT</span>,<span class="va">WGHT</span>,<span class="va">BMI</span><span class="op">)</span>, <span class="va">dt</span><span class="op">$</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-            expr     min       lq      mean   median       uq      max neval
-      data.table 203.442 210.6580 217.08270 214.5325 218.3660  366.704   100
- collapse.collap  57.728  62.7505  76.49821  65.6000  68.6340 1098.431   100
-  collapse.fmean  36.367  37.3510  38.55107  38.2120  39.0935   55.350   100
- cld
-   c
-  b 
- a  </code></pre>
+            expr     min       lq      mean   median       uq     max neval cld
+      data.table 245.139 252.1705 270.08463 260.4730 270.0465 614.180   100 a  
+ collapse.collap  61.541  68.3880  81.04511  72.0780  74.4560 869.569   100  b 
+  collapse.fmean  36.367  38.1710  42.11233  39.4215  41.3075 118.613   100   c</code></pre>
 </div>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">mean</span><span class="op">)</span>, .SDcols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"HGHT"</span>, <span class="st">"WGHT"</span>, <span class="st">"BMI"</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">EXMD_BZ_YYYY</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>,<span class="va">EXMD_BZ_YYYY</span>,<span class="va">HGHT</span>,<span class="va">WGHT</span>,<span class="va">BMI</span><span class="op">)</span>, <span class="va">dt</span><span class="op">$</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr     min       lq      mean   median      uq     max neval cld
- data.table 205.984 209.0180 214.88469 210.9245 215.783 404.096   100   b
-   collapse  35.834  36.8795  38.00495  37.4740  38.294  62.853   100  a </code></pre>
+       expr     min       lq      mean   median       uq     max neval cld
+ data.table 248.009 251.4530 256.91420 254.1180 257.5210 421.521   100  a 
+   collapse  36.039  37.4125  38.96886  38.3555  39.2575  74.169   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb66"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#data.table more faster</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span><span class="va">HGHT</span> <span class="op">&gt;=</span> <span class="fl">175</span>, <span class="va">.N</span>, by<span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">EXMD_BZ_YYYY</span>, <span class="va">Q_SMK_YN</span><span class="op">)</span><span class="op">]</span>,</span>
@@ -967,8 +965,8 @@ accurate nanosecond times to avoid potential integer overflows</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
        expr      min        lq      mean    median       uq      max neval cld
- data.table  243.868  269.1855  316.4114  303.0925  348.951  543.619   100  a 
-   collapse 2144.587 2261.2935 2491.8049 2338.5375 2538.556 5655.335   100   b</code></pre>
+ data.table  233.946  258.3205  303.3967  290.8745  325.007  576.870   100  a 
+   collapse 1577.475 1638.3395 1809.3788 1687.0270 1849.592 3960.108   100   b</code></pre>
 </div>
 </div>
 <hr></section><section id="특수-심볼" class="level2"><h2 class="anchored" data-anchor-id="특수-심볼">특수 심볼</h2>
@@ -978,26 +976,26 @@ accurate nanosecond times to avoid potential integer overflows</code></pre>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">32</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr     min       lq      mean   median      uq     max neval cld
- data.table 211.888 216.0290 230.11783 223.3270 231.158 388.516   100   b
-   collapse   4.100   4.5715   5.47678   5.1455   5.576  23.124   100  a </code></pre>
+       expr     min      lq      mean  median       uq     max neval cld
+ data.table 217.382 226.197 231.76521 228.411 232.7980 373.551   100  a 
+   collapse   4.141   4.674   5.33287   5.166   5.5555  14.473   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">class</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/dapply.html">dapply</a></span><span class="op">(</span><span class="va">dt</span>,<span class="va">class</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr     min       lq      mean  median       uq     max neval cld
- data.table 450.303 461.5165 489.46415 483.144 499.6875 656.574   100   b
-   collapse   7.421   8.1385   9.17088   9.020   9.5325  16.441   100  a </code></pre>
+       expr     min      lq      mean   median       uq     max neval cld
+ data.table 465.637 470.639 499.92407 480.5405 534.9680 632.712   100  a 
+   collapse   7.749   8.692   9.74078   9.5530  10.1475  23.206   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#data.table more faster</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span>, <span class="va">.N</span>, keyby <span class="op">=</span> <span class="st">"RN_INDI"</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/small-helpers.html">add_stub</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">dt</span>,<span class="va">RN_INDI</span><span class="op">)</span>,<span class="st">"N"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr      min        lq      mean   median        uq      max neval cld
- data.table  195.365  217.2385  253.8142  251.863  277.6725  382.120   100  a 
-   collapse 3653.633 3710.2540 3957.8870 3780.897 3938.3780 6161.275   100   b</code></pre>
+       expr      min       lq      mean   median        uq      max neval cld
+ data.table  193.848  213.159  245.8065  226.935  279.0665  375.683   100  a 
+   collapse 2556.719 2602.208 2749.5613 2634.927 2696.7750 4842.756   100   b</code></pre>
 </div>
 </div>
 <hr></section><section id="정렬-연산" class="level2"><h2 class="anchored" data-anchor-id="정렬-연산">정렬 연산</h2>
@@ -1007,17 +1005,17 @@ accurate nanosecond times to avoid potential integer overflows</code></pre>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>,<span class="va">EXMD_BZ_YYYY</span>,<span class="va">HGHT</span>,<span class="va">WGHT</span>,<span class="va">BMI</span><span class="op">)</span>, <span class="va">dt</span><span class="op">$</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/roworder.html">roworder</a></span><span class="op">(</span><span class="va">BMI</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr     min      lq      mean   median       uq     max neval cld
- data.table 273.470 279.825 288.99301 284.1505 289.3165 523.980   100   b
-   collapse  42.025  44.403  47.12991  46.7810  47.9085  92.865   100  a </code></pre>
+       expr     min       lq     mean   median       uq     max neval cld
+ data.table 297.455 303.6050 311.7611 308.6275 313.0555 529.105   100  a 
+   collapse  44.034  46.1455  48.9868  48.2775  50.5940  93.726   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>data.table <span class="op">=</span> <span class="va">dt</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>HGHT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">HGHT</span><span class="op">)</span>, WGHT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">WGHT</span><span class="op">)</span>, BMI<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">BMI</span><span class="op">)</span><span class="op">)</span>, by<span class="op">=</span><span class="va">EXMD_BZ_YYYY</span><span class="op">]</span> <span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">BMI</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>               collapse <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="va">dt</span>,<span class="va">EXMD_BZ_YYYY</span>,<span class="va">HGHT</span>,<span class="va">WGHT</span>,<span class="va">BMI</span><span class="op">)</span>, <span class="va">dt</span><span class="op">$</span><span class="va">EXMD_BZ_YYYY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/roworder.html">roworder</a></span><span class="op">(</span><span class="op">-</span><span class="va">BMI</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-       expr     min      lq      mean   median      uq     max neval cld
- data.table 276.135 282.695 289.30994 285.7085 289.378 488.474   100   b
-   collapse  44.854  47.150  50.61163  49.3640  51.045 115.169   100  a </code></pre>
+       expr     min       lq      mean   median       uq     max neval cld
+ data.table 301.227 306.7005 314.70698 310.7800 314.7365 556.452   100  a 
+   collapse  46.289  48.1955  51.26517  50.4915  53.4435  98.031   100   b</code></pre>
 </div>
 </div>
 <hr></section></section><section id="마치며" class="level1"><h1>4. 마치며</h1>
