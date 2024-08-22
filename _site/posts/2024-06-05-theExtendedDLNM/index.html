@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.5.47">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Suhyeon Kwon">
 <meta name="dcterms.date" content="2024-06-05">
 <meta name="description" content="R의 dlnm 패키지를 이용해 the Extended DLNM을 적합시키는 방법을 소개합니다.">
-<title>차라투 블로그 - the Extended DLNM 소개</title>
+<title>the Extended DLNM 소개 – 차라투 블로그</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -78,7 +78,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -87,6 +92,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -104,14 +110,38 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script><style>html{ scroll-behavior: smooth; }</style>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
+<script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="../../styles.css">
 </head>
 <body class="floating nav-fixed">
 
-
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
     <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
     <a class="navbar-brand" href="../../index.html">
@@ -119,97 +149,97 @@ ga('send', {
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
-    <a class="nav-link" href="../../index.html" rel="" target="">
- <span class="menu-text">Home</span></a>
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://openstat.ai/" rel="" target="_blank">
- <span class="menu-text">Applications</span></a>
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
 <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" rel="" target="_blank">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" rel="" target="_blank">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
  <span class="dropdown-text">jskm</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" rel="" target="_blank">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html" rel="" target="">
- <span class="menu-text">Contributors</span></a>
+    <a class="nav-link" href="../../contributors.html"> 
+<span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
 <li>
-    <a class="dropdown-item" href="https://www.r-bloggers.com/" rel="" target="_blank">
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/shinykorea/" rel="" target="_blank">
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/zarathucorp" rel="" target="_blank"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml" rel="" target="_blank"><i class="bi bi-rss" role="img" aria-label="RSS">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
       <i class="bi bi-translate" role="img">
 </i> 
  <span class="menu-text"></span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">
 <li>
-    <a class="dropdown-item" href="../../../index.html" rel="" target="">
+    <a class="dropdown-item" href="../../../index.html">
  <span class="dropdown-text">한국어</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../../en/index.html" rel="" target="">
+    <a class="dropdown-item" href="../../../en/index.html">
  <span class="dropdown-text">English</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../../jp/index.html" rel="" target="">
+    <a class="dropdown-item" href="../../../jp/index.html">
  <span class="dropdown-text">日本語</span></a>
   </li>  
     </ul>
 </li>
 </ul>
-<div class="quarto-navbar-tools">
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
 </div>
-          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
@@ -249,7 +279,7 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
 <li><a href="#dlnm%EC%9D%B4%EB%9E%80" id="toc-dlnm이란" class="nav-link active" data-scroll-target="#dlnm%EC%9D%B4%EB%9E%80">1. DLNM이란?</a></li>
@@ -271,9 +301,9 @@ ga('send', {
 </li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul></nav>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
@@ -390,14 +420,14 @@ ga('send', {
 3    0    0    0    0    0    0    0    0    0    0     0     0     0     0</code></pre>
 </div>
 </div>
-<p><code>nested</code> 데이터의 matrix of exposure histories에서 <code>lag0</code>에 해당하는 시점은 환자의 나이마다 다릅니다. 예를 들어, 52세 환자의 lag0 시점은 52년의 값이고, 65세 환자의 lag0 시점은 65년의 값입니다. 이런 경우, matrix of exposure histories를 만들기 까다로운데, <code>dlnm</code> 패키지에서는 이런 경우의 matrix of exposure histories를 만들어주는 <code><a href="https://rdrr.io/pkg/dlnm/man/exphist.html">exphist()</a></code>라는 함수를 제공합니다. <code><a href="https://rdrr.io/pkg/dlnm/man/exphist.html">exphist()</a></code> 함수는 다음과 같이 이용합니다.</p>
+<p><code>nested</code> 데이터의 matrix of exposure histories에서 <code>lag0</code>에 해당하는 시점은 환자의 나이마다 다릅니다. 예를 들어, 52세 환자의 lag0 시점은 52년의 값이고, 65세 환자의 lag0 시점은 65년의 값입니다. 이런 경우, matrix of exposure histories를 만들기 까다로운데, <code>dlnm</code> 패키지에서는 이런 경우의 matrix of exposure histories를 만들어주는 <code>exphist()</code>라는 함수를 제공합니다. <code>exphist()</code> 함수는 다음과 같이 이용합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/exphist.html">exphist</a></span><span class="op">(</span><span class="va">exp</span>, <span class="va">times</span>, <span class="va">lag</span>, fill<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">exphist</span><span class="op">(</span><span class="va">exp</span>, <span class="va">times</span>, <span class="va">lag</span>, fill<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>exp</code>에는 exposure profile(관측 첫 시점부터 매 시점의 exposure 값)을 입력합니다. <code>times</code>에는 lag0에 해당하는 시점을 입력합니다. <code>times</code>에 입력된 시점부터 시점을 거슬러가며 각 시차별 exposure 값이 구해집니다. <code>lag</code>에는 maximum lag 또는 lag range를 입력합니다. <code>fill</code>에는 어떤 시차에 해당하는 exposure 값이 존재하지 않을 때 채울 값을 입력합니다.</p>
-<p><code><a href="https://rdrr.io/pkg/dlnm/man/exphist.html">exphist()</a></code> 함수를 이용하여 다음과 같은 matrix of exposure histories를 만들어줍니다. <code>nested</code> 데이터의 평균 노출 요인 값에 0, 0, 0을 추가하고 각 데이터를 5번씩 반복하여 1년부터 65년까지에 해당하는 exposure profile을 만들고 이 값을 <code>exp</code>에 넣습니다. <code>times</code>에는 각 환자별 나이(<code>age</code>)를 넣습니다. <code>nested</code> 데이터를 이용한 분석에서는 lag3부터 lag40까지의 데이터만 사용할 예정이기 때문에 <code>lag</code>에는 다음과 같이 lag range를 벡터로 넣어줍니다. <code>nested</code> 데이터의 matrix of exposure histories는 다음과 같습니다.</p>
+<p><code>exphist()</code> 함수를 이용하여 다음과 같은 matrix of exposure histories를 만들어줍니다. <code>nested</code> 데이터의 평균 노출 요인 값에 0, 0, 0을 추가하고 각 데이터를 5번씩 반복하여 1년부터 65년까지에 해당하는 exposure profile을 만들고 이 값을 <code>exp</code>에 넣습니다. <code>times</code>에는 각 환자별 나이(<code>age</code>)를 넣습니다. <code>nested</code> 데이터를 이용한 분석에서는 lag3부터 lag40까지의 데이터만 사용할 예정이기 때문에 <code>lag</code>에는 다음과 같이 lag range를 벡터로 넣어줍니다. <code>nested</code> 데이터의 matrix of exposure histories는 다음과 같습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Qnest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">nested</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">sub</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/exphist.html">exphist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="va">sub</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">14</span><span class="op">]</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Qnest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">nested</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">sub</span><span class="op">)</span> <span class="fu">exphist</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="va">sub</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">14</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>                                                      each<span class="op">=</span><span class="fl">5</span><span class="op">)</span>, <span class="va">sub</span><span class="op">[</span><span class="st">"age"</span><span class="op">]</span>, lag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">40</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">Qnest</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"lag"</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">40</span>, sep<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
 <span><span class="va">Qnest</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">11</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -410,11 +440,11 @@ ga('send', {
 </div>
 </section></section><section id="a-simple-dlm" class="level2"><h2 class="anchored" data-anchor-id="a-simple-dlm">3.2 A simple DLM</h2>
 <p><code>drug</code> 데이터와 <code>dlnm</code> 패키지의 함수를 이용하여 약물 복용량과 outcome 사이의 관계에 대해 분석해보고자 합니다.</p>
-<p>먼저, 약물 복용량에 대한 cross-basis matrix를 만들어야 합니다. <code><a href="https://rdrr.io/pkg/dlnm/man/crossbasis.html">crossbasis()</a></code> 함수를 이용합니다. <code><a href="https://rdrr.io/pkg/dlnm/man/crossbasis.html">crossbasis()</a></code>의 첫 번째 인수에는 matrix of exposure histories를 넣어줍니다. <code>lag</code>에는 lag-response 차원에서 시차를 얼마나 고려할지 lag period를 입력합니다. maximum lag 또는 lag range를 입력해야하며, minimum lag는 기본값이 0으로 지정되어 있습니다. 이때, lag period는 matrix of exposure histories의 시차 범위와 일치해야 합니다. <code>argvar</code>에는 exposure-response 차원에서 사용할 basis function, <code>arglag</code>에는 lag-response 차원에서 사용할 basis function을 입력합니다.</p>
+<p>먼저, 약물 복용량에 대한 cross-basis matrix를 만들어야 합니다. <code>crossbasis()</code> 함수를 이용합니다. <code>crossbasis()</code>의 첫 번째 인수에는 matrix of exposure histories를 넣어줍니다. <code>lag</code>에는 lag-response 차원에서 시차를 얼마나 고려할지 lag period를 입력합니다. maximum lag 또는 lag range를 입력해야하며, minimum lag는 기본값이 0으로 지정되어 있습니다. 이때, lag period는 matrix of exposure histories의 시차 범위와 일치해야 합니다. <code>argvar</code>에는 exposure-response 차원에서 사용할 basis function, <code>arglag</code>에는 lag-response 차원에서 사용할 basis function을 입력합니다.</p>
 <p><code>drug</code> 데이터의 cross-basis는, exposure-response 차원에서 simple linear function을 이용하고, lag-response 차원에서 natural cubic spline을 이용합니다. 이 때, natural cubic spline에서 lag9, 18을 <code>knots</code>로 이용하는데, 이는 lag9, 18을 기준으로 구간을 나눠 각 구간에서 cubic regression model을 적합시킨다는 의미입니다.</p>
 <p><code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> 함수를 통해 cross-basis matrix의 세부 사항을 확인할 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cbdrug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/crossbasis.html">crossbasis</a></span><span class="op">(</span><span class="va">Qdrug</span>, lag<span class="op">=</span><span class="fl">27</span>, argvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"lin"</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cbdrug</span> <span class="op">&lt;-</span> <span class="fu">crossbasis</span><span class="op">(</span><span class="va">Qdrug</span>, lag<span class="op">=</span><span class="fl">27</span>, argvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"lin"</span><span class="op">)</span>,</span>
 <span>                     arglag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>fun<span class="op">=</span><span class="st">"ns"</span>,knots<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">9</span>,<span class="fl">18</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cbdrug</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -435,10 +465,10 @@ intercept: TRUE
 Boundary.knots: 0 27 </code></pre>
 </div>
 </div>
-<p>위에서 생성된 cross-basis 객체인 <code>cbdrug</code>를 회귀식에 포함시키고, 성별에 대한 효과를 보정하여 단순 선형 회귀 분석을 진행합니다. 모형을 통해 추정된 약물 복용량 및 그 시차에 대한 효과를 <code><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred()</a></code> 함수를 통해 확인할 수 있습니다. <code><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred()</a></code>의 첫 번째 인수에는 cross-basis 객체를, 두 번째 인수에는 cross-basis 객체를 사용한 모델을 입력합니다. 다음 코드에서, <code><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred()</a></code>의 <code>at</code>은 약물 복용량이 <code>0:20*5</code>(즉, 0, 5, 10, 15, …, 100)일 때의 outcome을 예측하라는 뜻입니다.</p>
+<p>위에서 생성된 cross-basis 객체인 <code>cbdrug</code>를 회귀식에 포함시키고, 성별에 대한 효과를 보정하여 단순 선형 회귀 분석을 진행합니다. 모형을 통해 추정된 약물 복용량 및 그 시차에 대한 효과를 <code>crosspred()</code> 함수를 통해 확인할 수 있습니다. <code>crosspred()</code>의 첫 번째 인수에는 cross-basis 객체를, 두 번째 인수에는 cross-basis 객체를 사용한 모델을 입력합니다. 다음 코드에서, <code>crosspred()</code>의 <code>at</code>은 약물 복용량이 <code>0:20*5</code>(즉, 0, 5, 10, 15, …, 100)일 때의 outcome을 예측하라는 뜻입니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mdrug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">out</span><span class="op">~</span><span class="va">cbdrug</span><span class="op">+</span><span class="va">sex</span>, <span class="va">drug</span><span class="op">)</span></span>
-<span><span class="va">pdrug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred</a></span><span class="op">(</span><span class="va">cbdrug</span>, <span class="va">mdrug</span>, at<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">pdrug</span> <span class="op">&lt;-</span> <span class="fu">crosspred</span><span class="op">(</span><span class="va">cbdrug</span>, <span class="va">mdrug</span>, at<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>crosspred 객체인 <code>pdrug</code>에 저장된 effect summaries는 다음과 같이 추출될 수 있습니다.</p>
 <div class="cell">
@@ -449,7 +479,7 @@ Boundary.knots: 0 27 </code></pre>
 </div>
 </div>
 <p>위 코드는 약물 복용량이 50일때의 overall cumulative effects 추정치(<code>allfit</code>)와 95% 신뢰구간(<code>alllow</code>, <code>allhigh</code>) 추출한 것입니다. 이때, overall cumulative effects는 lag period인 28일동안 약물 복용량이 50으로 유지되었을 때 outcome의 전체적인 증가량 또는 약물 복용량 50이 28일 뒤 미치는 총 영향으로 해석될 수 있습니다.</p>
-<p>위에서처럼 <code>all-</code>로 시작하는 객체들을 통해서는 전반적인 추정값을 확인할 수 있고, <code>mat-</code>으로 시작하는 객체들을 통해서는 특정 약물 복용량과 시차의 조합에 따른 추정 결과를 확인할 수 있습니다. 다음 코드는 lag3에서의 약물 복용량이 20일 때, outcome의 증가량을 추출한 것입니다. <code><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">?crosspred</a></code>를 통해 <code><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred()</a></code>의 더 많은 기능을 확인할 수 있습니다.</p>
+<p>위에서처럼 <code>all-</code>로 시작하는 객체들을 통해서는 전반적인 추정값을 확인할 수 있고, <code>mat-</code>으로 시작하는 객체들을 통해서는 특정 약물 복용량과 시차의 조합에 따른 추정 결과를 확인할 수 있습니다. 다음 코드는 lag3에서의 약물 복용량이 20일 때, outcome의 증가량을 추출한 것입니다. <code>?crosspred</code>를 통해 <code>crosspred()</code>의 더 많은 기능을 확인할 수 있습니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pdrug</span><span class="op">$</span><span class="va">matfit</span><span class="op">[</span><span class="st">"20"</span>,<span class="st">"lag3"</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -463,7 +493,10 @@ Boundary.knots: 0 27 </code></pre>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">pdrug</span>, var<span class="op">=</span><span class="fl">60</span>, ylab<span class="op">=</span><span class="st">"Effect at dose 60"</span>, xlab<span class="op">=</span><span class="st">"Lag (days)"</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">pdrug</span>, lag<span class="op">=</span><span class="fl">10</span>, ylab<span class="op">=</span><span class="st">"Effect at lag 10"</span>, xlab<span class="op">=</span><span class="st">"Dose"</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>첫 번째 그래프는 회귀 모델을 통해 추정한 exposure-lag-response 관계를 3차원 공간에 그려놓은 것입니다. 약물 복용량과 시차의 변화에 따라 effect가 어떻게 달라지는지 확인할 수 있습니다. 그래프에 따르면 약물 복용량의 효과는 복용 후 첫 번째 날에 나타나고 15-20일 후에 사라지는 경향이 있음을 알 수 있습니다.</p>
@@ -471,9 +504,9 @@ Boundary.knots: 0 27 </code></pre>
 </section><section id="a-more-complex-dlnm" class="level2"><h2 class="anchored" data-anchor-id="a-more-complex-dlnm">3.3 A more complex DLNM</h2>
 <p><code>neseted</code> 데이터와 <code>dlnm</code> 패키지의 함수를 이용하여 노출 요인(exposure)에 대한 장기간의 노출이 암에 어떤 영향을 미치는지 분석하고자 합니다.</p>
 <p>최근 3년(lag0-2)간의 노출은 암에 영향을 주지 않는다고 가정해봅시다. 따라서 matrix of exposure histories에는 lag3부터의 데이터만 있으면 됩니다.</p>
-<p>먼저, cross-basis matrix를 만듭니다. <code><a href="https://rdrr.io/pkg/dlnm/man/crossbasis.html">crossbasis()</a></code> 함수를 이용합니다. lag3부터 lag40까지의 데이터만 이용할 것이므로, <code>lag</code>에 <code>c(3,40)</code>을 넣어줍니다. exposure-response 차원에서는 basis 함수로 quadratic spline을 사용하고, exposure-lag 차원에서는 natural cubic spline을 사용합니다. quadratic spline의 자유도(<code>df</code>)와 차수(<code>degree</code>)를 입력해야하며, single knot는 별도로 지정하지 않으면 중앙값으로 지정됩니다. natural cubic spline은 <code>intercept=F</code>를 입력하여 intercept를 제외합니다. 위에서 lag0-2는 고려하지 않는다고 하였으므로, intercept를 제외함으로써 위 가정과 일치하게 시차 차원에서의 null effect를 예측할 수 있습니다.</p>
+<p>먼저, cross-basis matrix를 만듭니다. <code>crossbasis()</code> 함수를 이용합니다. lag3부터 lag40까지의 데이터만 이용할 것이므로, <code>lag</code>에 <code>c(3,40)</code>을 넣어줍니다. exposure-response 차원에서는 basis 함수로 quadratic spline을 사용하고, exposure-lag 차원에서는 natural cubic spline을 사용합니다. quadratic spline의 자유도(<code>df</code>)와 차수(<code>degree</code>)를 입력해야하며, single knot는 별도로 지정하지 않으면 중앙값으로 지정됩니다. natural cubic spline은 <code>intercept=F</code>를 입력하여 intercept를 제외합니다. 위에서 lag0-2는 고려하지 않는다고 하였으므로, intercept를 제외함으로써 위 가정과 일치하게 시차 차원에서의 null effect를 예측할 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cbnest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/crossbasis.html">crossbasis</a></span><span class="op">(</span><span class="va">Qnest</span>, lag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">40</span><span class="op">)</span>, argvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"bs"</span>,degree<span class="op">=</span><span class="fl">2</span>,df<span class="op">=</span><span class="fl">3</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cbnest</span> <span class="op">&lt;-</span> <span class="fu">crossbasis</span><span class="op">(</span><span class="va">Qnest</span>, lag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">40</span><span class="op">)</span>, argvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"bs"</span>,degree<span class="op">=</span><span class="fl">2</span>,df<span class="op">=</span><span class="fl">3</span><span class="op">)</span>,</span>
 <span>                     arglag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>fun<span class="op">=</span><span class="st">"ns"</span>,knots<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">30</span><span class="op">)</span>,intercept<span class="op">=</span><span class="cn">F</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cbnest</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -502,7 +535,7 @@ Boundary.knots: 3 40 </code></pre>
 <div class="cell">
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span></span>
 <span><span class="va">mnest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/clogit.html">clogit</a></span><span class="op">(</span><span class="va">case</span><span class="op">~</span><span class="va">cbnest</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/strata.html">strata</a></span><span class="op">(</span><span class="va">riskset</span><span class="op">)</span>, <span class="va">nested</span><span class="op">)</span></span>
-<span><span class="va">pnest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred</a></span><span class="op">(</span><span class="va">cbnest</span>, <span class="va">mnest</span>, cen<span class="op">=</span><span class="fl">0</span>, at<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">pnest</span> <span class="op">&lt;-</span> <span class="fu">crosspred</span><span class="op">(</span><span class="va">cbnest</span>, <span class="va">mnest</span>, cen<span class="op">=</span><span class="fl">0</span>, at<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>effect summaries는 <code>pnest</code>를 통해 확인할 수 있습니다. 이번에는 <code>allRR-</code>이나 <code>matRR-</code>로 시작하는 객체를 추출하여 OR 추정값을 확인할 수 있습니다.</p>
 <div class="cell">
@@ -525,17 +558,20 @@ Boundary.knots: 3 40 </code></pre>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">pnest</span>, var<span class="op">=</span><span class="fl">50</span>, ylab<span class="op">=</span><span class="st">"OR for exposure 50"</span>, xlab<span class="op">=</span><span class="st">"Lag (years)"</span>, xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">pnest</span>, lag<span class="op">=</span><span class="fl">5</span>, ylab<span class="op">=</span><span class="st">"OR at lag 5"</span>, xlab<span class="op">=</span><span class="st">"Exposure"</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.95</span>,<span class="fl">1.15</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>첫 번째 그래프는 노출 요인과 암 사이의 exposure-lag-response 관계를 3차원 상에서 시각화한 것입니다. 그래프에 따르면 노출 초기엔 암의 위험성을 증가시키다가 점차 감소한다는 사실을 확인할 수 있습니다.</p>
 <p>두 번째와 세 번째 그래프는 exposure이 50일 때의 lag-response curve와 lag가 5일 때 exposure-response curve를 그린 것입니다. 두 번째 그래프를 통해 노출 후 10-15년이 지났을 때 암의 위험성이 가장 크게 증가하며, 30년이 지났을 때쯤부턴 거의 원 상태로 되돌아온다는 사실을 확인할 수 있습니다. 세 번째 그림을 통해 노출 요인의 양이 20으로 증가할 때까지는 위험성이 크게 증가하지만 그 이후로는 위험성이 천천히 증가함을 확인할 수 있습니다.</p>
 </section><section id="extended-prediction-summaries" class="level2"><h2 class="anchored" data-anchor-id="extended-prediction-summaries">3.4 Extended prediction summaries</h2>
-<p><code><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred()</a></code>의 <code>at</code>과 <code>lag</code> 인자를 통해 특정 exposure 값 또는 lag에서의 effect summaries를 얻을 수 있습니다. 이때, <code>nested</code> 데이터의 matrix of exposure histories를 만들 때 사용한 함수인 <code><a href="https://rdrr.io/pkg/dlnm/man/exphist.html">exphist()</a></code>를 사용한다면, 특정 exposure history에서의 effect summaries를 얻을 수 있습니다.</p>
+<p><code>crosspred()</code>의 <code>at</code>과 <code>lag</code> 인자를 통해 특정 exposure 값 또는 lag에서의 effect summaries를 얻을 수 있습니다. 이때, <code>nested</code> 데이터의 matrix of exposure histories를 만들 때 사용한 함수인 <code>exphist()</code>를 사용한다면, 특정 exposure history에서의 effect summaries를 얻을 수 있습니다.</p>
 <p>예를 들어, ’3.3 A more complex DLNM’에서 이용한 nested 데이터를 다시 분석해봅시다. 5년 동안의 exposure 값이 10이고, 그 이후 5년 간은 0, 그 이후 10년간은 13일 때의 effect summary를 구하고자 할 때, 아래와 같이 exposure history를 만들 수 있습니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">expnested</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">0</span>,<span class="fl">13</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">hist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/exphist.html">exphist</a></span><span class="op">(</span><span class="va">expnested</span>, time<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">expnested</span><span class="op">)</span>, lag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">hist</span> <span class="op">&lt;-</span> <span class="fu">exphist</span><span class="op">(</span><span class="va">expnested</span>, time<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">expnested</span><span class="op">)</span>, lag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">hist</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   lag3 lag4 lag5 lag6 lag7 lag8 lag9 lag10 lag11 lag12 lag13 lag14 lag15 lag16
@@ -547,9 +583,9 @@ Boundary.knots: 3 40 </code></pre>
 </div>
 </div>
 <p><code>time</code> 인자에는 <code>expnested</code>의 길이를 입력하고, <code>lag</code>는 lag3부터 40까지만 고려한다고 입력합니다. 이때, <code>expnested</code>의 길이는 20이기 때문에 lag20-40의 exposure 값은 0으로 입력됩니다.</p>
-<p>이렇게 만들어진 exposure history를 <code><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred()</a></code>의 <code>at</code> 인자에 넣어줍니다.</p>
+<p>이렇게 만들어진 exposure history를 <code>crosspred()</code>의 <code>at</code> 인자에 넣어줍니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pnesthist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred</a></span><span class="op">(</span><span class="va">cbnest</span>, <span class="va">mnest</span>, cen<span class="op">=</span><span class="fl">0</span>, at<span class="op">=</span><span class="va">hist</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pnesthist</span> <span class="op">&lt;-</span> <span class="fu">crosspred</span><span class="op">(</span><span class="va">cbnest</span>, <span class="va">mnest</span>, cen<span class="op">=</span><span class="fl">0</span>, at<span class="op">=</span><span class="va">hist</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">pnesthist</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">allRRfit</span>,<span class="va">allRRlow</span>,<span class="va">allRRhigh</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      20       20       20 
@@ -560,7 +596,7 @@ Boundary.knots: 3 40 </code></pre>
 <p>이 방법을 통해 여러 개의 time-varying exposure histories를 만들어 effect summaries를 구할 수 있습니다. ’3.2 A simple DLM’에서 이용한 <code>drug</code> 데이터를 다시 분석해봅시다. 환자의 2주 동안의 약물 복용량이 10이고, 그 후 1주간은 50이고, 그 후 1주간은 복용하지 않았을 때, 각 시점에서의 effect summary를 구해봅시다. 아래와 같이 각 시점에서의 exposure history을 만들어줍니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">expdrug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">50</span>,<span class="fl">0</span>,<span class="fl">20</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">*</span><span class="fl">7</span><span class="op">)</span></span>
-<span><span class="va">dynhist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/exphist.html">exphist</a></span><span class="op">(</span><span class="va">expdrug</span>, lag<span class="op">=</span><span class="fl">27</span><span class="op">)</span></span>
+<span><span class="va">dynhist</span> <span class="op">&lt;-</span> <span class="fu">exphist</span><span class="op">(</span><span class="va">expdrug</span>, lag<span class="op">=</span><span class="fl">27</span><span class="op">)</span></span>
 <span><span class="va">dynhist</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   lag0 lag1 lag2 lag3 lag4 lag5 lag6 lag7 lag8 lag9 lag10 lag11 lag12 lag13
@@ -598,9 +634,9 @@ Boundary.knots: 3 40 </code></pre>
 10     0     0</code></pre>
 </div>
 </div>
-<p><code><a href="https://rdrr.io/pkg/dlnm/man/exphist.html">exphist()</a></code> 함수의 <code>time</code> 인자가 지정되지 않았을 경우에는 모든 time point에 대하여 exposure history가 만들어집니다. 이렇게 만들어진 exposure histories를 <code><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred()</a></code>의 <code>at</code> 인자에 넣어줍니다.</p>
+<p><code>exphist()</code> 함수의 <code>time</code> 인자가 지정되지 않았을 경우에는 모든 time point에 대하여 exposure history가 만들어집니다. 이렇게 만들어진 exposure histories를 <code>crosspred()</code>의 <code>at</code> 인자에 넣어줍니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pdyndrug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred</a></span><span class="op">(</span><span class="va">cbdrug</span>, <span class="va">mdrug</span>, at<span class="op">=</span><span class="va">dynhist</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pdyndrug</span> <span class="op">&lt;-</span> <span class="fu">crosspred</span><span class="op">(</span><span class="va">cbdrug</span>, <span class="va">mdrug</span>, at<span class="op">=</span><span class="va">dynhist</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>아래 코드로 그린 plot을 통해 각 시점에서의 exposure history의 effect summary를 확인할 수 있습니다.</p>
 <div class="cell">
@@ -612,7 +648,10 @@ Boundary.knots: 3 40 </code></pre>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">4</span>, at<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">6</span><span class="op">*</span><span class="fl">10</span>, cex.axis<span class="op">=</span><span class="fl">0.8</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span><span class="st">"Dose"</span>, <span class="fl">4</span>, line<span class="op">=</span><span class="op">-</span><span class="fl">1.5</span>, at<span class="op">=</span><span class="fl">30</span>, cex<span class="op">=</span><span class="fl">0.8</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section><section id="applying-user-defined-functions" class="level2"><h2 class="anchored" data-anchor-id="applying-user-defined-functions">3.5 Applying user-defined functions</h2>
@@ -622,9 +661,9 @@ Boundary.knots: 3 40 </code></pre>
 <div class="cell">
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mylog</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">x</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>위에서 정의한 <code>mylog</code> 함수를 <code><a href="https://rdrr.io/pkg/dlnm/man/crossbasis.html">crossbasis()</a></code> 함수에 넣어줍니다.</p>
+<p>위에서 정의한 <code>mylog</code> 함수를 <code>crossbasis()</code> 함수에 넣어줍니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cbnest2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/crossbasis.html">crossbasis</a></span><span class="op">(</span><span class="va">Qnest</span>, lag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">40</span><span class="op">)</span>, argvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"mylog"</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cbnest2</span> <span class="op">&lt;-</span> <span class="fu">crossbasis</span><span class="op">(</span><span class="va">Qnest</span>, lag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">40</span><span class="op">)</span>, argvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"mylog"</span><span class="op">)</span>,</span>
 <span>                      arglag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>fun<span class="op">=</span><span class="st">"ns"</span>,knots<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">30</span><span class="op">)</span>,intercept<span class="op">=</span><span class="cn">F</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cbnest2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -648,7 +687,7 @@ Boundary.knots: 3 40 </code></pre>
 <p>아래 plot을 통해 추정 결과를 비교해봅시다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mnest2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/clogit.html">clogit</a></span><span class="op">(</span><span class="va">case</span><span class="op">~</span><span class="va">cbnest2</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/strata.html">strata</a></span><span class="op">(</span><span class="va">riskset</span><span class="op">)</span>, <span class="va">nested</span><span class="op">)</span></span>
-<span><span class="va">pnest2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred</a></span><span class="op">(</span><span class="va">cbnest2</span>, <span class="va">mnest2</span>, cen<span class="op">=</span><span class="fl">0</span>, at<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">pnest2</span> <span class="op">&lt;-</span> <span class="fu">crosspred</span><span class="op">(</span><span class="va">cbnest2</span>, <span class="va">mnest2</span>, cen<span class="op">=</span><span class="fl">0</span>, at<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">pnest2</span>, zlab<span class="op">=</span><span class="st">"OR"</span>, xlab<span class="op">=</span><span class="st">"Exposure"</span>, ylab<span class="op">=</span><span class="st">"Lag (years)"</span><span class="op">)</span></span>
@@ -657,7 +696,10 @@ Boundary.knots: 3 40 </code></pre>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">pnest2</span>, lag<span class="op">=</span><span class="fl">5</span>, ylab<span class="op">=</span><span class="st">"OR at lag 5"</span>, xlab<span class="op">=</span><span class="st">"Exposure"</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.95</span>,<span class="fl">1.15</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">pnest</span>, lag<span class="op">=</span><span class="fl">5</span>, lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>점선은 3.3에서 추정한 결과를 나타낸 것입니다. exposure-response 차원에서 basis function으로 log 함수를 사용했을 때와 quadratic spline을 사용했을 때의 결과가 유사함을 확인할 수 있습니다.</p>
@@ -671,7 +713,7 @@ Boundary.knots: 3 40 </code></pre>
 </div>
 <p>다음과 같이 crossbasis() 함수에 인자로 넣어주고, plot을 그려 결과를 확인합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cbdrug2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/crossbasis.html">crossbasis</a></span><span class="op">(</span><span class="va">Qdrug</span>, lag<span class="op">=</span><span class="fl">27</span>, argvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"lin"</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cbdrug2</span> <span class="op">&lt;-</span> <span class="fu">crossbasis</span><span class="op">(</span><span class="va">Qdrug</span>, lag<span class="op">=</span><span class="fl">27</span>, argvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"lin"</span><span class="op">)</span>,</span>
 <span>                      arglag<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>fun<span class="op">=</span><span class="st">"fdecay"</span>,scale<span class="op">=</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cbdrug2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -690,7 +732,7 @@ fun: fdecay
 scale: 6 </code></pre>
 </div>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mdrug2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">out</span><span class="op">~</span><span class="va">cbdrug2</span><span class="op">+</span><span class="va">sex</span>, <span class="va">drug</span><span class="op">)</span></span>
-<span><span class="va">pdrug2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dlnm/man/crosspred.html">crosspred</a></span><span class="op">(</span><span class="va">cbdrug2</span>, <span class="va">mdrug2</span>, at<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">pdrug2</span> <span class="op">&lt;-</span> <span class="fu">crosspred</span><span class="op">(</span><span class="va">cbdrug2</span>, <span class="va">mdrug2</span>, at<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">pdrug2</span>, zlab<span class="op">=</span><span class="st">"Effect"</span>, xlab<span class="op">=</span><span class="st">"Dose"</span>, ylab<span class="op">=</span><span class="st">"Lag (days)"</span><span class="op">)</span></span>
@@ -699,7 +741,10 @@ scale: 6 </code></pre>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">pdrug2</span>, lag<span class="op">=</span><span class="fl">10</span>, ylab<span class="op">=</span><span class="st">"Effect at lag 10"</span>, xlab<span class="op">=</span><span class="st">"Dose"</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">pdrug</span>, lag<span class="op">=</span><span class="fl">10</span>, lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>점선은 3.2에서 추정한 결과를 나타낸 것입니다. lag-response 차원에서 basis function으로 exponential decay 함수를 사용했을 때와 natural cubic spline을 사용했을 때의 결과가 유사함을 확인할 수 있습니다.</p>
@@ -713,16 +758,16 @@ scale: 6 </code></pre>
 </ul>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kwon2024,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kwon2024,
   author = {Kwon, Suhyeon},
   title = {The {Extended} {DLNM} {소개}},
   date = {2024-06-05},
-  url = {https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM},
+  url = {https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kwon2024" class="csl-entry quarto-appendix-citeas" role="listitem">
 Kwon, Suhyeon. 2024. <span>“The Extended DLNM 소개.”</span> June 5,
-2024. <a href="https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM">https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM</a>.
+2024. <a href="https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/">https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -758,18 +803,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -801,11 +835,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -815,8 +888,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -828,7 +910,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -872,6 +1077,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -897,6 +1103,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -956,11 +1188,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script>
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
-    <div class="nav-footer-left">Powered by <a href="https://quarto.org">Quarto</a>.</div>   
-    <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
