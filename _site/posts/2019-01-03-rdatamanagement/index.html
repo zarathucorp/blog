@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.553">
+<meta name="generator" content="quarto-1.5.47">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Jinseob Kim">
 <meta name="dcterms.date" content="2019-01-23">
 <meta name="description" content="파일을 읽는 readr, 읽기 쉬운 코드를 만드는 %>% 연산자, 데이터를 다루는 dplyr 그리고 반복문을 다루는 purrr 패키지를 중심으로 tidyverse 생태계에서 데이터를 다루는 방법을 정리하였습니다.">
-<title>차라투 블로그 - R 데이터 매니지먼트: tidyverse</title>
+<title>R 데이터 매니지먼트: tidyverse – 차라투 블로그</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -130,7 +130,7 @@ ga('send', {
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -144,7 +144,7 @@ ga('send', {
 <span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R packages</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
@@ -167,7 +167,7 @@ ga('send', {
 <span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Partners</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
@@ -197,7 +197,7 @@ ga('send', {
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
       <i class="bi bi-translate" role="img">
 </i> 
  <span class="menu-text"></span>
@@ -219,7 +219,7 @@ ga('send', {
 </li>
 </ul>
 </div> <!-- /navcollapse -->
-          <div class="quarto-navbar-tools">
+            <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
     </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
@@ -298,7 +298,7 @@ ga('send', {
   </ul></nav>
 </nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
@@ -432,8 +432,8 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-2d100bdc96e880257b90" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-2d100bdc96e880257b90">{"x":{"filter":"none","vertical":false,"data":[["(Intercept)","Age","Weight","BMI"],[-4.366166487357449,0.03306158122533585,0.02802814191271405,-0.0009349642410434475],[0.9366118592510762,0.008199463964260526,0.008786586651165827,0.0007045717819553176],[-4.661660477851175,4.032163732829764,3.189878279865959,-1.32699643242701],[3.136683457962203e-06,5.526566021054035e-05,0.001423327279358601,0.1845098628041678]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Estimate<\/th>\n      <th>Std. Error<\/th>\n      <th>z value<\/th>\n      <th>Pr(&gt;|z|)<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"pageLength":10,"dom":"<t>","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Estimate","targets":1},{"name":"Std. Error","targets":2},{"name":"z value","targets":3},{"name":"Pr(>|z|)","targets":4}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1173c04208f75688f46b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1173c04208f75688f46b">{"x":{"filter":"none","vertical":false,"data":[["(Intercept)","Age","Weight","BMI"],[-4.366166487357449,0.03306158122533585,0.02802814191271405,-0.0009349642410434475],[0.9366118592510762,0.008199463964260526,0.008786586651165827,0.0007045717819553176],[-4.661660477851175,4.032163732829764,3.189878279865959,-1.32699643242701],[3.136683457962203e-06,5.526566021054035e-05,0.001423327279358601,0.1845098628041678]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Estimate<\/th>\n      <th>Std. Error<\/th>\n      <th>z value<\/th>\n      <th>Pr(&gt;|z|)<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"pageLength":10,"dom":"<t>","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Estimate","targets":1},{"name":"Std. Error","targets":2},{"name":"z value","targets":3},{"name":"Pr(>|z|)","targets":4}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>다음은 <code>%&gt;%</code> 를 이용한 코딩이다.</p>
@@ -446,8 +446,8 @@ dbl (12): Age, Height, Weight, BMI, DM, HTN, Smoking, MACCE, Death, MACCE_da...
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-85d638a30f5c017951d1" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-85d638a30f5c017951d1">{"x":{"filter":"none","vertical":false,"data":[["(Intercept)","Age","Weight","BMI"],[-4.366166487357449,0.03306158122533585,0.02802814191271405,-0.0009349642410434475],[0.9366118592510762,0.008199463964260526,0.008786586651165827,0.0007045717819553176],[-4.661660477851175,4.032163732829764,3.189878279865959,-1.32699643242701],[3.136683457962203e-06,5.526566021054035e-05,0.001423327279358601,0.1845098628041678]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Estimate<\/th>\n      <th>Std. Error<\/th>\n      <th>z value<\/th>\n      <th>Pr(&gt;|z|)<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"pageLength":10,"dom":"<t>","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Estimate","targets":1},{"name":"Std. Error","targets":2},{"name":"z value","targets":3},{"name":"Pr(>|z|)","targets":4}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-712cda686eaea9765812" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-712cda686eaea9765812">{"x":{"filter":"none","vertical":false,"data":[["(Intercept)","Age","Weight","BMI"],[-4.366166487357449,0.03306158122533585,0.02802814191271405,-0.0009349642410434475],[0.9366118592510762,0.008199463964260526,0.008786586651165827,0.0007045717819553176],[-4.661660477851175,4.032163732829764,3.189878279865959,-1.32699643242701],[3.136683457962203e-06,5.526566021054035e-05,0.001423327279358601,0.1845098628041678]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Estimate<\/th>\n      <th>Std. Error<\/th>\n      <th>z value<\/th>\n      <th>Pr(&gt;|z|)<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"pageLength":10,"dom":"<t>","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Estimate","targets":1},{"name":"Std. Error","targets":2},{"name":"z value","targets":3},{"name":"Pr(>|z|)","targets":4}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p><code>%&gt;%</code> 연산자로 쓴 코드는 읽기 쉬운 것은 물론 불필요한 중간변수(<code>b</code>, <code>model</code>, <code>summ.model</code>)가 없어 깔끔하고 메모리의 낭비도 없다. 딱 하나 주의할 점은 코드를 내려쓸 때 <strong>각 줄은 반드시 <code>%&gt;%</code>로 끝나야 한다</strong>는 점이다. 예를 들어 아래의 코드를 실행하면 맨 윗줄만 실행되는 것을 확인할 수 있다.</p>
@@ -1056,12 +1056,12 @@ Coefficients:
   author = {Kim, Jinseob},
   title = {R {데이터} {매니지먼트:} Tidyverse},
   date = {2019-01-23},
-  url = {https://blog.zarathu.com/posts/2019-01-03-rdatamanagement},
+  url = {https://blog.zarathu.com/posts/2019-01-03-rdatamanagement/},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2019" class="csl-entry quarto-appendix-citeas" role="listitem">
 Kim, Jinseob. 2019. <span>“R 데이터 매니지먼트: Tidyverse.”</span>
-January 23, 2019. <a href="https://blog.zarathu.com/posts/2019-01-03-rdatamanagement">https://blog.zarathu.com/posts/2019-01-03-rdatamanagement</a>.
+January 23, 2019. <a href="https://blog.zarathu.com/posts/2019-01-03-rdatamanagement/">https://blog.zarathu.com/posts/2019-01-03-rdatamanagement/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -1097,18 +1097,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1140,7 +1129,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com");
@@ -1148,7 +1159,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
