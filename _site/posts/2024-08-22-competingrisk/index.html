@@ -5,9 +5,9 @@
 <meta name="generator" content="quarto-1.5.47">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hyojong Myung">
-<meta name="dcterms.date" content="2023-08-22">
-<meta name="description" content="생존분석에서 다양한 event를 정의할 수 있는 방법인 competing risk(fine and gray)와 multi-step model(msm)에 대해 소개합니다.">
-<title>다변수 생존 분석, competing risk와 multi-step model – 차라투 블로그</title>
+<meta name="dcterms.date" content="2024-08-22">
+<meta name="description" content="competing risk가 존재할 때 생존 분석할 수 있는 fine-and-gray method와 multi-state model을 소개합니다">
+<title>competing risk 생존분석, fine-and-gray method와 multi-state model – 차라투 블로그</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -218,10 +218,10 @@ ga('send', {
       </div> <!-- /container-fluid -->
     </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">다변수 생존 분석, competing risk와 multi-step model</h1>
+      <h1 class="title">competing risk 생존분석, fine-and-gray method와 multi-state model</h1>
                   <div>
         <div class="description">
-          <p>생존분석에서 다양한 event를 정의할 수 있는 방법인 competing risk(fine and gray)와 multi-step model(msm)에 대해 소개합니다.</p>
+          <p>competing risk가 존재할 때 생존 분석할 수 있는 fine-and-gray method와 multi-state model을 소개합니다</p>
         </div>
       </div>
                           <div class="quarto-categories">
@@ -244,7 +244,7 @@ ga('send', {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">August 22, 2023</p>
+        <p class="date">August 22, 2024</p>
       </div>
     </div>
     
@@ -258,17 +258,19 @@ ga('send', {
    
   <ul>
 <li>
-<a href="#competing-risk" id="toc-competing-risk" class="nav-link active" data-scroll-target="#competing-risk">1. competing risk</a>
+<a href="#fine-and-gray-method" id="toc-fine-and-gray-method" class="nav-link active" data-scroll-target="#fine-and-gray-method">1. fine and gray method</a>
   <ul class="collapse">
 <li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC" id="toc-데이터-전처리" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC">1.1 데이터 전처리</a></li>
   <li><a href="#competing-risk-%EC%A0%9C%EA%B1%B0" id="toc-competing-risk-제거" class="nav-link" data-scroll-target="#competing-risk-%EC%A0%9C%EA%B1%B0">1.2 competing risk 제거</a></li>
   </ul>
 </li>
   <li>
-<a href="#multistep-model" id="toc-multistep-model" class="nav-link" data-scroll-target="#multistep-model">2. multistep model</a>
+<a href="#multi-stage-model" id="toc-multi-stage-model" class="nav-link" data-scroll-target="#multi-stage-model">2. multi-stage model</a>
   <ul class="collapse">
 <li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC-1" id="toc-데이터-전처리-1" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC-1">2.1 데이터 전처리</a></li>
-  <li><a href="#msm-%EB%AA%A8%EB%8D%B8-%EC%A0%9C%EC%9E%91" id="toc-msm-모델-제작" class="nav-link" data-scroll-target="#msm-%EB%AA%A8%EB%8D%B8-%EC%A0%9C%EC%9E%91">2.2 msm 모델 제작</a></li>
+  <li><a href="#msm-%EB%AA%A8%EB%8D%B8-%EC%A0%9C%EC%9E%91" id="toc-msm-모델-제작" class="nav-link" data-scroll-target="#msm-%EB%AA%A8%EB%8D%B8-%EC%A0%9C%EC%9E%91">2.2 MSM 모델 제작</a></li>
+  <li><a href="#fine-and-gray%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90-%EC%A0%81%EC%9A%A9" id="toc-fine-and-gray의-장단점-적용" class="nav-link" data-scroll-target="#fine-and-gray%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90-%EC%A0%81%EC%9A%A9">3.1 fine and gray의 장단점, 적용</a></li>
+  <li><a href="#msm%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90-%EC%A0%81%EC%9A%A9" id="toc-msm의-장단점-적용" class="nav-link" data-scroll-target="#msm%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90-%EC%A0%81%EC%9A%A9">3.2 MSM의 장단점, 적용</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -283,8 +285,8 @@ ga('send', {
   gtag('js', new Date());
 
   gtag('config', 'G-L0DYYSH9KM');
-</script><p>Kaplan-Meirer 또는 Cox 생존 분석은 하나의 event가 발생한 시점을 기반해 생성된 생존시간에 데이터를 기반으로 이뤄집니다. 하지만 추적 관찰 도중 일어나는 event를 하나의 변수로 표현하는 것은 적절치 않을 수 있습니다. 다양한 변수를 생존분석에 고려하고자 사용되는 대표적인 모델이 competing risk와 multistep 모델입니다.</p>
-<section id="competing-risk" class="level1"><h1>1. competing risk</h1>
+</script><p>관심이 있는 어떤 event가 outcome에 미치는 영향에 대한 생존분석을 진행할 때 다른 사건에 의해 follow up이 중단되는 상황이 발생할 수 있습니다. 이렇게 관측을 끝내게 만드는 의도치 않은 event를 ’competing risk’라 부릅니다. competing risk로 인한 데이터의 손실과, 결과의 왜곡을 줄이기 위한 2가지 방법으로 fine and gray method와 multi state model을 소개합니다.</p>
+<section id="fine-and-gray-method" class="level1"><h1>1. fine and gray method</h1>
 <p>Competing risk 모델은 하나의 사건(event)이 발생하는 것을 다른 경쟁 위험들(competing risks)이 방해하는 상황을 가정합니다. 예를 들어, 환자가 A라는 질병으로 인해 사망할 수도 있지만, 다른 이유로도 사망할 수도 있습니다. 이 경우, 질병 A으로 인한 사망이 관찰하고자 하는 사건이고, 다른 이유로 인한 사망은 경쟁 위험이 됩니다. Fine-Gray method는 환자의 다른 질병으로 인한 사망(다른 risk로 endpoint에 도달한 경우)한 케이스를, ‘만약 다른 질병에 걸리지 않았다면?’ 이라는 가정을 기반으로 가공해 새로운 데이터를 만들어냅니다. 가정을 통해 만들어진 데이터인 만큼 해당 데이터가 존재할만한 확률을 계산해 이를 가중치로서 사용합니다. 데이터와 함께 과정을 살펴보도록 하겠습니다.</p>
 <section id="데이터-전처리" class="level2"><h2 class="anchored" data-anchor-id="데이터-전처리">1.1 데이터 전처리</h2>
 <p>실습에서는 <code>mgus2</code> 데이터를 사용하겠습니다. <code>mgus</code> 데이터는 다발성 골수종 환자에 대한 데이터로, <code>pstat</code>이 1인 경우 다발성 골수종에 걸린 것으로 표시됩니다.</p>
@@ -361,65 +363,72 @@ Score (logrank) test = 7.58  on 2 df,   p=0.02,   Robust = 9.28  p=0.01
      observations within a cluster, the Wald and robust score tests do not).</code></pre>
 </div>
 </div>
-</section></section><section id="multistep-model" class="level1"><h1>2. multistep model</h1>
+</section></section><section id="multi-stage-model" class="level1"><h1>2. multi-stage model</h1>
 <p>멀티스텝 모델 (Multi-State Model, MSM)은 시간에 따라 환자가 여러 상태 사이를 전이하는 과정을 가정합니다. 예를 들어, 환자가 “건강한 상태”에서 “질병 상태”로, 그리고 “사망 상태”로 변화하는 것을 수치화해 생존 분석을 진행합니다.</p>
-<p><img src="img/main.png" width="100%"></p>
 <p>환자의 상태를 계층화된 factor로 지정해준 후, Aalen-Johansen Estimator을 이용해 각 시간 지점에서 특정 상태에 있을 확률을 계산합니다(<a href="https://www.openriskmanual.org/wiki/Aalen-Johansen_Estimator" class="uri">https://www.openriskmanual.org/wiki/Aalen-Johansen_Estimator</a>). 데이터를 기반으로 각 고유한 시간에 전이하는 환자의 비율을 나타내는 전이행렬을 초기 확률 벡터와 곱함으로서 특정 시간에 각 상태에 있는 확률을 계산할 수 있습니다.</p>
 <section id="데이터-전처리-1" class="level2"><h2 class="anchored" data-anchor-id="데이터-전처리-1">2.1 데이터 전처리</h2>
-<p>이번 실습에서도 <code>mgus2</code> 데이터를 사용합니다. 다만 해당 msm 모델에서는 <code>data</code>의 event 간 step이 존재해야 하기 때문에 다발성 골수종에 걸리지 않은 환자(<code>censor</code>)를 0, 다발성 골수종에 걸렸지만 생존한 환자를 (<code>pcm</code>) 1, 다발성 골수종에 걸린 후 사망한 환자를(<code>death by pcm</code>) 1로 지정했습니다.</p>
+<p>이번 실습에서도 <code>mgus2</code> 데이터를 사용합니다. 다만 해당 MSM 모델에서는 <code>data</code>의 event 역시 <code>censor</code>, <code>pcm</code>, <code>death</code>를 위 fine and gray method와 동일하게 설정했습니다. 이 경우 역시, <code>pcm</code>을 거치지 않고 바로 <code>death</code>로 가는 상황이 competing risk라 할 수 있습니다.</p>
+<p><img src="risk/main.png" width="100%"></p>
 <div class="cell">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">mgus2</span></span>
-<span><span class="va">data</span><span class="op">$</span><span class="va">etime</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">pstat</span> <span class="op">==</span> <span class="fl">0</span>, <span class="va">futime</span>, <span class="va">ptime</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">event</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">pstat</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">death</span><span class="op">==</span> <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">data</span><span class="op">$</span><span class="va">event</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">event</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"censor"</span>, <span class="st">"pcm"</span>, <span class="st">"death by pcm"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">data</span><span class="op">$</span><span class="va">etime</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">pstat</span><span class="op">==</span><span class="fl">0</span>, <span class="va">futime</span>, <span class="va">ptime</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">data</span><span class="op">$</span><span class="va">event</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">pstat</span><span class="op">==</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">*</span><span class="va">death</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">data</span><span class="op">$</span><span class="va">event</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">event</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">2</span>, labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"censor"</span>, <span class="st">"pcm"</span>, <span class="st">"death"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="msm-모델-제작" class="level2"><h2 class="anchored" data-anchor-id="msm-모델-제작">2.2 msm 모델 제작</h2>
-<p>이후 <code>data</code>를 기존에 0과 1로 outcome이 이진 분류된 데이터로 cox 모델을 돌리듯 모델을 제작해주면 각 상태(<code>pcm</code>, <code>death by pcm</code>)로의 진행에 대한 회귀분석이 진행됩니다.</p>
+</section><section id="msm-모델-제작" class="level2"><h2 class="anchored" data-anchor-id="msm-모델-제작">2.2 MSM 모델 제작</h2>
+<p>이후 <code>data</code>를 기존에 0과 1로 outcome이 이진 분류된 데이터로 cox 모델을 돌리듯 모델을 제작해주면 각 상태(<code>pcm</code>, <code>death by pcm</code>)로의 진행에 대한 회귀분석이 진행됩니다. MSM를 통해 ’다발성 골수종으로의 진행’에 대한 생존 분석과, ’그 이외 영향으로 인한 사망’에 대한 생존 분석을 한 번에 진행할 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">msmfit</span> <span class="op">&lt;-</span> <span class="fu">coxph</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">etime</span>, <span class="va">event</span><span class="op">)</span> <span class="op">~</span> <span class="va">sex</span><span class="op">+</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">data</span>, id <span class="op">=</span> <span class="va">id</span>, model <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">msmfit</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">MSMfit</span> <span class="op">&lt;-</span> <span class="fu">coxph</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">etime</span>, <span class="va">event</span><span class="op">)</span> <span class="op">~</span> <span class="va">sex</span><span class="op">+</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">data</span>, id <span class="op">=</span> <span class="va">id</span>, model <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">MSMfit</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 coxph(formula = Surv(etime, event) ~ sex + age, data = data, 
     model = T, id = id)
 
-  n= 1384, number of events= 115 
+  n= 1384, number of events= 975 
 
-              coef exp(coef)  se(coef) robust se      z Pr(&gt;|z|)   
-sexM_1:2 -0.039525  0.961246  0.585241  0.558411 -0.071  0.94357   
-age_1:2  -0.033851  0.966715  0.022021  0.019780 -1.711  0.08701 . 
-sexM_1:3 -0.016455  0.983679  0.199274  0.201272 -0.082  0.93484   
-age_1:3   0.019480  1.019671  0.008933  0.006959  2.799  0.00512 **
+              coef exp(coef)  se(coef) robust se      z Pr(&gt;|z|)    
+sexM_1:2 -0.025138  0.975176  0.188456  0.189391 -0.133   0.8944    
+age_1:2   0.013039  1.013124  0.008259  0.006678  1.953   0.0509 .  
+sexM_1:3  0.393226  1.481753  0.069698  0.066156  5.944 2.78e-09 ***
+age_1:3   0.064824  1.066971  0.003620  0.003691 17.562  &lt; 2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
          exp(coef) exp(-coef) lower .95 upper .95
-sexM_1:2    0.9612     1.0403    0.3217     2.872
-age_1:2     0.9667     1.0344    0.9300     1.005
-sexM_1:3    0.9837     1.0166    0.6630     1.459
-age_1:3     1.0197     0.9807    1.0059     1.034
+sexM_1:2    0.9752     1.0255    0.6728     1.413
+age_1:2     1.0131     0.9870    1.0000     1.026
+sexM_1:3    1.4818     0.6749    1.3016     1.687
+age_1:3     1.0670     0.9372    1.0593     1.075
 
-Concordance= 0.563  (se = 0.026 )
-Likelihood ratio test= 7.34  on 4 df,   p=0.1
-Wald test            = 11.39  on 4 df,   p=0.02
-Score (logrank) test = 7.28  on 4 df,   p=0.1,   Robust = 10.39  p=0.03
+Concordance= 0.66  (se = 0.01 )
+Likelihood ratio test= 389.5  on 4 df,   p=&lt;2e-16
+Wald test            = 326.7  on 4 df,   p=&lt;2e-16
+Score (logrank) test = 335.4  on 4 df,   p=&lt;2e-16,   Robust = 285.9  p=&lt;2e-16
 
   (Note: the likelihood ratio and score tests assume independence of
      observations within a cluster, the Wald and robust score tests do not).</code></pre>
 </div>
 </div>
+<p>#3. fine and gray method와 MSM의 비교</p>
+</section><section id="fine-and-gray의-장단점-적용" class="level2"><h2 class="anchored" data-anchor-id="fine-and-gray의-장단점-적용">3.1 fine and gray의 장단점, 적용</h2>
+<p>Fine and Gray의 가장 큰 장점은 단순성입니다. competing risks를 다룰 때 문제를 단순화하여, multi state한 상황을 binomial한 문제로 축소시켜 데이터 해석이 쉬워집니다. 이런 장점은 lifetime risk를 추정하는 것을 용이하게 해주며, 특정 사건이 발생할 종합적인 위험을 평가하는데 강점을 가집니다(ex, 여성의 경우 PCM에 대한 평생 리스크가 나이와 혈청 m-스파이크를 조정한 후에도 1.2배 더 높다). 다만 모델이 새로운 데이터를 인위적으로 만들고, 비례위험 가정을 통해 weight를 부여하기에 그만큼 잘못된 결과가 나올 위험성이 있습니다. 더불어 간단한 competing risk 상황에만 적용 가능하며, risk들간의 관계(ex. <code>pcm</code>으로 인한 <code>death</code>가 일어날 수 있는 케이스)를 반영할 수 없다는 한계가 있습니다.</p>
+</section><section id="msm의-장단점-적용" class="level2"><h2 class="anchored" data-anchor-id="msm의-장단점-적용">3.2 MSM의 장단점, 적용</h2>
+<p>MSM은 다양한 competing risk 상황을 구현할 수 있다는 장점이 있습니다. <code>pstate</code>, <code>death</code> 등의 변수로 <code>event</code>를 더 세부화할시 Fine and Gray에서는 구현하지 못하는 <code>pcm</code>으로 인한 <code>death</code> 등의 관계를 적용시킬 수 있습니다. 위에서 살펴본 것 같이 competing risk를 제거하는 것이 아닌, competing risk에 의한 효과도 확인할 수 있다는 점에서 더욱 더 세심한 분석이 가능합니다. 다만 더 자세한 모델을 구현하기 위해 state간 전이시간 등 model의 제작을 위해 더 많은 정보를 필요로 한다는 것이 단점입니다. 따라서 MSM은 환자에 질병 진행 과정에 대한 세세한 데이터가 존재할 때 각 상태의 전이의 확인이 필요할 때 적용할 수 있습니다.</p>
+<p>따라서 ’관찰하려는 event의 발생에만 관심이 있고, 그 이외 영향은 모두 제거하고 싶다’는 목적으로 competing risk를 처리하고자 할 때는 fine and gray 방법을,’관측 중 발생한 모든 event에 대한 세세한 정보를 얻고 싶다’는 목적일 때는 MSM을 쓰면 되겠습니다.</p>
 
 
-</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{myung2023,
+</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{myung2024,
   author = {Myung, Hyojong},
-  title = {다변수 {생존} {분석,} Competing {risk와} Multi-Step Model},
-  date = {2023-08-22},
+  title = {Competing Risk {생존분석,} Fine-and-Gray {method와}
+    Multi-State Model},
+  date = {2024-08-22},
   url = {https://blog.zarathu.com/posts/2024-08-22-competingrisk/},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-myung2023" class="csl-entry quarto-appendix-citeas" role="listitem">
-Myung, Hyojong. 2023. <span>“다변수 생존 분석, Competing Risk와
-Multi-Step Model .”</span> August 22, 2023. <a href="https://blog.zarathu.com/posts/2024-08-22-competingrisk/">https://blog.zarathu.com/posts/2024-08-22-competingrisk/</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-myung2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+Myung, Hyojong. 2024. <span>“Competing Risk 생존분석, Fine-and-Gray
+Method와 Multi-State Model.”</span> August 22, 2024. <a href="https://blog.zarathu.com/posts/2024-08-22-competingrisk/">https://blog.zarathu.com/posts/2024-08-22-competingrisk/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
