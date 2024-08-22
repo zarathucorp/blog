@@ -269,7 +269,12 @@ ga('send', {
   <ul class="collapse">
 <li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC-1" id="toc-데이터-전처리-1" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC-1">2.1 데이터 전처리</a></li>
   <li><a href="#msm-%EB%AA%A8%EB%8D%B8-%EC%A0%9C%EC%9E%91" id="toc-msm-모델-제작" class="nav-link" data-scroll-target="#msm-%EB%AA%A8%EB%8D%B8-%EC%A0%9C%EC%9E%91">2.2 MSM 모델 제작</a></li>
-  <li><a href="#fine-and-gray%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90-%EC%A0%81%EC%9A%A9" id="toc-fine-and-gray의-장단점-적용" class="nav-link" data-scroll-target="#fine-and-gray%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90-%EC%A0%81%EC%9A%A9">3.1 fine and gray의 장단점, 적용</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#fine-and-gray-method%EC%99%80-msm%EC%9D%98-%EB%B9%84%EA%B5%90" id="toc-fine-and-gray-method와-msm의-비교" class="nav-link" data-scroll-target="#fine-and-gray-method%EC%99%80-msm%EC%9D%98-%EB%B9%84%EA%B5%90">3. fine and gray method와 MSM의 비교</a>
+  <ul class="collapse">
+<li><a href="#fine-and-gray%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90-%EC%A0%81%EC%9A%A9" id="toc-fine-and-gray의-장단점-적용" class="nav-link" data-scroll-target="#fine-and-gray%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90-%EC%A0%81%EC%9A%A9">3.1 fine and gray의 장단점, 적용</a></li>
   <li><a href="#msm%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90-%EC%A0%81%EC%9A%A9" id="toc-msm의-장단점-적용" class="nav-link" data-scroll-target="#msm%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90-%EC%A0%81%EC%9A%A9">3.2 MSM의 장단점, 적용</a></li>
   </ul>
 </li>
@@ -287,7 +292,8 @@ ga('send', {
   gtag('config', 'G-L0DYYSH9KM');
 </script><p>관심이 있는 어떤 event가 outcome에 미치는 영향에 대한 생존분석을 진행할 때 다른 사건에 의해 follow up이 중단되는 상황이 발생할 수 있습니다. 이렇게 관측을 끝내게 만드는 의도치 않은 event를 ’competing risk’라 부릅니다. competing risk로 인한 데이터의 손실과, 결과의 왜곡을 줄이기 위한 2가지 방법으로 fine and gray method와 multi state model을 소개합니다.</p>
 <section id="fine-and-gray-method" class="level1"><h1>1. fine and gray method</h1>
-<p>Competing risk 모델은 하나의 사건(event)이 발생하는 것을 다른 경쟁 위험들(competing risks)이 방해하는 상황을 가정합니다. 예를 들어, 환자가 A라는 질병으로 인해 사망할 수도 있지만, 다른 이유로도 사망할 수도 있습니다. 이 경우, 질병 A으로 인한 사망이 관찰하고자 하는 사건이고, 다른 이유로 인한 사망은 경쟁 위험이 됩니다. Fine-Gray method는 환자의 다른 질병으로 인한 사망(다른 risk로 endpoint에 도달한 경우)한 케이스를, ‘만약 다른 질병에 걸리지 않았다면?’ 이라는 가정을 기반으로 가공해 새로운 데이터를 만들어냅니다. 가정을 통해 만들어진 데이터인 만큼 해당 데이터가 존재할만한 확률을 계산해 이를 가중치로서 사용합니다. 데이터와 함께 과정을 살펴보도록 하겠습니다.</p>
+<p>Competing risk 모델은 하나의 사건(event)이 발생하는 것을 다른 경쟁 위험들(competing risks)이 방해하는 상황을 가정합니다. 예를 들어, 환자가 A라는 질병으로 인해 사망할 수도 있지만, 다른 이유로도 사망할 수도 있습니다. 이 경우, 질병 A으로 인한 사망이 관찰하고자 하는 사건이고, 다른 이유로 인한 사망은 경쟁 위험이 됩니다.</p>
+<p>Fine-Gray method는 환자의 다른 질병으로 인한 사망(다른 risk로 endpoint에 도달한 경우)한 케이스를, ‘만약 다른 질병에 걸리지 않았다면?’ 이라는 가정을 기반으로 가공해 새로운 데이터를 만들어냅니다. 가정을 통해 만들어진 데이터인 만큼 해당 데이터가 존재할만한 확률을 계산해 이를 가중치로서 사용합니다. 데이터와 함께 과정을 살펴보도록 하겠습니다.</p>
 <section id="데이터-전처리" class="level2"><h2 class="anchored" data-anchor-id="데이터-전처리">1.1 데이터 전처리</h2>
 <p>실습에서는 <code>mgus2</code> 데이터를 사용하겠습니다. <code>mgus</code> 데이터는 다발성 골수종 환자에 대한 데이터로, <code>pstat</code>이 1인 경우 다발성 골수종에 걸린 것으로 표시됩니다.</p>
 <div class="cell">
@@ -410,11 +416,13 @@ Score (logrank) test = 335.4  on 4 df,   p=&lt;2e-16,   Robust = 285.9  p=&lt;2e
      observations within a cluster, the Wald and robust score tests do not).</code></pre>
 </div>
 </div>
-<p>#3. fine and gray method와 MSM의 비교</p>
-</section><section id="fine-and-gray의-장단점-적용" class="level2"><h2 class="anchored" data-anchor-id="fine-and-gray의-장단점-적용">3.1 fine and gray의 장단점, 적용</h2>
-<p>Fine and Gray의 가장 큰 장점은 단순성입니다. competing risks를 다룰 때 문제를 단순화하여, multi state한 상황을 binomial한 문제로 축소시켜 데이터 해석이 쉬워집니다. 이런 장점은 lifetime risk를 추정하는 것을 용이하게 해주며, 특정 사건이 발생할 종합적인 위험을 평가하는데 강점을 가집니다(ex, 여성의 경우 PCM에 대한 평생 리스크가 나이와 혈청 m-스파이크를 조정한 후에도 1.2배 더 높다). 다만 모델이 새로운 데이터를 인위적으로 만들고, 비례위험 가정을 통해 weight를 부여하기에 그만큼 잘못된 결과가 나올 위험성이 있습니다. 더불어 간단한 competing risk 상황에만 적용 가능하며, risk들간의 관계(ex. <code>pcm</code>으로 인한 <code>death</code>가 일어날 수 있는 케이스)를 반영할 수 없다는 한계가 있습니다.</p>
+</section></section><section id="fine-and-gray-method와-msm의-비교" class="level1"><h1>3. fine and gray method와 MSM의 비교</h1>
+<section id="fine-and-gray의-장단점-적용" class="level2"><h2 class="anchored" data-anchor-id="fine-and-gray의-장단점-적용">3.1 fine and gray의 장단점, 적용</h2>
+<p>Fine and Gray의 가장 큰 장점은 단순성입니다. competing risks를 다룰 때 문제를 단순화하여, multi state한 상황을 binomial한 문제로 축소시켜 데이터 해석이 쉬워집니다. 이런 장점은 lifetime risk를 추정하는 것을 용이하게 해주며, 특정 사건이 발생할 종합적인 위험을 평가하는데 강점을 가집니다(ex, 여성의 경우 PCM에 대한 평생 리스크가 나이와 혈청 m-스파이크를 조정한 후에도 1.2배 더 높다).</p>
+<p>다만 모델이 새로운 데이터를 인위적으로 만들고, 비례위험 가정을 통해 weight를 부여하기에 그만큼 잘못된 결과가 나올 위험성이 있습니다. 더불어 간단한 competing risk 상황에만 적용 가능하며, risk들간의 관계(ex. <code>pcm</code>으로 인한 <code>death</code>가 일어날 수 있는 케이스)를 반영할 수 없다는 한계가 있습니다.</p>
 </section><section id="msm의-장단점-적용" class="level2"><h2 class="anchored" data-anchor-id="msm의-장단점-적용">3.2 MSM의 장단점, 적용</h2>
-<p>MSM은 다양한 competing risk 상황을 구현할 수 있다는 장점이 있습니다. <code>pstate</code>, <code>death</code> 등의 변수로 <code>event</code>를 더 세부화할시 Fine and Gray에서는 구현하지 못하는 <code>pcm</code>으로 인한 <code>death</code> 등의 관계를 적용시킬 수 있습니다. 위에서 살펴본 것 같이 competing risk를 제거하는 것이 아닌, competing risk에 의한 효과도 확인할 수 있다는 점에서 더욱 더 세심한 분석이 가능합니다. 다만 더 자세한 모델을 구현하기 위해 state간 전이시간 등 model의 제작을 위해 더 많은 정보를 필요로 한다는 것이 단점입니다. 따라서 MSM은 환자에 질병 진행 과정에 대한 세세한 데이터가 존재할 때 각 상태의 전이의 확인이 필요할 때 적용할 수 있습니다.</p>
+<p>MSM은 다양한 competing risk 상황을 구현할 수 있다는 장점이 있습니다. <code>pstate</code>, <code>death</code> 등의 변수로 <code>event</code>를 더 세부화할시 Fine and Gray에서는 구현하지 못하는 <code>pcm</code>으로 인한 <code>death</code> 등의 관계를 적용시킬 수 있습니다. 위에서 살펴본 것 같이 competing risk를 제거하는 것이 아닌, competing risk에 의한 효과도 확인할 수 있다는 점에서 더욱 더 세심한 분석이 가능합니다.</p>
+<p>다만 더 자세한 모델을 구현하기 위해 state간 전이시간 등 model의 제작을 위해 더 많은 정보를 필요로 한다는 것이 단점입니다. 따라서 MSM은 환자에 질병 진행 과정에 대한 세세한 데이터가 존재할 때 각 상태의 전이의 확인이 필요할 때 적용할 수 있습니다.</p>
 <p>따라서 ’관찰하려는 event의 발생에만 관심이 있고, 그 이외 영향은 모두 제거하고 싶다’는 목적으로 competing risk를 처리하고자 할 때는 fine and gray 방법을,’관측 중 발생한 모든 event에 대한 세세한 정보를 얻고 싶다’는 목적일 때는 MSM을 쓰면 되겠습니다.</p>
 
 
