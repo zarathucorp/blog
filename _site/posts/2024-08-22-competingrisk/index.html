@@ -265,7 +265,7 @@ ga('send', {
   </ul>
 </li>
   <li>
-<a href="#multi-stage-model" id="toc-multi-stage-model" class="nav-link" data-scroll-target="#multi-stage-model">2. multi-stage model</a>
+<a href="#multi-state-model" id="toc-multi-state-model" class="nav-link" data-scroll-target="#multi-state-model">2. multi-state model</a>
   <ul class="collapse">
 <li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC-1" id="toc-데이터-전처리-1" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC-1">2.1 데이터 전처리</a></li>
   <li><a href="#msm-%EB%AA%A8%EB%8D%B8-%EC%A0%9C%EC%9E%91" id="toc-msm-모델-제작" class="nav-link" data-scroll-target="#msm-%EB%AA%A8%EB%8D%B8-%EC%A0%9C%EC%9E%91">2.2 MSM 모델 제작</a></li>
@@ -316,7 +316,7 @@ ga('send', {
 <span><span class="va">data</span><span class="op">$</span><span class="va">event</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">event</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">2</span>, labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"censor"</span>, <span class="st">"pcm"</span>, <span class="st">"death"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="competing-risk-제거" class="level2"><h2 class="anchored" data-anchor-id="competing-risk-제거">1.2 competing risk 제거</h2>
-<p><code>finegray</code> 함수를 사용하면 해당 데이터가 <code>death</code>로 끝났을 경우, 환자가 사망하지 않았다고 가정한 새로운 데이터들을 여러 시간대 별로 제작합니다. 각 시간대별로 환자가 생존했을 확률을 hazard ratio를 계산함으로서 이를 weight로 사용합니다.</p>
+<p><code>finegray</code> 함수를 사용하면 해당 데이터가 <code>death</code>로 끝났을 경우, 환자가 사망하지 않았다고 가정한 새로운 데이터들을 여러 시간대 별로 제작합니다. 각 시간대별로 환자가 생존했을 확률을 Kaplan-meier estimate로 계산함으로서 이를 weight로 사용합니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pdata</span> <span class="op">&lt;-</span> <span class="fu">finegray</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">etime</span>, <span class="va">event</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>, data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">pdata</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -369,8 +369,8 @@ Score (logrank) test = 7.58  on 2 df,   p=0.02,   Robust = 9.28  p=0.01
      observations within a cluster, the Wald and robust score tests do not).</code></pre>
 </div>
 </div>
-</section></section><section id="multi-stage-model" class="level1"><h1>2. multi-stage model</h1>
-<p>멀티스텝 모델 (Multi-State Model, MSM)은 시간에 따라 환자가 여러 상태 사이를 전이하는 과정을 가정합니다. 예를 들어, 환자가 “건강한 상태”에서 “질병 상태”로, 그리고 “사망 상태”로 변화하는 것을 수치화해 생존 분석을 진행합니다.</p>
+</section></section><section id="multi-state-model" class="level1"><h1>2. multi-state model</h1>
+<p>Multi-State Model(MSM)은 시간에 따라 환자가 여러 상태 사이를 전이하는 과정을 가정합니다. 예를 들어, 환자가 “건강한 상태”에서 “질병 상태”로, 그리고 “사망 상태”로 변화하는 것을 수치화해 생존 분석을 진행합니다.</p>
 <p>환자의 상태를 계층화된 factor로 지정해준 후, Aalen-Johansen Estimator을 이용해 각 시간 지점에서 특정 상태에 있을 확률을 계산합니다(<a href="https://www.openriskmanual.org/wiki/Aalen-Johansen_Estimator" class="uri">https://www.openriskmanual.org/wiki/Aalen-Johansen_Estimator</a>). 데이터를 기반으로 각 고유한 시간에 전이하는 환자의 비율을 나타내는 전이행렬을 초기 확률 벡터와 곱함으로서 특정 시간에 각 상태에 있는 확률을 계산할 수 있습니다.</p>
 <section id="데이터-전처리-1" class="level2"><h2 class="anchored" data-anchor-id="데이터-전처리-1">2.1 데이터 전처리</h2>
 <p>이번 실습에서도 <code>mgus2</code> 데이터를 사용합니다. 다만 해당 MSM 모델에서는 <code>data</code>의 event 역시 <code>censor</code>, <code>pcm</code>, <code>death</code>를 위 fine and gray method와 동일하게 설정했습니다. 이 경우 역시, <code>pcm</code>을 거치지 않고 바로 <code>death</code>로 가는 상황이 competing risk라 할 수 있습니다.</p>

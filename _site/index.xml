@@ -169,7 +169,7 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 </div>
 </section><section id="competing-risk-제거" class="level2"><h2 class="anchored" data-anchor-id="competing-risk-제거">1.2 competing risk 제거</h2>
-<p><code>finegray</code> 함수를 사용하면 해당 데이터가 <code>death</code>로 끝났을 경우, 환자가 사망하지 않았다고 가정한 새로운 데이터들을 여러 시간대 별로 제작합니다. 각 시간대별로 환자가 생존했을 확률을 hazard ratio를 계산함으로서 이를 weight로 사용합니다.</p>
+<p><code>finegray</code> 함수를 사용하면 해당 데이터가 <code>death</code>로 끝났을 경우, 환자가 사망하지 않았다고 가정한 새로운 데이터들을 여러 시간대 별로 제작합니다. 각 시간대별로 환자가 생존했을 확률을 Kaplan-meier estimate로 계산함으로서 이를 weight로 사용합니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
@@ -308,8 +308,8 @@ Score (logrank) test = 7.58  on 2 df,   p=0.02,   Robust = 9.28  p=0.01
      observations within a cluster, the Wald and robust score tests do not).</code></pre>
 </div>
 </div>
-</section></section><section id="multi-stage-model" class="level1"><h1>2. multi-stage model</h1>
-<p>멀티스텝 모델 (Multi-State Model, MSM)은 시간에 따라 환자가 여러 상태 사이를 전이하는 과정을 가정합니다. 예를 들어, 환자가 “건강한 상태”에서 “질병 상태”로, 그리고 “사망 상태”로 변화하는 것을 수치화해 생존 분석을 진행합니다.</p>
+</section></section><section id="multi-state-model" class="level1"><h1>2. multi-state model</h1>
+<p>Multi-State Model(MSM)은 시간에 따라 환자가 여러 상태 사이를 전이하는 과정을 가정합니다. 예를 들어, 환자가 “건강한 상태”에서 “질병 상태”로, 그리고 “사망 상태”로 변화하는 것을 수치화해 생존 분석을 진행합니다.</p>
 <p>환자의 상태를 계층화된 factor로 지정해준 후, Aalen-Johansen Estimator을 이용해 각 시간 지점에서 특정 상태에 있을 확률을 계산합니다(<a href="https://www.openriskmanual.org/wiki/Aalen-Johansen_Estimator" class="uri">https://www.openriskmanual.org/wiki/Aalen-Johansen_Estimator</a>). 데이터를 기반으로 각 고유한 시간에 전이하는 환자의 비율을 나타내는 전이행렬을 초기 확률 벡터와 곱함으로서 특정 시간에 각 상태에 있는 확률을 계산할 수 있습니다.</p>
 <section id="데이터-전처리-1" class="level2"><h2 class="anchored" data-anchor-id="데이터-전처리-1">2.1 데이터 전처리</h2>
 <p>이번 실습에서도 <code>mgus2</code> 데이터를 사용합니다. 다만 해당 MSM 모델에서는 <code>data</code>의 event 역시 <code>censor</code>, <code>pcm</code>, <code>death</code>를 위 fine and gray method와 동일하게 설정했습니다. 이 경우 역시, <code>pcm</code>을 거치지 않고 바로 <code>death</code>로 가는 상황이 competing risk라 할 수 있습니다.</p>
