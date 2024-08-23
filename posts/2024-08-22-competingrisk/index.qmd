@@ -55,7 +55,7 @@ data$event <- factor(data$event, 0:2, labels=c("censor", "pcm", "death"))
 
 ## 1.2 competing risk 제거
 
-`finegray` 함수를 사용하면 해당 데이터가 `death`로 끝났을 경우, 환자가 사망하지 않았다고 가정한 새로운 데이터들을 여러 시간대 별로 제작합니다. 각 시간대별로 환자가 생존했을 확률을 hazard ratio를 계산함으로서 이를 weight로 사용합니다.
+`finegray` 함수를 사용하면 해당 데이터가 `death`로 끝났을 경우, 환자가 사망하지 않았다고 가정한 새로운 데이터들을 여러 시간대 별로 제작합니다. 각 시간대별로 환자가 생존했을 확률을 Kaplan-meier estimate로 계산함으로서 이를 weight로 사용합니다.
 
 ```{r, eval=T, echo=T}
 pdata <- finegray(Surv(etime, event) ~ ., data=data)
@@ -72,9 +72,9 @@ fgfit <- coxph(Surv(fgstart, fgstop, fgstatus) ~ age+sex,
 summary(fgfit)
 ```
 
-# 2. multi-stage model
+# 2. multi-state model
 
-멀티스텝 모델 (Multi-State Model, MSM)은 시간에 따라 환자가 여러 상태 사이를 전이하는 과정을 가정합니다. 예를 들어, 환자가 "건강한 상태"에서 "질병 상태"로, 그리고 "사망 상태"로 변화하는 것을 수치화해 생존 분석을 진행합니다.
+Multi-State Model(MSM)은 시간에 따라 환자가 여러 상태 사이를 전이하는 과정을 가정합니다. 예를 들어, 환자가 "건강한 상태"에서 "질병 상태"로, 그리고 "사망 상태"로 변화하는 것을 수치화해 생존 분석을 진행합니다.
 
 환자의 상태를 계층화된 factor로 지정해준 후, Aalen-Johansen Estimator을 이용해 각 시간 지점에서 특정 상태에 있을 확률을 계산합니다(<https://www.openriskmanual.org/wiki/Aalen-Johansen_Estimator>). 데이터를 기반으로 각 고유한 시간에 전이하는 환자의 비율을 나타내는 전이행렬을 초기 확률 벡터와 곱함으로서 특정 시간에 각 상태에 있는 확률을 계산할 수 있습니다.
 
