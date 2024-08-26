@@ -3,7 +3,7 @@ title: "Wald Confidence Interval for a Difference of Binomial Proportions Based 
 description: |
   Paired data에서 wald 신뢰 구간을 구하는 방법을 통해 민감도와 특이도의 신뢰 구간을 구하는 방법을 소개합니다.
   
-image: img/main.png
+image: img/main2.jpg
 categories:
   - R
   - statistics
@@ -23,7 +23,7 @@ editor:
 ---
 
 2x2 table에서 민감도와 특이도는 본래 McNemar's test를 통해
-$$z = \frac{(f_{21} - f_{12})}{\sqrt{f_{12} + f_{21}}}$$로 정의된 z값의
+$z = \frac{(f_{21} - f_{12})}{\sqrt{f_{12} + f_{21}}}$로 정의된 z값의
 p-value를 확인하는 방법으로 진행되었습니다. 하지만 위 방식으로는
 민감도와 특이도의 신뢰 구간에 대한 정보를 알 수 없기에, 신뢰 구간까지
 정할 수 있는 방법인 Wald confidence interval을 적용함으로써 더 많은
@@ -45,8 +45,6 @@ p-value를 확인하는 방법으로 진행되었습니다. 하지만 위 방식
 
 2x2 테이블은 아래와 같이 구성될 수 있습니다:
 
-\[
-
 ```{=tex}
 \begin{array}{c|c|c|c}
  & \text{Test 2 Positive} & \text{Test 2 Negative} & \text{Total} \\
@@ -58,13 +56,11 @@ p-value를 확인하는 방법으로 진행되었습니다. 하지만 위 방식
 \text{Total} & a + c & b + d & n \\
 \end{array}
 ```
-\]
-
 여기서 각 테스트의 민감도는 다음과 같이 계산됩니다.(특이도 역시 모든
 데이터들이 양성인 것을 음성으로 바꾸어 생각하면 아래 과정이
 동일해집니다)
 
-$p_1 = \frac{a + b}{n}, \quad p_2 = \frac{a + c}{n}$
+$$p_1 = \frac{a + b}{n}, \quad p_2 = \frac{a + c}{n}$$
 
 # 2. 신뢰 구간의 도출
 
@@ -94,7 +90,7 @@ $$
 
 ## 2.3. 공분산 $\text{Cov}(p_2, p_1)$ 의 계산
 
-( p_2 )와 ( p_1 )의 공분산은 다음과 같이 정의됩니다:
+$p_2$ 와 $p_1$ 의 공분산은 다음과 같이 정의됩니다:
 
 $$
 \text{Cov}(p_2, p_1) = \text{Cov}(p_{11} + p_{21}, p_{11} + p_{12})
@@ -172,7 +168,7 @@ correction을 진행한다면 wald에서는 확률 $p$ 하나당 $\frac{1}{2n}$�
 분산을 늘려, 아래와 같은 값을 갖게 된다.
 
 $$
-CI_{1-\alpha/2}(\hat{\theta}) = \left[ \hat{\theta} \pm \left( z_{1-\alpha/2} \cdot \frac{1}{n} \sqrt{b + c - \frac{(b - c)^2}{n} + \frac{1}{n}} \right) \right].
+CI_{1-\alpha/2}(\hat{\theta}) = \left[ \hat{\theta} \pm \left( z_{1-\alpha/2} \cdot \frac{1}{n} \sqrt{b + c - \frac{(b - c)^2}{n} }+ \frac{1}{n} \right) \right].
 $$
 
 ```{r, eval=F, echo=T}
@@ -192,7 +188,7 @@ Wald 신뢰 구간을 수정한 방법 중 하나로, 샘플 크기에 특정 �
 이 방법들을 비교했습니다. 그 결과, n+2를 사용하는 것이 표준 Wald 신뢰
 구간과 비교했을 때 표본 증가의 효과로 신뢰 구간의 성능(coverage
 probability)을 향상시킴을 확인했습니다. $$
-\ CI_{1-\alpha/2}(\hat{\theta}) = \left[ \hat{\theta} \pm z_{1-\alpha/2} \cdot \frac{1}{n+2} \cdot \sqrt{(b+0.5) + (c+0.5) - \frac{(b - c)^2}{n+2}+} \right] \
+\ CI_{1-\alpha/2}(\hat{\theta}) = \left[ \hat{\theta} \pm z_{1-\alpha/2} \cdot \frac{1}{n+2} \cdot \sqrt{(b+0.5) + (c+0.5) - \frac{(b - c)^2}{n+2}} \right] \
 $$
 
 ```{r, eval=F, echo=T}
