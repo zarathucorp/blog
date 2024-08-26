@@ -33,9 +33,7 @@
 <img src="https://latex.codecogs.com/png.latex?p_2">은 테스트 2가 진정한 양성을 탐지한 비율입니다.</li>
 </ul>
 <p>2x2 테이블은 아래와 같이 구성될 수 있습니다:</p>
-<p>[</p>
 <img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Barray%7D%7Bc%7Cc%7Cc%7Cc%7D%0A&amp;%20%5Ctext%7BTest%202%20Positive%7D%20&amp;%20%5Ctext%7BTest%202%20Negative%7D%20&amp;%20%5Ctext%7BTotal%7D%20%5C%5C%0A%5Chline%0A%5Ctext%7BTest%201%20Positive%7D%20&amp;%20a%20&amp;%20b%20&amp;%20a%20+%20b%20%5C%5C%0A%5Chline%0A%5Ctext%7BTest%201%20Negative%7D%20&amp;%20c%20&amp;%20d%20&amp;%20c%20+%20d%20%5C%5C%0A%5Chline%0A%5Ctext%7BTotal%7D%20&amp;%20a%20+%20c%20&amp;%20b%20+%20d%20&amp;%20n%20%5C%5C%0A%5Cend%7Barray%7D">
-<p>]</p>
 <p>여기서 각 테스트의 민감도는 다음과 같이 계산됩니다.(특이도 역시 모든 데이터들이 양성인 것을 음성으로 바꾸어 생각하면 아래 과정이 동일해집니다)</p>
 <p><img src="https://latex.codecogs.com/png.latex?p_1%20=%20%5Cfrac%7Ba%20+%20b%7D%7Bn%7D,%20%5Cquad%20p_2%20=%20%5Cfrac%7Ba%20+%20c%7D%7Bn%7D"></p>
 </section><section id="신뢰-구간의-도출" class="level1"><h1>2. 신뢰 구간의 도출</h1>
@@ -48,11 +46,11 @@
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BVar%7D(p_1)%20=%20%5Cfrac%7Bp_1(1%20-%20p_1)%7D%7Bn%7D%20=%20%5Cfrac%7Bp_%7B12%7D%20+%20p_%7B11%7D%7D%7Bn%7D%20%5Ccdot%20%5Cleft(1%20-%20%5Cfrac%7Bp_%7B12%7D%20+%20p_%7B11%7D%7D%7Bn%7D%5Cright)%0A"></p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BVar%7D(p_2)%20=%20%5Cfrac%7Bp_2(1%20-%20p_2)%7D%7Bn%7D%20=%20%5Cfrac%7Bp_%7B21%7D%20+%20p_%7B11%7D%7D%7Bn%7D%20%5Ccdot%20%5Cleft(1%20-%20%5Cfrac%7Bp_%7B21%7D%20+%20p_%7B11%7D%7D%7Bn%7D%5Cright)%0A"></p>
 </section><section id="공분산-textcovp_2-p_1-의-계산" class="level2"><h2 class="anchored" data-anchor-id="공분산-textcovp_2-p_1-의-계산">2.3. 공분산 <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BCov%7D(p_2,%20p_1)"> 의 계산</h2>
-<p>( p_2 )와 ( p_1 )의 공분산은 다음과 같이 정의됩니다:</p>
+<p><img src="https://latex.codecogs.com/png.latex?p_2"> 와 <img src="https://latex.codecogs.com/png.latex?p_1"> 의 공분산은 다음과 같이 정의됩니다:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BCov%7D(p_2,%20p_1)%20=%20%5Ctext%7BCov%7D(p_%7B11%7D%20+%20p_%7B21%7D,%20p_%7B11%7D%20+%20p_%7B12%7D)%0A"></p>
 <p>이를 확장하면 다음과 같은 네 가지 항으로 분리할 수 있습니다:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BCov%7D(p_2,%20p_1)%20=%20%5Ctext%7BCov%7D(p_%7B11%7D,%20p_%7B11%7D)%20+%20%5Ctext%7BCov%7D(p_%7B11%7D,%20p_%7B12%7D)%20+%20%5Ctext%7BCov%7D(p_%7B21%7D,%20p_%7B11%7D)%20+%20%5Ctext%7BCov%7D(p_%7B21%7D,%20p_%7B12%7D)%0A"></p>
-<p>다항 분포의 특성상, 다음과 같은 공분산 성질이 적용됩니다:</p>
+<p>공분산은 다음과 같이 정리할 수 있습니다.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BVar%7D(p_%7B11%7D)%20=%20%5Cfrac%7Bp_%7B11%7D(1%20-%20p_%7B11%7D)%7D%7Bn%7D%0A"></p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BCov%7D(p_%7B11%7D,%20p_%7B12%7D)%20=%20-%5Cfrac%7Bp_%7B11%7Dp_%7B12%7D%7D%7Bn%7D%0A"></p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BCov%7D(p_%7B11%7D,%20p_%7B21%7D)%20=%20-%5Cfrac%7Bp_%7B11%7Dp_%7B21%7D%7D%7Bn%7D%0A"></p>
@@ -255,7 +253,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>만약 이항분포로 얻어진 값을 정규분포에 맞도록 조정하기 위해 continuity correction을 진행한다면 wald에서는 확률 <img src="https://latex.codecogs.com/png.latex?p"> 하나당 <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2n%7D">만큼 분산을 늘려, 아래와 같은 값을 갖게 된다.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0ACI_%7B1-%5Calpha/2%7D(%5Chat%7B%5Ctheta%7D)%20=%20%5Cleft%5B%20%5Chat%7B%5Ctheta%7D%20%5Cpm%20%5Cleft(%20z_%7B1-%5Calpha/2%7D%20%5Ccdot%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csqrt%7Bb%20+%20c%20-%20%5Cfrac%7B(b%20-%20c)%5E2%7D%7Bn%7D%20+%20%5Cfrac%7B1%7D%7Bn%7D%7D%20%5Cright)%20%5Cright%5D.%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0ACI_%7B1-%5Calpha/2%7D(%5Chat%7B%5Ctheta%7D)%20=%20%5Cleft%5B%20%5Chat%7B%5Ctheta%7D%20%5Cpm%20%5Cleft(%20z_%7B1-%5Calpha/2%7D%20%5Ccdot%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csqrt%7Bb%20+%20c%20-%20%5Cfrac%7B(b%20-%20c)%5E2%7D%7Bn%7D%20%7D+%20%5Cfrac%7B1%7D%7Bn%7D%20%5Cright)%20%5Cright%5D.%0A"></p>
 <div class="cell">
 <div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span>  <span class="kw" style="color: #003B4F;
 background-color: null;
@@ -456,7 +454,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 </div>
 </section></section><section id="wald-이외-신뢰구간-계산-방법" class="level1"><h1>3. Wald 이외 신뢰구간 계산 방법</h1>
 <section id="agresti-신뢰-구간agresti-ci" class="level2"><h2 class="anchored" data-anchor-id="agresti-신뢰-구간agresti-ci">3.1. Agresti 신뢰 구간(Agresti CI)</h2>
-<p>Wald 신뢰 구간을 수정한 방법 중 하나로, 샘플 크기에 특정 상수를 더한 후 위 wald와 같은 방식으로 전체 샘플 크기 𝑛에 1에서 4까지의 상수를 더한 후 이 방법들을 비교했습니다. 그 결과, n+2를 사용하는 것이 표준 Wald 신뢰 구간과 비교했을 때 표본 증가의 효과로 신뢰 구간의 성능(coverage probability)을 향상시킴을 확인했습니다. <img src="https://latex.codecogs.com/png.latex?%0A%5C%20CI_%7B1-%5Calpha/2%7D(%5Chat%7B%5Ctheta%7D)%20=%20%5Cleft%5B%20%5Chat%7B%5Ctheta%7D%20%5Cpm%20z_%7B1-%5Calpha/2%7D%20%5Ccdot%20%5Cfrac%7B1%7D%7Bn+2%7D%20%5Ccdot%20%5Csqrt%7B(b+0.5)%20+%20(c+0.5)%20-%20%5Cfrac%7B(b%20-%20c)%5E2%7D%7Bn+2%7D+%7D%20%5Cright%5D%20%5C%0A"></p>
+<p>Wald 신뢰 구간을 수정한 방법 중 하나로, 샘플 크기에 특정 상수를 더한 후 위 wald와 같은 방식으로 전체 샘플 크기 𝑛에 1에서 4까지의 상수를 더한 후 이 방법들을 비교했습니다. 그 결과, n+2를 사용하는 것이 표준 Wald 신뢰 구간과 비교했을 때 표본 증가의 효과로 신뢰 구간의 성능(coverage probability)을 향상시킴을 확인했습니다. <img src="https://latex.codecogs.com/png.latex?%0A%5C%20CI_%7B1-%5Calpha/2%7D(%5Chat%7B%5Ctheta%7D)%20=%20%5Cleft%5B%20%5Chat%7B%5Ctheta%7D%20%5Cpm%20z_%7B1-%5Calpha/2%7D%20%5Ccdot%20%5Cfrac%7B1%7D%7Bn+2%7D%20%5Ccdot%20%5Csqrt%7B(b+0.5)%20+%20(c+0.5)%20-%20%5Cfrac%7B(b%20-%20c)%5E2%7D%7Bn+2%7D%7D%20%5Cright%5D%20%5C%0A"></p>
 <div class="cell">
 <div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span>  <span class="kw" style="color: #003B4F;
 background-color: null;
@@ -655,7 +653,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 </section><section id="tango" class="level2"><h2 class="anchored" data-anchor-id="tango">3.2. Tango</h2>
-<p>Tango는 귀무가설과 함수는 두 비율 간의 차이와, 주어진 정보 행렬(<img src="https://latex.codecogs.com/png.latex?b">, <img src="https://latex.codecogs.com/png.latex?c">, <img src="https://latex.codecogs.com/png.latex?n">)을 기반으로 likelyhood를 계산해 신뢰구간을 계산하는 방법입니다. R에서는 <code>scoreci.mp</code>라는 별도의 함수를 사용해 진행합니다.</p>
+<p>Tango는 귀무가설과 함수는 두 비율 간의 차이와, 주어진 정보 행렬(<img src="https://latex.codecogs.com/png.latex?b">, <img src="https://latex.codecogs.com/png.latex?c">, <img src="https://latex.codecogs.com/png.latex?n">)을 기반으로 likelihood를 계산해 신뢰구간을 계산하는 방법입니다. R에서는 <code>scoreci.mp</code>라는 별도의 함수를 사용해 진행합니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span>  <span class="kw" style="color: #003B4F;
 background-color: null;
@@ -1092,7 +1090,7 @@ of Binomial Proportions Based on Paired Data.”</span> August 26, 2024.
   <category>statistics</category>
   <guid>https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/</guid>
   <pubDate>Sun, 25 Aug 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/img/main.png" medium="image" type="image/png" height="51" width="144"/>
+  <media:content url="https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/img/main.png" medium="image" type="image/png"/>
 </item>
 <item>
   <title>competing risk 생존분석, fine-and-gray method와 multi-state model</title>
