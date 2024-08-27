@@ -875,6 +875,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 </section></section><section id="예시-코드" class="level1"><h1>4. 예시 코드</h1>
+<section id="일반적인-민감도-특이도-검정" class="level2"><h2 class="anchored" data-anchor-id="일반적인-민감도-특이도-검정">4.1. 일반적인 민감도, 특이도 검정</h2>
 <div class="cell">
 <div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -1071,9 +1072,243 @@ $cont.corr
 [1] FALSE</code></pre>
 </div>
 </div>
+<p>아래와 같은 방법으로 answer, test1, test2를 열로 가지고, 각 결과 데이터가 1,0(1은 diseased sample, 2는 non-diseased sample)로 표시되어 있는 경우에는 바로 paired table을 제작할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://github.com/chstock/DTComPair">DTComPair</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">tb</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://chstock.github.io/DTComPair/reference/tab.paired.html">tab.paired</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">answer</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">test1</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">test2</span>, data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sample_data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
+</section><section id="민감도-특이도의-비열등성-검정" class="level2"><h2 class="anchored" data-anchor-id="민감도-특이도의-비열등성-검정">4.2. 민감도, 특이도의 비열등성 검정</h2>
+<p>어떤 테스트의 민감도와 특이도가 대조 테스트에 비해 떨어지지 않는다는 것을 확인하기 위해서는 비열등성 검정을 사용해야 합니다. 이 때는 <code>sesp.diff.ci</code> 함수를 통해 구한 standard error 값과 두 민감도/특이도의 차이를 통해 p value를 계산합니다. 아래 예시에서는 민감도에 대한 비열등성 마진(<code>sens_margin</code>)을 5%, 특이도에 대한 비열등성 마진(<code>spec_margin</code>)을 10%로 설정했습니다.<br>
+민감도를 예로 들자면 귀무가설은 아래와 같고, 아래 수식에 따라 p value를 계산합니다.</p>
+<p><img src="https://latex.codecogs.com/png.latex?H_0%20%5Ccolon%20%5Ctext%7Btest1%20sensitivity%7D%20-%20%5Ctext%7Btest2%20sensitivity%7D%20%5Cleq%20-%5Ctext%7B%20sensitivity%20margin%7D"> <img src="https://latex.codecogs.com/png.latex?p-value%20=%201%20-%20%CE%A6%5Cleft(%5Cfrac%7B%5Ctext%7Btest1%20sensitivity%7D%20-%20%5Ctext%7Btest2%20sensitivity%7D%20+%20%5Ctext%7Bsensitivity%20margin%7D%7D%7B%5Ctext%7Bsensitivity%20diff.SE%7D%7D%5Cright)"></p>
+<div class="cell">
+<div class="sourceCode" id="cb18" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://github.com/chstock/DTComPair">DTComPair</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://chstock.github.io/DTComPair/reference/read.tab.paired.html">read.tab.paired</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">18</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">18</span>,</span>
+<span>                      <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">18</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">18</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t1.wald</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://chstock.github.io/DTComPair/reference/sesp.diff.ci.html">sesp.diff.ci</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t1</span>, ci.method<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"wald"</span>, cont.corr<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sens_margin</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span>  <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">spec_margin</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span>  <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value_sensitivity</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t1.wald</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sensitivity</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'diff'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sens_margin</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t1.wald</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sensitivity</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'diff.se'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span>, lower.tail <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value_specificity</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t1.wald</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">specificity</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'diff'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">spec_margin</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t1.wald</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">specificity</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'diff.se'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span>, lower.tail <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value_sensitivity</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        diff 
+1.012589e-07 </code></pre>
+</div>
+<div class="sourceCode" id="cb20" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value_specificity</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     diff 
+0.9255427 </code></pre>
+</div>
+</div>
+<p>따라서 민감도에 대해서는 위 귀무가설이 기각 되었음으로 test1의 민감도가 test2보다 열등하지 않다고 말할 수 있지만, 특이도에 대해서는 귀무가설이 기각되지 않았기 때문에 test1의 특이도가 test2에 비해 열등하지 않다는 결론을 내릴 수 없습니다.</p>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{myung2024,
+</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{myung2024,
   author = {Myung, Hyojong},
   title = {Wald {Confidence} {Interval} for a {Difference} of {Binomial}
     {Proportions} {Based} on {Paired} {Data}},
