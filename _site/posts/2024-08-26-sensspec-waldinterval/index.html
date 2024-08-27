@@ -300,7 +300,13 @@ window.Quarto = {
   <li><a href="#tango" id="toc-tango" class="nav-link" data-scroll-target="#tango">3.2. Tango</a></li>
   </ul>
 </li>
-  <li><a href="#%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C" id="toc-예시-코드" class="nav-link" data-scroll-target="#%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C">4. 예시 코드</a></li>
+  <li>
+<a href="#%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C" id="toc-예시-코드" class="nav-link" data-scroll-target="#%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C">4. 예시 코드</a>
+  <ul class="collapse">
+<li><a href="#%EC%9D%BC%EB%B0%98%EC%A0%81%EC%9D%B8-%EB%AF%BC%EA%B0%90%EB%8F%84-%ED%8A%B9%EC%9D%B4%EB%8F%84-%EA%B2%80%EC%A0%95" id="toc-일반적인-민감도-특이도-검정" class="nav-link" data-scroll-target="#%EC%9D%BC%EB%B0%98%EC%A0%81%EC%9D%B8-%EB%AF%BC%EA%B0%90%EB%8F%84-%ED%8A%B9%EC%9D%B4%EB%8F%84-%EA%B2%80%EC%A0%95">4.1. 일반적인 민감도, 특이도 검정</a></li>
+  <li><a href="#%EB%AF%BC%EA%B0%90%EB%8F%84-%ED%8A%B9%EC%9D%B4%EB%8F%84%EC%9D%98-%EB%B9%84%EC%97%B4%EB%93%B1%EC%84%B1-%EA%B2%80%EC%A0%95" id="toc-민감도-특이도의-비열등성-검정" class="nav-link" data-scroll-target="#%EB%AF%BC%EA%B0%90%EB%8F%84-%ED%8A%B9%EC%9D%B4%EB%8F%84%EC%9D%98-%EB%B9%84%EC%97%B4%EB%93%B1%EC%84%B1-%EA%B2%80%EC%A0%95">4.2. 민감도, 특이도의 비열등성 검정</a></li>
+  </ul>
+</li>
   </ul></nav>
 </nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
@@ -440,6 +446,7 @@ CI_{1-\alpha/2}(\hat{\theta}) = \left[ \hat{\theta} \pm \left( z_{1-\alpha/2} \c
 <span>      <span class="va">sens.diff.cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">*</span><span class="va">sens.diff.cl</span><span class="op">)</span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section></section><section id="예시-코드" class="level1"><h1>4. 예시 코드</h1>
+<section id="일반적인-민감도-특이도-검정" class="level2"><h2 class="anchored" data-anchor-id="일반적인-민감도-특이도-검정">4.1. 일반적인 민감도, 특이도 검정</h2>
 <div class="cell">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chstock/DTComPair">DTComPair</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -543,9 +550,40 @@ $cont.corr
 [1] FALSE</code></pre>
 </div>
 </div>
+<p>아래와 같은 방법으로 answer, test1, test2를 열로 가지고, 각 결과 데이터가 1,0(1은 diseased sample, 2는 non-diseased sample)로 표시되어 있는 경우에는 바로 paired table을 제작할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chstock/DTComPair">DTComPair</a></span><span class="op">)</span></span>
+<span><span class="va">tb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://chstock.github.io/DTComPair/reference/tab.paired.html">tab.paired</a></span><span class="op">(</span><span class="va">answer</span>, <span class="va">test1</span>, <span class="va">test2</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="va">sample_data</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="민감도-특이도의-비열등성-검정" class="level2"><h2 class="anchored" data-anchor-id="민감도-특이도의-비열등성-검정">4.2. 민감도, 특이도의 비열등성 검정</h2>
+<p>어떤 테스트의 민감도와 특이도가 대조 테스트에 비해 떨어지지 않는다는 것을 확인하기 위해서는 비열등성 검정을 사용해야 합니다. 이 때는 <code>sesp.diff.ci</code> 함수를 통해 구한 standard error 값과 두 민감도/특이도의 차이를 통해 p value를 계산합니다. 아래 예시에서는 민감도에 대한 비열등성 마진(<code>sens_margin</code>)을 5%, 특이도에 대한 비열등성 마진(<code>spec_margin</code>)을 10%로 설정했습니다.<br>
+민감도를 예로 들자면 귀무가설은 아래와 같고, 아래 수식에 따라 p value를 계산합니다.</p>
+<p><span class="math display">\[H_0 \colon \text{test1 sensitivity} - \text{test2 sensitivity} \leq -\text{ sensitivity margin}\]</span> <span class="math display">\[p-value = 1 - Φ\left(\frac{\text{test1 sensitivity} - \text{test2 sensitivity} + \text{sensitivity margin}}{\text{sensitivity diff.SE}}\right)\]</span></p>
+<div class="cell">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chstock/DTComPair">DTComPair</a></span><span class="op">)</span></span>
+<span><span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://chstock.github.io/DTComPair/reference/read.tab.paired.html">read.tab.paired</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">14</span>, <span class="fl">0</span>, <span class="fl">18</span>,</span>
+<span>                      <span class="fl">18</span>, <span class="fl">12</span>, <span class="fl">2</span>, <span class="fl">18</span><span class="op">)</span></span>
+<span><span class="va">t1.wald</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://chstock.github.io/DTComPair/reference/sesp.diff.ci.html">sesp.diff.ci</a></span><span class="op">(</span><span class="va">t1</span>, ci.method<span class="op">=</span><span class="st">"wald"</span>, cont.corr<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sens_margin</span> <span class="op">&lt;-</span>  <span class="fl">0.05</span></span>
+<span><span class="va">spec_margin</span> <span class="op">&lt;-</span>  <span class="fl">0.1</span></span>
+<span></span>
+<span><span class="va">p_value_sensitivity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="op">(</span><span class="va">t1.wald</span><span class="op">$</span><span class="va">sensitivity</span><span class="op">[</span><span class="st">'diff'</span><span class="op">]</span> <span class="op">+</span> <span class="va">sens_margin</span><span class="op">)</span> <span class="op">/</span> <span class="va">t1.wald</span><span class="op">$</span><span class="va">sensitivity</span><span class="op">[</span><span class="st">'diff.se'</span><span class="op">]</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">p_value_specificity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="op">(</span><span class="va">t1.wald</span><span class="op">$</span><span class="va">specificity</span><span class="op">[</span><span class="st">'diff'</span><span class="op">]</span> <span class="op">+</span> <span class="va">spec_margin</span><span class="op">)</span> <span class="op">/</span> <span class="va">t1.wald</span><span class="op">$</span><span class="va">specificity</span><span class="op">[</span><span class="st">'diff.se'</span><span class="op">]</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">p_value_sensitivity</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        diff 
+1.012589e-07 </code></pre>
+</div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_value_specificity</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     diff 
+0.9255427 </code></pre>
+</div>
+</div>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{myung2024,
+</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{myung2024,
   author = {Myung, Hyojong},
   title = {Wald {Confidence} {Interval} for a {Difference} of {Binomial}
     {Proportions} {Based} on {Paired} {Data}},
