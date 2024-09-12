@@ -6,8 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hyungwoo Jo">
 <meta name="dcterms.date" content="2024-09-13">
-<meta name="description" content="Paired data에서 wald 신뢰 구간을 구하는 방법을 통해 민감도와 특이도의 신뢰 구간을 구하는 방법을 소개합니다.">
-<title>차라투 블로그 - jstable의 GLM, GEE, GLMM, Cox, survey의 table만들기에 대해 알아보고 소개합니다</title>
+<meta name="description" content="GLM, GLE, GLMM, COX 모델에 대해 알아보고, 이를 직관적으로 표시할 수 있는 table을 만들어봅니다.">
+<title>차라투 블로그 - jstable을 이용한 분석 모형 table 만들기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -243,10 +243,10 @@ window.Quarto = {
       </div> <!-- /container-fluid -->
     </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">jstable의 GLM, GEE, GLMM, Cox, survey의 table만들기에 대해 알아보고 소개합니다</h1>
+      <h1 class="title">jstable을 이용한 분석 모형 table 만들기</h1>
                   <div>
         <div class="description">
-          <p>Paired data에서 wald 신뢰 구간을 구하는 방법을 통해 민감도와 특이도의 신뢰 구간을 구하는 방법을 소개합니다.</p>
+          <p>GLM, GLE, GLMM, COX 모델에 대해 알아보고, 이를 직관적으로 표시할 수 있는 table을 만들어봅니다.</p>
         </div>
       </div>
                           <div class="quarto-categories">
@@ -298,6 +298,7 @@ window.Quarto = {
   <li><a href="#jstable-%ED%8C%A8%ED%82%A4%EC%A7%80%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-glm-table%EB%A7%8C%EB%93%A4%EA%B8%B0" id="toc-jstable-패키지를-사용한-glm-table만들기" class="nav-link" data-scroll-target="#jstable-%ED%8C%A8%ED%82%A4%EC%A7%80%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-glm-table%EB%A7%8C%EB%93%A4%EA%B8%B0">jstable 패키지를 사용한 GLM table만들기</a></li>
   </ul>
 </li>
+  <li><a href="#gee" id="toc-gee" class="nav-link" data-scroll-target="#gee">2. GEE</a></li>
   </ul></nav>
 </nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
@@ -429,19 +430,20 @@ attr(,"class")
 </div>
 </div>
 <p>이항 분포와 마찬가지로 첫줄에서는 정규분포에 대하여 선형 회귀 분석을 사용했음을 알 수 있고, 해당하는 p value 들 그리고 선형 회귀의 경우 Coeffecient를 제공함을 알 수 있습니다. 해당 테이블을 통해 cyl(실린더의 갯수)변수는 mpg(연비)에 유의미한 영향을 미치는 것을 알 수 있습니다. disp(배기량)변수는 보정 전에는 영향이 있어 보였으나 보정 이후 0.05보다 크기 때문에 통계적으로 유의미한 영향을 미치지 않는 것을 알 수 있습니다.</p>
+</section></section><section id="gee" class="level1"><h1>2. GEE</h1>
+<p>GEE(Generalized Estimating Equations)는 GLM에서 반복 측정 혹은 군집화 데이터와 같이 상관된 데이터를 처리하기 위해 만들어진 확장된 모델입니다. GLM의 경우 링크 함수를 통한 선형 회귀 분석을 하기 때문에 기본적으로 관측치들 간의 상관관계가 없어야 한다는 선형 회귀분석의 기본 가정을 따르게 됩니다. 하지만 실제 데이터의 경우(반복된 혈압의 측정, 병원 내 환자들)과 같은 반복, 군집 데이터들을 통해 반응 변수를 분석해야 하는 경우가 많습니다. 당뇨병 환자의 당뇨약 복용 이후 혈당변화를 예시로 생각해보겠습니다. 이를 일반적인 GLM 모형인 [g(<em>{i}) = X</em>{i} ]에 적용을 한다면(g가 링크 함수, X가 종속 변수) 같은 환자에서 반복된 혈당 측정치들이 모두 독립이란 가정이 필요합니다. 따라서 같은 환자의 경우 혈당 측정치들은 관련성이 있기 때문에 상관관계를 반영하여 [g(<em>{ij}) = X</em>{ij} ] 와 같은 형태의 수식을 사용할 수 있습니다.(이경우 X_{ij}는 i번째 환자의 j번째 관측치입니다)</p>
 
 
-</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{jo2024,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{jo2024,
   author = {Jo, Hyungwoo},
-  title = {Jstable의 {GLM,} {GEE,} {GLMM,} {Cox,} {survey의}
-    {table만들기에} {대해} {알아보고} {소개합니다}},
+  title = {Jstable을 {이용한} {분석} {모형} Table {만들기}},
   date = {2024-09-13},
   url = {https://blog.zarathu.com/posts/2024-09-13 jstable},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-jo2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Jo, Hyungwoo. 2024. <span>“Jstable의 GLM, GEE, GLMM, Cox, Survey의
-Table만들기에 대해 알아보고 소개합니다.”</span> September 13, 2024. <a href="https://blog.zarathu.com/posts/2024-09-13 jstable">https://blog.zarathu.com/posts/2024-09-13
+Jo, Hyungwoo. 2024. <span>“Jstable을 이용한 분석 모형 Table
+만들기.”</span> September 13, 2024. <a href="https://blog.zarathu.com/posts/2024-09-13 jstable">https://blog.zarathu.com/posts/2024-09-13
 jstable</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
