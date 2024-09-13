@@ -353,17 +353,17 @@ window.Quarto = {
 <section id="반응변수의-분포" class="level3"><h3 class="anchored" data-anchor-id="반응변수의-분포">반응변수의 분포</h3>
 <p>반응 변수의 분포 형태가 Exponential family(지수 분포군)를 따를 때 GLM을 적용할 수 있다. Exponential family는 아래와 같은 수식으로 나타낼 수 있다. <span class="math display">\[
 f(y | \theta, \phi) = \exp\left( \frac{y\theta - b(\theta)}{\phi} + c(y, \phi) \right)
-\]</span> 여기서<span class="math inline">\(y\)</span>는 반응 변수 ( )는 정규화 매게 변수, ( )는 분산을 나타냅니다. 이항분포의 경우 성공 확률 ( p )로 정의되며 아래 함수의 경우 위의 지수 분포군 함수로 변환이 가능합니다. 위와 같이 변형이 가능한 분포의 다른른 예시로는는 포아송 분포, 감마 분포 등이 있습니다. <span class="math display">\[
+\]</span> 여기서<span class="math inline">\(y\)</span>는 반응 변수 $ $는 정규화 매게 변수, <span class="math inline">\(\phi\)</span>는 분산을 나타냅니다. 이항분포의 경우 성공 확률 <span class="math inline">\(p\)</span>로 정의되며 아래 함수의 경우 위의 지수 분포군 함수로 변환이 가능합니다. 위와 같이 변형이 가능한 분포의 다른른 예시로는는 포아송 분포, 감마 분포 등이 있습니다. <span class="math display">\[
 P(Y = y) = \binom{n}{y} p^y (1 - p)^{n - y}
 \]</span></p>
 </section><section id="링크-함수" class="level3"><h3 class="anchored" data-anchor-id="링크-함수">링크 함수</h3>
-<p>링크 함수는 반응 변수의 평균과 예측 변수의 선형 관계를 나타내는 함수입니다. 반응변수의 분포가 지수 분포군에 있을 때 링크함수가 존재하며 포아송 분포의 경우 예시는 이와 같습니다. 아래 함수를 적용하면 선형 관계의 그래프를 얻을 수 있습니다. <span class="math display">\[
+<p>링크 함수는 반응 변수의 평균과 예측 변수의 선형 관계를 나타내는 함수입니다. 반응변수의 분포가 지수 분포군에 있을 때 링크함수가 존재하며 포아송 분포의 경우 예시는 이와 같습니다. 아래 함수를 적용하면 선형 관계의 그래프를 얻을 수 있습니다. 함수를 적용하니 평소에 알던 선형 회귀의 형태로 식이 나타나는 것을 알 수 있습니다. <span class="math display">\[
 \log\left( \frac{1 - \mu}{\mu} \right) = X\beta
 \]</span></p>
 </section><section id="관측치-독립" class="level3"><h3 class="anchored" data-anchor-id="관측치-독립">관측치 독립</h3>
 <p>관측치들이 독립되어야 적용이 가능합니다. 예를 들어, 한 사람의 혈압을 반복측정하는 경우 관측치들이 독립되어 있지 않기 때문에 다른 모델을 사용하여야 합니다. 이 경우에 대해서는 문서의 아래 GEE, GLMM 서술에서 다루겠습니다.</p>
 </section></section><section id="jstable-패키지를-사용한-glm-table만들기" class="level2"><h2 class="anchored" data-anchor-id="jstable-패키지를-사용한-glm-table만들기">jstable 패키지를 사용한 GLM table만들기</h2>
-<p>jstable 패키지를 사용하여 이항 분포와 가우스 분포의 GLM 모델의 결과를 직관적인 표로 만들 수 있습니다. 아래 코드는 mtcars 데이터를 사용하여과 이항 회귀 모델을 만들고 결과를 표로 나타낸 것입니다. R에서 제공되는 mtcars 데이터를 통해 이항분포를 가지는 am(자동미션 =0, 수동미션 =1)을 wt(차량무게), hp(마력)을 통해 예측하는 GLM에 대해 알아보겠습니다.</p>
+<p>jstable 패키지를 사용하여 이항 분포와 가우스 분포의 GLM 모델의 결과를 직관적인 표로 만들 수 있습니다. 아래 코드는 R에서 기본으로 제공되는 mtcars 데이터를 사용하여과 이항 회귀 모델을 만들고 결과를 표로 나타낸 것입니다. 이항분포를 가지는 am(자동미션 =0, 수동미션 =1)을 wt(차량무게), hp(마력)을 통해 예측하는 GLM에 대해 알아보겠습니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">binomial_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span>, family <span class="op">=</span> <span class="va">binomial</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">binomial_model</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -389,7 +389,7 @@ AIC: 16.059
 Number of Fisher Scoring iterations: 8</code></pre>
 </div>
 </div>
-<p>R에서 기본적으로 제공하는 summary 함수를 통해서 모델에 대해서 알아보았습니다. 많은 정보가 이 안에 담겨있으나, 다소 직관적이지 않을 수 있습니다. jstable 패키지를 사용하여 이를 표로 나타낼 수 있습니다.</p>
+<p>R에서 기본적으로 제공하는 summary 함수를 통해서 모델에 대해서 알아보았습니다. 많은 정보가 이 안에 담겨있으나, 다소 직관적이지 않을 수 있습니다. jstable 패키지를 사용하여 table로 변수들을 살펴보겠습니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">binomial_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span>, family <span class="op">=</span> <span class="va">binomial</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
 <span><span class="fu">glmshow.display</span><span class="op">(</span><span class="va">binomial_model</span>, decimal <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -409,7 +409,7 @@ attr(,"class")
 [1] "display" "list"   </code></pre>
 </div>
 </div>
-<p>이항 분포의 glm에 대하여 첫줄에서는 로지스틱 회귀 분석을 사용했음을 알 수 있습니다. 테이블 출력 결과를 통해 wt 변수는 p-value가 0.0001로 유의미하게 am에 영향을 미치는 것을 알 수 있습니다. Crude OR 변수를 통해 wt변수가 1이 증가할때마다 수동미션을 가질 odds 비율이 98프로 씩 감소한다는 것을 알 수 있습니다. Adjusted OR 변수가 0이라는 것을 통해 hp변수를 보정했을 경우에 Odds 비율이 더 강하게 연관되어 있다는 것을 알 수 있으며, adjusted p value또한 유의미하다는 것을 확인 할 수 있습니다. hp의 경우 OR과 p value를 통해 관련이 적음을 유추할 수 있습니다. 마지막 줄에서는 총 몇 개의 관측치가 있었는지, 그리고 AIC 수치를 통해 낮을 수록 더 좋은 모델이라는 것을 시사합니다.</p>
+<p>이항 분포의 glm에 대하여 첫줄에서는 로지스틱 회귀 분석을 사용했음을 알 수 있습니다. 테이블 출력 결과를 통해 wt 변수는 p-value가 0.0001로 유의미하게 am에 영향을 미치는 것을 알 수 있습니다. Crude OR 변수를 통해 wt변수가 1이 증가할때마다 수동미션을 가질 odds 비율이 98프로 씩 감소한다는 것을 알 수 있습니다. Adjusted OR 변수가 0이라는 것을 통해 hp변수를 보정했을 경우에 Odds 비율이 더 강하게 연관되어 있다는 것을 알 수 있으며, adjusted p value또한 유의미하다는 것을 확인 할 수 있습니다. hp의 경우 OR과 p value를 통해 관련이 적음을 유추할 수 있습니다. 마지막 줄에서는 총 몇 개의 관측치가 있었는지, 그리고 AIC 수치(낮을 수록 더 좋은 모델)를 알 수 있습니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gaussian_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">~</span><span class="va">cyl</span> <span class="op">+</span> <span class="va">disp</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
 <span><span class="fu">glmshow.display</span><span class="op">(</span><span class="va">gaussian_model</span>, decimal <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -429,18 +429,18 @@ attr(,"class")
 [1] "display" "list"   </code></pre>
 </div>
 </div>
-<p>이항 분포와 마찬가지로 첫줄에서는 정규분포에 대하여 선형 회귀 분석을 사용했음을 알 수 있고, 해당하는 p value 들 그리고 선형 회귀의 경우 Coeffecient를 제공함을 알 수 있습니다. 해당 테이블을 통해 cyl(실린더의 갯수)변수는 mpg(연비)에 유의미한 영향을 미치는 것을 알 수 있습니다. disp(배기량)변수는 보정 전에는 영향이 있어 보였으나 보정 이후 0.05보다 크기 때문에 통계적으로 유의미한 영향을 미치지 않는 것을 알 수 있습니다.</p>
+<p>정규분포를 나타내는 데이터에 대해서도 적용해보겠습니다.첫줄에서는 정규분포에 대하여 선형 회귀 분석을 사용했음을 알 수 있고, 해당하는 p value 들 그리고 선형 회귀의 경우 OR 대신 Coeffecient를 제공함을 알 수 있습니다. 해당 테이블을 통해 cyl(실린더의 갯수)변수는 mpg(연비)에 유의미한 영향을 미치는 것을 알 수 있습니다. disp(배기량)변수는 보정 전에는 영향이 있어 보였으나 보정 이후 0.05보다 크기 때문에 통계적으로 유의미한 영향을 미치지 않는 것을 알 수 있습니다.</p>
 </section></section><section id="gee" class="level1"><h1>2. GEE</h1>
-<p>GEE(Generalized Estimating Equations)는 GLM에서 반복 측정 혹은 군집화 데이터와 같이 상관된 데이터를 처리하기 위해 만들어진 확장된 모델입니다. GLM의 경우 링크 함수를 통한 선형 회귀 분석을 하기 때문에 기본적으로 관측치들 간의 상관관계가 없어야 한다는 선형 회귀분석의 기본 가정을 따르게 됩니다. 하지만 실제 데이터의 경우(반복된 혈압의 측정, 병원 내 환자들)과 같은 반복, 군집 데이터들을 통해 반응 변수를 분석해야 하는 경우가 많습니다. 당뇨병 환자의 당뇨약 복용 이후 혈당 변화를 예시로 생각해보겠습니다. 이를 일반적인 GLM 모형인</p>
+<p>GEE(Generalized Estimating Equations)는 GLM에서 반복 측정 혹은 군집화 데이터와 같이 상관된 데이터를 처리하기 위해 만들어진 확장된 모델입니다. GLM의 경우 링크 함수를 통한 선형 회귀 분석을 하기 때문에 기본적으로 관측치들 간의 상관관계가 없어야 한다는 선형 회귀분석의 기본 가정을 따르게 됩니다. 하지만 실제 데이터의 경우(반복된 혈압의 측정, 병원 내 환자들)과 같은 반복, 군집 데이터들을 통해 반응 변수를 분석해야 하는 경우가 많습니다. 당뇨병 환자의 혈당 측정을 예시로 생각해보겠습니다. 이를 일반적인 GLM 모형인</p>
 <p><span class="math display">\[
 g(\mu_{i}) = X_{i} \beta
 \]</span></p>
-<p>에 적용한다면, 여기서 ( g )는 링크 함수, ( X )는 종속 변수를 나타냅니다. 이 모델은 같은 환자에서 반복된 혈당 측정치들이 모두 <strong>독립적</strong>이라는 가정을 필요로 합니다.</p>
+<p>에 적용한다면, 여기서 <span class="math inline">\(g\)</span> 는 링크 함수, <span class="math inline">\(X\)</span>는 종속 변수를 나타냅니다. 이 모델은 같은 환자에서 반복된 혈당 측정치들이 모두 <strong>독립적</strong>이라는 가정을 필요로 합니다.</p>
 <p>그러나, 같은 환자의 경우 혈당 측정치들이 상관관계를 가지기 때문에, 이러한 상관관계를 반영한 모델은 다음과 같이 쓸 수 있습니다:</p>
 <p><span class="math display">\[
 g(\mu_{ij}) = X_{ij} \beta
 \]</span></p>
-<p>여기서 ( X_{ij} )는 ( i )번째 환자의 ( j )번째 관측치를 나타냅니다.</p>
+<p>여기서 <span class="math inline">\(X_{ij}\)</span>는 <span class="math inline">\(i\)</span>번째 환자의 <span class="math inline">\(j\)</span>번째 관측치를 나타냅니다.( <span class="math inline">\(g(\mu_{ij})\)</span>의 경우 혈당). 간단한 예시 적용을 위해, <span class="math inline">\(X_{ij1}\)</span>를 환자 <span class="math inline">\(i\)</span>의 나이, <span class="math inline">\(X_{ij2}\)</span>를를 치료 그룹 (1 = 치료군, 0 = 대조군),<span class="math inline">\(X_{ij3}\)</span>)를 혈압, <span class="math inline">\(X_{ij4}\)</span>를 시간(측정 시점)이라 가정해보겠습니다.</p>
 
 
 </section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{jo2024,
