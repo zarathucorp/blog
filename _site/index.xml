@@ -9,8 +9,884 @@
 <link>https://blog.zarathu.com/</link>
 <atom:link href="https://blog.zarathu.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>차라투의 소식, 인사이트 및 심층 사례 연구</description>
-<generator>quarto-1.5.47</generator>
-<lastBuildDate>Sun, 25 Aug 2024 15:00:00 GMT</lastBuildDate>
+<generator>quarto-1.5.57</generator>
+<lastBuildDate>Thu, 12 Sep 2024 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>jstable을 이용한 분석 모형 table 만들기</title>
+  <dc:creator>Hyungwoo Jo</dc:creator>
+  <link>https://blog.zarathu.com/posts/2024-09-13 jstable/</link>
+  <description><![CDATA[ <!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="개요" class="level1"><h1>개요</h1>
+<p>이 문서에서는 GLM, GEE, GLMM, Cox 모델에 대한 개요와 이를 jstable 패키지와 더불어 활용하는 방법을 소개합니다.</p>
+</section><section id="glm" class="level1"><h1>1. GLM</h1>
+<section id="glm의-개요" class="level2"><h2 class="anchored" data-anchor-id="glm의-개요">GLM의 개요</h2>
+<p>GLM은 Generalized Linear Model의 약자로 일반화 선형 모델을 의미합니다. 기존의 선형 회귀 모델에서는 반응 변수가 정규 분포를 따라야한다는 가정이 필요하지만, 현실에서는 그렇지 않은 경우가 많습니다. GLM은 이러한 경우에도 사용하기 위해 만들어진 모델입니다. 정규 분포가 아닌 흔한 예시로는 이항분포, 포아송 분포 등이 있습니다. 나이에 따른 생존 상태(생존은 1, 사망은 0)인 이항분포 반응변수를 간단한 예시로 들어보겠습니다. 일반적 선형회귀 모델과 GLM을 통해 로지스틱 회귀 분석을 한 결과를 비교해보았습니다.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2024-09-13 jstable/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>일반적인 선형 회귀 함수를 적용했을 때 나이가 어린 경우에는 사망 확률이 음수가 나오며, 고령인 경우 사망 확률이 1이 넘는 등의 문제가 발생합니다. 반면, GLM(로지스틱 회귀모형)을 적용하면 모든 나이에서 사망 확률이 0에서 1사이가 됨을 알 수 있습니다.</p>
+</section><section id="glm을-적용하기-위한-데이터의-조건" class="level2"><h2 class="anchored" data-anchor-id="glm을-적용하기-위한-데이터의-조건">GLM을 적용하기 위한 데이터의 조건</h2>
+<p>이항 분포에 대해 GLM을 적용하였지만, 모든 데이터에 GLM을 적용할 수 있는 것은 아닙니다. GLM을 적용하기 위한 조건에 대해 알아보겠습니다.</p>
+<section id="반응변수의-분포" class="level3"><h3 class="anchored" data-anchor-id="반응변수의-분포">반응변수의 분포</h3>
+<p>반응 변수의 분포 형태가 Exponential family(지수 분포군)를 따를 때 GLM을 적용할 수 있습니다. Exponential family는 아래와 같은 수식으로 나타낼 수 있습니다. <img src="https://latex.codecogs.com/png.latex?%0Af(y%20%7C%20%5Ctheta,%20%5Cphi)%20=%20%5Cexp%5Cleft(%20%5Cfrac%7By%5Ctheta%20-%20b(%5Ctheta)%7D%7B%5Cphi%7D%20+%20c(y,%20%5Cphi)%20%5Cright)%0A"> 여기서<img src="https://latex.codecogs.com/png.latex?y">는 반응 변수 <img src="https://latex.codecogs.com/png.latex?%5Ctheta">는 정규화 매게 변수, <img src="https://latex.codecogs.com/png.latex?%5Cphi">는 분산을 나타냅니다. 이항분포를 예시로 생각해보겠습니다. 이항분포의 경우 성공 확률 <img src="https://latex.codecogs.com/png.latex?p">로 정의되며 아래 함수의 경우 다음과 같이 지수 분포군 함수로 변환이 가능합니다.<br><img src="https://latex.codecogs.com/png.latex?%0AP(Y%20=%20y)%20=%20%5Cbinom%7Bn%7D%7By%7D%20p%5Ey%20(1%20-%20p)%5E%7Bn%20-%20y%7D%0A"> <img src="https://latex.codecogs.com/png.latex?%0AP(Y%20=%20y)%20=%20%5Cbinom%7Bn%7D%7By%7D%20%5Cexp%5Cleft(%20y%20%5Clog%5Cleft(%20%5Cfrac%7Bp%7D%7B1%20-%20p%7D%20%5Cright)%20+%20n%20%5Clog(1%20-%20p)%20%5Cright)%0A"> 위와 같이 Exponential family로 변형이 가능한 다른 흔한 분포로는 포아송 분포, 감마 분포 등이 있습니다. Exponential Family로 변형이 가능한 분포의 경우, 지수함수의 특성으로 최대우도 추정(Maximum Likelihood Estimation)을 효율적 계산을 통해 할 수 있으며, 링크함수를 통해 선형 예측을 쉽게 할 수 있다는 장점이 있습니다.</p>
+</section><section id="링크-함수" class="level3"><h3 class="anchored" data-anchor-id="링크-함수">링크 함수</h3>
+<p>Exponential family 함수의 경우 지수형태로 존재하기 때문에 곧바로 선형 회귀 분석을 할 수는 없습니다. 선형 회귀 분석과 Exponential family를 연결하기 위한 함수가 필요한데, 이를 링크함수라 부릅니다. 링크 함수를 통해 반응 변수의 평균과 예측 변수의 선형 관계를 나타낼 수 있습니다. 반응변수의 분포가 지수 분포군에 있을 때 링크함수를 사용할 수 있으며 이항 분포의 경우 예시는 이와 같습니다. 아래 함수를 적용하면 선형 관계의 그래프를 얻을 수 있습니다. 함수를 적용하니 평소에 알던 선형 회귀의 형태로 식이 나타나는 것을 알 수 있습니다. <img src="https://latex.codecogs.com/png.latex?%0A%5Clog%5Cleft(%20%5Cfrac%7B1%20-%20%5Cmu%7D%7B%5Cmu%7D%20%5Cright)%20=%20X%5Cbeta%0A"></p>
+</section><section id="관측치-독립" class="level3"><h3 class="anchored" data-anchor-id="관측치-독립">관측치 독립</h3>
+<p>GLM을 적용하기 위해서는 관측치들이 독립되어 합니다. 예를 들어, 한 사람의 혈압을 반복측정하는 경우 관측치들이 독립되어 있지 않기 때문에 다른 모델을 사용하여야 합니다. 이 경우에 대해서는 문서의 아래 내용에서 다루도록 하겠습니다.</p>
+</section></section><section id="glm-table-해석하기" class="level2"><h2 class="anchored" data-anchor-id="glm-table-해석하기">GLM table 해석하기</h2>
+<p>jstable 패키지를 사용하여 이항 분포와 가우스 분포의 GLM 모델의 결과를 직관적인 표로 만들 수 있습니다. 아래 코드는 R에서 기본으로 제공되는 mtcars 데이터를 사용하여과 이항 회귀 모델을 만들고 결과를 표로 나타낸 것입니다. 이항분포를 가지는 am(자동미션 =0, 수동미션 =1)을 wt(차량무게), hp(마력)을 통해 예측하는 GLM에 대해 알아보겠습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">binomial_model</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">am</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wt</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hp</span>, family <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">binomial</span>, data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mtcars</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glmshow.display</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">binomial_model</span>, decimal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$first.line
+[1] "Logistic regression predicting am\n"
+
+$table
+   crude OR.(95%CI) crude P value adj. OR.(95%CI) adj. P value
+wt "0.02 (0,0.3)"   "0.005"       "0 (0,0.13)"    "0.008"     
+hp "0.99 (0.98,1)"  "0.181"       "1.04 (1,1.07)" "0.041"     
+
+$last.lines
+[1] "No. of observations = 32\nAIC value = 16.0591\n\n"
+
+attr(,"class")
+[1] "display" "list"   </code></pre>
+</div>
+</div>
+<p>이항 분포의 glm에 대하여 첫줄에서는 로지스틱 회귀 분석을 사용했음을 알 수 있습니다. 테이블 출력 결과를 통해 wt 변수는 p-value가 0.0001로 유의미하게 미션의 종류에 영향을 미치는 것을 알 수 있습니다. Crude OR 변수를 통해 차량 무게 변수가 1이 증가할때마다 수동미션을 가질 odds 비율이 98프로 씩 감소한다는 것을 알 수 있습니다. Adjusted OR 변수가 0이라는 것을 통해 마력 변수를 보정했을 경우에 Odds 비율이 더 강하게 연관되어 있다는 것을 알 수 있으며, adjusted p value또한 유의미하다는 것을 확인 할 수 있습니다. hp의 경우 OR과 p value를 통해 관련이 적음을 유추할 수 있습니다. 마지막 줄에서는 총 몇 개의 관측치가 있었는지, 그리고 AIC 수치(낮을 수록 더 좋은 모델)를 알 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">gaussian_model</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mpg</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">cyl</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">disp</span>, data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mtcars</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glmshow.display</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">gaussian_model</span>, decimal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$first.line
+[1] "Linear regression predicting mpg\n"
+
+$table
+     crude coeff.(95%CI)   crude P value adj. coeff.(95%CI)    adj. P value
+cyl  "-2.88 (-3.51,-2.24)" "&lt; 0.001"     "-1.59 (-2.98,-0.19)" "0.034"     
+disp "-0.04 (-0.05,-0.03)" "&lt; 0.001"     "-0.02 (-0.04,0)"     "0.054"     
+
+$last.lines
+[1] "No. of observations = 32\nR-squared = 0.7596\nAIC value = 167.1456\n\n"
+
+attr(,"class")
+[1] "display" "list"   </code></pre>
+</div>
+</div>
+<p>정규분포를 나타내는 데이터에 대해서도 적용해보겠습니다.첫줄에서는 정규분포에 대하여 선형 회귀 분석을 사용했음을 알 수 있고, 해당하는 p value 들 그리고 선형 회귀의 경우 OR 대신 Coeffecient를 제공함을 알 수 있습니다. 해당 테이블을 통해 cyl(실린더의 갯수)변수는 mpg(연비)에 유의미한 영향을 미치는 것을 알 수 있습니다. disp(배기량)변수는 보정 전에는 영향이 있어 보였으나 보정 이후 0.05보다 크기 때문에 통계적으로 유의미한 영향을 미치지 않는 것을 알 수 있습니다.</p>
+</section></section><section id="gee" class="level1"><h1>2. GEE</h1>
+<p>GEE(Generalized Estimating Equations)는 GLM에서 반복 측정 혹은 군집화 데이터와 같이 상관된 데이터를 처리하기 위해 만들어진 확장된 모델입니다. GLM의 경우 링크 함수를 통한 선형 회귀 분석을 하기 때문에 기본적으로 관측치들 간의 상관관계가 없어야 한다는 선형 회귀분석의 기본 가정을 따르게 됩니다. 하지만 실제 데이터의 경우(반복된 혈압의 측정, 같은 병원 내 환자들)과 같은 반복, 군집 데이터들을 통해 반응 변수를 분석해야 하는 경우가 많습니다. 나이별 환자의 혈압 측정을 예시로 생각해보겠습니다. 이를 일반적인 GLM 모형에 적용한다면(여기서 <img src="https://latex.codecogs.com/png.latex?g"> 는 링크 함수, <img src="https://latex.codecogs.com/png.latex?X">는 종속 변수를 나타냅니다.), 같은 환자에서 반복된 혈압 측정치들이 모두 <strong>독립적</strong>이라는 가정을 필요로 합니다.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ag(%5Cmu_%7Bi%7D)%20=%20X_%7Bi%7D%20%5Cbeta%0A"></p>
+<p>잠시 예시를 살펴보겠습니다.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2024-09-13 jstable/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2024-09-13 jstable/index_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>시간에 따른 혈압의 변화를 살펴보았을 떄, 같은 환자에게 반복측정되었다는 사실을 반영하지 않고 데이터를 바라보았을 때는 시간이 지날수록 혈압이 감소한다는 결론을 얻을 수 있습니다. 하지만 환자별로 살펴본다면 실제로는 제 각각의 환자들에 대해서는 시간과 유의미한 관계가 있다고 보기는 힘들다는 것을 알 수 있습니다. 반복측정된 데이터들간에는 상관관계가 있다는 사실을 반영한 새로운 측정방식이 필요하다는 것을 알 수 있습니다. 이러한 상관관계를 반영한 모델은 다음과 같이 쓸 수 있습니다:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ag(%5Cmu_%7Bij%7D)%20=%20X_%7Bij%7D%20%5Cbeta%0A"> 여기서 <img src="https://latex.codecogs.com/png.latex?X_%7Bij%7D">는 <img src="https://latex.codecogs.com/png.latex?i">번째 환자의 <img src="https://latex.codecogs.com/png.latex?j">번째 관측치를 나타냅니다.( <img src="https://latex.codecogs.com/png.latex?g(%5Cmu_%7Bij%7D)">의 경우 혈압압). 간단한 예시 적용을 위해, <img src="https://latex.codecogs.com/png.latex?X_%7Bij1%7D">를 환자 <img src="https://latex.codecogs.com/png.latex?i">의 나이, <img src="https://latex.codecogs.com/png.latex?X_%7Bij2%7D">를를 치료여부부 (1 = 치료군, 0 = 대조군),<img src="https://latex.codecogs.com/png.latex?X_%7Bij3%7D">를 혈압, <img src="https://latex.codecogs.com/png.latex?X_%7Bij4%7D">를 -시간(측정 시점)이라 가정해보겠습니다. <img src="https://latex.codecogs.com/png.latex?%0Ag(%5Cmu_%7Bij%7D)%20=%20%5Cbeta_0%20+%20%5Cbeta_1%20%5Ctimes%20%5Ctext%7B%EB%82%98%EC%9D%B4%7D_%7Bi%7D%20+%20%5Cbeta_2%20%5Ctimes%20%5Ctext%7B%EC%B9%98%EB%A3%8C%EC%97%AC%EB%B6%80%7D_%7Bi%7D%20+%20%5Cbeta_3%20%5Ctimes%20%5Ctext%7B%EC%8B%9C%EA%B0%84%7D_%7Bi%7D%0A"> 여기서 <img src="https://latex.codecogs.com/png.latex?%5Cbeta_0,%20%5Cbeta_1,%20%5Cbeta_2,%20%5Cbeta_3,%5Cbeta_4"> (계수)는 모든 환자에 대해 일정하므로, 개인 또는 시간점에 따라 변하지 않습니다. <img src="https://latex.codecogs.com/png.latex?X_%7Bij%7D"> (예측 변수)는 환자와 시간점에 따라 다릅니다.</p>
+<section id="glm과-gee의-공분산-차이" class="level2"><h2 class="anchored" data-anchor-id="glm과-gee의-공분산-차이">GLM과 GEE의 공분산 차이</h2>
+<p>데이터간의 상관관계가 반영된다는 점에서 결과적으로 GEE는 복잡한 공분산을 반영하고 있다는 것을 알 수 있습니다.</p>
+<p>GLM의 경우 관측치들이 독립이라는 가정이 있기 때문에 공분산 행렬이 대각행렬입니다. 반면 GEE의 경우 관측치들이 상관관계가 있다는 가정을 따르기 때문에 공분산 행렬이 대각행렬이 아닌 다른 형태를 가질 수 있습니다. 따라서 GLM에서의 공분산 행렬은 <img src="https://latex.codecogs.com/png.latex?V_i%20=%20%5Cphi%20%5Ccdot%20W_i">와 같은 구조에서 <img src="https://latex.codecogs.com/png.latex?W_i">는 대각행렬이 되며, GEE에서의 공분산 행렬은 <img src="https://latex.codecogs.com/png.latex?V_i%20=%20%5Cphi%20%5Ccdot%20A_i%5E%7B1/2%7D%20R(%5Calpha)%20A_i%5E%7B1/2%7D">와 같은 구조에서 <img src="https://latex.codecogs.com/png.latex?A_i">는 대각 가중치 행렬의 형태를 따르나, 상관관계를 반영하는 <img src="https://latex.codecogs.com/png.latex?R(%5Calpha)">라는 상관행렬이 있게 됩니다. 공분산과 앞선 회귀식을 모두 반영하면 GLM 과 GEE는 모두 아래의 수식과 같은 형태를 띄게 되며, <img src="https://latex.codecogs.com/png.latex?V_i">에서 그 차이가 나타납니다. <img src="https://latex.codecogs.com/png.latex?%0AY_i%20=%20g%5E%7B-1%7D(X_i%5ET%20%5Cbeta)%20+%20%5Cepsilon_i%20%5Cquad%20%5Ctext%7Bwith%7D%20%5Cquad%20%5Cepsilon_i%20%5Csim%20N(0,%20V_i)%0A"></p>
+</section><section id="gee-table-해석하기" class="level2"><h2 class="anchored" data-anchor-id="gee-table-해석하기">GEE table 해석하기</h2>
+<p>jstable 패키지를 사용하여 군집 데이터의 GEE적용 후 결과 해석에 대해 알아보겠습니다. 아래 코드는 R에서 제공되는 geepack의 dietox 데이터를 이용하여 돼지의 체중을 예상하는 모델을 만드는 예시입니다. 시간과 구리 보충제 상태가 돼지의 체중에 미치는 영향을 분석해보겠습니다. 군집 데이터의 특성을 반영하여, 돼지별 데이터를 분석하였음을 알 수 코드에서도 알 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">geepack</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">## for dietox data</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dietox</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dietox</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Cu</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dietox</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Cu</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dietox</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ddn</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dietox</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">gee01</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/geepack/man/geeglm.html">geeglm</a></span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Weight</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Time</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Cu</span> , id <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Pig</span>, data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dietox</span>, family <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">gaussian</span>, corstr <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ex"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geeglm.display</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">gee01</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$caption
+[1] "GEE(gaussian) predicting Weight by Time, Cu - Group Pig"
+
+$table
+               crude coeff(95%CI)   crude P value adj. coeff(95%CI)  
+Time           "6.94 (6.79,7.1)"    "&lt; 0.001"     "6.94 (6.79,7.1)"  
+Cu: ref.=Cu000 NA                   NA            NA                 
+      035      "-0.59 (-3.73,2.54)" "0.711"       "-0.84 (-3.9,2.23)"
+      175      "1.9 (-1.87,5.66)"   "0.324"       "1.77 (-1.9,5.45)" 
+               adj. P value
+Time           "&lt; 0.001"   
+Cu: ref.=Cu000 NA          
+      035      "0.593"     
+      175      "0.345"     
+
+$metric
+                                 crude coeff(95%CI) crude P value
+                                 NA                 NA           
+Estimated correlation parameters "0.775"            NA           
+No. of clusters                  "72"               NA           
+No. of observations              "861"              NA           
+                                 adj. coeff(95%CI) adj. P value
+                                 NA                NA          
+Estimated correlation parameters NA                NA          
+No. of clusters                  NA                NA          
+No. of observations              NA                NA          </code></pre>
+</div>
+</div>
+<p>해석을 위해 jstable 패키지를 사용하여 결과를 표로 나타내었습니다. 시간의 p-value를 확인하였을 때, 시간은 돼지 체중 증가에 유의미한 영향을 미치고 있다고 할 수 있으며, 계수를 보았을 때 단위 시간당 체중이 6.94만큼 증가한다고 추정할 수 있습니다. 구리 보충제의 경우 두가지 종류의 보충제 모두 통계적으로 유의미한 영향을 미치지 않는다고 해석할 수 있습니다. Metric 부분에서는 모델의 상관구조와 관련된 정보를 알 수 있습니다. Estimated correlation parameters의 경우 같은 군집의 시간에 따른 관측값들 사이의 상관관계를 나타내며, 0.775는 높은 상관관계를 의미합니다. 아래의 cluster 와 observation에서는 총 72마리의 돼지에 대하여 861개의 관측치로 분석을 했음을 알 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">gee02</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/geepack/man/geeglm.html">geeglm</a></span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ddn</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Time</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Cu</span> , id <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Pig</span>, data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dietox</span>, family <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">binomial</span>, corstr <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ex"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geeglm.display</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">gee02</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$caption
+[1] "GEE(binomial) predicting ddn by Time, Cu - Group Pig"
+
+$table
+               crude OR(95%CI)    crude P value adj. OR(95%CI)     adj. P value
+Time           "1.01 (0.97,1.05)" "0.609"       "1.01 (0.97,1.05)" "0.615"     
+Cu: ref.=Cu000 NA                 NA            NA                 NA          
+      035      "1.2 (0.91,1.58)"  "0.198"       "1.2 (0.91,1.58)"  "0.199"     
+      175      "1.21 (0.91,1.61)" "0.189"       "1.21 (0.91,1.61)" "0.19"      
+
+$metric
+                                 crude OR(95%CI) crude P value adj. OR(95%CI)
+                                 NA              NA            NA            
+Estimated correlation parameters "-0.022"        NA            NA            
+No. of clusters                  "72"            NA            NA            
+No. of observations              "861"           NA            NA            
+                                 adj. P value
+                                 NA          
+Estimated correlation parameters NA          
+No. of clusters                  NA          
+No. of observations              NA          </code></pre>
+</div>
+</div>
+<p>이번에는 이항분포를 사용하여 돼지의 체중 증가에 대한 모델을 만들어보았습니다. 이전 코드와는 다르게 family에 binomial을 입력하였으며, ddn은 임의로 0,1이 있는 이항분포 변수이며 이를 시간과 구리 보충제 상태로 예측하는 모델입니다. 이항분포이기 때문에 회귀계수 대신 OR이 있는 것을 알 수 있습니다. 변수들 모두 p-value가 통계적으로 의미 있는 수준은 아니라는 것을 알 수 있습니다. ddn이 임의 변수이기 때문에 시간이나 구리 보충제 여부에 따른 오즈비가 1에 가까울 것일 거라고 추측할 수 있고, 실제로 그러한 결과를 보여줍니다.</p>
+</section></section><section id="mixed-effects-model" class="level1"><h1>3. Mixed-Effects Model</h1>
+<p>앞선 데이터 분석에서 다음과 같은 의문이 생길 수 있습니다. 돼지마다 체중에 대한 기초 수준이 다를텐데, GEE의 경우에는 그러한 부분이 반영되지 않아아 이를 어떻게 해결해야할지에 대한 고민이 생길 것입니다. 이를 위해 임의 효과라는 것을 적용하여 각 군집에 대한 고유한 변동을 설명할 수 있습니다. 군집간의 기초 수준뿐만 아니라, 군집 내의 기울기 또한 달라질 수 있다는 것을 반영하는 형태로 수식을 써볼 수 있겠습니다. <img src="https://latex.codecogs.com/png.latex?%0Ay_%7Bij%7D%20=%20%5Cbeta_0%20+%20%5Cbeta_1%20X_%7B1ij%7D%20+%20%5Cbeta_2%20X_%7B2ij%7D%20+%20(u_%7Bi0%7D%20+%20u_%7Bi1%7D%20X_%7B1ij%7D)%20+%20%5Cepsilon_%7Bij%7D%0A"> 여기서 <img src="https://latex.codecogs.com/png.latex?u_%7Bi0%7D">는 군집 <img src="https://latex.codecogs.com/png.latex?i">의 기초 수준을 나타내며, <img src="https://latex.codecogs.com/png.latex?u_%7Bi1%7D">은 군집 <img src="https://latex.codecogs.com/png.latex?i">의 기울기를 나타냅니다. 의학통계를 예시로, 다양한 병원에서 연구를 진행하였다하면 <img src="https://latex.codecogs.com/png.latex?u_%7Bi0%7D">는 병원의 기초 수준 차이(환자들의 평균 초기 상태)들을 반영할 수 있으며 <img src="https://latex.codecogs.com/png.latex?u_%7Bi1%7D">는 병원에서 특정 변수에 따른 반응 차이(일부 병원에서는 고령 환자의 시술에 미숙)을 반영할 수 있습니다. 이러한 Mixed-Model또한 앞서 보았던 링크함수를 사용하면 다양한 분포에 대하여 더 일반화된 Mixed-model인 GLMM(Generalized Linear Mixed Model)을 만들 수 있습니다.</p>
+<section id="jstable-패키지를-사용한-lmm-table만들기" class="level2"><h2 class="anchored" data-anchor-id="jstable-패키지를-사용한-lmm-table만들기">jstable 패키지를 사용한 LMM table만들기</h2>
+<p>아래 코드는 R에서 제공되는 geepack의 dietox 데이터를 이용하여 돼지의 체중을 예상하는 모델을 만드는 예시입니다. GEE에서와 다르게 각 돼지별 체중의 차이가 다르다는 점을 반영한 모델을 만들어볼 것입니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://github.com/lme4/lme4/">lme4</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">l1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Weight</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Time</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Cu</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Pig</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dietox</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> </span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lmer.display</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">l1</span>, ci.ranef <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Computing profile confidence intervals ...</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$table
+                     crude coeff(95%CI) crude P value adj. coeff(95%CI)
+Time                   6.94 (6.88,7.01)     0.0000000  6.94 (6.88,7.01)
+Cu: ref.=Cu000                     &lt;NA&gt;            NA              &lt;NA&gt;
+      035            -0.58 (-4.67,3.51)     0.7811327 -0.84 (-4.47,2.8)
+      175              1.9 (-2.23,6.04)     0.3670740  1.77 (-1.9,5.45)
+Random effects                     &lt;NA&gt;            NA              &lt;NA&gt;
+Pig                 40.34 (28.08,54.95)            NA              &lt;NA&gt;
+Residual             11.37 (10.3,12.55)            NA              &lt;NA&gt;
+Metrics                            &lt;NA&gt;            NA              &lt;NA&gt;
+No. of groups (Pig)                  72            NA              &lt;NA&gt;
+No. of observations                 861            NA              &lt;NA&gt;
+Log-likelihood                  -2400.8            NA              &lt;NA&gt;
+AIC value                        4801.6            NA              &lt;NA&gt;
+                    adj. P value
+Time                   0.0000000
+Cu: ref.=Cu000                NA
+      035              0.6527264
+      175              0.3442309
+Random effects                NA
+Pig                           NA
+Residual                      NA
+Metrics                       NA
+No. of groups (Pig)           NA
+No. of observations           NA
+Log-likelihood                NA
+AIC value                     NA
+
+$caption
+[1] "Linear mixed model fit by REML : Weight ~ Time + Cu + (1 | Pig)"</code></pre>
+</div>
+</div>
+<p>고정효과인 Time과 Cu 에 대해서는 이번에도 시간만 통계적으로 유의미한 변수로 나왔으며, 체중의 증가에 통계적으로 유의미한 영향을 미치는 것을 알 수 있습니다. 이번에는 임의 효과에 대해서 조금 더 자세히 알아보겠습니다. 돼지 데이터에서 임의 효과의 분산은 40.34로 나왔습니다. 이는 돼지마다 체중의 차이가 크다는 것을 알 수 있으며, 11.37이라는 잔차는 돼지별 임의 효과를 반영한 후에도 남는 체중의 변동이 있음을 설명합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">l2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/lme4/man/glmer.html">glmer</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ddn</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Weight</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Time</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Pig</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, data<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dietox</span>, family<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"binomial"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lmer.display</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">l2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$table
+                     crude OR(95%CI) crude P value  adj. OR(95%CI) adj. P value
+Weight                    1 (1,1.01)     0.7020746   1 (0.98,1.02)    0.8041261
+Time                1.01 (0.97,1.05)     0.6358656 1.03 (0.9,1.17)    0.7088793
+Random effects                  &lt;NA&gt;            NA            &lt;NA&gt;           NA
+Pig                                0            NA            &lt;NA&gt;           NA
+Metrics                         &lt;NA&gt;            NA            &lt;NA&gt;           NA
+No. of groups (Pig)               72            NA            &lt;NA&gt;           NA
+No. of observations              861            NA            &lt;NA&gt;           NA
+Log-likelihood               -596.49            NA            &lt;NA&gt;           NA
+AIC value                    1200.98            NA            &lt;NA&gt;           NA
+
+$caption
+[1] "Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) : ddn ~ Weight + Time + (1 | Pig)"</code></pre>
+</div>
+</div>
+<p>이항 분포를 가지는 변수에는 GLM과 비슷한 방식으로 일반화 된 방식인 GLMM이 적용이 가능합니다. ddn의 경우 임의로 형성된 변수이기 때문에 통계적으로 유의미하지 않은 고정 변수들을 확인할 수 있으며 OR모두 1에 가깝다는 것을 확인할 수 있습니다. 임의효과인 돼지의 분산의 경우 앞선 LMM보다 낮게 나왔습니다. 이는 0과 1만 가지는 이항데이터를 다루기 때문에, 돼지 간의 기초 수준 차이가 연속형 데이터처럼 크게 반영되지 않았기 떄문일 것입니다.</p>
+</section></section><section id="cox-model-with-frailty-cluster-options" class="level1"><h1>4. Cox model with frailty, cluster options</h1>
+<p>Cox model은 생존분석을 위한 모델로, 시간에 따른 사건의 발생을 예측하는 모델입니다. 이전에 다룬 GLM, GEE, LMM과 마찬가지로 Cox model도 frailty와 cluster 옵션을 사용하여 군집 데이터를 다룰 수 있습니다. 이번에도 jstable을 활용하여 분석 결과를 같이 보겠습니다. R에서 제공하는 survival library의 lung 데이터를 사용하여 Cox model을 만들어보겠습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb18" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://github.com/therneau/survival">survival</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">lung</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  inst time status age sex ph.ecog ph.karno pat.karno meal.cal wt.loss
+1    3  306      2  74   1       1       90       100     1175      NA
+2    3  455      2  68   1       0       90        90     1225      15
+3    3 1010      1  56   1       0       90        90       NA      15
+4    5  210      2  57   1       1       90        60     1150      11
+5    1  883      2  60   1       0      100        90       NA       0
+6   12 1022      1  74   1       1       50        80      513       0</code></pre>
+</div>
+</div>
+<section id="cluster-옵션을-사용한-cox-model" class="level2"><h2 class="anchored" data-anchor-id="cluster-옵션을-사용한-cox-model">cluster 옵션을 사용한 Cox model</h2>
+<p>lung의 데이터는 228명의 환자에 대한 생존 데이터를 포함하고 있습니다. ECOG와 나이에 따른 폐암 환자의 생존을 예측하는 모델을 만들고 싶은데, 같은 병원에서 치료를 받게 되면 병원의 비슷한 프로토콜 등에 영향을 받아 비슷한 치료 결과를 보일 수 있습니다. 따라서, 같은 병원 내의 환자들의 상관관계를 고려하여 만들고 싶을 때 cluster 옵션을 사용할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">fit1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survival/man/coxph.html">coxph</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">time</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">status</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ph.ecog</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">age</span>, cluster <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">inst</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">lung</span>, model <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cox2.display</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">fit1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$table
+        crude HR(95%CI)       crude P value adj. HR(95%CI)     adj. P value
+ph.ecog "38.34 (38.32,38.36)" "&lt; 0.001"     "33.03 (33,33.06)" "&lt; 0.001"   
+age     "14.67 (14.46,14.88)" "0.007"       "5.59 (4.73,6.61)" "0.085"     
+
+$ranef
+        [,1] [,2] [,3] [,4]
+cluster   NA   NA   NA   NA
+inst      NA   NA   NA   NA
+
+$metric
+                        [,1] [,2] [,3] [,4]
+&lt;NA&gt;                      NA   NA   NA   NA
+No. of observations  226.000   NA   NA   NA
+No. of events        163.000   NA   NA   NA
+AIC                 1463.797   NA   NA   NA
+
+$caption
+[1] "Marginal Cox model on time ('time') to event ('status') - Group inst"</code></pre>
+</div>
+</div>
+<p>table의 결과를 보았을 때 ecog는 환자의 생존에 강한 영향을 미치며 통계적으로도 유의미하다는 것을 알 수 있습니다. age 변수의 경우 조정되지 않은 모델에서는 유의미한 위험 요인으로 나타났지만, ecog를 조정한 이후에는 통계적으로 유의미하지 않았다는 것을 확인할 수 있습니다.</p>
+</section><section id="frailty-옵션을-사용한-cox-model" class="level2"><h2 class="anchored" data-anchor-id="frailty-옵션을-사용한-cox-model">frailty 옵션을 사용한 Cox model</h2>
+<p>같은 병원 내의 환자들간의 상관관계 외에 병원간 차이를 고려하고 싶을 수도 있습니다. 일부 병원은 다른 병원보다 더 좋은 생존 결과를 가지고 있을 수 있기 때문에, 이에 따른 변수를 frailty 옵션을 사용해서 고려합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb22" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">fit2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survival/man/coxph.html">coxph</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">time</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">status</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ph.ecog</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">age</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survival/man/frailty.html">frailty</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">inst</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">lung</span>, model <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cox2.display</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">fit1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$table
+        crude HR(95%CI)       crude P value adj. HR(95%CI)     adj. P value
+ph.ecog "38.34 (38.32,38.36)" "&lt; 0.001"     "33.03 (33,33.06)" "&lt; 0.001"   
+age     "14.67 (14.46,14.88)" "0.007"       "5.59 (4.73,6.61)" "0.085"     
+
+$ranef
+        [,1] [,2] [,3] [,4]
+cluster   NA   NA   NA   NA
+inst      NA   NA   NA   NA
+
+$metric
+                        [,1] [,2] [,3] [,4]
+&lt;NA&gt;                      NA   NA   NA   NA
+No. of observations  226.000   NA   NA   NA
+No. of events        163.000   NA   NA   NA
+AIC                 1463.797   NA   NA   NA
+
+$caption
+[1] "Marginal Cox model on time ('time') to event ('status') - Group inst"</code></pre>
+</div>
+</div>
+<p>table의 결과를 보았을 때 ecog와 age가 생존에 미치는 영향은 앞선 cluster 옵션을 이용했을 때와 비슷한 것을 확인할 수 있습니다.</p>
+</section><section id="mixed-effect를-사용한-cox-model" class="level2"><h2 class="anchored" data-anchor-id="mixed-effect를-사용한-cox-model">mixed effect를 사용한 Cox model</h2>
+<p>병원 내에서의 상간관계와 병원간 차이를 고려해서 모델을 만들어 본 이후에 병원 내의 환자들간의 상관관계와 병원간 차이를 모두 고려하고 싶을 수 있습니다. 이를 위해 mixed effect를 사용한 Cox model을 만들어보겠습니다. 이는 앞서 얘기한 Mixed-Effect Model과 Cox model을 결합한 형태로 생각할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb24" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">coxme</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">fit</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/coxme/man/coxme.html">coxme</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">time</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">status</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ph.ecog</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">age</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">inst</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">lung</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coxme.display</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">fit</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> </span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$table
+        crude HR(95%CI)    crude P value adj. HR(95%CI)     adj. P value
+ph.ecog "1.66 (1.32,2.09)" "&lt; 0.001"     "1.61 (1.27,2.03)" "&lt; 0.001"   
+age     "1.02 (1,1.04)"    "0.043"       "1.01 (0.99,1.03)" "0.227"     
+
+$ranef
+                [,1] [,2] [,3] [,4]
+Random effect     NA   NA   NA   NA
+inst(Intercept) 0.02   NA   NA   NA
+
+$metric
+                    [,1] [,2] [,3] [,4]
+&lt;NA&gt;                  NA   NA   NA   NA
+No. of groups(inst)   18   NA   NA   NA
+No. of observations  226   NA   NA   NA
+No. of events        163   NA   NA   NA
+
+$caption
+[1] "Mixed effects Cox model on time ('time') to event ('status') - Group inst"</code></pre>
+</div>
+</div>
+<p>통계적 유의성에 관해서는 앞선 테이블들과 유사함을 알 수 있습니다. Mixed effect를 사용한 경우 병원간 랜덤 효과 테이블이 나오게 되는데 분산이 0.02임을 확인할 수 있습니다. 이는 병원 간의 기초 위험도 차이가 적다는 것을 의미합니다.</p>
+
+
+</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{jo2024,
+  author = {Jo, Hyungwoo},
+  title = {Jstable을 {이용한} {분석} {모형} Table {만들기}},
+  date = {2024-09-13},
+  url = {https://blog.zarathu.com/posts/2024-09-13 jstable/},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-jo2024" class="csl-entry quarto-appendix-citeas">
+Jo, Hyungwoo. 2024. <span>“Jstable을 이용한 분석 모형 Table
+만들기.”</span> September 13, 2024. <a href="https://blog.zarathu.com/posts/2024-09-13 jstable/">https://blog.zarathu.com/posts/2024-09-13
+jstable/</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>statistics</category>
+  <guid>https://blog.zarathu.com/posts/2024-09-13 jstable/</guid>
+  <pubDate>Thu, 12 Sep 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://blog.zarathu.com/posts/2024-09-13 jstable/img/main2.jpg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>Wald Confidence Interval for a Difference of Binomial Proportions Based on Paired Data</title>
   <dc:creator>Hyojong Myung</dc:creator>
@@ -1313,13 +2189,13 @@ font-style: inherit;">p_value_specificity</span></span></code></pre></div>
   title = {Wald {Confidence} {Interval} for a {Difference} of {Binomial}
     {Proportions} {Based} on {Paired} {Data}},
   date = {2024-08-26},
-  url = {https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/},
+  url = {https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-myung2024" class="csl-entry quarto-appendix-citeas">
 Myung, Hyojong. 2024. <span>“Wald Confidence Interval for a Difference
 of Binomial Proportions Based on Paired Data.”</span> August 26, 2024.
-<a href="https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/">https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/</a>.
+<a href="https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval">https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>statistics</category>
@@ -1848,12 +2724,12 @@ Score (logrank) test = 335.4  on 4 df,   p=&lt;2e-16,   Robust = 285.9  p=&lt;2e
   title = {Competing Risk {생존분석,} Fine-and-Gray {method와}
     Multi-State Model},
   date = {2024-08-22},
-  url = {https://blog.zarathu.com/posts/2024-08-22-competingrisk/},
+  url = {https://blog.zarathu.com/posts/2024-08-22-competingrisk},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-myung2024" class="csl-entry quarto-appendix-citeas">
 Myung, Hyojong. 2024. <span>“Competing Risk 생존분석, Fine-and-Gray
-Method와 Multi-State Model.”</span> August 22, 2024. <a href="https://blog.zarathu.com/posts/2024-08-22-competingrisk/">https://blog.zarathu.com/posts/2024-08-22-competingrisk/</a>.
+Method와 Multi-State Model.”</span> August 22, 2024. <a href="https://blog.zarathu.com/posts/2024-08-22-competingrisk">https://blog.zarathu.com/posts/2024-08-22-competingrisk</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>statistics</category>
@@ -4081,12 +4957,12 @@ font-style: inherit;">)</span></span></code></pre></div>
   author = {Kwon, Suhyeon},
   title = {The {Extended} {DLNM} {소개}},
   date = {2024-06-05},
-  url = {https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/},
+  url = {https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kwon2024" class="csl-entry quarto-appendix-citeas">
 Kwon, Suhyeon. 2024. <span>“The Extended DLNM 소개.”</span> June 5,
-2024. <a href="https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/">https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/</a>.
+2024. <a href="https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM">https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>Statistics</category>
@@ -4227,7 +5103,7 @@ font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page_navbar.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>title <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -4325,7 +5201,7 @@ font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page_navbar.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>title <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -4631,7 +5507,7 @@ font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page_navbar.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -4739,7 +5615,7 @@ font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page_navbar.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -4771,7 +5647,7 @@ background-color: null;
 font-style: inherit;">#              choices = c("violin", "box"), inline = TRUE),</span></span>
 <span>                                <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://dreamrs.github.io/shinyWidgets/reference/radioGroupButtons.html">radioGroupButtons</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">radioGroupButtons</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>inputId <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -4952,7 +5828,7 @@ font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page_navbar.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -4990,7 +5866,7 @@ background-color: null;
 font-style: inherit;">#             multiple = TRUE),</span></span>
 <span>                                <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://dreamrs.github.io/shinyWidgets/reference/virtualSelectInput.html">virtualSelectInput</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">virtualSelectInput</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>inputId <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -5131,7 +6007,7 @@ font-style: inherit;">ui</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rstudio.github.io/bslib/reference/page_navbar.html">page_navbar</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -5244,11 +6120,11 @@ font-style: inherit;">)</span></span></code></pre></div>
   author = {Choi, Heeseok},
   title = {Shiny App {꾸미기}},
   date = {2024-05-24},
-  url = {https://blog.zarathu.com/posts/2024-05-24-app-design/},
+  url = {https://blog.zarathu.com/posts/2024-05-24-app-design},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-choi2024" class="csl-entry quarto-appendix-citeas">
-Choi, Heeseok. 2024. <span>“Shiny App 꾸미기.”</span> May 24, 2024. <a href="https://blog.zarathu.com/posts/2024-05-24-app-design/">https://blog.zarathu.com/posts/2024-05-24-app-design/</a>.
+Choi, Heeseok. 2024. <span>“Shiny App 꾸미기.”</span> May 24, 2024. <a href="https://blog.zarathu.com/posts/2024-05-24-app-design">https://blog.zarathu.com/posts/2024-05-24-app-design</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>shiny</category>
@@ -6531,7 +7407,7 @@ font-style: inherit;">ggtext</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://wilkelab.org/ggtext/reference/element_textbox.html">element_textbox_simple</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">element_textbox_simple</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span></span>
 <span>          hjust <span class="op" style="color: #5E5E5E;
@@ -7955,12 +8831,12 @@ font-style: inherit;">)</span></span></code></pre></div>
   author = {Kim, Jinhwan},
   title = {Patchwork를 {활용한} {고급} {시각화}},
   date = {2024-05-17},
-  url = {https://blog.zarathu.com/posts/2024-05-17-patchwork/},
+  url = {https://blog.zarathu.com/posts/2024-05-17-patchwork},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2024. <span>“Patchwork를 활용한 고급 시각화.”</span> May
-17, 2024. <a href="https://blog.zarathu.com/posts/2024-05-17-patchwork/">https://blog.zarathu.com/posts/2024-05-17-patchwork/</a>.
+17, 2024. <a href="https://blog.zarathu.com/posts/2024-05-17-patchwork">https://blog.zarathu.com/posts/2024-05-17-patchwork</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>cowpot</category>
@@ -7978,13 +8854,21 @@ Kim, Jinhwan. 2024. <span>“Patchwork를 활용한 고급 시각화.”</span> 
   <link>https://blog.zarathu.com/posts/2024-05-13-rhub/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -8077,12 +8961,12 @@ font-style: inherit;">"rhub"</span>)</span></code></pre></div>
   title = {Rhub와 {Github} {action를} {활용한} {OS별} {R} {패키지}
     {검증}},
   date = {2024-05-13},
-  url = {https://blog.zarathu.com/posts/2024-05-13-rhub/},
+  url = {https://blog.zarathu.com/posts/2024-05-13-rhub},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2024. <span>“Rhub와 Github Action를 활용한 Os별 R 패키지
-검증.”</span> May 13, 2024. <a href="https://blog.zarathu.com/posts/2024-05-13-rhub/">https://blog.zarathu.com/posts/2024-05-13-rhub/</a>.
+검증.”</span> May 13, 2024. <a href="https://blog.zarathu.com/posts/2024-05-13-rhub">https://blog.zarathu.com/posts/2024-05-13-rhub</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>rpackage</category>
@@ -8766,12 +9650,12 @@ font-style: inherit;">shinyApp</span>(ui, server)</span></code></pre></div>
   author = {Kim, Jinhwan},
   title = {Bslib: Input\_task\_button {소개}},
   date = {2024-03-30},
-  url = {https://blog.zarathu.com/posts/2024-03-30-input-task-button/},
+  url = {https://blog.zarathu.com/posts/2024-03-30-input-task-button},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2024. <span>“Bslib: Input_task_button 소개.”</span> March
-30, 2024. <a href="https://blog.zarathu.com/posts/2024-03-30-input-task-button/">https://blog.zarathu.com/posts/2024-03-30-input-task-button/</a>.
+30, 2024. <a href="https://blog.zarathu.com/posts/2024-03-30-input-task-button">https://blog.zarathu.com/posts/2024-03-30-input-task-button</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>shiny</category>
@@ -8814,7 +9698,7 @@ font-style: inherit;">devtools</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">install_github</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -9610,7 +10494,7 @@ font-style: inherit;">semfit</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/lavaan/man/sem.html">sem</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">sem</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>model <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -9972,12 +10856,12 @@ font-style: inherit;">)</span></span></code></pre></div>
   author = {Choi, Heeseok},
   title = {Process Macro {소개}},
   date = {2024-03-14},
-  url = {https://blog.zarathu.com/posts/2024-03-14-process-macro/},
+  url = {https://blog.zarathu.com/posts/2024-03-14-process-macro},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-choi2024" class="csl-entry quarto-appendix-citeas">
 Choi, Heeseok. 2024. <span>“Process Macro 소개.”</span> March 14, 2024.
-<a href="https://blog.zarathu.com/posts/2024-03-14-process-macro/">https://blog.zarathu.com/posts/2024-03-14-process-macro/</a>.
+<a href="https://blog.zarathu.com/posts/2024-03-14-process-macro">https://blog.zarathu.com/posts/2024-03-14-process-macro</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <guid>https://blog.zarathu.com/posts/2024-03-14-process-macro/</guid>
@@ -10335,7 +11219,7 @@ font-style: inherit;">httpuv</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">runStaticServer</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/httpuv/man/runStaticServer.html">runStaticServer</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -10522,12 +11406,12 @@ shinyApp(ui = ui, server = server)</a></code></pre>
   title = {Shinylive {를} {활용한} Quarto {블로그에} Shiny {추가}
     {방법}},
   date = {2024-03-05},
-  url = {https://blog.zarathu.com/posts/2024-03-04-shinylive/},
+  url = {https://blog.zarathu.com/posts/2024-03-04-shinylive},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2024. <span>“Shinylive 를 활용한 Quarto 블로그에 Shiny
-추가 방법.”</span> March 5, 2024. <a href="https://blog.zarathu.com/posts/2024-03-04-shinylive/">https://blog.zarathu.com/posts/2024-03-04-shinylive/</a>.
+추가 방법.”</span> March 5, 2024. <a href="https://blog.zarathu.com/posts/2024-03-04-shinylive">https://blog.zarathu.com/posts/2024-03-04-shinylive</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>shiny</category>
@@ -10545,13 +11429,21 @@ Kim, Jinhwan. 2024. <span>“Shinylive 를 활용한 Quarto 블로그에 Shiny
   <link>https://blog.zarathu.com/posts/2024-01-23-RND-review/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -10642,12 +11534,12 @@ Kim, Jinhwan. 2024. <span>“Shinylive 를 활용한 Quarto 블로그에 Shiny
   title = {R\&amp;D {시험인증} {후기} {및} {개발,} {행정} {관련} {느낀}
     {점}},
   date = {2024-01-23},
-  url = {https://blog.zarathu.com/posts/2024-01-23-RND-review/},
+  url = {https://blog.zarathu.com/posts/2024-01-23-RND-review},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lim2024" class="csl-entry quarto-appendix-citeas">
 Lim, Changwoo. 2024. <span>“R&amp;D 시험인증 후기 및 개발, 행정 관련
-느낀 점.”</span> January 23, 2024. <a href="https://blog.zarathu.com/posts/2024-01-23-RND-review/">https://blog.zarathu.com/posts/2024-01-23-RND-review/</a>.
+느낀 점.”</span> January 23, 2024. <a href="https://blog.zarathu.com/posts/2024-01-23-RND-review">https://blog.zarathu.com/posts/2024-01-23-RND-review</a>.
 </div></div></section></div> ]]></description>
   <category>R&amp;D</category>
   <category>review</category>
@@ -10663,13 +11555,21 @@ Lim, Changwoo. 2024. <span>“R&amp;D 시험인증 후기 및 개발, 행정 관
   <link>https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -10763,12 +11663,12 @@ docker restart internship</code></pre>
   author = {Lim, Changwoo},
   title = {RStudio {Server에} {2FA(OTP)} {도입하기}},
   date = {2024-01-05},
-  url = {https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA/},
+  url = {https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lim2024" class="csl-entry quarto-appendix-citeas">
 Lim, Changwoo. 2024. <span>“RStudio Server에 2FA(OTP) 도입하기.”</span>
-January 5, 2024. <a href="https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA/">https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA/</a>.
+January 5, 2024. <a href="https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA">https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>rstudio server</category>
@@ -11392,12 +12292,12 @@ font-style: inherit;">---</span></span></code></pre></div>
   author = {Kim, Jinhwan},
   title = {Quarto {Dashboard를} {이용해} {대시보드} {개발하기}},
   date = {2023-12-11},
-  url = {https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/},
+  url = {https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2023. <span>“Quarto Dashboard를 이용해 대시보드
-개발하기.”</span> December 11, 2023. <a href="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/">https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/</a>.
+개발하기.”</span> December 11, 2023. <a href="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard">https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>python</category>
@@ -11726,12 +12626,12 @@ font-style: inherit;">)</span></span></code></pre></div>
   author = {Kim, Jinhwan},
   title = {Rstudio에서 {Copilot을} {활용해} {AI로} {코딩하기}},
   date = {2023-11-21},
-  url = {https://blog.zarathu.com/posts/2023-11-21-copilot/},
+  url = {https://blog.zarathu.com/posts/2023-11-21-copilot},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2023. <span>“Rstudio에서 Copilot을 활용해 Ai로
-코딩하기.”</span> November 21, 2023. <a href="https://blog.zarathu.com/posts/2023-11-21-copilot/">https://blog.zarathu.com/posts/2023-11-21-copilot/</a>.
+코딩하기.”</span> November 21, 2023. <a href="https://blog.zarathu.com/posts/2023-11-21-copilot">https://blog.zarathu.com/posts/2023-11-21-copilot</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>github</category>
@@ -11747,13 +12647,21 @@ Kim, Jinhwan. 2023. <span>“Rstudio에서 Copilot을 활용해 Ai로
   <link>https://blog.zarathu.com/posts/2023-11-10-discourse1/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -12691,12 +13599,12 @@ font-style: inherit;">$</span> /var/discourse-dev/launcher rebuild discourse-dev
   author = {Kim, Jisoo},
   title = {Discourse {기반} {커뮤니티} {구축}},
   date = {2023-11-10},
-  url = {https://blog.zarathu.com/posts/2023-11-10-discourse1/},
+  url = {https://blog.zarathu.com/posts/2023-11-10-discourse1},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
 Kim, Jisoo. 2023. <span>“Discourse 기반 커뮤니티 구축.”</span> November
-10, 2023. <a href="https://blog.zarathu.com/posts/2023-11-10-discourse1/">https://blog.zarathu.com/posts/2023-11-10-discourse1/</a>.
+10, 2023. <a href="https://blog.zarathu.com/posts/2023-11-10-discourse1">https://blog.zarathu.com/posts/2023-11-10-discourse1</a>.
 </div></div></section></div> ]]></description>
   <category>docker</category>
   <category>website</category>
@@ -13276,12 +14184,12 @@ font-style: inherit;">/</span>acs</span></code></pre></div>
   author = {Han, Jihee},
   title = {Quarto {Manuscripts를} {이용해} {학술} {논문} {작성하기}},
   date = {2023-10-18},
-  url = {https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript/},
+  url = {https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-han2023" class="csl-entry quarto-appendix-citeas">
 Han, Jihee. 2023. <span>“Quarto Manuscripts를 이용해 학술 논문
-작성하기.”</span> October 18, 2023. <a href="https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript/">https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript/</a>.
+작성하기.”</span> October 18, 2023. <a href="https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript">https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>quarto</category>
@@ -13505,12 +14413,12 @@ font-style: inherit;"># ppt 저장 </span></span></code></pre></div>
   author = {Han, Jihee},
   title = {R로 {만든} {PPT} {슬라이드} {고해상도로} {저장하기}},
   date = {2023-09-27},
-  url = {https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide/},
+  url = {https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-han2023" class="csl-entry quarto-appendix-citeas">
 Han, Jihee. 2023. <span>“R로 만든 PPT 슬라이드 고해상도로
-저장하기.”</span> September 27, 2023. <a href="https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide/">https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide/</a>.
+저장하기.”</span> September 27, 2023. <a href="https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide">https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>powerpoint</category>
@@ -13525,13 +14433,21 @@ Han, Jihee. 2023. <span>“R로 만든 PPT 슬라이드 고해상도로
   <link>https://blog.zarathu.com/posts/2023-09-18-shinyexe/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -13722,12 +14638,12 @@ Han, Jihee. 2023. <span>“R로 만든 PPT 슬라이드 고해상도로
   title = {Electron {forge를} {활용하여} {Standalone} {Shiny}
     {Application} {제작하기}},
   date = {2023-09-18},
-  url = {https://blog.zarathu.com/posts/2023-09-18-shinyexe/},
+  url = {https://blog.zarathu.com/posts/2023-09-18-shinyexe},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2023. <span>“Electron Forge를 활용하여 Standalone Shiny
-Application 제작하기.”</span> September 18, 2023. <a href="https://blog.zarathu.com/posts/2023-09-18-shinyexe/">https://blog.zarathu.com/posts/2023-09-18-shinyexe/</a>.
+Application 제작하기.”</span> September 18, 2023. <a href="https://blog.zarathu.com/posts/2023-09-18-shinyexe">https://blog.zarathu.com/posts/2023-09-18-shinyexe</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>electron forge</category>
@@ -13746,13 +14662,21 @@ Application 제작하기.”</span> September 18, 2023. <a href="https://blog.za
   <link>https://blog.zarathu.com/posts/2023-09-10-wasm2/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -14019,12 +14943,12 @@ font-style: inherit;">&gt;</span></span></code></pre></div>
   title = {Web {assembly를} {이용하여} {웹페이지에서} {Shiny} {App}
     {활용하기}},
   date = {2023-09-10},
-  url = {https://blog.zarathu.com/posts/2023-09-10-wasm2/},
+  url = {https://blog.zarathu.com/posts/2023-09-10-wasm2},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2023. <span>“Web Assembly를 이용하여 웹페이지에서 Shiny
-App 활용하기.”</span> September 10, 2023. <a href="https://blog.zarathu.com/posts/2023-09-10-wasm2/">https://blog.zarathu.com/posts/2023-09-10-wasm2/</a>.
+App 활용하기.”</span> September 10, 2023. <a href="https://blog.zarathu.com/posts/2023-09-10-wasm2">https://blog.zarathu.com/posts/2023-09-10-wasm2</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>webR</category>
@@ -14463,12 +15387,12 @@ Shiny
   author = {Kim, Jinhwan},
   title = {Web {assembly를} {이용하여} {웹페이지에서} {R} {활용하기}},
   date = {2023-09-09},
-  url = {https://blog.zarathu.com/posts/2023-09-09-wasm/},
+  url = {https://blog.zarathu.com/posts/2023-09-09-wasm},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2023. <span>“Web Assembly를 이용하여 웹페이지에서 R
-활용하기.”</span> September 9, 2023. <a href="https://blog.zarathu.com/posts/2023-09-09-wasm/">https://blog.zarathu.com/posts/2023-09-09-wasm/</a>.
+활용하기.”</span> September 9, 2023. <a href="https://blog.zarathu.com/posts/2023-09-09-wasm">https://blog.zarathu.com/posts/2023-09-09-wasm</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>webR</category>
@@ -14478,665 +15402,6 @@ Kim, Jinhwan. 2023. <span>“Web Assembly를 이용하여 웹페이지에서 R
   <guid>https://blog.zarathu.com/posts/2023-09-09-wasm/</guid>
   <pubDate>Fri, 08 Sep 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-09-09-wasm/img/logo.png" medium="image" type="image/png" height="62" width="144"/>
-</item>
-<item>
-  <title>R의 officer 패키지를 활용하여 PPT 편집을 위한 벡터 그래픽스 만들기</title>
-  <dc:creator>Jinhwan Kim</dc:creator>
-  <link>https://blog.zarathu.com/posts/2023-07-01-officer/</link>
-  <description><![CDATA[ <!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-L0DYYSH9KM');
-</script><section id="개요" class="level1"><h1>개요</h1>
-<p>이번 글에서는 R 패키지 <code>officer</code>를 사용하여 PPT 프레젠테이션에 벡터 그래픽을 만드는 과정에 대해 소개합니다. officer를 포함하여 몇몇 패키지들이 <strong>officeverse</strong>라고 불리는 생태계를 구성하고 있으며 PPT외에도 엑셀이나 워드로 R의 결과를 만들어 낼 수 있습니다만, 이번 글에서는 벡터 그래픽을 저장하는 목적으로의 <code>officer</code>에 한정합니다.</p>
-</section><section id="벡터-그래픽스" class="level1"><h1>벡터 그래픽스</h1>
-<p style="text-align: center;">
-<img src="https://blog.zarathu.com/posts/2023-07-01-officer/img/VectorBitmapExample_kor.png" text-align="center"></p>
-<p><a href="https://ko.wikipedia.org/wiki/%EB%B2%A1%ED%84%B0_%EA%B7%B8%EB%9E%98%ED%94%BD%EC%8A%A4" target="_blank"> 위키피디아</a>의 설명에 따르면, <strong>벡터 그래픽스</strong> (Vector Graphics)는 이미지를 보여줄 때 수학 방정식을 기반으로 점, 직선, 곡선 등의 물체를 활용하는 것을 의미합니다. (많이 쓰이는 <code>Pixel</code> 기반의 <strong>래스터 그래픽스</strong>의 대안이기도 합니다.)</p>
-<p>예시처럼 벡터 그래픽스를 사용하면 이미지를 확대했을때 해상도가 망가지지 않거나, 이미지의 수정이 가능해진다는 장점이 있습니다.</p>
-</section><section id="사례" class="level1"><h1>사례</h1>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">plotObj</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">iris</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">Sepal.Length</span>, y <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">Sepal.Width</span>, color <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">Species</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">plotObj</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 이미지 저장을 위한 코드</span></span></code></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2023-07-01-officer/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>위와 같은 코드로, 그림을 만들고 이를 외부로 저장하려는 상황을 생각해보겠습니다.</p>
-<p>이를 위해 일반적으로 우리가 할 수 있는 것은 Rstudio의 <strong>Plot</strong> (혹은 <strong>View</strong>)에서 이미지를 저장하는 것입니다.</p>
-<div class="columns" style="text-align: center;">
-<div class="column">
-<figure class="figure"><img src="https://blog.zarathu.com/posts/2023-07-01-officer/img/officer1.png" width="100%" class="figure-img"></figure>
-</div><div class="column">
-<figure class="figure"><img src="https://blog.zarathu.com/posts/2023-07-01-officer/img/officer2.png" width="100%" style="margin-left: 1em" class="figure-img"></figure>
-</div>
-</div>
-<p>하지만, 이렇게 png형태로 이미지를 저장하고 나면, 확대를 했을때 꺠지거나, 다른 편집이 <strong>거의 불가능</strong>합니다.</p>
-<p style="text-align: center;">
-<img src="https://blog.zarathu.com/posts/2023-07-01-officer/img/Rplot2.png" width="500px"></p>
-<p>그러나 <code>officer</code>를 통해 벡터 그래픽으로 이미지를 저장한다면, 다음 예시처럼 파워포인트를 통해 세밀한 편집이 가능합니다.</p>
-<div class="columns" style="text-align: center;">
-<div class="column">
-<figure class="figure"><img src="https://blog.zarathu.com/posts/2023-07-01-officer/img/Rplot3.png" width="100%" class="figure-img"></figure>
-</div><div class="column">
-<figure class="figure"><img src="https://blog.zarathu.com/posts/2023-07-01-officer/img/Rplot4.png" width="100%" style="margin-left: 1em" class="figure-img"></figure>
-</div>
-</div>
-</section><section id="설치와-설정" class="level1"><h1>설치와 설정</h1>
-<p><code>officer</code> 패키지의 설치는 아래의 코드로 가능합니다.</p>
-<div class="cell">
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># remotes::install_github('davidgohel/officer/')</span></span>
-<span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># remotes::install_github('davidgohel/rvg')</span></span>
-<span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;"><a href="https://ardata-fr.github.io/officeverse/">officer</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># office + R</span></span>
-<span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;"><a href="https://ardata-fr.github.io/officeverse/">rvg</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># r vector graphics</span></span></code></pre></div>
-</div>
-</section><section id="officer-사용" class="level1"><h1>officer 사용</h1>
-<p><code>officer</code>로 벡터그래픽을 만드는 흐름은 크게 4가지 순서로 구성됩니다.</p>
-<ol type="1">
-<li>ppt 오브젝트를 만든다.</li>
-<li>ppt 오브젝트에 슬라이드를 만들고</li>
-<li>그 안에 이미지를 vector graphics로 넣는다.</li>
-<li>ppt 오브젝트를 저장한다.</li>
-</ol>
-<p>이제 각각의 내용을 소개하겠습니다.</p>
-<section id="오브젝트-만들기" class="level2"><h2 class="anchored" data-anchor-id="오브젝트-만들기">1. 오브젝트 만들기</h2>
-<div class="cell">
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ppt</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/read_pptx.html">read_pptx</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ppt</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>pptx document with 0 slide(s)
-Available layouts and their associated master(s) are:
-             layout       master
-1       Title Slide Office Theme
-2 Title and Content Office Theme
-3    Section Header Office Theme
-4       Two Content Office Theme
-5        Comparison Office Theme
-6        Title Only Office Theme
-7             Blank Office Theme</code></pre>
-</div>
-</div>
-<p><code>read_pptx</code>는 원래 ppt 파일을 R 오브젝트 형태로 읽기 위한 함수이지만, 만약 함수에 파일을 입력하지 않으면 새로운 ppt 오브젝트를 생성합니다.</p>
-<div class="cell">
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ppt</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/read_pptx.html">read_pptx</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"mypptx.pptx"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 기존 ppt 읽기 </span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ppt</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/read_pptx.html">read_pptx</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 새로운 ppt 생성</span></span></code></pre></div>
-</div>
-<p>한편 <code>officer</code>에는 <code>read_pptx</code> 외에도 <code>read_docx</code>(워드), <code>read_xlsx</code>(엑셀)도 존재합니다.</p>
-<p>ppt 오브젝트를 콘솔에 입력하면, 몇개의 슬라이드로 구성되어있는지 확인할 수 있습니다. (<code>layout</code>과 <code>master</code>는 신경쓰지 않으셔도 좋습니다.)</p>
-</section><section id="슬라이드-만들기" class="level2"><h2 class="anchored" data-anchor-id="슬라이드-만들기">2. 슬라이드 만들기</h2>
-<p>처음 만든 ppt 오브젝트에는 <strong>pptx document with 0 slide(s)</strong>, 즉 슬라이드가 없습니다.</p>
-<p>이 오브젝트에 슬라이드를 추가하는 것은 <code><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide()</a></code>로 할 수 있습니다.</p>
-<div class="cell">
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ppt</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ppt &lt;- ppt |&gt; add_slide() 로 안해도 됨</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>pptx document with 1 slide(s)
-Available layouts and their associated master(s) are:
-             layout       master
-1       Title Slide Office Theme
-2 Title and Content Office Theme
-3    Section Header Office Theme
-4       Two Content Office Theme
-5        Comparison Office Theme
-6        Title Only Office Theme
-7             Blank Office Theme</code></pre>
-</div>
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ppt</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># pptx document with 1 slide(s)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>pptx document with 1 slide(s)
-Available layouts and their associated master(s) are:
-             layout       master
-1       Title Slide Office Theme
-2 Title and Content Office Theme
-3    Section Header Office Theme
-4       Two Content Office Theme
-5        Comparison Office Theme
-6        Title Only Office Theme
-7             Blank Office Theme</code></pre>
-</div>
-</div>
-<p><code><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide()</a></code>에는 layout과 master라는 옵션을 지정할 수 있고 가능한 값은 다음과 같습니다.</p>
-<ul>
-<li>Title Slide</li>
-<li><strong>Title and Content (기본값)</strong></li>
-<li>Section Header</li>
-<li>Two Content</li>
-<li>Comparison</li>
-<li>Title Only</li>
-<li>Blank</li>
-</ul>
-<p>아마 눈치 채셨을 수도 있겠지만 레이아웃은 콘솔에서 ppt 오브젝트를 확인할 때 나오는 것들이며,</p>
-<p>우리의 목적은 <strong>슬라이드 구성이 아닌 이미지 저장</strong>이기 때문에 어떤 값을 선택해도 동일한 결과를 얻을 수 있습니다.</p>
-<p>아래의 이미지는 각 옵션들을 적용하여 만든 슬라이드의 결과물로 모두 동일한 것을 알 수 있습니다.</p>
-<p style="text-align: center;">
-<img src="https://blog.zarathu.com/posts/2023-07-01-officer/img/layout.png" width="500px"></p>
-</section><section id="벡터-그래픽스-슬라이드에-추가" class="level2"><h2 class="anchored" data-anchor-id="벡터-그래픽스-슬라이드에-추가">3. 벡터 그래픽스 슬라이드에 추가</h2>
-<p>앞서 만든 ggplot의 결과를 <code>ph_with</code>이라는 함수로 슬라이드에 추가할 수 있습니다.</p>
-<div class="cell">
-<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ppt</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># paragraph의 ph가 아닐까 생각</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>ggobj <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">plotObj</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>, <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 앞에서 만들었던 ggplot 이미지 오브젝트</span></span>
-<span>  location <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/ph_location_fullsize.html">ph_location_fullsize</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 쉬운 편집을 위해 이미지의 크기를 슬라이드에 가득 채움</span></span>
-<span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-</div>
-<p>여기서 <code>dml</code>은 <a href="http://officeopenxml.com/drwOverview.php" target="_blank"><code>DrawingML</code></a>이라는 오피스 프로덕트(pptx)에 X<strong>ML</strong>로 이미지를 만들기 위한 내용입니다. location에는 다른 옵션도 있지만 <strong>ph_location_fullsize</strong>를 권장합니다</p>
-<p>만약 여러개의 이미지를 여러장의 슬라이드로 집어넣어 만들고 싶다면 다음처럼 <code>ph_with</code>를 pipe (<code>|&gt;</code>)로 이어서 사용 할 수 있습니다.</p>
-<div class="cell">
-<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ppt</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 1번째 슬라이드 </span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span></span>
-<span>    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>ggobj <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">plotObj</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    location <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/ph_location_fullsize.html">ph_location_fullsize</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 2번째 슬라이드</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span> </span>
-<span>    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>ggobj <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">plotObj2</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    location <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/ph_location_fullsize.html">ph_location_fullsize</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 3번째 슬라이드 </span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span> </span>
-<span>    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>ggobj <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">plotObj3</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    location <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/ph_location_fullsize.html">ph_location_fullsize</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-</div>
-</section><section id="ppt-저장" class="level2"><h2 class="anchored" data-anchor-id="ppt-저장">4. ppt 저장</h2>
-<p>마지막으로 <code>add_slide</code>와 <code>ph_with</code>를 통해 만든 슬라이드는 <code>print</code>로 현재 작업중인 디렉토리에 (<code><a href="https://rdrr.io/r/base/getwd.html">getwd()</a></code>로 확인) 저장할 수 있습니다.</p>
-<div class="cell">
-<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/getwd.html">getwd</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ppt가 저장되는 위치</span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ppt</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>target <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"myPrint.pptx"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-</div>
-<p>이렇게 만들어진 pptx는 <strong>파워포인트</strong>와 <strong>키노트</strong>, 그리고 <strong>구글 슬라이드</strong>에서 작업할 수 있습니다.</p>
-</section><section id="정리" class="level2"><h2 class="anchored" data-anchor-id="정리">정리</h2>
-<p>위 4개의 단계를 1개의 코드로 연결하면 다음과 같습니다.</p>
-<div class="cell">
-<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;"><a href="https://ardata-fr.github.io/officeverse/">officer</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;"><a href="https://ardata-fr.github.io/officeverse/">rvg</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 이미지 생성</span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">plotObj</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">iris</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">Sepal.Length</span>, y <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">Sepal.Width</span>, color <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">Species</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ppt</span></span>
-<span></span>
-<span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/read_pptx.html">read_pptx</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ppt 생성, 별도의 오브젝트로 저장하지 않아도 됨.</span></span>
-<span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/add_slide.html">add_slide</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 슬라이드 추가</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/ph_with.html">ph_with</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 이미지 추가</span></span>
-<span>    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/rvg/reference/dml.html">dml</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>ggobj <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">plotObj</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>, </span>
-<span>    location <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://davidgohel.github.io/officer/reference/ph_location_fullsize.html">ph_location_fullsize</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> </span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'image.pptx'</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ppt 저장 </span></span></code></pre></div>
-</div>
-<p>한편, <code>officer</code>를 활용하여 더 자세한 ppt 생성과 편집도 가능하지만, 이 글에서는 다루지 않으며 <code>quarto</code>를 활용한 <code>revealjs</code> 슬라이드 생성하는 방법을 <a href="https://education.zarathu.com/day3/quartopres.html" target="_blank">링크</a>로 대신 첨부해드립니다.</p>
-
-
-</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
-  author = {Kim, Jinhwan},
-  title = {R의 Officer {패키지를} {활용하여} {PPT} {편집을} {위한}
-    {벡터} {그래픽스} {만들기}},
-  date = {2023-07-01},
-  url = {https://blog.zarathu.com/posts/2023-07-01-officer/},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas">
-Kim, Jinhwan. 2023. <span>“R의 Officer 패키지를 활용하여 PPT 편집을 위한
-벡터 그래픽스 만들기.”</span> July 1, 2023. <a href="https://blog.zarathu.com/posts/2023-07-01-officer/">https://blog.zarathu.com/posts/2023-07-01-officer/</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>officer</category>
-  <category>vectorgraphics</category>
-  <category>ggplot2</category>
-  <category>powerpoint</category>
-  <category>visualization</category>
-  <guid>https://blog.zarathu.com/posts/2023-07-01-officer/</guid>
-  <pubDate>Fri, 30 Jun 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://blog.zarathu.com/posts/2023-07-01-officer/img/wacom.gif" medium="image" type="image/gif"/>
 </item>
 </channel>
 </rss>

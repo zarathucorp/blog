@@ -232,7 +232,9 @@ sesp.diff.ci(t1, ci.method="agresti-min")
 sesp.diff.ci(t1, ci.method="tango")
 ```
 
-아래와 같은 방법으로 answer, test1, test2를 열로 가지고, 각 결과 데이터가 1,0(1은 diseased sample, 2는 non-diseased sample)로 표시되어 있는 경우에는 바로 paired table을 제작할 수 있습니다. 
+아래와 같은 방법으로 answer, test1, test2를 열로 가지고, 각 결과
+데이터가 1,0(1은 diseased sample, 2는 non-diseased sample)로 표시되어
+있는 경우에는 바로 paired table을 제작할 수 있습니다.
 
 ```{r, eval=F, echo=T}
 library(DTComPair)
@@ -241,14 +243,17 @@ tb <- tab.paired(answer, test1, test2, data = na.omit(sample_data))
 
 ## 4.2. 민감도, 특이도의 비열등성 검정
 
-어떤 테스트의 민감도와 특이도가 대조 테스트에 비해 떨어지지 않는다는 것을 확인하기 위해서는 비열등성 검정을 사용해야 합니다.
-이 때는 `sesp.diff.ci` 함수를 통해 구한 standard error 값과 두 민감도/특이도의 차이를 통해 p value를 계산합니다.
-아래 예시에서는 민감도에 대한 비열등성 마진(`sens_margin`)을 5%, 특이도에 대한 비열등성 마진(`spec_margin`)을 10%로 설정했습니다.  
-민감도를 예로 들자면 귀무가설은 아래와 같고, 아래 수식에 따라 p value를 계산합니다. 
+어떤 테스트의 민감도와 특이도가 대조 테스트에 비해 떨어지지 않는다는
+것을 확인하기 위해서는 비열등성 검정을 사용해야 합니다. 이 때는
+`sesp.diff.ci` 함수를 통해 구한 standard error 값과 두 민감도/특이도의
+차이를 통해 p value를 계산합니다. 아래 예시에서는 민감도에 대한 비열등성
+마진(`sens_margin`)을 5%, 특이도에 대한 비열등성 마진(`spec_margin`)을
+10%로 설정했습니다.\
+민감도를 예로 들자면 귀무가설은 아래와 같고, 아래 수식에 따라 p value를
+계산합니다.
 
 $$H_0 \colon \text{test1 sensitivity} - \text{test2 sensitivity} \leq -\text{ sensitivity margin}$$
 $$p-value = 1 - Φ\left(\frac{\text{test1 sensitivity} - \text{test2 sensitivity} + \text{sensitivity margin}}{\text{sensitivity diff.SE}}\right)$$
-
 
 ```{r, eval=T, echo=T}
 library(DTComPair)
@@ -264,5 +269,8 @@ p_value_specificity <- pnorm((t1.wald$specificity['diff'] + spec_margin) / t1.wa
 p_value_sensitivity
 p_value_specificity
 ```
-따라서 민감도에 대해서는 위 귀무가설이 기각 되었음으로 test1의 민감도가 test2보다 열등하지 않다고 말할 수 있지만, 특이도에 대해서는 귀무가설이 기각되지 않았기 때문에 test1의 특이도가 test2에 비해 열등하지 않다는 결론을 내릴 수 없습니다.
 
+따라서 민감도에 대해서는 위 귀무가설이 기각 되었음으로 test1의 민감도가
+test2보다 열등하지 않다고 말할 수 있지만, 특이도에 대해서는 귀무가설이
+기각되지 않았기 때문에 test1의 특이도가 test2에 비해 열등하지 않다는
+결론을 내릴 수 없습니다.
