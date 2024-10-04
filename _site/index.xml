@@ -179,13 +179,13 @@ attr(,"class")
 </div>
 </div>
 </div>
-<p>시간에 따른 혈압의 변화를 살펴보았을 떄, 같은 환자에게 반복측정되었다는 사실을 반영하지 않고 데이터를 바라보았을 때는 시간이 지날수록 혈압이 감소한다는 결론을 얻을 수 있습니다. 하지만 환자별로 살펴본다면 실제로는 제 각각의 환자들에 대해서는 시간과 유의미한 관계가 있다고 보기는 힘들다는 것을 알 수 있습니다. 반복측정된 데이터들간에는 상관관계가 있다는 사실을 반영한 새로운 측정방식이 필요하다는 것을 알 수 있습니다. 이러한 상관관계를 반영한 모델은 다음과 같이 쓸 수 있습니다:</p>
+<p>시간에 따른 혈압의 변화를 살펴보았을 떄, 같은 환자에게 반복측정되었다는 사실을 반영하지 않고 데이터를 바라보았을 때는 시간이 지날수록 혈압이 감소한다는 결론을 얻을 수 있습니다. 하지만 환자별로 살펴본다면 실제로는 제 각각의 환자들에 대해서는 시간과 유의미한 관계가 있다고 보기는 힘들다는 것을 알 수 있습니다. 이는 전체 분석을 할 때 군집 데이터의 특성을 GLM은 반영하지 않기 때문임을 알 수 있습니다. 반복측정된 데이터들간에는 상관관계가 있다는 사실을 반영한 새로운 측정방식이 필요하다는 것을 알 수 있습니다. 이러한 상관관계를 반영한 모델은 다음과 같이 쓸 수 있습니다:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0Ag(%5Cmu_%7Bij%7D)%20=%20X_%7Bij%7D%20%5Cbeta%0A"> 여기서 <img src="https://latex.codecogs.com/png.latex?X_%7Bij%7D">는 <img src="https://latex.codecogs.com/png.latex?i">번째 환자의 <img src="https://latex.codecogs.com/png.latex?j">번째 관측치를 나타냅니다.( <img src="https://latex.codecogs.com/png.latex?g(%5Cmu_%7Bij%7D)">의 경우 혈압압). 간단한 예시 적용을 위해, <img src="https://latex.codecogs.com/png.latex?X_%7Bij1%7D">를 환자 <img src="https://latex.codecogs.com/png.latex?i">의 나이, <img src="https://latex.codecogs.com/png.latex?X_%7Bij2%7D">를를 치료여부부 (1 = 치료군, 0 = 대조군),<img src="https://latex.codecogs.com/png.latex?X_%7Bij3%7D">를 혈압, <img src="https://latex.codecogs.com/png.latex?X_%7Bij4%7D">를 -시간(측정 시점)이라 가정해보겠습니다. <img src="https://latex.codecogs.com/png.latex?%0Ag(%5Cmu_%7Bij%7D)%20=%20%5Cbeta_0%20+%20%5Cbeta_1%20%5Ctimes%20%5Ctext%7B%EB%82%98%EC%9D%B4%7D_%7Bi%7D%20+%20%5Cbeta_2%20%5Ctimes%20%5Ctext%7B%EC%B9%98%EB%A3%8C%EC%97%AC%EB%B6%80%7D_%7Bi%7D%20+%20%5Cbeta_3%20%5Ctimes%20%5Ctext%7B%EC%8B%9C%EA%B0%84%7D_%7Bi%7D%0A"> 여기서 <img src="https://latex.codecogs.com/png.latex?%5Cbeta_0,%20%5Cbeta_1,%20%5Cbeta_2,%20%5Cbeta_3,%5Cbeta_4"> (계수)는 모든 환자에 대해 일정하므로, 개인 또는 시간점에 따라 변하지 않습니다. <img src="https://latex.codecogs.com/png.latex?X_%7Bij%7D"> (예측 변수)는 환자와 시간점에 따라 다릅니다.</p>
 <section id="glm과-gee의-공분산-차이" class="level2"><h2 class="anchored" data-anchor-id="glm과-gee의-공분산-차이">GLM과 GEE의 공분산 차이</h2>
 <p>데이터간의 상관관계가 반영된다는 점에서 결과적으로 GEE는 복잡한 공분산을 반영하고 있다는 것을 알 수 있습니다.</p>
 <p>GLM의 경우 관측치들이 독립이라는 가정이 있기 때문에 공분산 행렬이 대각행렬입니다. 반면 GEE의 경우 관측치들이 상관관계가 있다는 가정을 따르기 때문에 공분산 행렬이 대각행렬이 아닌 다른 형태를 가질 수 있습니다. 따라서 GLM에서의 공분산 행렬은 <img src="https://latex.codecogs.com/png.latex?V_i%20=%20%5Cphi%20%5Ccdot%20W_i">와 같은 구조에서 <img src="https://latex.codecogs.com/png.latex?W_i">는 대각행렬이 되며, GEE에서의 공분산 행렬은 <img src="https://latex.codecogs.com/png.latex?V_i%20=%20%5Cphi%20%5Ccdot%20A_i%5E%7B1/2%7D%20R(%5Calpha)%20A_i%5E%7B1/2%7D">와 같은 구조에서 <img src="https://latex.codecogs.com/png.latex?A_i">는 대각 가중치 행렬의 형태를 따르나, 상관관계를 반영하는 <img src="https://latex.codecogs.com/png.latex?R(%5Calpha)">라는 상관행렬이 있게 됩니다. 공분산과 앞선 회귀식을 모두 반영하면 GLM 과 GEE는 모두 아래의 수식과 같은 형태를 띄게 되며, <img src="https://latex.codecogs.com/png.latex?V_i">에서 그 차이가 나타납니다. <img src="https://latex.codecogs.com/png.latex?%0AY_i%20=%20g%5E%7B-1%7D(X_i%5ET%20%5Cbeta)%20+%20%5Cepsilon_i%20%5Cquad%20%5Ctext%7Bwith%7D%20%5Cquad%20%5Cepsilon_i%20%5Csim%20N(0,%20V_i)%0A"></p>
 </section><section id="gee-table-해석하기" class="level2"><h2 class="anchored" data-anchor-id="gee-table-해석하기">GEE table 해석하기</h2>
-<p>jstable 패키지를 사용하여 군집 데이터의 GEE적용 후 결과 해석에 대해 알아보겠습니다. 아래 코드는 R에서 제공되는 geepack의 dietox 데이터를 이용하여 돼지의 체중을 예상하는 모델을 만드는 예시입니다. 시간과 구리 보충제 상태가 돼지의 체중에 미치는 영향을 분석해보겠습니다. 군집 데이터의 특성을 반영하여, 돼지별 데이터를 분석하였음을 알 수 코드에서도 알 수 있습니다.</p>
+<p>jstable 패키지를 사용하여 군집 데이터의 GEE적용 후 결과 해석에 대해 알아보겠습니다. 아래 코드는 R에서 제공되는 geepack의 dietox 데이터를 이용하여 돼지의 체중을 예상하는 모델을 만드는 예시입니다. 시간과 구리 보충제 상태가 돼지의 체중에 미치는 영향을 분석해보겠습니다. 군집 데이터의 특성을 반영하여, 돼지별 데이터를 분석하였음을 코드에서도 알 수 있습니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -780,7 +780,7 @@ $caption
 </div>
 <p>table의 결과를 보았을 때 ecog와 age가 생존에 미치는 영향은 앞선 cluster 옵션을 이용했을 때와 비슷한 것을 확인할 수 있습니다.</p>
 </section><section id="mixed-effect를-사용한-cox-model" class="level2"><h2 class="anchored" data-anchor-id="mixed-effect를-사용한-cox-model">mixed effect를 사용한 Cox model</h2>
-<p>병원 내에서의 상간관계와 병원간 차이를 고려해서 모델을 만들어 본 이후에 병원 내의 환자들간의 상관관계와 병원간 차이를 모두 고려하고 싶을 수 있습니다. 이를 위해 mixed effect를 사용한 Cox model을 만들어보겠습니다. 이는 앞서 얘기한 Mixed-Effect Model과 Cox model을 결합한 형태로 생각할 수 있습니다.</p>
+<p>다층 구조나 복잡한 데이터 구조를 처리하고 싶은 경우 frailty 옵션만으로 부족할 수 있습니다. 예를 들어, 병원 간의 기초 수준 차이와 성별에 따른 기초 위험이 차이가 나는 것을 반영한 모델을 만들고 싶을 수 있습니다. 해당 경우 coxme함수를 이용할 수 있습니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb24" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -830,6 +830,18 @@ font-style: inherit;">|</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">inst</span><span class="op" style="color: #5E5E5E;
 background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sex</span><span class="op" style="color: #5E5E5E;
+background-color: null;
 font-style: inherit;">)</span>, <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">lung</span><span class="op" style="color: #5E5E5E;
@@ -844,29 +856,37 @@ background-color: null;
 font-style: inherit;">fit</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> </span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in formula.character(object, env = baseenv()): Using formula(x) is deprecated when x is a character vector of length &gt; 1.
+  Consider formula(paste(x, collapse = " ")) instead.
+Warning in formula.character(object, env = baseenv()): Using formula(x) is deprecated when x is a character vector of length &gt; 1.
+  Consider formula(paste(x, collapse = " ")) instead.</code></pre>
+</div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$table
         crude HR(95%CI)    crude P value adj. HR(95%CI)     adj. P value
-ph.ecog "1.66 (1.32,2.09)" "&lt; 0.001"     "1.61 (1.27,2.03)" "&lt; 0.001"   
-age     "1.02 (1,1.04)"    "0.043"       "1.01 (0.99,1.03)" "0.227"     
+ph.ecog "1.66 (1.32,2.09)" "&lt; 0.001"     "1.63 (1.3,2.05)"  "&lt; 0.001"   
+age     "1.02 (1,1.04)"    "0.043"       "1.01 (0.99,1.03)" "0.234"     
 
 $ranef
                 [,1] [,2] [,3] [,4]
 Random effect     NA   NA   NA   NA
 inst(Intercept) 0.02   NA   NA   NA
+sex(Intercept)  0.14   NA   NA   NA
 
 $metric
                     [,1] [,2] [,3] [,4]
 &lt;NA&gt;                  NA   NA   NA   NA
 No. of groups(inst)   18   NA   NA   NA
+No. of groups(sex)     2   NA   NA   NA
 No. of observations  226   NA   NA   NA
 No. of events        163   NA   NA   NA
 
 $caption
-[1] "Mixed effects Cox model on time ('time') to event ('status') - Group inst"</code></pre>
+[1] "Mixed effects Cox model on time ('time') to event ('status') - Group inst, sex"</code></pre>
 </div>
 </div>
-<p>통계적 유의성에 관해서는 앞선 테이블들과 유사함을 알 수 있습니다. Mixed effect를 사용한 경우 병원간 랜덤 효과 테이블이 나오게 되는데 분산이 0.02임을 확인할 수 있습니다. 이는 병원 간의 기초 위험도 차이가 적다는 것을 의미합니다.</p>
+<!-- 나이와 ECOG의 통계적 유의성에 관해서는 앞선 테이블들과 유사함을 알 수 있습니다. Mixed effect를 사용한 경우 병원간 랜덤 효과 테이블이 나오게 되는데 병원의 분산효과는 0.02임을 확인할 수 있습니다. 이는 병원 간의 기초 위험도 차이가 적다는 것을 의미합니다. 성별의 경우 분산 효과가 0.14로 성별에 따른 기초 위험의 차이가 병원에 따른 기초 위험의 차이보다 크다는 것을 알 수 있습니다.  -->
 
 
 </section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{jo2024,

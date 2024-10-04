@@ -423,7 +423,7 @@ g(\mu_{i}) = X_{i} \beta
 </div>
 </div>
 </div>
-<p>시간에 따른 혈압의 변화를 살펴보았을 떄, 같은 환자에게 반복측정되었다는 사실을 반영하지 않고 데이터를 바라보았을 때는 시간이 지날수록 혈압이 감소한다는 결론을 얻을 수 있습니다. 하지만 환자별로 살펴본다면 실제로는 제 각각의 환자들에 대해서는 시간과 유의미한 관계가 있다고 보기는 힘들다는 것을 알 수 있습니다. 반복측정된 데이터들간에는 상관관계가 있다는 사실을 반영한 새로운 측정방식이 필요하다는 것을 알 수 있습니다. 이러한 상관관계를 반영한 모델은 다음과 같이 쓸 수 있습니다:</p>
+<p>시간에 따른 혈압의 변화를 살펴보았을 떄, 같은 환자에게 반복측정되었다는 사실을 반영하지 않고 데이터를 바라보았을 때는 시간이 지날수록 혈압이 감소한다는 결론을 얻을 수 있습니다. 하지만 환자별로 살펴본다면 실제로는 제 각각의 환자들에 대해서는 시간과 유의미한 관계가 있다고 보기는 힘들다는 것을 알 수 있습니다. 이는 전체 분석을 할 때 군집 데이터의 특성을 GLM은 반영하지 않기 때문임을 알 수 있습니다. 반복측정된 데이터들간에는 상관관계가 있다는 사실을 반영한 새로운 측정방식이 필요하다는 것을 알 수 있습니다. 이러한 상관관계를 반영한 모델은 다음과 같이 쓸 수 있습니다:</p>
 <p><span class="math display">\[
 g(\mu_{ij}) = X_{ij} \beta
 \]</span> 여기서 <span class="math inline">\(X_{ij}\)</span>는 <span class="math inline">\(i\)</span>번째 환자의 <span class="math inline">\(j\)</span>번째 관측치를 나타냅니다.( <span class="math inline">\(g(\mu_{ij})\)</span>의 경우 혈압압). 간단한 예시 적용을 위해, <span class="math inline">\(X_{ij1}\)</span>를 환자 <span class="math inline">\(i\)</span>의 나이, <span class="math inline">\(X_{ij2}\)</span>를를 치료여부부 (1 = 치료군, 0 = 대조군),<span class="math inline">\(X_{ij3}\)</span>를 혈압, <span class="math inline">\(X_{ij4}\)</span>를 -시간(측정 시점)이라 가정해보겠습니다. <span class="math display">\[
@@ -435,7 +435,7 @@ g(\mu_{ij}) = \beta_0 + \beta_1 \times \text{나이}_{i} + \beta_2 \times \text{
 Y_i = g^{-1}(X_i^T \beta) + \epsilon_i \quad \text{with} \quad \epsilon_i \sim N(0, V_i)
 \]</span></p>
 </section><section id="gee-table-해석하기" class="level2"><h2 class="anchored" data-anchor-id="gee-table-해석하기">GEE table 해석하기</h2>
-<p>jstable 패키지를 사용하여 군집 데이터의 GEE적용 후 결과 해석에 대해 알아보겠습니다. 아래 코드는 R에서 제공되는 geepack의 dietox 데이터를 이용하여 돼지의 체중을 예상하는 모델을 만드는 예시입니다. 시간과 구리 보충제 상태가 돼지의 체중에 미치는 영향을 분석해보겠습니다. 군집 데이터의 특성을 반영하여, 돼지별 데이터를 분석하였음을 알 수 코드에서도 알 수 있습니다.</p>
+<p>jstable 패키지를 사용하여 군집 데이터의 GEE적용 후 결과 해석에 대해 알아보겠습니다. 아래 코드는 R에서 제공되는 geepack의 dietox 데이터를 이용하여 돼지의 체중을 예상하는 모델을 만드는 예시입니다. 시간과 구리 보충제 상태가 돼지의 체중에 미치는 영향을 분석해보겠습니다. 군집 데이터의 특성을 반영하여, 돼지별 데이터를 분석하였음을 코드에서도 알 수 있습니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">geepack</span><span class="op">)</span>  <span class="co">## for dietox data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">dietox</span><span class="op">)</span></span>
@@ -653,34 +653,42 @@ $caption
 </div>
 <p>table의 결과를 보았을 때 ecog와 age가 생존에 미치는 영향은 앞선 cluster 옵션을 이용했을 때와 비슷한 것을 확인할 수 있습니다.</p>
 </section><section id="mixed-effect를-사용한-cox-model" class="level2"><h2 class="anchored" data-anchor-id="mixed-effect를-사용한-cox-model">mixed effect를 사용한 Cox model</h2>
-<p>병원 내에서의 상간관계와 병원간 차이를 고려해서 모델을 만들어 본 이후에 병원 내의 환자들간의 상관관계와 병원간 차이를 모두 고려하고 싶을 수 있습니다. 이를 위해 mixed effect를 사용한 Cox model을 만들어보겠습니다. 이는 앞서 얘기한 Mixed-Effect Model과 Cox model을 결합한 형태로 생각할 수 있습니다.</p>
+<p>다층 구조나 복잡한 데이터 구조를 처리하고 싶은 경우 frailty 옵션만으로 부족할 수 있습니다. 예를 들어, 병원 간의 기초 수준 차이와 성별에 따른 기초 위험이 차이가 나는 것을 반영한 모델을 만들고 싶을 수 있습니다. 해당 경우 coxme함수를 이용할 수 있습니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">coxme</span><span class="op">)</span></span>
-<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/coxme/man/coxme.html">coxme</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">ph.ecog</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">inst</span><span class="op">)</span>, <span class="va">lung</span><span class="op">)</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/coxme/man/coxme.html">coxme</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">ph.ecog</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">inst</span><span class="op">)</span><span class="op">+</span><span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">sex</span><span class="op">)</span>, <span class="va">lung</span><span class="op">)</span></span>
 <span><span class="fu">coxme.display</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in formula.character(object, env = baseenv()): Using formula(x) is deprecated when x is a character vector of length &gt; 1.
+  Consider formula(paste(x, collapse = " ")) instead.
+Warning in formula.character(object, env = baseenv()): Using formula(x) is deprecated when x is a character vector of length &gt; 1.
+  Consider formula(paste(x, collapse = " ")) instead.</code></pre>
+</div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$table
         crude HR(95%CI)    crude P value adj. HR(95%CI)     adj. P value
-ph.ecog "1.66 (1.32,2.09)" "&lt; 0.001"     "1.61 (1.27,2.03)" "&lt; 0.001"   
-age     "1.02 (1,1.04)"    "0.043"       "1.01 (0.99,1.03)" "0.227"     
+ph.ecog "1.66 (1.32,2.09)" "&lt; 0.001"     "1.63 (1.3,2.05)"  "&lt; 0.001"   
+age     "1.02 (1,1.04)"    "0.043"       "1.01 (0.99,1.03)" "0.234"     
 
 $ranef
                 [,1] [,2] [,3] [,4]
 Random effect     NA   NA   NA   NA
 inst(Intercept) 0.02   NA   NA   NA
+sex(Intercept)  0.14   NA   NA   NA
 
 $metric
                     [,1] [,2] [,3] [,4]
 &lt;NA&gt;                  NA   NA   NA   NA
 No. of groups(inst)   18   NA   NA   NA
+No. of groups(sex)     2   NA   NA   NA
 No. of observations  226   NA   NA   NA
 No. of events        163   NA   NA   NA
 
 $caption
-[1] "Mixed effects Cox model on time ('time') to event ('status') - Group inst"</code></pre>
+[1] "Mixed effects Cox model on time ('time') to event ('status') - Group inst, sex"</code></pre>
 </div>
 </div>
-<p>통계적 유의성에 관해서는 앞선 테이블들과 유사함을 알 수 있습니다. Mixed effect를 사용한 경우 병원간 랜덤 효과 테이블이 나오게 되는데 분산이 0.02임을 확인할 수 있습니다. 이는 병원 간의 기초 위험도 차이가 적다는 것을 의미합니다.</p>
+<!-- 나이와 ECOG의 통계적 유의성에 관해서는 앞선 테이블들과 유사함을 알 수 있습니다. Mixed effect를 사용한 경우 병원간 랜덤 효과 테이블이 나오게 되는데 병원의 분산효과는 0.02임을 확인할 수 있습니다. 이는 병원 간의 기초 위험도 차이가 적다는 것을 의미합니다. 성별의 경우 분산 효과가 0.14로 성별에 따른 기초 위험의 차이가 병원에 따른 기초 위험의 차이보다 크다는 것을 알 수 있습니다.  -->
 
 
 </section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{jo2024,
