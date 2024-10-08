@@ -338,20 +338,22 @@ FPC = \sqrt{\frac{N - n}{N - 1}}
 <p>간단하게 국민건강영양조사에서 공개된 자료로 선형회귀 분석을 직접 진행해보겠습니다. <em>이 포스트에서 다루는 통계는 코드 실행과 통계학적 모형 설명을 위해 사용하는 것임으로, 엄격한 inclusion, exclusion criteria 과정 등을 적용하지 않아 결과는 현실과 상이할 수 있음을 미리 밝힙니다.</em></p>
 <p>국민건강영양조사의 2012년 안검사 데이터를 사용해보겠습니다. 국민건강영양조사 사이트에서 데이터를 다운 받은 이후 haven, data.table 라이브러리를 사용하여 자료를 datatable로 바꾸겠습니다.</p>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'data.table'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:dplyr':
-
-    between, first, last</code></pre>
-</div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://r-survey.r-forge.r-project.org/survey/">survey</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://haven.tidyverse.org">haven</a></span><span class="op">)</span></span>
+<span><span class="va">sas_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://haven.tidyverse.org/reference/read_sas.html">read_sas</a></span><span class="op">(</span><span class="st">"hn12_eye.sas7bdat"</span><span class="op">)</span></span>
+<span><span class="va">hn12</span><span class="op">&lt;-</span><span class="fu">data.table</span><span class="op">(</span><span class="va">sas_data</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>이후 교육, 성별, 나이에 따른 백내장 진단 여부를 알아보도록 하겠습니다. Survey 모델의 경우, 앞서 말씀드린 특징들로 인해 데이터를 사용하기 이전에 Survey design모델이 필요합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">hn12_cat</span><span class="op">&lt;-</span> <span class="va">hn12</span><span class="op">[</span><span class="va">E_DH2_dg</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span> <span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">edu</span><span class="op">)</span><span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">age</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">hn12_cat</span><span class="op">$</span><span class="va">E_DH2_dg</span><span class="op">[</span><span class="va">hn12_cat</span><span class="op">$</span><span class="va">E_DH2_dg</span> <span class="op">==</span> <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span><span class="va">survey_hn12</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span><span class="op">(</span>id <span class="op">=</span> <span class="op">~</span><span class="va">psu</span>, strata <span class="op">=</span> <span class="op">~</span><span class="va">kstrata</span>, weights <span class="op">=</span> <span class="op">~</span><span class="va">wt_itvex</span>, data <span class="op">=</span> <span class="va">hn12_cat</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>분석을 위해 간단하게, 성별, 나이, 교육에서 결측치를 제거하였고 백내장 진단 여부에 대해서는 무응답과 같은 변수를 제거하고 진단 여부를 (1.예,2.아니오)만 사용하기로 하였고, 0,1을 가지는 이항변수로 만들기 위해 2.아니오는 0으로 코딩하는 과정을 거쳤습니다.</p>
 <p>모델 디자인의 경우, svydesign이라는 함수를 사용하게 되는데, 표본조사를 제공하는 곳에서 보통 id, strata, weights에 사용할 수 있는 변수들에 대한 설명이 같이 첨부되어있습니다. 국민건강영양조사에서 제공하는 안대에 따라 psu, kstrata, wt_itvex변수를 코딩하였습니다. 앞서 말씀드린바와 같이 국민건강영양조사에서는 전체 인구가 표본에 비해 크기 때문에 fpc 변수가 필요하지 않지만, 모델에 따라 fpc변수를 svydesign에 추가할 수 있습니다. 백내장 진단여부를 이항변수로 코딩했기 때문에 앞선 포스트에서 살펴본 glm모델을 사용하여 데이터를 살펴보도록 하겠습니다. 이후 jstable 패키지를 이용해 glm모델을 살펴볼 수 있는 테이블을 만들어보겠습니다</p>
 <div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ds</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span><span class="op">(</span><span class="va">E_DH2_dg</span><span class="op">~</span><span class="va">age</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">edu</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span>, design<span class="op">=</span><span class="va">survey_hn12</span>, family <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html">quasibinomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">svyregress.display</span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$first.line
 [1] "Logistic regression predicting E_DH2_dg- weighted data\n"
@@ -381,30 +383,38 @@ attr(,"class")
 </div>
 <p>테이블의 결과를 살펴 보았을 때 나이는 통계적으로 유의미하게 백내장의 발생과 관련이 있고, 교육수준은 거의 없는 것으로 알 수 있습니다. 성별에 따른 차이도 p-value가 0.05보다는 크지만 0.06으로 통계적으로 유의미하지는 않지만 조금의 관련성이 있다는 것을 알 수 있습니다. 이번에는 strata별로 볼 수 있는 table을 만들어보도록 하겠습니다.</p>
 <div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">hn12_cat</span><span class="op">$</span><span class="va">E_DH2_dg</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">hn12_cat</span><span class="op">$</span><span class="va">E_DH2_dg</span><span class="op">)</span></span>
+<span><span class="va">hn12_cat</span><span class="op">$</span><span class="va">age</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">hn12_cat</span><span class="op">$</span><span class="va">age</span><span class="op">)</span></span>
+<span><span class="fu">svyCreateTableOne2</span><span class="op">(</span>strata <span class="op">=</span> <span class="st">'sex'</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'E_DH2_dg'</span>,<span class="st">'age'</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">survey_hn12</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          level 1                     2                     p        test sig 
-n         ""    "10311810.38"         "11404537.11"         ""       ""   NA  
-E_DH2_dg  ""    "       0.09 ± 0.29"  "       0.15 ± 0.36"  "&lt;0.001" ""   "**"
-age       ""    "      54.92 ± 10.74" "      56.64 ± 11.52" "&lt;0.001" ""   "**"</code></pre>
+<pre><code>          level 1                      2                      p        test
+n         ""    "10311810.38"          "11404537.11"          ""       ""  
+E_DH2_dg  ""    "       0.09 ± 0.29"  "       0.15 ± 0.36"  "&lt;0.001" ""  
+age       ""    "      54.92 ± 10.74" "      56.64 ± 11.52" "&lt;0.001" ""  
+          sig 
+n         NA  
+E_DH2_dg  "**"
+age       "**"</code></pre>
 </div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">svyCreateTableOneJS</span><span class="op">(</span>strata <span class="op">=</span> <span class="st">'sex'</span>, strata2 <span class="op">=</span> <span class="st">'edu'</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'E_DH2_dg'</span>,<span class="st">'age'</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">survey_hn12</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$table
-          level 1                   2                   3                  
-n         ""    "2112878.74"        "1499859.85"        "3737738.11"       
+          level 1                    2                    3                   
+n         ""    "2112878.74"         "1499859.85"         "3737738.11"        
 E_DH2_dg  ""    "      0.16 ± 0.37" "      0.10 ± 0.30" "      0.08 ± 0.27"
 age       ""    "     63.35 ± 9.70" "     57.76 ± 9.59" "     52.83 ± 9.84"
-          4                   p        test sig  1                  
-n         "2961333.68"        ""       ""   NA   "4381837.88"       
+          4                    p        test sig  1                   
+n         "2961333.68"         ""       ""   NA   "4381837.88"        
 E_DH2_dg  "      0.06 ± 0.23" "&lt;0.001" ""   "**" "      0.30 ± 0.46"
 age       "     50.09 ± 9.11" "&lt;0.001" ""   "**" "     66.23 ± 9.29"
-          2                   3                   4                   p       
-n         "1694071.75"        "3575372.10"        "1753255.37"        ""      
-E_DH2_dg  "      0.09 ± 0.28" "      0.05 ± 0.21" "      0.05 ± 0.21" "&lt;0.001"
-age       "     55.89 ± 7.87" "     49.75 ± 7.83" "     47.47 ± 7.20" "&lt;0.001"
-          test sig 
-n         ""   NA  
-E_DH2_dg  ""   "**"
-age       ""   "**"
+          2                    3                    4                   
+n         "1694071.75"         "3575372.10"         "1753255.37"        
+E_DH2_dg  "      0.09 ± 0.28" "      0.05 ± 0.21" "      0.05 ± 0.21"
+age       "     55.89 ± 7.87" "     49.75 ± 7.83" "     47.47 ± 7.20"
+          p        test sig 
+n         ""       ""   NA  
+E_DH2_dg  "&lt;0.001" ""   "**"
+age       "&lt;0.001" ""   "**"
 
 $caption
 [1] "Stratified by sex() &amp; edu- weighted data"</code></pre>
@@ -412,25 +422,9 @@ $caption
 </div>
 <p>svyCreateTableOne2같은 경우에는 보다 단순한 데이터에서 하나의 층으로 테이블을 만들고 싶을 때 사용할 수 있으며, svyCreateTableOneJS의 경우에는 층화를 두 층 이상, 그리고 조금 더 다양한 옵션들이 가능합니다. 유사한 방식으로 진단여부와 같은 이항분포뿐만 아니라 안압과 같은 연속변수에도 적용이 가능합니다. 녹내장 환자를 에시로 하면 아래와 같이 할 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">hn12_glau</span><span class="op">&lt;-</span><span class="va">hn12</span><span class="op">[</span><span class="op">!</span><span class="op">(</span><span class="va">E_Gr_p</span><span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">888</span>, <span class="fl">999</span><span class="op">)</span><span class="op">)</span><span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">E_Gl_p</span><span class="op">)</span><span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">edu</span><span class="op">)</span><span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">age</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">hn12_glau</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span><span class="va">edu</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>        edu
-      &lt;num&gt;
-   1:     3
-   2:     1
-   3:     4
-   4:     4
-   5:     4
-  ---      
-5335:     3
-5336:     1
-5337:     2
-5338:     1
-5339:     1</code></pre>
-</div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">survey_hn12</span> <span class="op">&lt;-</span> <span class="fu">svydesign</span><span class="op">(</span>id <span class="op">=</span> <span class="op">~</span><span class="va">psu</span>, strata <span class="op">=</span> <span class="op">~</span><span class="va">kstrata</span>, weights <span class="op">=</span> <span class="op">~</span><span class="va">wt_itvex</span>, data <span class="op">=</span> <span class="va">hn12_glau</span><span class="op">)</span></span>
-<span><span class="va">ds2</span><span class="op">&lt;-</span><span class="fu">svyglm</span><span class="op">(</span><span class="va">E_Gr_p</span><span class="op">~</span><span class="va">age</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">edu</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span>, design<span class="op">=</span><span class="va">survey_hn12</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">hn12_glau</span><span class="op">&lt;-</span><span class="va">hn12</span><span class="op">[</span><span class="op">!</span><span class="op">(</span><span class="va">E_Gr_p</span><span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">888</span>, <span class="fl">999</span><span class="op">)</span><span class="op">)</span><span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">E_Gl_p</span><span class="op">)</span><span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">edu</span><span class="op">)</span><span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">&amp;</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">age</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">survey_hn12</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span><span class="op">(</span>id <span class="op">=</span> <span class="op">~</span><span class="va">psu</span>, strata <span class="op">=</span> <span class="op">~</span><span class="va">kstrata</span>, weights <span class="op">=</span> <span class="op">~</span><span class="va">wt_itvex</span>, data <span class="op">=</span> <span class="va">hn12_glau</span><span class="op">)</span></span>
+<span><span class="va">ds2</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span><span class="op">(</span><span class="va">E_Gr_p</span><span class="op">~</span><span class="va">age</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">edu</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span>, design<span class="op">=</span><span class="va">survey_hn12</span><span class="op">)</span></span>
 <span><span class="fu">svyregress.display</span><span class="op">(</span><span class="va">ds2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$first.line
@@ -462,15 +456,21 @@ attr(,"class")
 </section><section id="survey-모델을-통한-생존-분석" class="level3"><h3 class="anchored" data-anchor-id="survey-모델을-통한-생존-분석">Survey 모델을 통한 생존 분석</h3>
 <p>이번에는 미국의 국민건강영양조사의 데이터를 가지고 생존분석을 진행해보도록 하겠습니다. 사이트에서 Mortality, 와 기본 조사 데이터를 다운 받은 이후, 이전과 유사한 방법으로 제공된 weight, id, strata를 통해 design모델을 만들어보겠습니다.</p>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'readr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:testthat':
-
-    edition_get, local_edition</code></pre>
-</div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span></span>
+<span><span class="va">demo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://haven.tidyverse.org/reference/read_xpt.html">read_xpt</a></span><span class="op">(</span><span class="st">"DEMO_J.XPT"</span><span class="op">)</span></span>
+<span><span class="va">mortality</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_fwf.html">read_fwf</a></span><span class="op">(</span><span class="st">"NHANES_2017_2018_MORT_2019_PUBLIC.dat"</span>,</span>
+<span>         col_types <span class="op">=</span> <span class="st">"iiiiiiii"</span>,</span>
+<span>         <span class="fu"><a href="https://readr.tidyverse.org/reference/read_fwf.html">fwf_cols</a></span><span class="op">(</span>SEQN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span>,</span>
+<span>                  ELIGSTAT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">15</span>,<span class="fl">15</span><span class="op">)</span>,</span>
+<span>                  MORTSTAT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">16</span>,<span class="fl">16</span><span class="op">)</span>,</span>
+<span>                  UCOD_LEADING <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">17</span>,<span class="fl">19</span><span class="op">)</span>,</span>
+<span>                  DIABETES <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="fl">20</span><span class="op">)</span>,</span>
+<span>                  HYPERTEN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">21</span>,<span class="fl">21</span><span class="op">)</span>,</span>
+<span>                  PERMTH_INT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">43</span>,<span class="fl">45</span><span class="op">)</span>,</span>
+<span>                  PERMTH_EXM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">46</span>,<span class="fl">48</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>         na <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"."</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">mortality</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 8
    SEQN ELIGSTAT MORTSTAT UCOD_LEADING DIABETES HYPERTEN PERMTH_INT PERMTH_EXM
@@ -482,10 +482,16 @@ Attaching package: 'readr'</code></pre>
 5 93707        2       NA           NA       NA       NA         NA         NA
 6 93708        1        0           NA       NA       NA         19         18</code></pre>
 </div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mortality</span><span class="op">$</span><span class="va">PERMTH_EXM</span><span class="op">[</span><span class="va">mortality</span><span class="op">$</span><span class="va">PERMTH_EXM</span> <span class="op">==</span> <span class="st">"."</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span><span class="va">mortality</span><span class="op">$</span><span class="va">PERMTH_EXM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">mortality</span><span class="op">$</span><span class="va">PERMTH_EXM</span><span class="op">)</span></span>
+<span><span class="va">mortality</span><span class="op">$</span><span class="va">MORTSTAT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">mortality</span><span class="op">$</span><span class="va">MORTSTAT</span><span class="op">)</span></span>
+<span><span class="va">merged_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">demo</span>, <span class="va">mortality</span>, by <span class="op">=</span> <span class="st">"SEQN"</span><span class="op">)</span></span>
+<span><span class="va">merged_data_clean</span> <span class="op">&lt;-</span> <span class="va">merged_data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/complete.cases.html">complete.cases</a></span><span class="op">(</span><span class="va">merged_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"MORTSTAT"</span>, <span class="st">"PERMTH_EXM"</span>, <span class="st">"RIDAGEYR"</span>, <span class="st">"DMDEDUC2"</span>, <span class="st">"RIAGENDR"</span>,<span class="st">'INDFMIN2'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">survey_nhanes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span><span class="op">(</span>id <span class="op">=</span> <span class="op">~</span><span class="va">SDMVPSU</span>, strata <span class="op">=</span> <span class="op">~</span><span class="va">SDMVSTRA</span>, weights <span class="op">=</span> <span class="op">~</span><span class="va">WTMEC2YR</span>, data <span class="op">=</span> <span class="va">merged_data_clean</span>, nest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>이번에는 생존 분석을 진행할 예정이기 때문에 사망여부인 변수 MORTSTAT과 관찰기관 변수인 PERMTH_EXM을 사용하여 survey cox모델을 만들어보겠습니다. 기존의 Cox모델과 함수 작성방법이 유사하며 svycoxph함수를 사용하여, 사망이벤트와 나이(RIDAGEYR), 교육(DMDEDUC2), 성별(RIAGENDR), 가정소득수준(IDFMIN2)의 관련성을 알아보겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ds3</span> <span class="op">&lt;-</span> <span class="fu">svycoxph</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">PERMTH_EXM</span>, <span class="va">MORTSTAT</span><span class="op">)</span> <span class="op">~</span> <span class="va">RIDAGEYR</span> <span class="op">+</span> <span class="va">DMDEDUC2</span> <span class="op">+</span> <span class="va">RIAGENDR</span><span class="op">+</span><span class="va">INDFMIN2</span>, design <span class="op">=</span> <span class="va">survey_nhanes</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ds3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svycoxph.html">svycoxph</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">PERMTH_EXM</span>, <span class="va">MORTSTAT</span><span class="op">)</span> <span class="op">~</span> <span class="va">RIDAGEYR</span> <span class="op">+</span> <span class="va">DMDEDUC2</span> <span class="op">+</span> <span class="va">RIAGENDR</span><span class="op">+</span><span class="va">INDFMIN2</span>, design <span class="op">=</span> <span class="va">survey_nhanes</span><span class="op">)</span></span>
 <span><span class="fu">svycox.display</span><span class="op">(</span><span class="va">ds3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Stratified 1 - level Cluster Sampling design (with replacement)
@@ -530,7 +536,7 @@ $caption
 </div>
 <p>결과를 대략 살펴보면 조정 이후 나이와 성별 교육 수준이 모두 통게적으로 유의미하게 관련이 있다는 것을 확인할 수 있습니다. 이번에는 인종, 나이(50세 이상 이하), 미국 시민권(Naturalized여부) 등의 그룹에 대해 subgroup analysis를 진행해보도록 하겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">merged_data_mod</span><span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op">%&gt;%</span> </span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">merged_data_mod</span><span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>gender <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">RIAGENDR</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"Female"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>         MORTSTAT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">MORTSTAT</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>         age_group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">RIDAGEYR</span> <span class="op">&gt;=</span> <span class="fl">50</span>, <span class="st">"Over 50"</span>, <span class="st">"Under 50"</span><span class="op">)</span>,</span>
@@ -544,7 +550,7 @@ $caption
 <span>         <span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="op">)</span></span>
 <span><span class="va">merged_data_mod</span><span class="op">&lt;-</span><span class="va">merged_data_mod</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/complete.cases.html">complete.cases</a></span><span class="op">(</span><span class="va">merged_data_mod</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"MORTSTAT"</span>, <span class="st">"PERMTH_EXM"</span>, <span class="st">"RIDAGEYR"</span>,  <span class="st">"RIAGENDR"</span>,<span class="st">"RIDRETH1"</span>, <span class="st">"DMDCITZN"</span>,<span class="st">"age_group"</span>, <span class="st">"race_ethnicity"</span>, <span class="st">"citizenship_status"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, <span class="op">]</span></span>
-<span><span class="fu">TableSubgroupMultiCox</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">PERMTH_EXM</span>, <span class="va">MORTSTAT</span><span class="op">)</span> <span class="op">~</span> <span class="va">gender</span>, var_subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"age_group"</span>, <span class="st">"race_ethnicity"</span>, <span class="st">"citizenship_status"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">merged_data_mod</span>, time_eventrate <span class="op">=</span> <span class="fl">365</span> , line <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">TableSubgroupMultiCox</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">PERMTH_EXM</span>, <span class="va">MORTSTAT</span><span class="op">)</span> <span class="op">~</span> <span class="va">gender</span>, var_subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"age_group"</span>, <span class="st">"race_ethnicity"</span>, <span class="st">"citizenship_status"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">merged_data_mod</span>, time_eventrate <span class="op">=</span> <span class="fl">365</span> , line <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                     Variable Count Percent Point Estimate Lower Upper
 gender                Overall  4413     100           0.65  0.45  0.94
@@ -571,7 +577,7 @@ gender         4.8           2.7   0.022              &lt;NA&gt;
 9              0.4           1.2   0.436              &lt;NA&gt;
 10             5.5           2.9   0.016              &lt;NA&gt;</code></pre>
 </div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">TableSubgroupMultiGLM</span><span class="op">(</span><span class="va">MORTSTAT</span> <span class="op">~</span> <span class="va">gender</span>,var_subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"age_group"</span>, <span class="st">"race_ethnicity"</span>, <span class="st">"citizenship_status"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">merged_data_mod</span>, family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">TableSubgroupMultiGLM</span><span class="op">(</span><span class="va">MORTSTAT</span> <span class="op">~</span> <span class="va">gender</span>,var_subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"age_group"</span>, <span class="st">"race_ethnicity"</span>, <span class="st">"citizenship_status"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">merged_data_mod</span>, family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                           Variable Count Percent   OR Lower Upper P value
 genderFemale                Overall  4413     100 0.64  0.44  0.93    0.02
@@ -603,16 +609,16 @@ genderFemale              &lt;NA&gt;
 </section></section><section id="forestploter를-이용한-forestplot만들기" class="level2"><h2 class="anchored" data-anchor-id="forestploter를-이용한-forestplot만들기">Forestploter를 이용한 forestplot만들기</h2>
 <p>우선, 필요한 경우 forestploter를 R에서 설치합니다(<a href="https://github.com/adayim/forestploter">Link Text</a>에서 더 상세한 사용법에 대해서 알 수 있습니다) 이후 TableSubgroupMultiCox 함수를 이용하여 데이터를 불러온 이후, 변수명을 제외한 나머지 행들을 numeric으로 바꿔줍니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">grid</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">grid</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/adayim/forestploter">forestploter</a></span><span class="op">)</span></span>
-<span><span class="va">df</span><span class="op">&lt;-</span> <span class="fu">TableSubgroupMultiCox</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">PERMTH_EXM</span>, <span class="va">MORTSTAT</span><span class="op">)</span> <span class="op">~</span> <span class="va">gender</span>, var_subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"age_group"</span>, <span class="st">"race_ethnicity"</span>, <span class="st">"citizenship_status"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">merged_data_mod</span>, line <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">df</span><span class="op">&lt;-</span> <span class="fu">TableSubgroupMultiCox</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">PERMTH_EXM</span>, <span class="va">MORTSTAT</span><span class="op">)</span> <span class="op">~</span> <span class="va">gender</span>, var_subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"age_group"</span>, <span class="st">"race_ethnicity"</span>, <span class="st">"citizenship_status"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">merged_data_mod</span>, line <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">df</span><span class="op">&lt;-</span><span class="fu">data.table</span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span><span class="va">num_cols</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">df</span><span class="op">[</span>, <span class="op">(</span><span class="va">num_cols</span><span class="op">)</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">as.numeric</span><span class="op">)</span>, .SDcols <span class="op">=</span> <span class="va">num_cols</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>이후 가독성을 위해 subgroup 변수들은 띄어쓰기를 진행하고, NA 값들은 빈칸으로 바꾸어줍니다. 또한 표준 오차값을 변수를 통해 지정하여 주고, plot의 line을 그리기 위한 공간을 테이블에 확보해줍니다. HR값 또한 변수내에서 계산을 통해 행을 추가합니다. 이후 원하는 테마를 지정한 이후, 위와 같이 코드를 실행한다면 forest plot을 얻을 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span><span class="op">$</span><span class="va">Variable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">Count</span><span class="op">)</span>, </span>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span><span class="op">$</span><span class="va">Variable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">Count</span><span class="op">)</span>, </span>
 <span>                      <span class="va">df</span><span class="op">$</span><span class="va">Variable</span>,</span>
 <span>                      <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"   "</span>, <span class="va">df</span><span class="op">$</span><span class="va">Variable</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">Count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">Count</span><span class="op">)</span>, <span class="st">""</span>, <span class="va">df</span><span class="op">$</span><span class="va">Count</span><span class="op">)</span></span>
@@ -628,7 +634,7 @@ genderFemale              &lt;NA&gt;
 <div class="cell-output cell-output-stderr">
 <pre><code>refline_col will be deprecated, use refline_gp instead.</code></pre>
 </div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/forestploter/man/forest.html">forest</a></span><span class="op">(</span><span class="va">df</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span><span class="op">]</span>,</span>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/forestploter/man/forest.html">forest</a></span><span class="op">(</span><span class="va">df</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>            est <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="st">'Point Estimate'</span>,</span>
 <span>            lower <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">Lower</span>, </span>
 <span>            upper <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">Upper</span>,</span>
@@ -638,7 +644,7 @@ genderFemale              &lt;NA&gt;
 <span>            arrow_lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Female Better"</span>, <span class="st">"Male Better"</span><span class="op">)</span>,</span>
 <span>            xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span>,</span>
 <span>            ticks_at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span>
-<span>            footnote <span class="op">=</span> <span class="st">"This is the demo data. Please feel free to change\nanything you want."</span>,</span>
+<span>            footnote <span class="op">=</span> <span class="st">"Example data using NHANES"</span>,</span>
 <span>            theme <span class="op">=</span> <span class="va">tm</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">

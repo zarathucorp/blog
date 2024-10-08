@@ -10,7 +10,7 @@
 <atom:link href="https://blog.zarathu.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>차라투의 소식, 인사이트 및 심층 사례 연구</description>
 <generator>quarto-1.5.57</generator>
-<lastBuildDate>Tue, 08 Oct 2024 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 07 Oct 2024 15:00:00 GMT</lastBuildDate>
 <item>
   <title>Survey design 모델에서의 통계</title>
   <dc:creator>Hyungwoo Jo</dc:creator>
@@ -40,20 +40,236 @@
 <p>간단하게 국민건강영양조사에서 공개된 자료로 선형회귀 분석을 직접 진행해보겠습니다. <em>이 포스트에서 다루는 통계는 코드 실행과 통계학적 모형 설명을 위해 사용하는 것임으로, 엄격한 inclusion, exclusion criteria 과정 등을 적용하지 않아 결과는 현실과 상이할 수 있음을 미리 밝힙니다.</em></p>
 <p>국민건강영양조사의 2012년 안검사 데이터를 사용해보겠습니다. 국민건강영양조사 사이트에서 데이터를 다운 받은 이후 haven, data.table 라이브러리를 사용하여 자료를 datatable로 바꾸겠습니다.</p>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'data.table'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:dplyr':
-
-    between, first, last</code></pre>
-</div>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="http://r-survey.r-forge.r-project.org/survey/">survey</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://haven.tidyverse.org">haven</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sas_data</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://haven.tidyverse.org/reference/read_sas.html">read_sas</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"hn12_eye.sas7bdat"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hn12</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.table</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sas_data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 </div>
 <p>이후 교육, 성별, 나이에 따른 백내장 진단 여부를 알아보도록 하겠습니다. Survey 모델의 경우, 앞서 말씀드린 특징들로 인해 데이터를 사용하기 이전에 Survey design모델이 필요합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hn12_cat</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hn12</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">E_DH2_dg</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">edu</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sex</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">age</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hn12_cat</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">E_DH2_dg</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hn12_cat</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">E_DH2_dg</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">survey_hn12</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>id <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">psu</span>, strata <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">kstrata</span>, weights <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wt_itvex</span>, data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hn12_cat</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
 <p>분석을 위해 간단하게, 성별, 나이, 교육에서 결측치를 제거하였고 백내장 진단 여부에 대해서는 무응답과 같은 변수를 제거하고 진단 여부를 (1.예,2.아니오)만 사용하기로 하였고, 0,1을 가지는 이항변수로 만들기 위해 2.아니오는 0으로 코딩하는 과정을 거쳤습니다.</p>
 <p>모델 디자인의 경우, svydesign이라는 함수를 사용하게 되는데, 표본조사를 제공하는 곳에서 보통 id, strata, weights에 사용할 수 있는 변수들에 대한 설명이 같이 첨부되어있습니다. 국민건강영양조사에서 제공하는 안대에 따라 psu, kstrata, wt_itvex변수를 코딩하였습니다. 앞서 말씀드린바와 같이 국민건강영양조사에서는 전체 인구가 표본에 비해 크기 때문에 fpc 변수가 필요하지 않지만, 모델에 따라 fpc변수를 svydesign에 추가할 수 있습니다. 백내장 진단여부를 이항변수로 코딩했기 때문에 앞선 포스트에서 살펴본 glm모델을 사용하여 데이터를 살펴보도록 하겠습니다. 이후 jstable 패키지를 이용해 glm모델을 살펴볼 수 있는 테이블을 만들어보겠습니다</p>
 <div class="cell">
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ds</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">E_DH2_dg</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">age</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">edu</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sex</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, design<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">survey_hn12</span>, family <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/family.html">quasibinomial</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">svyregress.display</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ds</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$first.line
 [1] "Logistic regression predicting E_DH2_dg- weighted data\n"
@@ -83,30 +299,134 @@ attr(,"class")
 </div>
 <p>테이블의 결과를 살펴 보았을 때 나이는 통계적으로 유의미하게 백내장의 발생과 관련이 있고, 교육수준은 거의 없는 것으로 알 수 있습니다. 성별에 따른 차이도 p-value가 0.05보다는 크지만 0.06으로 통계적으로 유의미하지는 않지만 조금의 관련성이 있다는 것을 알 수 있습니다. 이번에는 strata별로 볼 수 있는 table을 만들어보도록 하겠습니다.</p>
 <div class="cell">
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hn12_cat</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">E_DH2_dg</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hn12_cat</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">E_DH2_dg</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hn12_cat</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">age</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">hn12_cat</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">age</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">svyCreateTableOne2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>strata <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sex'</span>, vars <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'E_DH2_dg'</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'age'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">survey_hn12</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          level 1                     2                     p        test sig 
-n         ""    "10311810.38"         "11404537.11"         ""       ""   NA  
-E_DH2_dg  ""    "       0.09 ± 0.29"  "       0.15 ± 0.36"  "&lt;0.001" ""   "**"
-age       ""    "      54.92 ± 10.74" "      56.64 ± 11.52" "&lt;0.001" ""   "**"</code></pre>
+<pre><code>          level 1                      2                      p        test
+n         ""    "10311810.38"          "11404537.11"          ""       ""  
+E_DH2_dg  ""    "       0.09 ± 0.29"  "       0.15 ± 0.36"  "&lt;0.001" ""  
+age       ""    "      54.92 ± 10.74" "      56.64 ± 11.52" "&lt;0.001" ""  
+          sig 
+n         NA  
+E_DH2_dg  "**"
+age       "**"</code></pre>
 </div>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">svyCreateTableOneJS</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>strata <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sex'</span>, strata2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'edu'</span>, vars <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'E_DH2_dg'</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'age'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">survey_hn12</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$table
-          level 1                   2                   3                  
-n         ""    "2112878.74"        "1499859.85"        "3737738.11"       
+          level 1                    2                    3                   
+n         ""    "2112878.74"         "1499859.85"         "3737738.11"        
 E_DH2_dg  ""    "      0.16 ± 0.37" "      0.10 ± 0.30" "      0.08 ± 0.27"
 age       ""    "     63.35 ± 9.70" "     57.76 ± 9.59" "     52.83 ± 9.84"
-          4                   p        test sig  1                  
-n         "2961333.68"        ""       ""   NA   "4381837.88"       
+          4                    p        test sig  1                   
+n         "2961333.68"         ""       ""   NA   "4381837.88"        
 E_DH2_dg  "      0.06 ± 0.23" "&lt;0.001" ""   "**" "      0.30 ± 0.46"
 age       "     50.09 ± 9.11" "&lt;0.001" ""   "**" "     66.23 ± 9.29"
-          2                   3                   4                   p       
-n         "1694071.75"        "3575372.10"        "1753255.37"        ""      
-E_DH2_dg  "      0.09 ± 0.28" "      0.05 ± 0.21" "      0.05 ± 0.21" "&lt;0.001"
-age       "     55.89 ± 7.87" "     49.75 ± 7.83" "     47.47 ± 7.20" "&lt;0.001"
-          test sig 
-n         ""   NA  
-E_DH2_dg  ""   "**"
-age       ""   "**"
+          2                    3                    4                   
+n         "1694071.75"         "3575372.10"         "1753255.37"        
+E_DH2_dg  "      0.09 ± 0.28" "      0.05 ± 0.21" "      0.05 ± 0.21"
+age       "     55.89 ± 7.87" "     49.75 ± 7.83" "     47.47 ± 7.20"
+          p        test sig 
+n         ""       ""   NA  
+E_DH2_dg  "&lt;0.001" ""   "**"
+age       "&lt;0.001" ""   "**"
 
 $caption
 [1] "Stratified by sex() &amp; edu- weighted data"</code></pre>
@@ -114,7 +434,7 @@ $caption
 </div>
 <p>svyCreateTableOne2같은 경우에는 보다 단순한 데이터에서 하나의 층으로 테이블을 만들고 싶을 때 사용할 수 있으며, svyCreateTableOneJS의 경우에는 층화를 두 층 이상, 그리고 조금 더 다양한 옵션들이 가능합니다. 유사한 방식으로 진단여부와 같은 이항분포뿐만 아니라 안압과 같은 연속변수에도 적용이 가능합니다. 녹내장 환자를 에시로 하면 아래와 같이 할 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">hn12_glau</span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -197,41 +517,11 @@ background-color: null;
 font-style: inherit;">]</span></span>
 <span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">hn12_glau</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">[</span>,<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">.</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">edu</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">]</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>        edu
-      &lt;num&gt;
-   1:     3
-   2:     1
-   3:     4
-   4:     4
-   5:     4
-  ---      
-5335:     3
-5336:     1
-5337:     2
-5338:     1
-5339:     1</code></pre>
-</div>
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
 font-style: inherit;">survey_hn12</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">svydesign</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>id <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -264,7 +554,7 @@ font-style: inherit;">ds2</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">svyglm</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -338,15 +628,180 @@ attr(,"class")
 </section><section id="survey-모델을-통한-생존-분석" class="level3"><h3 class="anchored" data-anchor-id="survey-모델을-통한-생존-분석">Survey 모델을 통한 생존 분석</h3>
 <p>이번에는 미국의 국민건강영양조사의 데이터를 가지고 생존분석을 진행해보도록 하겠습니다. 사이트에서 Mortality, 와 기본 조사 데이터를 다운 받은 이후, 이전과 유사한 방법으로 제공된 weight, id, strata를 통해 design모델을 만들어보겠습니다.</p>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'readr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:testthat':
-
-    edition_get, local_edition</code></pre>
-</div>
+<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://readr.tidyverse.org">readr</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">demo</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://haven.tidyverse.org/reference/read_xpt.html">read_xpt</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DEMO_J.XPT"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mortality</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://readr.tidyverse.org/reference/read_fwf.html">read_fwf</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"NHANES_2017_2018_MORT_2019_PUBLIC.dat"</span>,</span>
+<span>         col_types <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"iiiiiiii"</span>,</span>
+<span>         <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://readr.tidyverse.org/reference/read_fwf.html">fwf_cols</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>SEQN <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>                  ELIGSTAT <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>                  MORTSTAT <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>                  UCOD_LEADING <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">17</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">19</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>                  DIABETES <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>                  HYPERTEN <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">21</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">21</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>                  PERMTH_INT <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">43</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>                  PERMTH_EXM <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">46</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">48</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>         na <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"."</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mortality</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 8
    SEQN ELIGSTAT MORTSTAT UCOD_LEADING DIABETES HYPERTEN PERMTH_INT PERMTH_EXM
@@ -358,20 +813,184 @@ Attaching package: 'readr'</code></pre>
 5 93707        2       NA           NA       NA       NA         NA         NA
 6 93708        1        0           NA       NA       NA         19         18</code></pre>
 </div>
+<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mortality</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">PERMTH_EXM</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mortality</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">PERMTH_EXM</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"."</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mortality</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">PERMTH_EXM</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mortality</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">PERMTH_EXM</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mortality</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">MORTSTAT</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mortality</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">MORTSTAT</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">merged_data</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">demo</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mortality</span>, by <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"SEQN"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">merged_data_clean</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">merged_data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/complete.cases.html">complete.cases</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">merged_data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"MORTSTAT"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"PERMTH_EXM"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RIDAGEYR"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DMDEDUC2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RIAGENDR"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'INDFMIN2'</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">survey_nhanes</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>id <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SDMVPSU</span>, strata <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SDMVSTRA</span>, weights <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">WTMEC2YR</span>, data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">merged_data_clean</span>, nest <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 </div>
 <p>이번에는 생존 분석을 진행할 예정이기 때문에 사망여부인 변수 MORTSTAT과 관찰기관 변수인 PERMTH_EXM을 사용하여 survey cox모델을 만들어보겠습니다. 기존의 Cox모델과 함수 작성방법이 유사하며 svycoxph함수를 사용하여, 사망이벤트와 나이(RIDAGEYR), 교육(DMDEDUC2), 성별(RIAGENDR), 가정소득수준(IDFMIN2)의 관련성을 알아보겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">ds3</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">svycoxph</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survey/man/svycoxph.html">svycoxph</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">Surv</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -454,7 +1073,7 @@ $caption
 </div>
 <p>결과를 대략 살펴보면 조정 이후 나이와 성별 교육 수준이 모두 통게적으로 유의미하게 관련이 있다는 것을 확인할 수 있습니다. 이번에는 인종, 나이(50세 이상 이하), 미국 시민권(Naturalized여부) 등의 그룹에 대해 subgroup analysis를 진행해보도록 하겠습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="sourceCode" id="cb17" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">merged_data_mod</span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -674,7 +1293,7 @@ font-style: inherit;">TableSubgroupMultiCox</span><span class="op" style="color:
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">Surv</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -741,7 +1360,7 @@ gender         4.8           2.7   0.022              &lt;NA&gt;
 9              0.4           1.2   0.436              &lt;NA&gt;
 10             5.5           2.9   0.016              &lt;NA&gt;</code></pre>
 </div>
-<div class="sourceCode" id="cb18" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+<div class="sourceCode" id="cb19" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">TableSubgroupMultiGLM</span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -807,7 +1426,7 @@ genderFemale              &lt;NA&gt;
 </section></section><section id="forestploter를-이용한-forestplot만들기" class="level2"><h2 class="anchored" data-anchor-id="forestploter를-이용한-forestplot만들기">Forestploter를 이용한 forestplot만들기</h2>
 <p>우선, 필요한 경우 forestploter를 R에서 설치합니다(<a href="https://github.com/adayim/forestploter">Link Text</a>에서 더 상세한 사용법에 대해서 알 수 있습니다) 이후 TableSubgroupMultiCox 함수를 이용하여 데이터를 불러온 이후, 변수명을 제외한 나머지 행들을 numeric으로 바꿔줍니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+<div class="sourceCode" id="cb21" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
@@ -837,7 +1456,7 @@ font-style: inherit;">TableSubgroupMultiCox</span><span class="op" style="color:
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">Surv</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -946,7 +1565,7 @@ font-style: inherit;">]</span></span></code></pre></div>
 </div>
 <p>이후 가독성을 위해 subgroup 변수들은 띄어쓰기를 진행하고, NA 값들은 빈칸으로 바꾸어줍니다. 또한 표준 오차값을 변수를 통해 지정하여 주고, plot의 line을 그리기 위한 공간을 테이블에 확보해줍니다. HR값 또한 변수내에서 계산을 통해 행을 추가합니다. 이후 원하는 테마를 지정한 이후, 위와 같이 코드를 실행한다면 forest plot을 얻을 수 있습니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb21" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="sourceCode" id="cb22" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1204,7 +1823,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>refline_col will be deprecated, use refline_gp instead.</code></pre>
 </div>
-<div class="sourceCode" id="cb23" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="sourceCode" id="cb24" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">p</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1330,7 +1949,7 @@ font-style: inherit;">)</span>,</span>
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"This is the demo data. Please feel free to change\nanything you want."</span>,</span>
+font-style: inherit;">"Example data using NHANES"</span>,</span>
 <span>            theme <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="va" style="color: #111111;
@@ -1371,7 +1990,7 @@ Survey/</a>.
   <category>R</category>
   <category>statistics</category>
   <guid>https://blog.zarathu.com/posts/2024-10-08 Survey/</guid>
-  <pubDate>Tue, 08 Oct 2024 00:00:00 GMT</pubDate>
+  <pubDate>Mon, 07 Oct 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-10-08 Survey/img/main2.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
@@ -2267,7 +2886,7 @@ jstable/</a>.
   <category>R</category>
   <category>statistics</category>
   <guid>https://blog.zarathu.com/posts/2024-09-13 jstable/</guid>
-  <pubDate>Fri, 13 Sep 2024 00:00:00 GMT</pubDate>
+  <pubDate>Thu, 12 Sep 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-09-13 jstable/img/main2.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
@@ -3572,18 +4191,18 @@ font-style: inherit;">p_value_specificity</span></span></code></pre></div>
   title = {Wald {Confidence} {Interval} for a {Difference} of {Binomial}
     {Proportions} {Based} on {Paired} {Data}},
   date = {2024-08-26},
-  url = {https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval},
+  url = {https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-myung2024" class="csl-entry quarto-appendix-citeas">
 Myung, Hyojong. 2024. <span>“Wald Confidence Interval for a Difference
 of Binomial Proportions Based on Paired Data.”</span> August 26, 2024.
-<a href="https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval">https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval</a>.
+<a href="https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/">https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>statistics</category>
   <guid>https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/</guid>
-  <pubDate>Mon, 26 Aug 2024 00:00:00 GMT</pubDate>
+  <pubDate>Sun, 25 Aug 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-08-26-sensspec-waldinterval/img/main2.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
@@ -4107,17 +4726,17 @@ Score (logrank) test = 335.4  on 4 df,   p=&lt;2e-16,   Robust = 285.9  p=&lt;2e
   title = {Competing Risk {생존분석,} Fine-and-Gray {method와}
     Multi-State Model},
   date = {2024-08-22},
-  url = {https://blog.zarathu.com/posts/2024-08-22-competingrisk},
+  url = {https://blog.zarathu.com/posts/2024-08-22-competingrisk/},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-myung2024" class="csl-entry quarto-appendix-citeas">
 Myung, Hyojong. 2024. <span>“Competing Risk 생존분석, Fine-and-Gray
-Method와 Multi-State Model.”</span> August 22, 2024. <a href="https://blog.zarathu.com/posts/2024-08-22-competingrisk">https://blog.zarathu.com/posts/2024-08-22-competingrisk</a>.
+Method와 Multi-State Model.”</span> August 22, 2024. <a href="https://blog.zarathu.com/posts/2024-08-22-competingrisk/">https://blog.zarathu.com/posts/2024-08-22-competingrisk/</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>statistics</category>
   <guid>https://blog.zarathu.com/posts/2024-08-22-competingrisk/</guid>
-  <pubDate>Thu, 22 Aug 2024 00:00:00 GMT</pubDate>
+  <pubDate>Wed, 21 Aug 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-08-22-competingrisk/img/main.png" medium="image" type="image/png" height="51" width="144"/>
 </item>
 <item>
@@ -6340,17 +6959,17 @@ font-style: inherit;">)</span></span></code></pre></div>
   author = {Kwon, Suhyeon},
   title = {The {Extended} {DLNM} {소개}},
   date = {2024-06-05},
-  url = {https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM},
+  url = {https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kwon2024" class="csl-entry quarto-appendix-citeas">
 Kwon, Suhyeon. 2024. <span>“The Extended DLNM 소개.”</span> June 5,
-2024. <a href="https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM">https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM</a>.
+2024. <a href="https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/">https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>Statistics</category>
   <guid>https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/</guid>
-  <pubDate>Wed, 05 Jun 2024 00:00:00 GMT</pubDate>
+  <pubDate>Tue, 04 Jun 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-06-05-theExtendedDLNM/img/crossbasis.png" medium="image" type="image/png" height="164" width="144"/>
 </item>
 <item>
@@ -7503,17 +8122,17 @@ font-style: inherit;">)</span></span></code></pre></div>
   author = {Choi, Heeseok},
   title = {Shiny App {꾸미기}},
   date = {2024-05-24},
-  url = {https://blog.zarathu.com/posts/2024-05-24-app-design},
+  url = {https://blog.zarathu.com/posts/2024-05-24-app-design/},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-choi2024" class="csl-entry quarto-appendix-citeas">
-Choi, Heeseok. 2024. <span>“Shiny App 꾸미기.”</span> May 24, 2024. <a href="https://blog.zarathu.com/posts/2024-05-24-app-design">https://blog.zarathu.com/posts/2024-05-24-app-design</a>.
+Choi, Heeseok. 2024. <span>“Shiny App 꾸미기.”</span> May 24, 2024. <a href="https://blog.zarathu.com/posts/2024-05-24-app-design/">https://blog.zarathu.com/posts/2024-05-24-app-design/</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>shiny</category>
   <category>bslib</category>
   <guid>https://blog.zarathu.com/posts/2024-05-24-app-design/</guid>
-  <pubDate>Fri, 24 May 2024 00:00:00 GMT</pubDate>
+  <pubDate>Thu, 23 May 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-05-24-app-design/img/logo.png" medium="image" type="image/png" height="61" width="144"/>
 </item>
 <item>
@@ -10214,12 +10833,12 @@ font-style: inherit;">)</span></span></code></pre></div>
   author = {Kim, Jinhwan},
   title = {Patchwork를 {활용한} {고급} {시각화}},
   date = {2024-05-17},
-  url = {https://blog.zarathu.com/posts/2024-05-17-patchwork},
+  url = {https://blog.zarathu.com/posts/2024-05-17-patchwork/},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2024. <span>“Patchwork를 활용한 고급 시각화.”</span> May
-17, 2024. <a href="https://blog.zarathu.com/posts/2024-05-17-patchwork">https://blog.zarathu.com/posts/2024-05-17-patchwork</a>.
+17, 2024. <a href="https://blog.zarathu.com/posts/2024-05-17-patchwork/">https://blog.zarathu.com/posts/2024-05-17-patchwork/</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>cowpot</category>
@@ -10228,7 +10847,7 @@ Kim, Jinhwan. 2024. <span>“Patchwork를 활용한 고급 시각화.”</span> 
   <category>patchwork</category>
   <category>powerpoint</category>
   <guid>https://blog.zarathu.com/posts/2024-05-17-patchwork/</guid>
-  <pubDate>Fri, 17 May 2024 00:00:00 GMT</pubDate>
+  <pubDate>Thu, 16 May 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-05-17-patchwork/img/logo.png" medium="image" type="image/png" height="62" width="144"/>
 </item>
 <item>
@@ -10344,12 +10963,12 @@ font-style: inherit;">"rhub"</span>)</span></code></pre></div>
   title = {Rhub와 {Github} {action를} {활용한} {OS별} {R} {패키지}
     {검증}},
   date = {2024-05-13},
-  url = {https://blog.zarathu.com/posts/2024-05-13-rhub},
+  url = {https://blog.zarathu.com/posts/2024-05-13-rhub/},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2024. <span>“Rhub와 Github Action를 활용한 Os별 R 패키지
-검증.”</span> May 13, 2024. <a href="https://blog.zarathu.com/posts/2024-05-13-rhub">https://blog.zarathu.com/posts/2024-05-13-rhub</a>.
+검증.”</span> May 13, 2024. <a href="https://blog.zarathu.com/posts/2024-05-13-rhub/">https://blog.zarathu.com/posts/2024-05-13-rhub/</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>rpackage</category>
@@ -10358,7 +10977,7 @@ Kim, Jinhwan. 2024. <span>“Rhub와 Github Action를 활용한 Os별 R 패키�
   <category>rhub</category>
   <category>rcmdcheck</category>
   <guid>https://blog.zarathu.com/posts/2024-05-13-rhub/</guid>
-  <pubDate>Mon, 13 May 2024 00:00:00 GMT</pubDate>
+  <pubDate>Sun, 12 May 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-05-13-rhub/img/logo.png" medium="image" type="image/png" height="63" width="144"/>
 </item>
 <item>
@@ -11033,19 +11652,19 @@ font-style: inherit;">shinyApp</span>(ui, server)</span></code></pre></div>
   author = {Kim, Jinhwan},
   title = {Bslib: Input\_task\_button {소개}},
   date = {2024-03-30},
-  url = {https://blog.zarathu.com/posts/2024-03-30-input-task-button},
+  url = {https://blog.zarathu.com/posts/2024-03-30-input-task-button/},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2024. <span>“Bslib: Input_task_button 소개.”</span> March
-30, 2024. <a href="https://blog.zarathu.com/posts/2024-03-30-input-task-button">https://blog.zarathu.com/posts/2024-03-30-input-task-button</a>.
+30, 2024. <a href="https://blog.zarathu.com/posts/2024-03-30-input-task-button/">https://blog.zarathu.com/posts/2024-03-30-input-task-button/</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>shiny</category>
   <category>bslib</category>
   <category>ux</category>
   <guid>https://blog.zarathu.com/posts/2024-03-30-input-task-button/</guid>
-  <pubDate>Sat, 30 Mar 2024 00:00:00 GMT</pubDate>
+  <pubDate>Fri, 29 Mar 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-03-30-input-task-button/img/logo.png" medium="image" type="image/png" height="62" width="144"/>
 </item>
 <item>
@@ -12239,16 +12858,16 @@ font-style: inherit;">)</span></span></code></pre></div>
   author = {Choi, Heeseok},
   title = {Process Macro {소개}},
   date = {2024-03-14},
-  url = {https://blog.zarathu.com/posts/2024-03-14-process-macro},
+  url = {https://blog.zarathu.com/posts/2024-03-14-process-macro/},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-choi2024" class="csl-entry quarto-appendix-citeas">
 Choi, Heeseok. 2024. <span>“Process Macro 소개.”</span> March 14, 2024.
-<a href="https://blog.zarathu.com/posts/2024-03-14-process-macro">https://blog.zarathu.com/posts/2024-03-14-process-macro</a>.
+<a href="https://blog.zarathu.com/posts/2024-03-14-process-macro/">https://blog.zarathu.com/posts/2024-03-14-process-macro/</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <guid>https://blog.zarathu.com/posts/2024-03-14-process-macro/</guid>
-  <pubDate>Thu, 14 Mar 2024 00:00:00 GMT</pubDate>
+  <pubDate>Wed, 13 Mar 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-03-14-process-macro/img/logo.png" medium="image" type="image/png" height="62" width="144"/>
 </item>
 <item>
@@ -12789,12 +13408,12 @@ shinyApp(ui = ui, server = server)</a></code></pre>
   title = {Shinylive {를} {활용한} Quarto {블로그에} Shiny {추가}
     {방법}},
   date = {2024-03-05},
-  url = {https://blog.zarathu.com/posts/2024-03-04-shinylive},
+  url = {https://blog.zarathu.com/posts/2024-03-04-shinylive/},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2024" class="csl-entry quarto-appendix-citeas">
 Kim, Jinhwan. 2024. <span>“Shinylive 를 활용한 Quarto 블로그에 Shiny
-추가 방법.”</span> March 5, 2024. <a href="https://blog.zarathu.com/posts/2024-03-04-shinylive">https://blog.zarathu.com/posts/2024-03-04-shinylive</a>.
+추가 방법.”</span> March 5, 2024. <a href="https://blog.zarathu.com/posts/2024-03-04-shinylive/">https://blog.zarathu.com/posts/2024-03-04-shinylive/</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>shiny</category>
@@ -12803,7 +13422,7 @@ Kim, Jinhwan. 2024. <span>“Shinylive 를 활용한 Quarto 블로그에 Shiny
   <category>website</category>
   <category>quarto</category>
   <guid>https://blog.zarathu.com/posts/2024-03-04-shinylive/</guid>
-  <pubDate>Tue, 05 Mar 2024 00:00:00 GMT</pubDate>
+  <pubDate>Mon, 04 Mar 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-03-04-shinylive/img/logo.png" medium="image" type="image/png" height="66" width="144"/>
 </item>
 <item>
@@ -12812,13 +13431,21 @@ Kim, Jinhwan. 2024. <span>“Shinylive 를 활용한 Quarto 블로그에 Shiny
   <link>https://blog.zarathu.com/posts/2024-01-23-RND-review/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -12922,7 +13549,7 @@ Lim, Changwoo. 2024. <span>“R&amp;D 시험인증 후기 및 개발, 행정 관
   <category>시험인증</category>
   <category>행정</category>
   <guid>https://blog.zarathu.com/posts/2024-01-23-RND-review/</guid>
-  <pubDate>Tue, 23 Jan 2024 00:00:00 GMT</pubDate>
+  <pubDate>Mon, 22 Jan 2024 15:00:00 GMT</pubDate>
 </item>
 <item>
   <title>RStudio Server에 2FA(OTP) 도입하기</title>
@@ -12930,13 +13557,21 @@ Lim, Changwoo. 2024. <span>“R&amp;D 시험인증 후기 및 개발, 행정 관
   <link>https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -13041,7 +13676,7 @@ January 5, 2024. <a href="https://blog.zarathu.com/posts/2024-01-05-RStudio-Serv
   <category>rstudio server</category>
   <category>security</category>
   <guid>https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA/</guid>
-  <pubDate>Fri, 05 Jan 2024 00:00:00 GMT</pubDate>
+  <pubDate>Thu, 04 Jan 2024 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-01-05-RStudio-Server-2FA/img/logo.png" medium="image" type="image/png" height="62" width="144"/>
 </item>
 <item>
@@ -13672,7 +14307,7 @@ Kim, Jinhwan. 2023. <span>“Quarto Dashboard를 이용해 대시보드
   <category>quarto dashboard</category>
   <category>dashboard</category>
   <guid>https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/</guid>
-  <pubDate>Mon, 11 Dec 2023 00:00:00 GMT</pubDate>
+  <pubDate>Sun, 10 Dec 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/logo.png" medium="image" type="image/png" height="35" width="144"/>
 </item>
 <item>
@@ -14005,7 +14640,7 @@ Kim, Jinhwan. 2023. <span>“Rstudio에서 Copilot을 활용해 Ai로
   <category>rstudio</category>
   <category>copilot</category>
   <guid>https://blog.zarathu.com/posts/2023-11-21-copilot/</guid>
-  <pubDate>Tue, 21 Nov 2023 00:00:00 GMT</pubDate>
+  <pubDate>Mon, 20 Nov 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-11-21-copilot/img/logo.png" medium="image" type="image/png" height="62" width="144"/>
 </item>
 <item>
@@ -14014,13 +14649,21 @@ Kim, Jinhwan. 2023. <span>“Rstudio에서 Copilot을 활용해 Ai로
   <link>https://blog.zarathu.com/posts/2023-11-10-discourse1/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -14970,7 +15613,7 @@ Kim, Jisoo. 2023. <span>“Discourse 기반 커뮤니티 구축.”</span> Novem
   <category>discourse</category>
   <category>community</category>
   <guid>https://blog.zarathu.com/posts/2023-11-10-discourse1/</guid>
-  <pubDate>Fri, 10 Nov 2023 00:00:00 GMT</pubDate>
+  <pubDate>Thu, 09 Nov 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-11-10-discourse1/img/logo.png" medium="image" type="image/png" height="42" width="144"/>
 </item>
 <item>
@@ -15555,7 +16198,7 @@ Han, Jihee. 2023. <span>“Quarto Manuscripts를 이용해 학술 논문
   <category>quarto manuscript</category>
   <category>article</category>
   <guid>https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript/</guid>
-  <pubDate>Wed, 18 Oct 2023 00:00:00 GMT</pubDate>
+  <pubDate>Tue, 17 Oct 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-10-19-quarto-manuscript/img/logo.png" medium="image" type="image/png" height="35" width="144"/>
 </item>
 <item>
@@ -15783,7 +16426,7 @@ Han, Jihee. 2023. <span>“R로 만든 PPT 슬라이드 고해상도로
   <category>powerpoint</category>
   <category>visualization</category>
   <guid>https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide/</guid>
-  <pubDate>Wed, 27 Sep 2023 00:00:00 GMT</pubDate>
+  <pubDate>Tue, 26 Sep 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-09-27-high-dpi-slide/img/DPI.png" medium="image" type="image/png" height="86" width="144"/>
 </item>
 <item>
@@ -15792,13 +16435,21 @@ Han, Jihee. 2023. <span>“R로 만든 PPT 슬라이드 고해상도로
   <link>https://blog.zarathu.com/posts/2023-09-18-shinyexe/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -16004,7 +16655,7 @@ Application 제작하기.”</span> September 18, 2023. <a href="https://blog.za
   <category>exe</category>
   <category>windows</category>
   <guid>https://blog.zarathu.com/posts/2023-09-18-shinyexe/</guid>
-  <pubDate>Mon, 18 Sep 2023 00:00:00 GMT</pubDate>
+  <pubDate>Sun, 17 Sep 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-09-18-shinyexe/img/logo.png" medium="image" type="image/png" height="62" width="144"/>
 </item>
 <item>
@@ -16013,13 +16664,21 @@ Application 제작하기.”</span> September 18, 2023. <a href="https://blog.za
   <link>https://blog.zarathu.com/posts/2023-09-10-wasm2/</link>
   <description><![CDATA[ 
 <!-- Google tag (gtag.js) -->
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+
 <script>
+
   window.dataLayer = window.dataLayer || [];
+
   function gtag(){dataLayer.push(arguments);}
+
   gtag('js', new Date());
 
+
+
   gtag('config', 'G-L0DYYSH9KM');
+
 </script>
 
 
@@ -16300,7 +16959,7 @@ App 활용하기.”</span> September 10, 2023. <a href="https://blog.zarathu.co
   <category>github page</category>
   <category>quarto</category>
   <guid>https://blog.zarathu.com/posts/2023-09-10-wasm2/</guid>
-  <pubDate>Sun, 10 Sep 2023 00:00:00 GMT</pubDate>
+  <pubDate>Sat, 09 Sep 2023 15:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2023-09-10-wasm2/img/logo.png" medium="image" type="image/png" height="62" width="144"/>
 </item>
 </channel>
