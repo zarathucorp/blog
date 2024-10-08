@@ -28,7 +28,6 @@ library(survival)
 library(coxme)
 library(dplyr)
 library(survey)
-library(testthat)
 library(data.table)
 ```
 
@@ -73,7 +72,7 @@ $$
 국민건강영양조사의 2012년 안검사 데이터를 사용해보겠습니다. 국민건강영양조사 사이트에서 데이터를 다운 받은 이후 haven, data.table 라이브러리를 사용하여 자료를 datatable로 바꾸겠습니다. 
 
 ```{r}
-
+#| echo: true
 library(survey)
 library(haven)
 sas_data <- read_sas("hn12_eye.sas7bdat")
@@ -92,13 +91,13 @@ survey_hn12 <- svydesign(id = ~psu, strata = ~kstrata, weights = ~wt_itvex, data
 모델 디자인의 경우, svydesign이라는 함수를 사용하게 되는데, 표본조사를 제공하는 곳에서 보통 id, strata, weights에 사용할 수 있는 변수들에 대한 설명이 같이 첨부되어있습니다. 국민건강영양조사에서 제공하는 안대에 따라 psu, kstrata, wt_itvex변수를 코딩하였습니다. 앞서 말씀드린바와 같이 국민건강영양조사에서는 전체 인구가 표본에 비해 크기 때문에 fpc 변수가 필요하지 않지만, 모델에 따라 fpc변수를 svydesign에 추가할 수 있습니다. 백내장 진단여부를 이항변수로 코딩했기 때문에 앞선 포스트에서 살펴본 glm모델을 사용하여 데이터를 살펴보도록 하겠습니다. 이후 jstable 패키지를 이용해 glm모델을 살펴볼 수 있는 테이블을 만들어보겠습니다
 
 ```{r}
-
+#| echo: true
 ds<-svyglm(E_DH2_dg~age+as.factor(edu)+as.factor(sex), design=survey_hn12, family =quasibinomial())
 svyregress.display(ds)
 ```
 테이블의 결과를 살펴 보았을 때 나이는 통계적으로 유의미하게 백내장의 발생과 관련이 있고, 교육수준은 거의 없는 것으로 알 수 있습니다. 성별에 따른 차이도 p-value가 0.05보다는 크지만 0.06으로 통계적으로 유의미하지는 않지만 조금의 관련성이 있다는 것을 알 수 있습니다. 이번에는 strata별로 볼 수 있는 table을 만들어보도록 하겠습니다. 
 ```{r}
-
+#| echo: true
 hn12_cat$E_DH2_dg<-as.numeric(hn12_cat$E_DH2_dg)
 hn12_cat$age<-as.numeric(hn12_cat$age)
 svyCreateTableOne2(strata = 'sex', vars = c('E_DH2_dg','age'), data = survey_hn12)
@@ -107,8 +106,8 @@ svyCreateTableOneJS(strata = 'sex', strata2 = 'edu', vars = c('E_DH2_dg','age'),
 svyCreateTableOne2같은 경우에는 보다 단순한 데이터에서 하나의 층으로 테이블을 만들고 싶을 때 사용할 수 있으며, svyCreateTableOneJS의 경우에는 층화를 두 층 이상, 그리고 조금 더 다양한 옵션들이 가능합니다. 
 유사한 방식으로 진단여부와 같은 이항분포뿐만 아니라 안압과 같은 연속변수에도 적용이 가능합니다. 녹내장 환자를 에시로 하면 아래와 같이 할 수 있습니다. 
 ```{r}
+#| echo: true
 hn12_glau<-hn12[!(E_Gr_p%in% c(NA, 888, 999))&!is.na(E_Gl_p)&!is.na(edu)&!is.na(sex)&!is.na(age)]
-hn12_glau[,.(edu)]
 survey_hn12 <- svydesign(id = ~psu, strata = ~kstrata, weights = ~wt_itvex, data = hn12_glau)
 ds2<-svyglm(E_Gr_p~age+as.factor(edu)+as.factor(sex), design=survey_hn12)
 svyregress.display(ds2)
@@ -118,7 +117,7 @@ svyregress.display(ds2)
 이번에는 미국의 국민건강영양조사의 데이터를 가지고 생존분석을 진행해보도록 하겠습니다. 사이트에서 Mortality, 와 기본 조사 데이터를 다운 받은 이후, 이전과 유사한 방법으로 제공된 weight, id, strata를 통해 design모델을 만들어보겠습니다.
 
 ```{r}
-
+#| echo: true
 library(readr)
 demo <- read_xpt("DEMO_J.XPT")
 mortality <- read_fwf("NHANES_2017_2018_MORT_2019_PUBLIC.dat",
@@ -143,11 +142,13 @@ survey_nhanes <- svydesign(id = ~SDMVPSU, strata = ~SDMVSTRA, weights = ~WTMEC2Y
 ```
 이번에는 생존 분석을 진행할 예정이기 때문에 사망여부인 변수 MORTSTAT과 관찰기관 변수인 PERMTH_EXM을 사용하여 survey cox모델을 만들어보겠습니다. 기존의 Cox모델과 함수 작성방법이 유사하며 svycoxph함수를 사용하여, 사망이벤트와 나이(RIDAGEYR), 교육(DMDEDUC2), 성별(RIAGENDR), 가정소득수준(IDFMIN2)의 관련성을 알아보겠습니다. 
 ```{r}
+#| echo: true
 ds3 <- svycoxph(Surv(PERMTH_EXM, MORTSTAT) ~ RIDAGEYR + DMDEDUC2 + RIAGENDR+INDFMIN2, design = survey_nhanes)
 svycox.display(ds3)
 ```
 결과를 대략 살펴보면 조정 이후 나이와 성별 교육 수준이 모두 통게적으로 유의미하게 관련이 있다는 것을 확인할 수 있습니다. 이번에는 인종, 나이(50세 이상 이하), 미국 시민권(Naturalized여부) 등의 그룹에 대해 subgroup analysis를 진행해보도록 하겠습니다. 
 ```{r}
+#| echo: true
 merged_data_mod<- merged_data %>% 
   mutate(gender = factor(RIAGENDR, labels = c("Male", "Female")),
          MORTSTAT = as.numeric(MORTSTAT == 1),
@@ -172,6 +173,7 @@ TableSubgroupMultiGLM(MORTSTAT ~ gender,var_subgroups = c("age_group", "race_eth
 
 우선, 필요한 경우 forestploter를 R에서 설치합니다([Link Text](https://github.com/adayim/forestploter)에서 더 상세한 사용법에 대해서 알 수 있습니다) 이후 TableSubgroupMultiCox 함수를 이용하여 데이터를 불러온 이후, 변수명을 제외한 나머지 행들을 numeric으로 바꿔줍니다. 
 ```{r}
+#| echo: true
 library(grid)
 library(forestploter)
 df<- TableSubgroupMultiCox(Surv(PERMTH_EXM, MORTSTAT) ~ gender, var_subgroups = c("age_group", "race_ethnicity", "citizenship_status"), data = merged_data_mod, line = FALSE)
@@ -184,6 +186,7 @@ df[, (num_cols) := lapply(.SD, as.numeric), .SDcols = num_cols]
 HR값 또한 변수내에서 계산을 통해 행을 추가합니다. 이후 원하는 테마를 지정한 이후, 위와 같이 코드를 실행한다면 forest plot을 얻을 수 있습니다. 
 
 ```{r}
+#| echo: true
 df$Variable <- ifelse(is.na(df$Count), 
                       df$Variable,
                       paste0("   ", df$Variable))
