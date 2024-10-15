@@ -1,0 +1,380 @@
+---
+title: "LLM을 이용한 분석 report 생성 (1)"
+description: |
+  LLM을 이용하여 표 또는 그래프를 요약하는 Quarto 문서를 만들어 봅시다.
+image: img/qgh.png
+categories:
+  - R
+  - API
+  - Documentation
+author:
+  - name: Young Sun Park
+    url: https://github.com/ddspys
+fig_width: 400
+date: 2024-10-14
+format: html
+engine: knitr
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+
+```{r setup, include=FALSE}
+## include libraries
+library(httr2)
+library(magrittr)
+library(base64enc)
+library(flextable)
+library(officer)
+library(ggplot2)
+```
+
+
+# Introduction
+
+Quarto는 오픈소스 기반의 과학 및 기술 출판 시스템입니다.
+
+코드를 기반으로 문서를 생성하기 때문에 동일한 형식의 데이터으로부터 일정한 결과물을 얻을 수 있습니다.
+
+이는 문서의 일관성과 재사용성을 증대시키고 사람에 의한 실수를 줄이는 데 큰 도움이 됩니다.
+
+그러나 문서의 모든 요소를 코드의 형태로 만들 수 있는것은 아닙니다.
+
+이를테면 문서에 포함된 표 또는 그래프에 대한 설명은 작성자가 직접 작성해야합니다.
+
+이 과정을 효율적으로 해결하기 위해서 차라투에서는 LLM을 활용했습니다.
+
+# Prerequisites
+
+## Libraries
+
+### httr2
+
+OpenAI endpoint에 GET 요청을 실행하기 위한 라이브러리
+
+### ggplot2
+그래프를 그리기 위한 라이브러리
+
+### base64enc
+이미지를 base64로 인코딩 하기 위한 라이브러리
+
+### flextable
+복잡한 table을 만들기 위한 라이브러리
+
+### officer
+flextable을 html format으로 변환할 때 사용되는 라이브러리
+
+### magrittr
+
+파이프 연산자를 사용하기 위한 라이브러리
+
+### DBI (Optional)
+
+DB와 통신하기 위한 라이브러리
+
+### RSQLite (Optional)
+
+Sqlite3 인터페이스 라이브러리
+
+### digest (Optional)
+
+해쉬 알고리즘을 위한 라이브러리
+
+## OpenAI api key
+
+본 과정에서는 OpenAI 사의 GPT4o-mini 모델을 활용했습니다.
+
+본인의 OpenAI api 키를 발급받을 경우 동일한 방식으로 실습을 진행하실 수 있습니다.
+
+<https://openai.com/index/openai-api/>
+
+
+```{r}
+openai_key <- "your openAI key"
+endpoint <- "https://api.openai.com/v1/"
+```
+
+```{r, echo=FALSE}
+openai_key <- Sys.getenv("OPENAI_KEY")
+```
+
+# Features
+
+## Instruction
+
+OpenAI endpoint로 요청 시 Text parameter가 포함 됩니다.
+
+이 Text에는 작업 지시 사항인 Instruction과 분석할 데이터가 포함됩니다.
+
+Instruction의 예시는 다음과 같습니다.
+
+```{r}
+
+instruction <- "지침:
+- 한글로 4문장 이상 답변하세요.
+- 표에 있는 범주별로 내용을 설명하세요.
+- 각 범주에 포함된 모든 항목에 대해 설명하세요."
+
+```
+
+## Request
+
+Endpoint(https://api.openai.com/v1/chat/completions)로 요청 시 다음의 parameter가 사용되었습니다.
+
+-   Header
+    -   Content-Type: application/json
+    -   Authorization: Bearer \$OPENAI_API_KEY
+-   Body
+    -   model(\*): gpt-4o-mini \[openAI의 다른 모델도 사용할 수 있습니다\]
+    -   temperature: 0.2 \[0과 2 사이의 값, 높을수록 무작위적이며 창의적인 대답을 내놓음\]
+    -   messages(\*):
+        -   role: user
+        -   content:
+            -   type: text
+            -   text: Introduction과 Table data
+
+### Table
+
+LLM이 table을 인식하기 위해서는 table이 적절한 형식으로 변환되어야 합니다. LLM이 인식 할 수 있는 형식은 크게 두가지입니다.
+
+#### Markdown
+
+마크다운은 일반 텍스트 기반의 경량 마크업 언어입니다. 누구나 쉽게 작성할 수 있다는 장점이 있으며 표 또한 텍스트를 통해 생성 할 수 있습니다. 다만 복잡한 형태의 표 (예: 계층 구조)의 경우 표현하기 어렵다는 단점이 있습니다.
+
+```{r}
+convert_to_markdown <- function(table) {
+  df_from_ft <- as.data.frame(table)
+  markdown_table <- capture.output(cat(knitr::kable(table, format = "markdown"), sep = "\n"))
+  return(paste(markdown_table, collapse = "\n"))
+}
+```
+
+```{r}
+head(mtcars[1:5])
+cat(convert_to_markdown(head(mtcars[1:5])))
+```
+
+#### HTML
+
+일반적인 data.frame 객체는 마크다운으로 변환할 수 있습니다.
+
+그러나 flextable처럼 Cell이 합쳐진 형태나 계층적 구조일 경우 markdown으로의 변환이 어렵습니다.
+
+이 경우 html table 형태로 변환할 수 있습니다.
+
+```{r}
+proc_freq(mtcars, "gear", "vs")
+```
+
+```{r}
+cat(proc_freq(mtcars, "gear", "vs") %>% to_html)
+```
+
+```{r, include=FALSE}
+fig <- proc_freq(mtcars, "gear", "vs")
+```
+
+### Figure
+
+만약 이미지에 대한 설명을 원한다면 이미지에 대한 파라미터를 추가해야합니다.
+
+-   Header
+    -   Content-Type: application/json
+    -   Authorization: Bearer \$OPENAI_API_KEY
+-   Body
+    -   model(\*): gpt-4o-mini \[openAI의 다른 모델도 사용할 수 있습니다\]
+    -   temperature: 0.2 \[0과 2 사이의 값, 높을수록 무작위적이며 창의적인 대답을 내놓음\]
+    -   messages(\*):
+        -   role: user
+        -   content:
+            -   type: text
+            -   text: Introduction과 Table data
+            -   type: image_url
+            -   image_url:
+                -   url: base64로 인코딩된 이미지
+                
+이미지는 base64로 인코딩되어 전달됩니다.
+
+
+```{r}
+LLM_description <- function(inst = "다음에 대해 설명하시오", ## 지침
+                         add_inst = NULL, ## 추가 지침
+                         table = "", ## 데이터가 포함된 표
+                         image_path = NULL, ## 이미지 경로 (Local 또는 웹)
+                         model = "gpt-4o-mini", ## 사용 할 LLM 모델
+                         temperature = 0.2, ## 무작위성 (낮을수록 일관된 답변)
+                         endpoint = "https://api.openai.com/v1/" ## 엔드포인트
+                         ){
+  
+  ## LLM에게 전달 할 내용
+  ### 주요 지침
+  ### 추가 지침
+  ### 표
+  text <- paste(
+    "주요 지침: ",
+    inst,
+    ifelse(is.null(add_inst), ## 추가 지침이 존재 할 경우 추가
+           " ",
+           "추가 지침: "),
+    add_inst,
+    "도표: ",
+    table, ## Markdown 또는 html 형태의 table
+    sep = "\n\n"
+
+  )
+  
+  
+  url <- NULL
+  if(!is.null(image_path)){ ## image path가 전달
+    if(file.exists(image_path)){
+      ## 로컬파일인 경우
+      url <- paste0("data:image/png;base64,",base64encode(image_path))
+    }else{
+      ## 로컬파일이 아닌 경우(Web 이미지 가정)
+      
+      ## 이미지 다운로드
+      resp <- request(image_path) %>% 
+        req_perform()
+      
+      
+      if(resp$status_code == 200){
+        ## 정상적인 응답 시
+        image_raw <- resp_body_raw(resp)
+        encoded_image <- base64encode(image_raw)
+        url <- paste0("data:image/png;base64,",encoded_image )
+        
+      } else{
+        ## 비정상적인 응답 시
+        warning("Failed to download the image. Status code:", response$status_code)
+      }
+      
+      
+    }
+  }
+  
+  ## 이미지 컴포넌트
+  image_cmp <- NULL
+  
+  
+  if(!is.null(url)){
+    ## 이미지가 존재할 경우
+    
+    ## 이미지
+    image_cmp <- list(
+            type = "image_url",
+            image_url = list(
+              url = url
+            )
+          )
+    
+    ## 이미지가 포함된 content
+    content <- 
+      list(
+          list(
+            type = "text",
+            text =  text
+          ),
+          image_cmp
+
+        )
+  }else{
+    ## 이미지가 존재하지 않을 경우
+    ## text만 content에 포함
+    content <- list(
+          list(
+            type = "text",
+            text =  text
+          )
+
+        )
+  }
+  
+  
+
+req <- request(endpoint) %>% ## 엔드포인트
+  req_url_path_append("chat") %>% ## 주소 1
+  req_url_path_append("completions") %>% ##주소 2
+  req_headers(
+    `Content-Type` = "application/json",
+    Authorization = paste("Bearer", openai_key) ## API키 전달
+  ) %>% 
+  req_body_json(
+    list(
+      model = model, ## LLM 모델
+      temperature = temperature, 
+      messages = list(list(
+        role = "user",
+        content = content
+      )
+    )),
+    auto_unbox = T
+  )
+
+
+
+resp <- req %>% 
+  req_perform() ## 요청 실행
+tmp <- resp %>% 
+  resp_body_json() ## 응답을 json 형태로 전환
+
+
+
+return(tmp$choices[[1]]$message$content) ## 응답 부분만 반환
+}
+
+```
+
+## Database (Optional)
+
+Quarto 문서를 랜더링 할 때마다 OpenAI endpoint에 결과를 요청할 경우 상당한 비용을 초래할 수 있습니다. 따라서 동일한 parameter로 request 할 경우 DB에 저장된 결과를 대신 반환하도록 sqlite3를 이용하여 캐시 DB를 구성했습니다. 본 포스팅에서는 생략합니다.
+
+# Examples
+
+## data.frame 형태의 표에 대한 설명
+```{r}
+head(mtcars)
+```
+
+```{r}
+cat(LLM_description(
+  inst = "다음 표에 대해 설명하시오",
+  add_inst = "이 표는 자동차에 관한 표이다.",
+  table = convert_to_markdown(mtcars)
+))
+```
+
+## flextable 형태의 표에 대한 설명
+```{r}
+proc_freq(mtcars, "gear", "vs")
+```
+
+```{r}
+cat(LLM_description(
+  inst = "다음 표에 대해 설명하시오.",
+  add_inst = "그래프는 gear 와 vs를 변수로 갖는 frequency table 이다.",
+  table = proc_freq(mtcars, "gear", "vs") %>% to_html
+  ))
+```
+
+
+
+## 그래프 등의 이미지에 대한 설명
+```{r}
+plot_am_bar <- ggplot(mtcars) +
+  geom_bar(aes(factor(am)))
+
+plot_am_bar
+ggsave("img/am.png")
+```
+
+```{r}
+plot_am_bar_build <- ggplot_build(plot_am_bar)
+cat(LLM_description(
+  inst = "다음 그래프에 대해 설명하시오.",
+  add_inst = "그래프는 자동차의 변속기 유형과 관련되어있다.",
+  table = convert_to_markdown( plot_am_bar_build$data),
+  image_path = "img/am.png"
+  ))
+
+```
