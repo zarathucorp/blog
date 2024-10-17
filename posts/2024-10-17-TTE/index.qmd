@@ -1,0 +1,782 @@
+---
+title: "RWD를 이용한 RCT 모방 : Target Trial Emulation by Clone-Censor-Weight method"
+description: |
+  Clone-Censor-Weight method를 이용한 Target trial emulation을 소개하고, 실습해 봅니다.
+  
+image: TTE.png
+categories:
+  - R
+  - statistics
+author:
+  - name: Jihyuk Lee
+    url: https://github.com/MDLEE98
+fig_width: 400
+date: 2024-10-17
+format: html
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+
+## Introduction
+
+임상연구에서 exposure와 outcome 간의 인과관계를 밝히는 gold standard는 **randomized controlled trial(RCT)**입니다. 그러나 임상현장 및 임상연구자의 현실적인 제약들로 인해 모든 임상연구를 RCT로 시행할 수는 없으며, 대부분의 연구는 **real world data(RWD)**를 기반으로 이루어집니다. <br> **Target trial emulation**이란, 목표로 하는 가상의 RCT(target trial)를 설정한 후, RWD를 대상으로 이 RCT를 모사하여 인과성을 추론하는 연구기법입니다. <br> 이 글에서는 **Clone-Censor-Weight method**를 소개하고, 이를 이용하여 Target trial emulation을 R에서 구현하는 과정을 살펴봅니다.
+
+## Clone-Censor-Weight method
+
+Clone-censor-weight method에서는 <br> 1) eligibile한 모든 대상자를 **clone**하여 치료군(Treatment)과 비교군(Control)에 할당하고, <br> 2) 실제 대상자가 치료군에 속한 경우라면 대조군에 있던 clone은 치료 시작 시점에 **artificial censoring**되며(치료군의 대상자 중 정의된 치료시작시점 이후에 치료가 시작된 경우도 artificial censoring), <br> 3) 해당 baseline characteristics를 가진 대상자가 관찰시간에 따라 **artificial censoring되지 않고 남아있을 확률의 역수를 가중치**로 하여 분석<br> 하게 됩니다.
+
+### Immortal time bias
+
+**immortal time bias**는 추적관찰 연구에서 Follow up start period와 Treatment start period가 다를 때 발생하는 bias입니다. 연구대상자가 치료군에 속하기 위해서는 Treatment start period까지 생존(event 미발생)해 있어야 합니다. 즉, 대상자가 치료군에 속해있다면 **Follow up start period와 Treatment start period 사이의 시간은 event가 발생할 수 없는 immortal time**이 되는 것입니다. 따라서 immortal time 구간은 치료를 받지 않은 시기임에도 time to event를 계산할 때 치료를 받은 시기로 산입되는 **misclassification bias**가 생기고, 치료군은 치료시작시점까지 생존한 환자들이 선택되어 **selection bias**가 발생합니다.
+
+![Immortal time bias](immortal_time_bias.jpg){#fig-1 width="500" fig-align="center"}
+
+Immortal time bias는 약물 복용의 효과나 질환의 경과 중에 시행하는 시술의 효과를 평가하는 연구 등에서 치료의 효과를 overestimation할 수 있어 중요하게 고려해야 하는 bias입니다. <br>
+
+지금까지는 immortal time bias를 보정하기 위해 Landmark analysis나 Time-dependent survival analysis 등을 사용했습니다. 하지만 Landmark method는 어느 시점을 landmark로 결정할지에 대한 문제가 있으며 실제 치료나 약물복용을 정확히 반영하지 못한다는 단점이 있습니다. Clone-censor-weight 과정을 거치면 **실제로 치료를 받은 대상자의 clone이 immortal time 동안 비교군에 있다가 치료 시작시점에 censor**되므로, bias를 보정할 수 있습니다.
+
+## 실습 데이터 구성
+
+### 데이터 소개
+
+실습에 사용할 데이터는 국민건강보험공단에서 제공하는 예시 데이터입니다. 실습에서는 개인별 기본정보(성별 등)를 담고 있는 `bnc`, 사망정보를 담고 있는 `bnd`, 진료명세서 데이터(상병명)인 `m20`, 약물처방 데이터인 `m60` 데이터를 사용할 것입니다. bnd 데이터에는 사망일자 변수(`DTH_YYYYMM`)가 연도와 월 까만 있고 날짜는 없어, 분석을 위해 모든 대상자의 사망일자를 사망한 월의 말일로 변환하여 데이터를 불러오겠습니다.
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(survival))
+suppressPackageStartupMessages(library(boot))
+suppressPackageStartupMessages(library(DT))
+
+inst <- fread("data/nsc2_inst_1000.csv")
+bnc <- fread("data/nsc2_bnc_1000.csv") 
+bnd <- fread("data/nsc2_bnd_1000.csv") 
+m20 <- fread("data/nsc2_m20_1000.csv") 
+m30 <- fread("data/nsc2_m30_1000.csv") 
+m40 <- fread("data/nsc2_m40_1000.csv") 
+m60 <- fread("data/nsc2_m60_1000.csv") 
+g1e_0915 <- fread("data/nsc2_g1e_0915_1000.csv") 
+
+bnd <- fread("data/nsc2_bnd_1000.csv")[, Deathdate := (lubridate::ym(DTH_YYYYMM) %>% lubridate::ceiling_date(unit = "month") - 1)][]
+```
+
+### Target trial 설정
+
+이 실습의 Target trial에서는 2011년 1월 1일부터 2015년 12년 31까지 위염 및 십이지장염(공단 질병분류기호 K29.0\~K29.9)을 진단받은 환자들 중, Proton pump inhibitor (PPI) 복용에 따라 위염 및 십이지장염의 재발 위험이 달라지는지를 보고자 합니다. 즉, time-zero는 위염의 진단 시점이고, 관심 event는 위염의 재발입니다. 본 실습은 Clone-censor-weight 과정을 소개하기 위한 글이므로, 임상적 타당성은 고려하지 않았음을 미리 밝힙니다.
+
+### Data set 구성
+
+먼저 처방정보(m60)데이터에서 PPI에 해당하는 처방코드(code.ppi)가 입력된 case들을 선택한 뒤, 가장 마지막으로 PPI를 처방받은 행을 선택하겠습니다(`m60.drug`).
+
+```{r}
+#| eval: true
+#| echo: true
+code.ppi <-  c("367201ACH", "367201ATB", "367201ATD", "367202ACH", "367202ATB", 
+               "367202ATD", "498001ACH", "498002ACH", "509901ACH", "509902ACH", 
+               "670700ATB", "204401ACE", "204401ATE", "204402ATE", "204403ATE", 
+               "664500ATB", "640200ATB", "664500ATB", "208801ATE", "208802ATE", 
+               "656701ATE", "519201ATE", "519202ATE", "656701ATE", "519203ATE", 
+               "222201ATE", "222202ATE", "222203ATE", "181301ACE", "181301ATD", 
+               "181302ACE", "181302ATD", "181302ATE", "621901ACR", "621902ACR", 
+               "505501ATE")
+
+m60.drug <- m60[GNL_NM_CD %in% code.ppi][order(MDCARE_STRT_DT, TOT_MCNT), .SD[.N], keyby = "RN_KEY"] %>%
+  .[order(-MDCARE_STRT_DT), .SD[1], by = "RN_INDI"] %>% .[, .SD, .SDcols = c("RN_INDI", "MDCARE_STRT_DT")]
+```
+
+이후 진료명세서(`m20`) 데이터에서, 2011년 1월 1일 이후 주상병과 첫 번째 부상병에서 K29 코드가 포함된 행을 선택하겠습니다. 그리고 한 환자에서 처음으로 진단명이 입력된 시점을 `first_date`(위염의 처음 진단 ; time zero)로 가정하고, 마지막으로 진단명이 입력된 시점을 `recurr_date`(위염이 재발한 시점 ; event 발생 시점)로 가정하겠습니다. 데이터를 m60.drug와 합쳐서, first_date 이후 처음으로 PPI가 처방된 시점을 `treat_date` 변수로 코딩하겠습니다(데이터 `kk`).
+
+```{r}
+#| eval: true
+#| echo: true
+kk <- m20[(grepl('K29', SICK_SYM1) | grepl('K29', SICK_SYM2)) & (MDCARE_STRT_DT >= 20110000), 
+          .SD, .SDcols = c("RN_INDI", "MDCARE_STRT_DT")] %>% 
+  .[order(MDCARE_STRT_DT), .SD, keyby="RN_INDI"] %>%
+  .[, .(first_date = min(MDCARE_STRT_DT, na.rm = TRUE),
+        recurr_date = ifelse(.N > 1, max(MDCARE_STRT_DT, na.rm = TRUE), NA_integer_)), 
+    keyby = "RN_INDI"]  %>% 
+  m60.drug[, .(RN_INDI, MDCARE_STRT_DT)][., on = "RN_INDI"] %>% 
+  .[, treat_date := ifelse(MDCARE_STRT_DT > first_date & (is.na(recurr_date) | MDCARE_STRT_DT < recurr_date),
+                           MDCARE_STRT_DT,
+                           NA)]
+kk$MDCARE_STRT_DT <- NULL
+```
+
+이후 분석에서 공변량으로 사용할 성별 정보를 기본정보(bnc) 데이터에서 추가하고, 날짜 변수의 class를 변환하겠습니다.
+
+```{r}
+#| eval: true
+#| echo: true
+kk <- merge(kk, bnc[, .(SEX = SEX[1]), keyby = "RN_INDI"], by = "RN_INDI")
+
+kk[, `:=`(recurr_date = as.Date(as.character(recurr_date), format = "%Y%m%d"),
+          treat_date = as.Date(as.character(treat_date), format = "%Y%m%d"),
+          first_date = as.Date(as.character(first_date), format = "%Y%m%d")
+                                )]
+```
+
+이제 PPI 처방 여부(`treatment` ; 0,1)와 위염 재발 여부(`recurr` ; 0,1)를 새로운 변수로 만들고, 사망정보(bnd) 데이터에서 관찰기간 내 사망 여부와 사망 날짜를 확인하겠습니다. 사망했다면 사망일을, 그렇지 않다면 2015-12-31을 `Obs_day`로 코딩하고, 위염의 진단부터 재발까지(event가 발생한)의 시간을 `gastritis_day`로 코딩합니다. 마지막으로, Obs_day와 gastritis_day 중 먼저 온 것 ; event가 발생한 시점 또는 관찰이 종료된 시점을 `FU_time`으로 코딩합니다.
+
+```{r}
+kk[, `:=` (treatment = ifelse(is.na(treat_date), 0, 1),
+           recurr = ifelse(is.na(recurr_date), 0, 1))]
+
+kk.death <- bnd[, .(RN_INDI, Deathdate, BTH_YYYY)][kk, on="RN_INDI", ] %>% 
+  .[, `:=`(Age = year(first_date) - as.integer(substr(BTH_YYYY, 1, 4)),
+           death = as.integer(!is.na(Deathdate)),
+           Obs_day = as.integer(pmin(Deathdate, as.Date("2015-12-31"), na.rm=T)-first_date),
+           treat_day = as.integer(treat_date-first_date))]
+
+kk.death[, `:=` (gastritis_day = as.integer(recurr_date - first_date))]
+kk.death[, FU_day := pmin(Obs_day, gastritis_day, na.rm = T)]
+
+ori <- kk.death[, .(RN_INDI, treatment, treat_day, recurr, Age, SEX, FU_day)]
+```
+
+이제 분석을 위한 데이터(ori)가 구성되었습니다. 실제 연구라면 이전에 위염을 진단받은 환자를 배제하거나, treat_date로부터 특정 시간 이내에 PPI 처방 이력이 있는 환자를 제외하는 등의 다양한 조건을 설정할 수 있겠습니다.
+
+```{r}
+datatable(ori, rownames = F, caption = "Original data", options = list(scrollX = T))
+```
+
+## Clone-Censor-Weight method 적용
+
+Clone-Censor-Weight method를 이해하기 위해 다음 그림을 설명하겠습니다.
+
+![Clone-Censor-Weight model](CCW_model.png){#fig-2 width="500" fig-align="center"}
+
+그림에서 세모 표시는 **치료**를, X 표시는 **event 발생**을, 괄호 표시는 **censor(follow up loss 등)**을 나타냅니다. <br> 일반적으로 Clone-Censor-Weight design에서는 **'grace time'**을 설정하는데, 실제로 치료를 받은 대상자라고 하더라도 grace time(그림에서는 180일)이 경과된 시점에 치료를 받았다면 치료를 받지 않았다고 간주하는 것입니다. 즉, 치료군에 속하기 위해서는 **추적관찰 시작 시점으로부터 grace time 이내에 치료를 받아야** 합니다. 이 정의에 따르면 그림의 A\~E는 치료를 받은 대상자이지만, F\~H는 치료를 받지 않은 대상자가 됩니다. <br>
+
+-   A\~E는 Grace time 이전에 치료를 받았으므로 치료군이 됩니다. A\~E의 clone은 비교군에 할당될 것이고, 비교군의 입장에서는 **치료를 받은 시점**에 **protocol violation**이 발생한 것이므로 artificial censoring됩니다.
+-   F\~H는 Grace time 이후에 치료를 받았으므로 비교군이 됩니다. 이 때, 치료군에 할당된 F\~H의 clone은 grace time인 180일에 artificial censoring됩니다.
+-   I, J, M은 치료 자체를 받지 않았으므로 비교군이 되고, 이들의 clone은 grace time인 180일에 artificial censoring 됩니다.
+-   K와 L은 치료를 받지 않았으면서 grace time 이전에 follow up이 종료되었습니다. 이런 경우에는 clone에서 artificial censoring이 일어나지 않습니다.
+
+대상자의 clone에서 protocol violation에 의해 발생한 censoring은 실제 RCT에서 일어나지 않는 **Artificial censoring**입니다(일반적인 생존분석에서 follow up period 내에 event가 발생하지 않는 censoring과 다릅니다). Artificial censoring은 관찰 시간에 따라 발생 확률이 달라지고, 대상자의 특성(성별, 나이, 과거력 등의 공변량)에 따라서도 발생 확률이 달라집니다. Artificial censoring은 **Clone**이라는 연구 디자인에 의해 발생한 것이고, **만일 특정 대상자의 clone이 어떤 구간에서 artificial censoring될 확률이 높다면 실제로는 censoring 이후에 event가 발생할 수 있음에도 불구하고 그 event를 관찰할 수 없게 됩니다**. 따라서 **시간에 따라 artificial censoring이 되지 않고 관찰대상으로 남아 있을 확률**을 공변량을 보정하여 구하고, 그 **역수**를 가중치로 부여합니다(**Inverse Probability of Censoring Weighting**). <br> 이렇게 하면 1) 동일한 대상자에서 시간구간 (5,6)까지 censor되지 않을 확률이 0.8이라면 가중치 1.25를 부여하고, (10,12)까지 censor되지 않을 확률이 0.5라면 가중치 2.0을 부여하여 시간에 따라 censor될 확률을 동일하게 맞추고, 2) 공변량(예를 들면 성별)이 다른 대상자에서 시간구간 (5,6)까지 censor되지 않을 확률이 0.7이라면 이 확률에 대한 성별의 영향을 보정합니다. 만일 real world에서 중년 여성이 남성에 비해 위염 치료를 위해 PPI를 많이 처방받는다고 하면, CCW design에서 중년여성은 남성에 비해 control arm의 artificial censoring이 많이 될 것입니다. RCT에서는 treatment group과 control group에서 성별의 분포가 동일하므로, 이를 모방하기 위해서는 weight를 주어야 합니다. <br>이후 분석에는 대상자별 가중치를 고려한 생존분석을 시행합니다.
+
+### Clone
+
+먼저 전체 대상자를 Clone 하여 Treatment arm(PPI arm)과 Control arm을 만들고, 각 arm에서 follow up time과 outcome(event)을 입력하겠습니다.
+
+#### Control arm_follow up time, outcome(event) 설정
+
+최종 데이터인 ori를 control arm으로 할당합니다(`arm`=Control). 치료를 받은 대상자(Case1)에서는 control group의 clone이 치료를 시작한 날(`treat_day`)에 artificial censoring되므로, treat_day를 follow-up time(`fup`)으로 설정하고 outcome(위염 재발)은 발생하지 않은 것으로 설정합니다. 치료를 받지 않은 대상자(grace time 이후에 받은 대상자 포함, Case2)에서는 기존의 outcome(`recurr`)과 추적기간(`FU_day`)을 그대로 입력합니다.
+
+```{r}
+#| eval: true
+#| echo: true
+#Arm "Control": no treatment within 180days
+ori_control<-ori  # We create a first copy of the dataset: "clones" assigned to the control (no treatment) arm
+ori_control$arm<-"Control"
+
+#Case 1: Patients receive PPI within 180days (scenarii A to E)
+#they are still alive and followed-up until treatment
+ori_control$outcome[ori_control$treatment==1 & ori_control$treat_day <= 180] <- 0
+
+ori_control$fup[ori_control$treatment==1 & ori_control$treat_day <= 180]<-ori_control$treat_day[ori_control$treatment==1 & ori_control$treat_day <= 180]
+
+#Case 2: Patients do not receive PPI within 180days (either no treatment or treatment after 6 months): 
+#we keep their observed outcomes and follow-up times (scenarii F to M)
+ori_control$outcome[ori_control$treatment==0  | (ori_control$treatment==1 & ori_control$treat_day > 180)] <- ori_control$recurr[ori_control$treatment==0  | (ori_control$treatment==1  & ori_control$treat_day > 180)]
+
+ori_control$fup[ori_control$treatment==0  | (ori_control$treatment==1  & ori_control$treat_day >180)] <- ori_control$FU_day[ori_control$treatment==0  | (ori_control$treatment==1  & ori_control$treat_day >180)]
+```
+
+예를 들어 45461번 대상자는 39일째 PPI를 복용했으므로 Control arm에서 39일까지 follow up하였으며, outcome은 발생하지 않았습니다.
+
+```{r}
+datatable(ori_control, rownames = F, caption = "ori_control; fup & outcome", options = list(scrollX = T))
+```
+
+#### Treatment(PPI) arm_follow up time, outcome(event) 설정
+
+이번에는 ori를 treatment arm으로 할당합니다(`arm`=PPI). 치료군의 정의를 만족하는 대상자(Case1)에서는 기존 추적기간과 outcome을 유지합니다. Case2와 같이 치료를 받지 않고 grace time 이전에 추적이 종료된 대상자도 마찬가자입니다. Case3와 같이 180일 이후에 PPI를 복용했거나 치료 없이 180일 이상 추적관찰 된 대상자는, 대상자의 clone이 treatment arm에서 180일째 artificial censoring되므로 follow-up time(`fup`)을 180일로 설정하고 outcome은 발생하지 않은 것으로 설정합니다
+
+```{r}
+#| eval: true
+#| echo: true
+#Arm "ppi": Treatment within 180days
+ori_ppi<-ori # We create a second copy of the dataset: "clones" assigned to the PPI arm
+ori_ppi$arm<-"PPI"
+
+#Case 1: Patients receive PPI within 180 days : 
+#we keep their observed outcomes and follow-up times
+
+ori_ppi$outcome[ori_ppi$treatment==1
+                    & ori_ppi$treat_day <=180]<-ori_ppi$recurr[ori_ppi$treatment==1
+                                                                             & ori_ppi$treat_day <=180]
+
+ori_ppi$fup[ori_ppi$treatment==1
+                & ori_ppi$treat_day <=180]<-ori_ppi$FU_day[ori_ppi$treatment==1
+                                                                           & ori_ppi$treat_day <=180]
+
+#Case 2: Patients die or are lost to follow-up before 180days without recieving treatment: 
+#we keep their observed outcomes and follow-up times (scenarii K and L)
+
+ori_ppi$outcome[ori_ppi$treatment==0 & ori_ppi$FU_day <=180]<-ori_ppi$recurr[ori_ppi$treatment==0 & ori_ppi$FU_day <=180]
+
+ori_ppi$fup[ori_ppi$treatment==0 & ori_ppi$FU_day <=180]<-ori_ppi$FU_day[ori_ppi$treatment==0 & ori_ppi$FU_day <=180]
+
+#Case 3: Patients do not receive PPI within 180days and are still alive or 
+#at risk at 6 months (scenarii F-J and M)
+# they are considered alived and their follow-up time is 6 months
+
+ori_ppi$outcome[(ori_ppi$treatment==0 & ori_ppi$FU_day >180) | (ori_ppi$treatment==0  & ori_ppi$treat_day >180)|(ori_ppi$treatment==1  & ori_ppi$treat_day >180)]<-0
+
+ori_ppi$fup[(ori_ppi$treatment==0 & ori_ppi$FU_day >180) | (ori_ppi$treatment==0 & ori_ppi$treat_day >180)|(ori_ppi$treatment==1  & ori_ppi$treat_day >180)]<-180
+```
+
+예를 들어 24053번 대상자는 PPI를 복용하지 않았고 297일간 추적관찰하였으므로, Treatment arm에 180일간 follow up 하였습니다.
+
+```{r}
+datatable(ori_ppi, rownames = F, caption = "ori_ppi; fup & outcome", options = list(scrollX = T))
+```
+
+#### Control arm_censoring status, follow-up time uncensored 설정
+
+이제 각 arm에 있는 대상자들이 artificial censor되는지 여부(`censoring`)와, censor 되기 전까지의 follow-up time(`fup_uncensored`)을 변수로 만들겠습니다. fup_uncensored는 최댓값을 grace time인 180일로 정합니다. Control arm의 경우 180일 이전에 PPI를 복용한 대상자만 censoring이 되고, 나머지 대상자는 censoring 되지 않습니다.
+
+```{r}
+#| eval: true
+#| echo: true
+#Arm "Control": no treatment within 6 months
+
+#Case 1: Patients receive treatment within 6 months: 
+#they are censored in the control group at time of treatment (scenarii A to E)
+ori_control$censoring[ori_control$treatment==1 & ori_control$treat_day <=180]<-1
+
+ori_control$fup_uncensored[ori_control$treatment==1 & ori_control$treat_day <=180]<-(ori_control$treat_day[ori_control$treatment==1 & ori_control$treat_day <=180])
+
+#Case 2: Patients die or are lost to follow-up before 180days : 
+#we keep their follow-up time but they are uncensored (scenarii K and L)
+ori_control$censoring[ori_control$treatment==0 & ori_control$FU_day <=180]<-0
+
+ori_control$fup_uncensored[ori_control$treatment==0 & ori_control$FU_day <=180]<-ori_control$FU_day[ori_control$treatment==0 & ori_control$FU_day <=180]
+
+#Case 3: Patients do not receive PPI within 6 months and are still alive or 
+#at risk at 6 months : (scenarii F-J and M)
+# they are considered uncensored and their follow-up time is 180days
+ori_control$censoring[(ori_control$treatment==0 & ori_control$FU_day >180) | (ori_control$treatment==1 & ori_control$treat_day >180)]<-0
+
+ori_control$fup_uncensored[(ori_control$treatment==0 & ori_control$FU_day >180) | (ori_control$treatment==1 & ori_control$treat_day >180)]<- 180
+```
+
+```{r}
+datatable(ori_control, rownames = F, caption = "ori_control", options = list(scrollX = T))
+```
+
+#### Treatment(PPI) arm_censoring status, follow-up time uncensored 설정
+
+다음으로, tretment arm에서도 동일하게 censoring status, follow-up time uncensored 변수를 만들겠습니다. Treatment arm에서는 PPI를 복용하지 않은 대상자와, grace time인 180일 이후 복용한 대상자에서 censoring이 발생합니다.
+
+```{r}
+#| eval: true
+#| echo: true
+#Arm "PPI": PPI within 6 months
+
+#Case 1: Patients receive treatment within 180days : 
+# they are uncensored in the ppi arm and remain at risk of 
+# censoring until time of treatment (scenarii A to E)
+ori_ppi$censoring[ori_ppi$treatment==1 & ori_ppi$treat_day <=180]<-0
+
+ori_ppi$fup_uncensored[ori_ppi$treatment==1 & ori_ppi$treat_day <=180]<-(ori_ppi$treat_day[ori_ppi$treatment==1 & ori_ppi$treat_day <=180])
+
+#Case 2: Patients die or are lost to follow-up before 180days : 
+#we keep their follow-up times but they are uncensored (scenarii K and L)
+ori_ppi$censoring[ori_ppi$treatment==0 & ori_ppi$FU_day <=180]<-0
+
+ori_ppi$fup_uncensored[ori_ppi$treatment==0 & ori_ppi$FU_day <=180]<-ori_ppi$FU_day[ori_ppi$treatment==0 & ori_ppi$FU_day <=180]
+
+#Case 3: Patients do not receive ppi within 180days and are still alive 
+#or at risk at 6 months (scenarii F-J and M): 
+# they are considered censored and their follow-up time is 180days
+ori_ppi$censoring[(ori_ppi$treatment==0 & ori_ppi$FU_day >180) | (ori_ppi$treatment==1 & ori_ppi$treat_day >180)]<-1
+
+ori_ppi$fup_uncensored[(ori_ppi$treatment==0 & ori_ppi$FU_day >180) | (ori_ppi$treatment==1  & ori_ppi$treat_day >180)]<-180
+```
+
+마지막으로, 분석을 위해 control arm과 treatment(PPI) arm을 하나의 데이터(`dat`)로 합치겠습니다. 합친 데이터에서는 **모든 대상자가 두 명씩 존재**할 것입니다.
+
+```{r}
+#| eval: true
+#| echo: true
+dat <-rbind(ori_control, ori_ppi)
+datatable(dat[dat$RN_INDI == 45461, ], rownames = F, caption = "dat ; original + clone", options = list(scrollX = T))
+```
+
+### Time-split data의 생성
+
+이제 데이터를 event가 발생한 시점마다 자르는(split) 작업을 하겠습니다. 혼란을 피하기 위해 데이터 이름을 `tab`으로 새로 생성하겠습니다. event가 발생하거나, artificial censor가 발생한 모든 시점은 `fup` 변수에 포함되어 있습니다. 따라서 fup 변수의 시간대별로 구간을 생성하기 위해 `times` 데이터 프레임을 만듭니다.
+
+```{r}
+#| eval: true
+#| echo: true
+tab <- dat
+#Dataframe containing the time of events and an ID for the times of events
+t_events<-sort(unique(tab$fup))
+times<-data.frame("tevent"=t_events,"ID_t"=seq(1:length(t_events)))
+```
+
+`tevent`는 event가 발생한 시점이고, `ID_t`는 해당 시점이 전체 발생 시점들 중 몇 번째에 해당하는지를 나타냅니다.
+
+```{r}
+datatable(times, rownames = F, caption = "times ; dataframe for fup", options = list(scrollX = T))
+```
+
+먼저 treatment arm인 `tab_s`에 대해, `Survival` 패키지의 `survSplit` 함수를 이용하여 **t_event에 해당하는 시점마다 구간을 나누고** 시간 순으로 정렬합니다. 이렇게 만들어진 data.long은 구간별로 **outcome**, 즉 위염의 재발이 일어났는지를 보여줍니다. 다음으로 tab_s를 동일하게 t_event에 따라 split하되, **구간별로 outcome이 아니라 artificial censoring이 일어났는지**를 보겠습니다(코드에서 event="censoring"으로 입력합니다). <br> `data.long`과 `data.long.cens`는 동일한 데이터(`tab_s`)를 동일한 시간구간(`t_event`)별로 나눈 것이므로, data.long.cens의 censoring status를 data.long과 합치면 구간별로 outcome 발생 여부와 censoring 여부를 확인할 수 있습니다.
+
+```{r}
+#| eval: true
+#| echo: true
+tab_s<-tab[tab$arm=="PPI",]
+  
+#Creation of the entry variable (Tstart, 0 for everyone)
+tab_s$Tstart<-0
+  
+#Splitting the dataset at each time of event until the event happens and sorting it
+data.long<-survSplit(tab_s, cut=t_events, end="fup", start="Tstart", event="outcome",id="ID") 
+data.long<-data.long[order(data.long$ID,data.long$fup),] 
+  
+#Splitting the original dataset at each time of event and sorting it
+#until censoring happens. This is to have the censoring status at each time of event 
+data.long.cens<-survSplit(tab_s, cut=t_events, end="fup", start="Tstart", event="censoring",id="ID") 
+data.long.cens<-data.long.cens[order(data.long.cens$ID,data.long.cens$fup),] 
+  
+#Replacing the censoring variable in data.long by the censoring variable obtained
+# in the second split dataset
+data.long$censoring<-data.long.cens$censoring
+  
+#Creating Tstop (end of the interval) 
+data.long$Tstop<-data.long$fup
+  
+#Merge and sort
+data.long<-merge(data.long,times,by.x="Tstart",by.y="tevent",all.x=T)
+data.long<-data.long[order(data.long$ID,data.long$fup),] 
+data.long$ID_t[is.na(data.long$ID_t)]<-0
+```
+
+각 구간의 끝은 `fup` 이므로, `Tstart`에 대응되는 `Tstop` 변수에 `fup`을 입력하고, 위에서 만든 `times`와 merge하게 되면 대상자별로 각 행이 몇 번째 구간인지를 알 수 있습니다(`ID_t` : 구간번호). 이 때, `times`는 1부터 시작하므로 tstart가 0, tstop이 1인 행은 ID_t가 NA로 출력되므로 해당 구간번호를 0으로 바꾸어줍니다. <br> `data.long`을 보면, RN_INDI별로 \[tstart, tstop\]으로 나누어진 시간 구간이 있고, 해당 구간의 outcome과 censoring이 있습니다.
+
+```{r}
+datatable(data.long, rownames = F, caption = "data.long ; time-splitted data for control arm", options = list(scrollX = T))
+```
+
+동일한 작업을 control arm인 `tab_c`에 대해서도 수행합니다.
+
+```{r}
+#| eval: true
+#| echo: true
+tab_c<-tab[tab$arm=="Control",]
+  
+#Creation of the entry variable (Tstart, 0 for everyone)
+tab_c$Tstart<-0
+  
+  
+#Splitting the dataset first at each time of event
+#until the event happens 
+data.long2<-survSplit(tab_c, cut=t_events, end="fup", start="Tstart", event="outcome",id="ID") 
+data.long2<-data.long2[order(data.long2$ID,data.long2$fup),] 
+  
+#Splitting the original dataset at each time of event
+#until censoring happens 
+data.long.cens2<-survSplit(tab_c, cut=t_events, end="fup", start="Tstart", event="censoring",id="ID") 
+data.long.cens2<-data.long.cens2[order(data.long.cens2$ID,data.long.cens2$fup),] 
+  
+#Replacing the censoring variable in data.long by the censoring variable obtained
+# in the second split dataset
+data.long2$censoring<-data.long.cens2$censoring
+  
+#Creating Tstop (end of the interval)
+data.long2$Tstop<-data.long2$fup
+  
+#Merge and sort
+data.long2<-merge(data.long2,times,by.x="Tstart",by.y="tevent",all.x=T)
+data.long2<-data.long2[order(data.long2$ID,data.long2$fup),] 
+data.long2$ID_t[is.na(data.long2$ID_t)]<-0
+```
+
+예시로, `RN_INDI`가 45461인 대상자를 살펴보겠습니다. 이 대상자는 39일째 PPI를 처방받은 사람으로, 관찰 767일째에 위염의 재발이 발생했습니다.
+
+```{r}
+datatable(dat[dat$RN_INDI == 45461, ], rownames = F, caption = "RN_INDI=45461", options = list(scrollX = T))
+```
+
+Treatment arm에서 45461은 artificial censor 되지 않으며, 마지막 구간인 (766,767)에서 outcome이 발생합니다.
+
+```{r}
+datatable(data.long[data.long$RN_INDI == 45461, ], rownames = F, caption = "45461 in treatment arm", options = list(scrollX = T))
+```
+
+Control arm에서는 치료가 시작된 39일에 protocol violation에 의해 artificial censor되며, outcome은 발생합니다.
+
+```{r}
+datatable(data.long2[data.long2$RN_INDI == 45461,], rownames = F, caption = "45461 in control arm", options = list(scrollX = T))
+```
+
+이제 weight 계산을 위해 data.long과 data.long2를 하나로 합칩니다.
+
+```{r}
+#| eval: true
+#| echo: true
+#Final dataset
+data<-rbind(data.long,data.long2)
+data_final<-merge(data,times,by="ID_t",all.x=T)
+data_final<-data_final[order(data_final$ID,data_final$fup),]
+```
+
+### Censoring weight 계산
+
+이제 Cox model을 이용하여 구간별로 대상자가 artificial censoring 되지 않고 관찰대상으로 남아 있을 확률을 구하겠습니다. 확인하고자 하는 것은 censoring이므로, Surv 함수 안에 들어갈 event는 outcome이 아니라 **censoring**입니다. 보정할 covariate는 대상자별 연령(`Age`)과 성별(`SEX`)입니다. 동일한 대상자가 treatment arm에 있을 때와 control arm에 있을 때 censoring되는 여부가 다르고, raw data(`ori`)에서 치료를 받은 군과 받지 않은 군의 분포가 다르므로 weight는 각각의 arm에서 따로 구해야 합니다. <br> Treatment arm부터 확률을 구해봅니다.
+
+```{r}
+#| eval: true
+#| echo: true
+data.long<-data_final[data_final$arm=="PPI",]
+# Cox model
+ms_cens<-coxph(Surv(Tstart, Tstop, censoring)~Age+SEX, ties="efron", data=data.long)
+```
+
+데이터에서 공변량인 Age와 SEX를 추출한 행렬(`design_mat`)을 만들고, Cox model인 `ms_cens`의 회귀계수를 `beta`에 저장합니다. `design_mat`과 `beta`를 곱하여 `lin_pred`을 구합니다.
+
+```{r}
+#| eval: true
+#| echo: true
+#Design matrix
+design_mat<-as.matrix(data.long[,c("Age","SEX")])
+#Vector of regression coefficients
+beta<-coef(ms_cens)
+  
+#Calculation of XB (linear combineation of the covariates)
+data.long$lin_pred<-design_mat%*%beta
+  
+#Estimating the cumulative hazard (when covariates=0)
+dat.base<-data.frame(basehaz(ms_cens,centered=F))
+names(dat.base)<-c("hazard","t")
+dat.base<-unique(merge(dat.base,times,by.x="t",by.y="tevent",all.x=T))
+```
+
+`dat.base`에는 **covariate(Age, SEX)가 모두 0일 때**, **시간에 따른 hazard**가 저장됩니다.
+
+```{r}
+datatable(dat.base, rownames = F, caption = "baseline hazard", options = list(scrollX = T))
+```
+
+`data.long`에 시간구간에 따른 hazard를 병합하고, 대상자의 covariate 정보가 포함된 `lin_pred`과의 연산을 통해 해당 구간에 **artificial censor되지 않고 남아 있을 확률**인 `P_uncens`를 구합니다. 이후 **outcome에 대한 Cox regression을 할 때 사용될 weight는 `P_uncens`의 역수**입니다.
+
+```{r}
+#| eval: true
+#| echo: true  
+#Merging and reordering the dataset
+data.long<-merge(data.long,dat.base,by="ID_t",all.x=T)
+data.long<-data.long[order(data.long$RN_INDI,data.long$fup),]
+data.long$hazard<-ifelse(is.na(data.long$hazard),0,data.long$hazard)
+  
+#Estimating the probability of remaining uncensored at each time of event
+data.long$P_uncens<-exp(-(data.long$hazard)*exp(data.long$lin_pred))  
+  
+#Weights are the inverse of the probability of remaining uncensored
+data.long$weight_Cox<-1/data.long$P_uncens
+```
+
+동일한 과정을 통해 Control arm에 대해서도 weight를 구합니다.
+
+```{r}
+#| eval: true
+#| echo: true
+data.long2<-data_final[data_final$arm=="Control",]
+  
+#Cox model
+ms_cens2<-coxph(Surv(Tstart, Tstop, censoring)~Age+SEX, ties="efron", data=data.long2)
+  
+#Design matrix
+design_mat2<-as.matrix(data.long2[,c("Age","SEX")])
+#Vector of regression coefficients
+beta2<-coef(ms_cens2)
+  
+#Calculation of XB (linear combineation of the covariates)
+data.long2$lin_pred<-design_mat2%*%beta2
+  
+#Estimating the cumulative hazard (when covariates=0)
+dat.base2<-data.frame(basehaz(ms_cens2,centered=F))
+names(dat.base2)<-c("hazard","t")
+  
+dat.base2<-unique(merge(dat.base2,times,by.x="t",by.y="tevent",all.x=T))
+  
+#Merging and reordering the dataset
+data.long2<-merge(data.long2,dat.base2,by="ID_t",all.x=T)
+data.long2<-data.long2[order(data.long2$RN_INDI,data.long2$fup),]
+data.long2$hazard<-ifelse(is.na(data.long2$hazard),0,data.long2$hazard)
+  
+#Estimating the probability of remaining uncensored at each time of event
+data.long2$P_uncens<-exp(-(data.long2$hazard)*exp(data.long2$lin_pred))
+  
+#Weights are the inverse of the probability of remaining uncensored
+data.long2$weight_Cox<-1/data.long2$P_uncens
+data.long2$weight_Cox[data.long2$ID_t==0]<-1
+```
+
+이제 `data.long`과 `data.long2`에 대상자별, 시간 구간별로 weight_Cox 변수가 생성되었습니다.
+
+예를 들어, 아까 살펴본 RN_INDI가 45461인 대상자를 보겠습니다. Control arm에 할당된 이 대상자의 clone의 시간에 따른 분석 가중치 ; 해당 구간에 censor지 않고 남아 있을 확률의 역수는 아래와 같습니다.
+
+```{r}
+datatable(data.long2[data.long2$RN_INDI == 45461, c("RN_INDI", "Tstart", "Tstop", "ID_t", "weight_Cox")], rownames = F, caption = "Weight for Cox model", options = list(scrollX = T))
+```
+
+45461 대상자의 경우에는 control arm에서만 artificial censor가 되고, treatment arm에서는 censor가 되지 않습니다. 따라서 두 arm을 합쳐서 weight를 구하게 되면 별도로 구한 결과와 비교하여 다음과 같은 차이가 발생합니다.
+
+```{r}
+#| eval: true
+#| echo: false
+
+library(ggplot2);library(ggpubr)
+
+plot.A <- ggplot(data = data.long[data.long$RN_INDI==45461, ], aes(x = ID_t, y = weight_Cox)) +
+  geom_line() +
+  labs(x = "ID_t", y = "Weight") +
+  ggtitle("treatment arm : 별도로 구한 weight") + 
+  theme_minimal()
+
+plot.B <- ggplot(data = data.long2[data.long2$RN_INDI==45461, ], aes(x = ID_t, y = weight_Cox)) +
+  geom_line() +
+  labs(x = "ID_t", y = "Weight") +
+  ggtitle("control arm : 별도로 구한 weight") + 
+  theme_minimal()
+
+data_exp <- data_final
+
+ms_experiment<-coxph(Surv(Tstart, Tstop, censoring)~Age+SEX, ties="efron", data=data_exp)
+#Design matrix
+design_mat_exp<-as.matrix(data_exp[,c("Age","SEX")])
+#Vector of regression coefficients
+beta_exp<-coef(ms_experiment)
+
+#Calculation of XB (linear combineation of the covariates)
+data_exp$lin_pred<-design_mat_exp%*%beta_exp
+
+#Estimating the cumulative hazard (when covariates=0)
+dat.base_exp<-data.frame(basehaz(ms_experiment,centered=F))
+names(dat.base_exp)<-c("hazard","t")
+dat.base_exp<-unique(merge(dat.base_exp,times,by.x="t",by.y="tevent",all.x=T))
+
+data_exp<-merge(data_exp,dat.base_exp,by="ID_t",all.x=T)
+data_exp<-data_exp[order(data_exp$RN_INDI,data_exp$fup),]
+data_exp$hazard<-ifelse(is.na(data_exp$hazard),0,data_exp$hazard)
+
+#Estimating the probability of remaining uncensored at each time of event
+data_exp$P_uncens<-exp(-(data_exp$hazard)*exp(data_exp$lin_pred))  
+
+#Weights are the inverse of the probability of remaining uncensored
+data_exp$weight_Cox<-1/data_exp$P_uncens
+
+plot.C <- ggplot(data = data_exp[data_exp$RN_INDI==45461 & data_exp$arm=="PPI", ], aes(x = ID_t, y = weight_Cox)) +
+  geom_line() +
+  labs(x = "ID_t", y = "Weight") +
+  ggtitle("treatment arm : 합쳐서 구한 weight") +
+  theme_minimal()
+
+plot.D <- ggplot(data = data_exp[data_exp$RN_INDI==45461 & data_exp$arm=="Control", ], aes(x = ID_t, y = weight_Cox)) +
+  geom_line() +
+  labs(x = "ID_t", y = "Weight") +
+  ggtitle("control arm : 합쳐서 구한 weight") +
+  theme_minimal()
+
+ggarrange(plot.A, plot.B, plot.C, plot.D, 
+          ncol = 2, nrow = 2,
+          labels = c("A", "B", "C", "D"))
+```
+
+### Cox model을 이용한 분석
+
+이제 가중치가 계산된 최종 데이터(`data.long.Cox`)를 가지고, **outcome(위염 재발)에 대한** 생존분석을 시행하겠습니다. 따라서 Surv 함수에 들어갈 event는 `censoring`이 아니라 `outcome`이 됩니다. Cox model에 weights가 반영됩니다. <br> 비례위험가정이 위배될 가능성이 있어, 먼저 Kaplan-Meier cuve의 RMST(Restricted Mean Survival Time)를 이용하여 두 arm 사이의 1년 발생율을 비교해보겠습니다.
+
+```{r}
+#| eval: true
+#| echo: true
+data.long.Cox<-rbind(data.long,data.long2)
+
+emul_Cox_s <- survfit(Surv(Tstart, Tstop, outcome) ~ 1, data=data.long.Cox[data.long.Cox$arm=="PPI",],weights = weight_Cox)
+S1 <- summary(emul_Cox_s, times = 365)$surv
+fit.tableM <- summary(emul_Cox_s, rmean=365)$table
+RMST1 <- fit.tableM["rmean"] # Estimated RMST in the treatment arm
+  
+emul_Cox_c <- survfit(Surv(Tstart, Tstop, outcome) ~ 1, data=data.long.Cox[data.long.Cox$arm=="Control",],weights = weight_Cox)
+S0 <- summary(emul_Cox_c, times = 365)$surv
+fit.tableM2 <- summary(emul_Cox_c, rmean=365)$table
+RMST0 <- fit.tableM2["rmean"] # Estimated RMST in the control arm
+
+Diff_surv<-S1-S0 #Difference in 1 year survival
+Diff_RMST<-RMST1-RMST0 #Difference in RMST
+
+Diff_surv
+Diff_RMST
+```
+
+마지막으로, Cox model을 이용한 Hazard ratio를 구해보겠습니다.
+
+```{r}
+#| eval: true
+#| echo: true 
+Cox_w <- coxph(Surv(Tstart,Tstop, outcome) ~ arm, data=data.long.Cox, weights=weight_Cox)
+HR<-exp(Cox_w$coefficients)
+summary(Cox_w)
+HR
+```
+
+Hazard ratio가 1.31(95% CI 0.879-1.967, p-value 0.183)으로 계산됩니다.
+
+Control arm과 treatment arm은 서로 독립적인 데이터가 아니므로, 일반적인 confidence interval을 신뢰하기 어려워 censor-weight 과정을 다음과 같이 **bootstrap**으로 시행할 수 있습니다. 코드의 실행 속도를 빠르게 하기 위해 `boot` 함수에서 CPU의 개수를 지정하여 multicore 연산을 시행할 수 있습니다.
+
+```{r}
+#| eval: true
+#| echo: true 
+fboot <- function(dat, indices) {
+  t<-dat[dat$arm=="Control",]
+  t1<-dat[dat$arm=="PPI",]
+  tab0 <- t[indices,] # allows boot to select sample
+  select<-tab0$RN_INDI
+  tab1<-t1[t1$RN_INDI %in% select,] 
+  tab<-rbind(tab0,tab1)
+  
+  t_events<-sort(unique(tab$fup))
+  times<-data.frame("tevent"=t_events,"ID_t"=seq(1:length(t_events)))
+  
+  tab_s<-tab[tab$arm=="PPI",]
+  tab_s$Tstart<-0
+  
+  data.long<-survSplit(tab_s, cut=t_events, end="fup", 
+                       start="Tstart", event="outcome",id="ID") 
+  data.long<-data.long[order(data.long$ID,data.long$fup),] 
+  
+  data.long.cens<-survSplit(tab_s, cut=t_events, end="fup", 
+                            start="Tstart", event="censoring",id="ID") 
+  data.long.cens<-data.long.cens[order(data.long.cens$ID,data.long.cens$fup),] 
+
+  data.long$censoring<-data.long.cens$censoring
+  
+  data.long$Tstop<-data.long$fup
+  
+  data.long<-merge(data.long,times,by.x="Tstart",by.y="tevent",all.x=T)
+  data.long<-data.long[order(data.long$ID,data.long$fup),] 
+  data.long$ID_t[is.na(data.long$ID_t)]<-0
+  
+  tab_c<-tab[tab$arm=="Control",]
+  tab_c$Tstart<-0
+  
+  data.long2<-survSplit(tab_c, cut=t_events, end="fup", 
+                        start="Tstart", event="outcome",id="ID") 
+  data.long2<-data.long2[order(data.long2$ID,data.long2$fup),] 
+
+  data.long.cens2<-survSplit(tab_c, cut=t_events, end="fup", 
+                             start="Tstart", event="censoring",id="ID") 
+  data.long.cens2<-data.long.cens2[order(data.long.cens2$ID,data.long.cens2$fup),] 
+  
+  data.long2$censoring<-data.long.cens2$censoring
+  data.long2$Tstop<-data.long2$fup
+
+  data.long2<-merge(data.long2,times,by.x="Tstart",by.y="tevent",all.x=T)
+  data.long2<-data.long2[order(data.long2$ID,data.long2$fup),] 
+  data.long2$ID_t[is.na(data.long2$ID_t)]<-0
+  
+  data<-rbind(data.long,data.long2)
+  data_final<-merge(data,times,by="ID_t",all.x=T)
+  data_final<-data_final[order(data_final$ID,data_final$fup),]
+  
+  data.long<-data_final[data_final$arm=="PPI",]
+  
+  ms_cens<-coxph(Surv(Tstart, Tstop, censoring)~Age+SEX, ties="efron", data=data.long) 
+  design_mat<-as.matrix(data.long[,c("Age","SEX")])
+
+  beta<-coef(ms_cens)
+  
+  data.long$lin_pred<-design_mat%*%beta
+  
+  dat.base<-data.frame(basehaz(ms_cens,centered=F))
+  names(dat.base)<-c("hazard","t")
+  dat.base<-unique(merge(dat.base,times,by.x="t",by.y="tevent",all.x=T))
+  
+  data.long<-merge(data.long,dat.base,by="ID_t",all.x=T)
+  data.long<-data.long[order(data.long$RN_INDI,data.long$fup),]
+  data.long$hazard<-ifelse(is.na(data.long$hazard),0,data.long$hazard)
+  
+  data.long$P_uncens<-exp(-(data.long$hazard)*exp(data.long$lin_pred))  
+
+  data.long$weight_Cox<-1/data.long$P_uncens
+
+  data.long2<-data_final[data_final$arm=="Control",]
+  
+  ms_cens2<-coxph(Surv(Tstart, Tstop, censoring)~Age+SEX, ties="efron", data=data.long2)
+  summary(ms_cens2)
+  
+  design_mat2<-as.matrix(data.long2[,c("Age","SEX")])
+
+  beta2<-coef(ms_cens2)
+  
+  data.long2$lin_pred<-design_mat2%*%beta2
+  
+  dat.base2<-data.frame(basehaz(ms_cens2,centered=F))
+  names(dat.base2)<-c("hazard","t")
+  
+  
+  dat.base2<-unique(merge(dat.base2,times,by.x="t",by.y="tevent",all.x=T))
+  
+  data.long2<-merge(data.long2,dat.base2,by="ID_t",all.x=T)
+  data.long2<-data.long2[order(data.long2$RN_INDI,data.long2$fup),]
+  data.long2$hazard<-ifelse(is.na(data.long2$hazard),0,data.long2$hazard)
+  
+  data.long2$P_uncens<-exp(-(data.long2$hazard)*exp(data.long2$lin_pred))
+  
+  data.long2$weight_Cox<-1/data.long2$P_uncens
+  data.long2$weight_Cox[data.long2$ID_t==0]<-1
+  
+  data.long.Cox<-rbind(data.long,data.long2)
+  
+  emul_Cox_s <- survfit(Surv(Tstart, Tstop, outcome) ~ 1,
+                        data=data.long.Cox[data.long.Cox$arm=="PPI",],weights = weight_Cox)
+  S1<- summary(emul_Cox_s, times = 365)$surv
+  fit.tableM <- summary(emul_Cox_s, rmean=365)$table
+  RMST1 <- fit.tableM["rmean"]
+  
+  emul_Cox_c <- survfit(Surv(Tstart, Tstop, outcome) ~ 1,
+                        data=data.long.Cox[data.long.Cox$arm=="Control",],weights = weight_Cox)
+  S0<- summary(emul_Cox_c, times = 365)$surv
+  fit.tableM2 <- summary(emul_Cox_c, rmean=365)$table
+  RMST0 <- fit.tableM2["rmean"] 
+  
+  Diff_surv<-S1-S0 
+  Diff_RMST<-RMST1-RMST0 
+  
+  Cox_w <- coxph(Surv(Tstart,Tstop, outcome) ~ arm,
+                 data=data.long.Cox, weights=weight_Cox)
+  HR<-exp(Cox_w$coefficients) 
+  
+  res<-c(Diff_surv,Diff_RMST,HR)
+  
+  return(res)
+  
+}
+
+results <- boot(data=dat, statistic=fboot, R=100, parallel = "multicore", ncpus = 40)
+results
+
+# 95% confidence intervals for each measure
+boot.ci(results,type="norm",index=1) #Difference in survival
+boot.ci(results,type="norm",index=2) #Difference in RMST
+boot.ci(results,type="norm",index=3) #HR
+```
+
+## Conclusion
+
+Clone-censor-weight method는 Eligibility가 있다고 판단된 모든 환자를 clone하여 치료군과 비교군에 할당하므로 **두 군 간의 비교성을 극대화**할 수 있다는 장점이 있습니다. 따라서 RCT를 시행하기 어려운 환자군 또는 질환군에 대한 연구에 있어 RWD 바탕으로 RCT를 모방할 수 있습니다. <br> 또한 immortal time biase에 대한 보정이 가능하며, **censoring weight를 계산할 때 여러 공변량을 고려**할 수 있어 연구대상자가 특정 시점에 특정 치료를 시행할지 여부를 반영할 수 있다는 장점이 있습니다.
+
+## Reference
+
+[@fig-1] Jiannong Liu, Eric D. Weinhandl, David T. Gilbertson, Allan J. Collins, Wendy L. St Peter, Issues regarding 'immortal time' in the analysis of the treatment effects in observational studies, Kidney International, Volume 81, Issue 4, 2012, Pages 341-350.
+
+[@fig-2] Maringe, C., Benitez Majano, S., Exarchakou, A., Smith, M., Rachet, B., Belot, A., & Leyrat, C. (2020). Reflection on modern methods: trial emulation in the presence of immortal-time bias. Assessing the benefit of major surgery for elderly lung cancer patients using observational data. Int J Epidemiol, 49(5), 1719-1729.
+
+\[3\] Chen, A., Ju, C., Mackenzie, I. S., MacDonald, T. M., Struthers, A. D., Wei, L., & Man, K. K. C. (2023). Impact of beta-blockers on mortality and cardiovascular disease outcomes in patients with obstructive sleep apnoea: a population-based cohort study in target trial emulation framework. Lancet Reg Health Eur, 33, 100715.
+
+-   실습데이터가 필요하신 분께서는 Reply 달아주시면 데이터를 보내드리겠습니다.
