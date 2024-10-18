@@ -3,7 +3,7 @@ title: "RWD를 이용한 RCT 모방 : Target Trial Emulation by Clone-Censor-Wei
 description: |
   Clone-Censor-Weight method를 이용한 Target trial emulation을 소개하고, 실습해 봅니다.
   
-image: TTE.png
+image: img/TTE.png
 categories:
   - R
   - statistics
@@ -31,7 +31,7 @@ Clone-censor-weight method에서는 <br> 1) eligibile한 모든 대상자를 **c
 
 **immortal time bias**는 추적관찰 연구에서 Follow up start period와 Treatment start period가 다를 때 발생하는 bias입니다. 연구대상자가 치료군에 속하기 위해서는 Treatment start period까지 생존(event 미발생)해 있어야 합니다. 즉, 대상자가 치료군에 속해있다면 **Follow up start period와 Treatment start period 사이의 시간은 event가 발생할 수 없는 immortal time**이 되는 것입니다. 따라서 immortal time 구간은 치료를 받지 않은 시기임에도 time to event를 계산할 때 치료를 받은 시기로 산입되는 **misclassification bias**가 생기고, 치료군은 치료시작시점까지 생존한 환자들이 선택되어 **selection bias**가 발생합니다.
 
-![Immortal time bias](immortal_time_bias.jpg){#fig-1 width="500" fig-align="center"}
+![Immortal time bias](img/immortal_time_bias.jpg){#fig-1 width="500" fig-align="center"}
 
 Immortal time bias는 약물 복용의 효과나 질환의 경과 중에 시행하는 시술의 효과를 평가하는 연구 등에서 치료의 효과를 overestimation할 수 있어 중요하게 고려해야 하는 bias입니다. <br>
 
@@ -145,7 +145,7 @@ datatable(ori, rownames = F, caption = "Original data", options = list(scrollX =
 
 Clone-Censor-Weight method를 이해하기 위해 다음 그림을 설명하겠습니다.
 
-![Clone-Censor-Weight model](CCW_model.png){#fig-2 width="500" fig-align="center"}
+![Clone-Censor-Weight model](img/CCW_model.png){#fig-2 width="500" fig-align="center"}
 
 그림에서 세모 표시는 **치료**를, X 표시는 **event 발생**을, 괄호 표시는 **censor(follow up loss 등)**을 나타냅니다. <br> 일반적으로 Clone-Censor-Weight design에서는 **'grace time'**을 설정하는데, 실제로 치료를 받은 대상자라고 하더라도 grace time(그림에서는 180일)이 경과된 시점에 치료를 받았다면 치료를 받지 않았다고 간주하는 것입니다. 즉, 치료군에 속하기 위해서는 **추적관찰 시작 시점으로부터 grace time 이내에 치료를 받아야** 합니다. 이 정의에 따르면 그림의 A\~E는 치료를 받은 대상자이지만, F\~H는 치료를 받지 않은 대상자가 됩니다. <br>
 
