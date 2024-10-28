@@ -445,22 +445,26 @@ ga('send', {
 <span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="va">x</span>, nthreads <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
-                   expr     min       lq      mean   median       uq     max
-                mean(x) 15.1932 18.05940 20.261056 20.13090 21.96205 27.0991
-               fmean(x)  4.1436  5.00455  6.581266  5.86105  8.11000 10.9808
- fmean(x, nthreads = 4)  2.1207  2.52465  3.429408  2.83755  3.43910  7.4344
- neval
-   100
-   100
-   100</code></pre>
+                   expr       min        lq      mean    median        uq
+                mean(x) 23.818189 23.881988 23.920430 23.913170 23.947722
+               fmean(x) 15.334012 15.392979 15.428531 15.429847 15.449727
+ fmean(x, nthreads = 4)  4.025523  6.862578  7.695351  7.864132  8.486929
+      max neval cld
+ 24.09041   100 a  
+ 15.58527   100  b 
+ 10.64787   100   c</code></pre>
 </div>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">mean</span><span class="op">)</span>, <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-             expr    min      lq     mean  median      uq    max neval
-     colMeans(dt) 2102.4 2187.80 2411.189 2287.50 2493.15 3658.1   100
- sapply(dt, mean)  132.6  147.55  197.128  166.95  194.15  756.0   100
-        fmean(dt)   23.7   29.10   47.281   34.70   49.15  301.4   100</code></pre>
+             expr      min        lq      mean    median       uq      max
+     colMeans(dt) 3154.642 3301.1200 3295.8407 3304.7220 3309.081 3593.496
+ sapply(dt, mean)  190.719  196.3270  208.5230  206.0745  216.491  270.384
+        fmean(dt)   52.694   53.7125   56.1483   55.6745   56.788   86.429
+ neval cld
+   100 a  
+   100  b 
+   100   c</code></pre>
 </div>
 </div>
 <ul>
@@ -468,13 +472,15 @@ ga('send', {
 </li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>base <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">GGDC10S</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">16</span><span class="op">]</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, </span>
-<span>               <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="va">GGDC10S</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">16</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>base <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">GGDC10S</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">16</span><span class="op">]</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="va">GGDC10S</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">16</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-                 expr   min    lq    mean median     uq    max neval
-                 base 309.1 565.0 913.114  606.2 744.95 9863.2   100
- fmean(GGDC10S[6:16])  21.2  25.2  46.149   29.6  39.35  380.6   100</code></pre>
+                 expr     min       lq     mean   median       uq      max
+                 base 409.223 419.1965 659.1579 433.2085 813.6440 4242.667
+ fmean(GGDC10S[6:16])  94.504  95.5710 100.6444 102.1360 103.8795  135.503
+ neval cld
+   100  a 
+   100   b</code></pre>
 </div>
 </div>
 <ul>
@@ -513,7 +519,7 @@ Argument            Description
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">num_vars</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>, w <span class="op">=</span> <span class="va">wNA</span><span class="op">)</span> <span class="co">#결측치를 자동으로 무시한다.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
-    5.897405     3.069350     3.823159     1.243819 </code></pre>
+    5.766455     3.088102     3.558861     1.107960 </code></pre>
 </div>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Grouped Mean</span></span>
 <span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span>, g <span class="op">=</span> <span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -532,18 +538,18 @@ virginica         6.588       2.974        5.552       2.026</code></pre>
 <span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">num_vars</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>, <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, <span class="va">w</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           Sepal.Length Sepal.Width Petal.Length Petal.Width
-setosa         4.974315    3.386034     1.453524   0.2583393
-versicolor     6.012125    2.764018     4.316711   1.3506770
-virginica      6.650593    2.993469     5.633456   2.0803597</code></pre>
+setosa         5.033403    3.434271     1.464525   0.2377769
+versicolor     5.941119    2.783020     4.263050   1.3291146
+virginica      6.499996    2.965439     5.492447   2.0008032</code></pre>
 </div>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 속도 상의 이점. </span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>fmean <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span>, <span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">)</span>,</span>
 <span>               tapply <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span>, <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-   expr  min    lq   mean median   uq   max neval
-  fmean  5.0  5.55  6.616    5.9  6.2  43.6   100
- tapply 26.5 30.10 36.834   31.4 34.6 228.0   100</code></pre>
+   expr    min     lq     mean median      uq     max neval cld
+  fmean  7.531  7.862  8.54733  8.239  8.4255  41.448   100  a 
+ tapply 47.166 48.190 49.66377 48.636 49.1180 123.933   100   b</code></pre>
 </div>
 </div>
 </section><section id="consideration-w-missing-data-결측치-처리" class="level2"><h2 class="anchored" data-anchor-id="consideration-w-missing-data-결측치-처리">Consideration w/ missing data: 결측치 처리</h2>
@@ -578,9 +584,9 @@ virginica      6.650593    2.993469     5.633456   2.0803597</code></pre>
 <span>                        give.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
- expr    min      lq     mean  median       uq     max neval
-    a 7109.1 8096.60 9886.903 9828.35 11119.95 15677.6   100
-    b  347.2  408.65  638.749  493.20   615.10  3479.3   100</code></pre>
+ expr      min        lq       mean    median        uq       max neval cld
+    a 9854.603 9940.8865 10522.7090 10008.930 10297.669 14969.065   100  a 
+    b  545.479  590.4145   611.5872   621.694   633.038   685.942   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 속도 상 이점을 다시 한 번 확인할 수 있다.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -624,10 +630,10 @@ virginica      6.650593    2.993469     5.633456   2.0803597</code></pre>
 <span>               TRA_fmean <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/TRA.html">TRA</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, g <span class="op">=</span> <span class="va">Species</span><span class="op">)</span>, <span class="st">"-"</span>, g <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span>;<span class="kw"><a href="https://rdrr.io/r/base/detach.html">detach</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-      expr  min    lq   mean median   uq   max neval
-     baseR 34.1 36.45 39.592   37.5 39.7 157.2   100
-     fmean  3.1  3.30  3.472    3.4  3.5   5.7   100
- TRA_fmean  8.1  8.70  9.427    8.9  9.3  37.1   100</code></pre>
+      expr    min      lq     mean  median      uq     max neval cld
+     baseR 57.077 58.4975 60.77960 59.4215 60.3085 159.264   100 a  
+     fmean  3.796  3.9900  4.18378  4.1510  4.2665   7.214   100  b 
+ TRA_fmean 11.882 12.3505 13.25294 12.7595 13.3165  44.254   100   c</code></pre>
 </div>
 </div>
 <ul>
@@ -728,12 +734,12 @@ virginica         6.588       2.974        5.552       2.026</code></pre>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/GRP.html">GRP</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-   0.19    0.02    0.30 </code></pre>
+  0.619   0.040   0.659 </code></pre>
 </div>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/qF.html">qF</a></span><span class="op">(</span><span class="va">g</span>, na.exclude <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-   0.16    0.03    0.31 </code></pre>
+  0.273   0.032   0.306 </code></pre>
 </div>
 <div class="sourceCode" id="cb67"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -863,10 +869,10 @@ Merc 280          19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4   138.2</c
 <span>               c<span class="op">=</span><span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/GRP.html">fgroup_by</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/ftransform.html">fmutate</a></span><span class="op">(</span>mpg_sum <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fsum.html">fsum</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
- expr  min    lq   mean median    uq   max neval
-    a 13.7 15.35 23.012  16.05 19.65 173.0   100
-    b 30.5 32.80 46.887  34.60 39.80 222.4   100
-    c 36.8 40.00 72.590  42.50 59.30 757.2   100</code></pre>
+ expr    min      lq     mean  median      uq     max neval cld
+    a 27.266 29.7885 31.47125 30.4025 31.7165 107.002   100 a  
+    b 64.819 66.7990 68.84531 67.8300 68.8585 138.077   100  b 
+    c 78.526 80.3145 82.11237 81.4460 82.3050 126.137   100   c</code></pre>
 </div>
 </div>
 <ul>
@@ -905,9 +911,9 @@ Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1   642.9</co
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-  expr   min     lq    mean median     uq   max neval
-     / 102.1 111.05 127.973 119.10 131.55 391.5   100
- TRA=/  95.8 100.60 116.309 105.85 122.20 269.3   100</code></pre>
+  expr     min      lq     mean   median       uq     max neval cld
+     / 208.423 211.461 216.9684 212.9690 215.2815 456.075   100  a 
+ TRA=/ 198.332 200.922 203.9442 202.6085 204.8170 239.689   100   b</code></pre>
 </div>
 </div>
 <ul>
@@ -1063,10 +1069,14 @@ fact_vars(x) &lt;- value;  logi_vars(x) &lt;- value;  date_vars(x) &lt;- value</
 <span>               data.table2  <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">fmean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span>, .SDcols <span class="op">=</span> <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-        expr    min      lq     mean  median      uq    max neval
-    collapse  157.0  215.65  250.291  236.75  268.45  603.4   100
-  data.table 1060.5 1138.45 1396.075 1215.35 1357.40 4144.3   100
- data.table2 4188.9 4293.00 4718.635 4366.00 4682.85 8224.6   100</code></pre>
+        expr      min        lq      mean    median        uq      max neval
+    collapse  339.330  369.4435  424.8557  397.9745  409.1075 3425.186   100
+  data.table 5010.470 5242.2960 5356.0409 5280.7165 5376.4760 8372.164   100
+ data.table2 5164.241 5322.2865 5557.2280 5391.0230 5541.6530 8763.263   100
+ cld
+ a  
+  b 
+   c</code></pre>
 </div>
 </div>
 <ul>
@@ -1091,16 +1101,16 @@ fact_vars(x) &lt;- value;  logi_vars(x) &lt;- value;  date_vars(x) &lt;- value</
 <span>               dt_gmean <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span>, .SDcols <span class="op">=</span> <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">]</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-     expr    min      lq     mean  median      uq    max neval
-        a  177.9  198.95  240.305  220.30  237.25 1274.6   100
-       b0   44.1   74.70  102.548   85.00  100.25  795.3   100
-        b   93.7  112.90  146.251  132.70  146.50  749.6   100
- dt_fmean 4026.8 4250.25 4711.503 4336.25 4720.75 7267.1   100
- dt_gmean 1074.6 1156.65 1393.596 1216.70 1325.70 3711.1   100</code></pre>
+     expr      min        lq      mean    median       uq       max neval  cld
+        a  358.473  375.3265  392.0909  392.3025  398.751   580.505   100 a   
+       b0   76.707   92.1125  105.7192  110.7625  113.721   175.649   100  b  
+        b  224.185  238.6440  256.6076  255.7260  265.781   606.967   100 ab  
+ dt_fmean 5213.289 5319.2375 5620.3223 5371.5520 5547.785 11522.735   100   c 
+ dt_gmean 5064.030 5246.1655 5389.5898 5315.4075 5475.593  8260.358   100    d</code></pre>
 </div>
 </div>
 <ul>
-<li><p><strong>dplyr</strong>의 data %&gt;% group_by(…) %&gt;% summarize(…) 및 <strong>data.table</strong>의 [i, j, by] 구문은 데이터 그룹에 함수를 적용하기 위한 보편적인 방식이다. 이는 다양한 함수를 그룹화된 데이터에 적용하며, 특히 <strong>data.table</strong>은 몇몇 내장 함수(<strong>min, max, mean</strong>, 등)를 GForce; 내부적으로 최적화하여 처리한다.</p></li>
+<li><p><strong>dplyr</strong>의 data %&gt;% group_by(…) %&gt;% summarize(…) 및 <strong>data.table</strong>의 [i, j, by] 구문은 데이터 그룹에 함수를 적용하기 위한 보편적인 방식이다. 이는 다양한 함수를 그룹화된 데이터에 적용하며, 특히 <strong>data.table</strong>은 몇몇 내장 함수(<strong>min, max, mean</strong> 등)를 GForce; 내부적으로 최적화하여 처리한다.</p></li>
 <li><p><strong>collapse</strong>는 데이터를 그룹화하여<strong>(fgroup_by, collap)</strong> 통계 및 변환 함수를 처리한다. (by C++)</p></li>
 <li><p><strong>collapse</strong>의 모든 기능(BY는 예외)은 GForce 최적화가 되어 있지만, <strong>data.table</strong> 내에서 최적화 정도의 차이, <strong>lapply</strong> 적용 상의 문제가 있는 것으로 추정된다.</p></li>
 <li><p>그렇다면 <strong>fmean</strong>을 <strong>data.table</strong>내에서 쓸 수는 없을까.</p></li>
@@ -1145,12 +1155,18 @@ fact_vars(x) &lt;- value;  logi_vars(x) &lt;- value;  date_vars(x) &lt;- value</
 <span>               hybrid_ok       <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html">fmean</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/GRP.html">gby</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">country</span><span class="op">)</span><span class="op">)</span>, .SDcols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-            expr    min      lq     mean  median      uq     max neval
-        collapse  171.4  207.05  251.193  241.90  271.45  1170.4   100
-      data.table 1063.3 1183.85 1433.205 1278.80 1426.35  3301.7   100
- data.table_base 1581.2 1707.75 1901.967 1772.45 1875.75  4871.2   100
-      hybrid_bad 4027.6 4335.80 4890.064 4469.60 4823.90 11177.4   100
-       hybrid_ok  424.3  512.30  599.047  554.45  617.50  2168.8   100</code></pre>
+            expr      min        lq      mean    median        uq      max
+        collapse  345.137  376.5125  419.4952  393.9470  399.4225 3603.978
+      data.table 5086.504 5240.5405 5384.2358 5319.8300 5484.4740 6284.893
+ data.table_base 2545.283 2597.0910 2695.3421 2625.8495 2648.6360 6084.044
+      hybrid_bad 5197.406 5331.3155 5539.1046 5382.9660 5607.2690 8885.335
+       hybrid_ok  837.602  885.5560  899.4496  902.0515  914.6245 1003.834
+ neval   cld
+   100 a    
+   100  b   
+   100   c  
+   100    d 
+   100     e</code></pre>
 </div>
 </div>
 <ul>
@@ -1182,10 +1198,10 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
- expr   min     lq    mean median     uq    max neval
-   S1 686.4 748.65 880.624  788.7 856.70 4011.2   100
-   S2 273.9 316.20 360.975  339.7 373.60 1798.5   100
-   S3  90.1 108.75 130.901  123.8 136.85  354.8   100</code></pre>
+ expr      min        lq      mean    median       uq      max neval cld
+   S1 2088.236 2178.8360 2255.2440 2243.0780 2280.824 4270.312   100 a  
+   S2  409.735  484.6600  528.7572  533.0865  577.559  665.195   100  b 
+   S3  121.994  171.2135  203.7296  202.9935  229.109  290.783   100   c</code></pre>
 </div>
 </div>
 <ul>
@@ -1216,33 +1232,33 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 <span> </span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">DT</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">7</span><span class="op">)</span><span class="op">]</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html">fselect</a></span><span class="op">(</span><span class="fl">9</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">DT</span><span class="op">)</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       PCGDP   LIFEEX  GINI       ODA      POP     sum_ODA perc_c_ODA
-       &lt;num&gt;    &lt;num&gt; &lt;num&gt;     &lt;num&gt;    &lt;num&gt;       &lt;num&gt;      &lt;num&gt;
-1:        NA 68.78634    NA        NA  2519421  1589690009         NA
-2:        NA 63.68700    NA        NA  5579072  5049070016         NA
-3:  484.6432 40.19400    NA 206080002  3388495 15375289974  1.3403325
-4: 6086.7266 75.18537  39.5 723559998  7164132 25564340080  2.8303488
-5: 3879.7139 68.82700    NA 174330002 24931919 93911010851  0.1856332
-6:        NA 65.17200    NA        NA  2638126  6316029999         NA
-7:        NA       NA    NA   8570000    10562   310089998  2.7637137
+<pre><code>        PCGDP   LIFEEX  GINI        ODA      POP     sum_ODA perc_c_ODA
+        &lt;num&gt;    &lt;num&gt; &lt;num&gt;      &lt;num&gt;    &lt;num&gt;       &lt;num&gt;      &lt;num&gt;
+1:  7808.4047 71.04878    NA   65139999 42449038 26214490031  0.2484885
+2: 35593.4255 68.80683    NA         NA    56911          NA         NA
+3:  2171.3605 64.10800    NA 2025609985  2123180 73237229858  2.7658200
+4: 47413.6225 70.84878    NA         NA    56186          NA         NA
+5:   872.9171 55.17000    NA  350309998  6094259 18904160029  1.8530842
+6:  3131.2099 65.24600    NA   61150002   792736  4340079982  1.4089602
+7:  1814.4672 70.15500    NA  251289993 29774500  7412250079  3.3901985
    perc_y_ODA demean_PCGDP lag_PCGDP growth_PCGDP growth_LIFEEX growth_GINI
         &lt;num&gt;        &lt;num&gt;     &lt;num&gt;        &lt;num&gt;         &lt;num&gt;       &lt;num&gt;
-1:         NA           NA        NA           NA   -0.03225635          NA
-2:         NA           NA        NA           NA    0.16514108          NA
-3: 0.32068684     67.43815  2.523205     2.523205    0.64603365          NA
-4: 0.73105780   1021.21566  3.394524     3.394524    0.46605612   -1.002506
-5: 0.23973907    568.35027 -9.602739    -9.602739   -0.22614267          NA
-6:         NA           NA        NA           NA   -0.05674063          NA
-7: 0.01711115           NA        NA           NA            NA          NA
-   growth_ODA growth_POP  G1.PCGDP   G1.LIFEEX   G1.GINI    G1.ODA     G1.POP
-        &lt;num&gt;      &lt;num&gt;     &lt;num&gt;       &lt;num&gt;     &lt;num&gt;     &lt;num&gt;      &lt;num&gt;
-1:         NA  0.3073614        NA -0.03225635        NA        NA  0.3073614
-2:         NA  1.7506578        NA  0.16514108        NA        NA  1.7506578
-3:   54.95901  2.2631933  2.523205  0.64603365        NA  54.95901  2.2631933
-4:  -31.84379 -0.4854094  3.394524  0.46605612 -1.002506 -31.84379 -0.4854094
-5:  -13.08705  2.9896465 -9.602739 -0.22614267        NA -13.08705  2.9896465
-6:         NA  1.0150803        NA -0.05674063        NA        NA  1.0150803
-7:         NA  1.6358737        NA          NA        NA        NA  1.6358737</code></pre>
+1:  0.1087501   -3117.1382  6.019063     6.019063    0.70872947          NA
+2:         NA    4307.9524  6.632324     6.632324    0.54279452          NA
+3:  3.6079552    -990.5459        NA           NA    0.95430065          NA
+4:         NA   16128.1494  4.547809     4.547809   -0.55800897          NA
+5:  0.5839065     -21.0514  1.094015     1.094015   -0.05977936          NA
+6:  0.1099883     120.4957 -3.230141    -3.230141    0.10893748          NA
+7:  0.2788049     419.3212  5.806588     5.806588    0.35045058          NA
+    growth_ODA growth_POP  G1.PCGDP   G1.LIFEEX G1.GINI      G1.ODA    G1.POP
+         &lt;num&gt;      &lt;num&gt;     &lt;num&gt;       &lt;num&gt;   &lt;num&gt;       &lt;num&gt;     &lt;num&gt;
+1: 1436.320823  0.9940010  6.019063  0.70872947      NA 1436.320823 0.9940010
+2:          NA  0.2572007  6.632324  0.54279452      NA          NA 0.2572007
+3:   12.181760  2.7719948        NA  0.95430065      NA   12.181760 2.7719948
+4:          NA  0.1283102  4.547809 -0.55800897      NA          NA 0.1283102
+5:    3.217532  3.1953119  1.094015 -0.05977936      NA    3.217532 3.1953119
+6:    2.652345  1.0645269 -3.230141  0.10893748      NA    2.652345 1.0645269
+7:   81.791218  1.4829887  5.806588  0.35045058      NA   81.791218 1.4829887</code></pre>
 </div>
 </div>
 <ul>
@@ -1259,13 +1275,13 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
- expr    min      lq     mean  median      uq     max neval
-   W1 1531.1 1601.35 1721.765 1636.05 1726.00  3848.6   100
-   W2  353.6  425.20  648.729  445.70  470.30 10969.2   100
-   L1 1396.9 1561.00 1759.267 1650.60 1770.00  4276.1   100
-   L2  586.5  654.15  837.446  683.25  727.30 11746.8   100
-   L3  977.6 1055.65 1381.954 1122.40 1264.90 11910.0   100
-   L4  255.0  290.80  388.121  314.75  340.95  1889.4   100</code></pre>
+ expr      min        lq      mean   median       uq       max neval    cld
+   W1 1912.389 1990.3745 2156.8241 2023.363 2085.882 11093.551   100 a     
+   W2  784.069  836.6985  873.2039  865.280  894.328  1336.105   100  b    
+   L1 4025.457 4216.2925 4483.2931 4281.839 4414.296 16599.366   100   c   
+   L2 1296.289 1338.7050 1467.9625 1373.009 1409.083  9663.483   100    d  
+   L3 2604.725 2672.9305 2748.6873 2697.509 2746.567  3559.639   100     e 
+   L4  451.273  476.2480  515.3331  507.103  535.107   861.385   100      f</code></pre>
 </div>
 <div class="sourceCode" id="cb116"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># flag와 같은 time series는 우선적으로 재정렬을 하지 않아 분명한 성능 차이가 존재한다. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1347,9 +1363,9 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
- expr      min        lq       mean   median        uq      max neval
-    A 106.8158 114.46905 121.785311 120.2378 126.31315 172.9374   100
-    B   4.2928   4.94965   5.765473   5.3979   5.87215  10.7205   100</code></pre>
+ expr        min        lq       mean     median         uq       max neval cld
+    A 167.429776 168.55069 172.656171 169.121475 172.448620 336.99646   100  a 
+    B   7.141076   7.40031   7.818226   7.546154   7.698282  12.44983   100   b</code></pre>
 </div>
 <div class="sourceCode" id="cb125"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># coeftest + lm + G 를 flm + fgrowth와 같은 collapse식으로 대체하여 큰 속도 이득을 볼 수 있다.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1364,7 +1380,7 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 <span>  <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/rapply2d.html">rapply2d</a></span><span class="op">(</span><span class="va">lm</span>, formula <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fgrowth.html">G</a></span><span class="op">(</span><span class="va">PCGDP</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fgrowth.html">G</a></span><span class="op">(</span><span class="va">LIFEEX</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fbetween_fwithin.html">B</a></span><span class="op">(</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fgrowth.html">G</a></span><span class="op">(</span><span class="va">LIFEEX</span><span class="op">)</span>, <span class="va">country</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/rapply2d.html">rapply2d</a></span><span class="op">(</span><span class="va">summary</span>, classes <span class="op">=</span> <span class="st">"lm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>get_elem()</strong>: 원하는 부분을 추출, 이후 <strong>unlist2d</strong> 로 <strong>data.table</strong>로 만들 수 있다.</p>
+<p><strong>get_elem()</strong>: 원하는 부분을 추출, 이후 <strong>unlist2d</strong>를 이용해 <strong>data.table</strong>로 만들 수 있다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb127"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span> <span class="va">lm_summary_list</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/extract_list.html">get_elem</a></span><span class="op">(</span><span class="st">"coefficients"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -1396,7 +1412,7 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 </section><section id="summary" class="level1"><h1>Summary</h1>
 <ol type="1">
 <li><p><strong>collapse</strong>는 빠르며, data/memory 측면에서 경제적이다.</p></li>
-<li><p><strong>vector, matrix, data.table</strong> 등 데이터 형식에 구애받지 않고 사용 가능하다.</p></li>
+<li><p><strong>vector, matrix, data.table</strong> 등 데이터 형식에 구애받지 않고 사용가능하다.</p></li>
 <li><p>(<strong>dplyr, tidyverse, data.table</strong> 등) 기존 <strong>framework</strong>와 통합하여 사용 가능하다.</p></li>
 <li><p><strong>data.table</strong>과 혼용하여 쓸 경우, <strong>dt[]</strong> 내부에서 사용하면 성능이 저하된다. 이는 내부적 데이터 처리 과정의 차이에서 기인한다.</p></li>
 <li><p><strong>data.table</strong> 형식을 처리할 때는, <strong>아래</strong>와 같은 문법으로 사용해야 이의 효과를 기대할 수 있다.</p></li>
