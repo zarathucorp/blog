@@ -1,0 +1,909 @@
+---
+title: "collapse 패키지 소개 v2"
+description: | 
+  collapse; fast, flexible, parsimonoius code package for R.
+categories:
+  - R
+  - statistics
+  - data.table
+author:
+  name: "Hojun LEE"
+  url: https://github.com/21-HJ
+image: img/logo.png
+fig_width: 400
+date: 2024-10-29
+format: html
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```         
+```
+
+# Introduction
+
+-   **Collapse**
+    1.  C/C++ 기반의 패키지로 큰 데이터셋을 보다 쉽게 다룰 수 있도록
+        구성됨.
+
+    2.  R code의 성능을 획기적으로 개선하여 대규모 데이터를 **빠르고
+        효율적**으로 처리함을 목표로 함.
+
+    3.  성능을 극대화함과 동시에, 기존 데이터 조작 framework와 통합할 수
+        있도록 안정적이고 최적화된 사용자 API를 제공함. (dplyr,
+        tidyverse, data.table 등)
+-   **MAIN FOCUS** -\> **data.table**과 함께 이용하여 보다 빠르게 연산을
+    처리하자.
+
+## Setup
+
+```{r}
+#| echo: true
+#| message: false
+#| results: 'hide'
+
+
+##setup
+
+#install.packages("collapse")
+
+library(magrittr);library(dplyr);library(data.table) 
+
+library(collapse);library(microbenchmark);library(lmtest)
+```
+
+## Basic
+
+data.table처럼 fread & fwrite를 이용하여 csv파일을 처리한다.
+
+```{r}
+#| echo: true
+#| message: false
+#| results: 'hide'
+
+# Exam data: 09-15
+
+dt <- fread("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv")
+df <- read.csv("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv")
+fwrite(dt, "aa.csv")
+
+```
+
+**Columns**: **'fselect'**로 원하는 열을 불러올 수 있다.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+fselect(dt, 1:3, 13:16) |> head()
+fselect(dt, EXMD_BZ_YYYY,RN_INDI,HME_YYYYMM )|> head() # fselect(dt, "EXMD_BZ_YYYY","RN_INDI","HME_YYYYMM" )
+
+
+```
+
+**Rows**: **'fsubset()'**로 원하는 행/열을 불러올 수 있다.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+fsubset(dt, 1:3)
+#fsubset(dt, c(1:3, 13:16)) #rows
+fsubset(dt, 1:3, 13:16)  #(dt, row, col)
+fsubset(dt, c(1:nrow(dt)),c(1:3, 13:16)) |> head() #cols
+# fsubset(dt, EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25) %>%  fsubset(c(1:3),c(1:3,13:16))
+fsubset(dt, c(1:nrow(dt)),c(1:3, 13:16)) %>% fsubset(EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25) |> head() # same
+roworder(dt, HGHT) %>% fsubset(EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25) %>%
+  fsubset(c(1:nrow(dt)),c(1:3,13:16)) |> head()
+
+```
+
+# Collapse package
+
+지금까지 collapse에서의 행/열 처리에 대해 알아보았다. 다음은
+collapse에서 보다 빠른 연산 및 데이터 처리를 도와주는 도구들이다.
+
+## Fast Statistical Function
+
+```{r}
+#| echo: true
+#| message: false
+#| results: 'hide'
+#| warning: false
+
+.FAST_STAT_FUN
+ # [1]  "fmean"      "fmedian"    "fmode"      "fsum"       "fprod"      
+ # [6]  "fsd"        "fvar"       "fmin"       "fmax"       "fnth"       
+ # [11] "ffirst"     "flast"      "fnobs"      "fndistinct"
+
+# 데이터 구조에 구애받지않음.
+v1 <- c(1,2,3,4)
+m1 <- matrix(1:50, nrow = 10, ncol = 5)
+ 
+fmean(v1); fmean(m1); fmean(dt)
+fmode(v1); fmode(m1); fmode(dt)
+# fmean(m1): by columns
+
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+# collapse; baseR과 비교했을 때 보다 빠른 속도를 보인다.
+x <- rnorm(1e7)
+microbenchmark(mean(x), fmean(x), fmean(x, nthreads = 4)) 
+
+microbenchmark(colMeans(dt), sapply(dt, mean), fmean(dt))
+
+```
+
+-   Data size가 더 클 경우, 보다 유용하다. *(GGDC10S: 5000rows, 11cols,
+    \~10% missing values)*
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+microbenchmark(base = sapply(GGDC10S[6:16], mean, na.rm = TRUE), 
+               fmean(GGDC10S[6:16]))
+```
+
+-   이처럼, **Collapse**는 data 형식에 구애받지 않고, 보다 빠른 속도를
+    특징으로 하는 package이다.
+
+이들의 문법을 알아보자.
+
+```         
+-   Fast Statistical Functions
+
+  Syntax:
+
+FUN(x, g = NULL, \[w = NULL,\] TRA = NULL, \[na.rm = TRUE\], use.g.names = TRUE, \[drop = TRUE,\] \[nthreads = 1,\] ...)
+
+       
+Argument            Description
+      g             grouping vectors / lists of vectors or ’GRP’ object
+      w             a vector of (frequency) weights
+    TRA             a quoted operation to transform x using the statistics
+  na.rm             efficiently skips missing values in x
+  use.g.names       generate names/row-names from g
+  drop              drop dimensions if g = TRA = NULL
+  nthreads          number of threads for OpenMP multithreading
+```
+
+**사용예시** : **fmean**
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+
+# Weighted Mean
+w <- abs(rnorm(nrow(iris)))
+all.equal(fmean(num_vars(iris), w = w), sapply(num_vars(iris), weighted.mean, w = w))
+
+wNA <- na_insert(w, prop = 0.05)
+sapply(num_vars(iris), weighted.mean, w = wNA) # weighted.mean(): 결측치를 처리하지 못한다.
+fmean(num_vars(iris), w = wNA) #결측치를 자동으로 무시한다.
+
+# Grouped Mean
+fmean(iris$Sepal.Length, g = iris$Species)
+
+fmean(num_vars(iris), iris$Species)  
+
+# Weighted Group Mean
+fmean(num_vars(iris), iris$Species, w)
+
+
+# 속도 상의 이점. 
+microbenchmark(fmean = fmean(iris$Sepal.Length, iris$Species),
+               tapply = tapply(iris$Sepal.Length, iris$Species, mean))
+
+
+```
+
+## Consideration w/ missing data: 결측치 처리
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+#wlddev$GINI, g: country, function: mean, median, min, max, sum, prod
+collap(wlddev, GINI ~ country, list(mean, median, min, max, sum, prod),
+       na.rm = TRUE, give.names = FALSE) |> head()
+# na.rm=T가 기본값이며, NA를 연산한 값은 모두 NA를 결과값으로 반영함. 
+collap(wlddev, GINI ~ country, list(fmean, fmedian, fmin, fmax, fsum, fprod),
+       give.names = FALSE) |> head()
+
+
+microbenchmark(a = collap(wlddev, GINI ~ country, list(mean, median, min, max, sum, prod),
+                          na.rm = TRUE, give.names = FALSE) |> head(),
+               b=collap(wlddev, GINI ~ country, list(fmean, fmedian, fmin, fmax, fsum, fprod),
+                        give.names = FALSE) |> head())
+# 속도 상 이점을 다시 한 번 확인할 수 있다.
+```
+
+## TRA function
+
+-   TRA function을 이용, 여러 행/열의 연산을 간편하게 처리할 수 있다.
+
+```         
+Syntax:
+  TRA(x, STATS, FUN = "-", g = NULL, set = FALSE, ...)
+
+
+  setTRA(x, STATS, FUN = "-", g = NULL, ...)
+
+  STATS = vector/matrix/list of statistics
+
+0        "replace_NA"     replace missing values in x
+1        "replace_fill"   replace data and missing values in x
+2        "replace"        replace data but preserve missing values in x
+3        "-"              subtract (i.e. center)
+4        "-+"             center on overall average statistic
+5        "/"              divide (i.e. scale)
+6        "%"              compute percentages (i.e. divide and multiply by 100)   
+7        "+"              add
+8        "*"              multiply
+9        "%%"             modulus (i.e. remainder from division by STATS)
+10       "-%%"            subtract modulus (i.e. make data divisible by STATS)
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| 
+
+dt2 <- as.data.table(iris)
+
+attach(iris)    #data.table에서처럼 변수명을 직접 호출하기 위해 attach를 사용할 수 있다.
+
+# 평균값과의 차: g= Species
+all_obj_equal(Sepal.Length - ave(Sepal.Length, g = Species),
+              fmean(Sepal.Length, g = Species, TRA= "-"),
+              TRA(Sepal.Length, fmean(Sepal.Length, g = Species), "-", g = Species))
+
+
+microbenchmark(baseR= Sepal.Length - ave(Sepal.Length, g = Species),
+               fmean = mean(Sepal.Length, g = Species, TRA= "-"),
+               TRA_fmean = TRA(Sepal.Length, fmean(Sepal.Length, g = Species), "-", g = Species));detach(iris)
+```
+
+-   **TRA()**를 사용하기보다 **Fast Statistical Function**에서 **TRA**
+    기능을 호출하자!
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#예시
+num_vars(dt2) %<>%  na_insert(prop = 0.05)
+
+# NA 값을 median값으로 대체.
+num_vars(dt2) |> fmedian(iris$Species, TRA = "replace_NA", set = TRUE)
+# num_vars(dt2) |> fmean(iris$Species, TRA = "replace_NA", set = TRUE) --> mean으로 대체.
+
+
+# 다양한 연산 및 작업을 한 번에 다룰 수 있다.
+mtcars |> ftransform(A = fsum(mpg, TRA = "%"),
+                     B = mpg > fmedian(mpg, cyl, TRA = "replace_fill"),
+                     C = fmedian(mpg, list(vs, am), wt, "-"),
+                     D = fmean(mpg, vs,, 1L) > fmean(mpg, am,, 1L)) |> head(3)
+
+
+```
+
+## Grouping Object
+
+-   GRP function을 이용, group을 쉽게 연산할 수 있다.
+
+    ```         
+    Syntax:
+
+        GRP(X, by = NULL, sort == TRUE, decreasing = FALSE, na.last = TRUE, 
+        return.groups = TRUE, return.order = sort, method = "auto", ...)
+    ```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+g <- GRP(iris, by = ~ Species)
+print(g)
+
+str(g)
+# GRP 기능- 호출하여 사용하자!
+fmean(num_vars(iris), g)
+
+fmean(num_vars(iris), iris$Species)
+
+```
+
+## Factors in operation
+
+**Collaspe**는 형식에 구애받지 않는다; factor를 바로 연산할 수 있으며,
+**qF**로 빠르게 factor를 생성할 수 있다.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+x <- na_insert(rnorm(1e7), prop = 0.01) 
+g <- sample.int(1e6, 1e7, TRUE)         
+# grp와 비교
+system.time(gg <- GRP(g))
+system.time(f <- qF(g, na.exclude = FALSE))
+class(f)
+
+
+```
+
+```{r}
+#| eval: false
+#| echo: true
+#| message: false
+#| warning: false
+
+microbenchmark(fmean(x, g), 
+               fmean(x, gg), 
+               fmean(x, gg, na.rm = FALSE), 
+               fmean(x, f))
+ ## Unit: milliseconds
+ ##       expr                    min         lq          mean        median
+ ## fmean(x, g)                   146.060983  150.493309  155.02585   152.197822
+ ## fmean(x, gg)                  25.354564   27.709625   29.48497    29.022157
+ ## fmean(x, gg, na.rm = FALSE)   13.184534   13.783585   15.61769    14.128067
+ ## fmean(x, f)                   24.847271   27.503661   29.47271    29.248580
+
+# qF를 통해 grp와 유사한 성능 향상을 기대할 수 있다.
+
+```
+
+## Summary: FAST grouping and Ordering
+
+```         
+다양한 기능이 있다. 
+GRP()           Fast sorted or unsorted grouping of multivariate data, returns detailed object of class ’GRP’ 
+qF()/qG()       Fast generation of factors and quick-group (’qG’) objects from atomic vectors 
+finteraction()  Fast interactions: returns factor or ’qG’ objects 
+fdroplevels()   Efficiently remove unused factor levels
+
+radixorder()    Fast ordering and ordered grouping 
+group()         Fast first-appearance-order grouping: returns ’qG’ object 
+gsplit()        Split vector based on ’GRP’ object 
+greorder()      Reorder the results
+
+- that also return ’qG’ objects 
+groupid()       Generalized run-length-type grouping seqid() Grouping of integer sequences 
+timeid()        Grouping of time sequences (based on GCD)
+
+dapply()        Apply a function to rows or columns of data.frame or matrix based objects. 
+BY()            Apply a function to vectors or matrix/data frame columns by groups.
+
+-   Specialized Data Transformation Functions 
+fbetween()      Fast averaging and (quasi-)centering. 
+fwithin()
+fhdbetween()    Higher-Dimensional averaging/centering and linear prediction/partialling out 
+fhdwithin()     (powered by fixest’s algorithm for multiple factors).
+fscale()        (advanced) scaling and centering.
+
+-   Time / Panel Series Functions 
+fcumsum()       Cumulative sums 
+flag()          Lags and leads 
+fdiff()         (Quasi-, Log-, Iterated-) differences 
+fgrowth()       (Compounded-) growth rates
+
+-    Data manipulation functions
+fselect(),      fsubset(),      fgroup_by(),    [f/set]transform[v](),          
+fmutate(),      fsummarise(),   across(),       roworder[v](),            
+colorder[v](),  [f/set]rename(),                [set]relabel()
+```
+
+## Collapse는 빠르다!
+
+```{r}
+#| eval: false
+#| echo: true
+#| message: false
+#| warning: false
+
+fdim(wlddev)    ##faster dim for dt. col/row: 13176 13
+
+# 1990년 이후를 기준으로, ODA/POP의 값 (g: region, income, OECD)
+microbenchmark( 
+  
+dplyr = qDT(wlddev) |>
+        filter(year >= 1990) |>
+        mutate(ODA_POP = ODA / POP) |>
+        group_by(region, income, OECD) |>
+        summarise(across(PCGDP:POP, sum, na.rm = TRUE), .groups = "drop") |>
+        arrange(income, desc(PCGDP)),
+
+data.table = qDT(wlddev)[, ODA_POP := ODA / POP][
+             year >= 1990, lapply(.SD, sum, na.rm = TRUE),
+             by = .(region, income, OECD), .SDcols = PCGDP:ODA_POP][
+             order(income, -PCGDP)],
+
+collapse_base = qDT(wlddev) |>
+                fsubset(year >= 1990) |>
+                fmutate(ODA_POP = ODA / POP) |>
+                fgroup_by(region, income, OECD) |>
+                fsummarise(across(PCGDP:ODA_POP, sum, na.rm = TRUE)) |>
+                roworder(income, -PCGDP),
+
+collapse_optimized = qDT(wlddev) |>
+                    fsubset(year >= 1990, region, income, OECD, PCGDP:POP) |>
+                    fmutate(ODA_POP = ODA / POP) |>
+                    fgroup_by(1:3, sort = FALSE) |> fsum() |>
+                    roworder(income, -PCGDP)
+)
+
+
+## Unit: microseconds
+##        expr            min         lq            mean            median          uq            max         neval
+## dplyr                  71955.523   72291.9715    80009.2208	    72453.1165	    76902.671   393947.262	100	
+## data.table	          5960.503    6310.7045     7116.6673	    6721.3450	    7046.837    18615.736	  100	
+## collapse_base	      859.505     948.2200      1041.1137	    990.1375	    1061.864	 3148.804	    100	
+## collapse_optimized	  442.040     482.9705      542.6927	    523.6950	    574.921	    1036.817	  100	
+```
+
+## **Collapse** w/ Fast Statistical Function: 다양한 활용
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+# 아래 셋은 동일한 결과를 보인다.
+# cyl별 mpg sum
+ mtcars %>% ftransform(mpg_sum = fsum(mpg, g = cyl, TRA = "replace_fill")) %>% invisible()
+ mtcars %>% fgroup_by(cyl) %>% ftransform(mpg_sum = fsum(mpg, GRP(.), TRA = "replace_fill")) %>% invisible()
+ mtcars %>% fgroup_by(cyl) %>% fmutate(mpg_sum = fsum(mpg)) %>% head(10)
+```
+
+-   ad-hoc grouping, often **fastest!**
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+microbenchmark(a=mtcars %>% ftransform(mpg_sum = fsum(mpg, g = cyl, TRA = "replace_fill")),
+               b=mtcars %>% fgroup_by(cyl) %>% ftransform(mpg_sum = fsum(mpg, GRP(.), TRA = "replace_fill")),
+               c=mtcars %>% fgroup_by(cyl) %>% fmutate(mpg_sum = fsum(mpg)))
+```
+
+-   **ftransform()**은 앞의 **fgroupby**를 무시한다. 아래 둘은 값이
+    다르다. (**fmutate, fsummarise**만 이전 group을 반영한다.)
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+mtcars %>% fgroup_by(cyl) %>% ftransform(mpg_sum = fsum(mpg, GRP(.), TRA = "replace_fill")) %>% head()
+mtcars %>% fgroup_by(cyl) %>% ftransform(mpg_sum = fsum(mpg, TRA = "replace_fill")) %>% head()
+```
+
+-   위 언급과 같이 **baseR** 의 **"/"**보다 **collapse**의 **TRA function**을 이용하는 것이 더 빠르다.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+microbenchmark(
+"/"=      mtcars |> fgroup_by(cyl) |> fmutate(mpg_prop = mpg / fsum(mpg))      |> head(),     
+"TRA=/" = mtcars |> fgroup_by(cyl) |> fmutate(mpg_prop = fsum(mpg, TRA = "/")) |> head()
+)
+```
+
+-   **fsum**은 grp 별로 연산을 처리하나, sum은 전체를 반영한다.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+mtcars |> fgroup_by(cyl) |> fmutate(mpg_prop2 = fsum(mpg) / sum(mpg))|> head() #"!=1" 
+```
+
+-   자유로운 **%>%** 의 사용
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+# 아래 둘은 동일하다.
+ mtcars %>% fgroup_by(cyl) %>% ftransform(fselect(., hp:qsec) %>% fsum(TRA = "/")) %>% invisible()
+ mtcars %>% fgroup_by(cyl) %>% fmutate(across(hp:qsec, fsum, TRA = "/")) %>% head()
+```
+
+-   **set = TRUE**를 통해 원본 데이터에 반영할 수 있다.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+head(mtcars)
+# mtcars의 열 hp:qsec의 값과 해당하는 g:cyl별 합의 비율.
+mtcars %>% fgroup_by(cyl) %>% fmutate(across(hp:qsec, fsum, TRA = "/", set = TRUE)) %>% invisible()
+head(mtcars)
+```
+
+-   **.apply = FALSE**를 통해 subset group에만 적용할 수 있다.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+# 각 g:cyl의 hp:qsec까지의 변수에 대한 부분 상관관계
+mtcars %>% fgroup_by(cyl) %>% fsummarise(across(hp:qsec, \(x) qDF(pwcor(x), "var"), .apply = FALSE)) %>% head()
+```
+
+## **이름/순번/vectors/정규표현식**으로 행/열을 지칭할 수 있다.
+
+```         
+get_vars(x, vars, return = "names", regex = FALSE, ...) 
+get_vars(x, vars, regex = FALSE, ...) <- value 
+
+- 위치도 선택가능하다.
+add_vars(x, ..., pos = "end") 
+add_vars(x, pos = "end") <- value 
+
+- data type을 지정할 수 있다. 
+num_vars(x, return = "data");   cat_vars(x, return = "data");   char_vars(x, return = "data"); 
+fact_vars(x, return = "data");  logi_vars(x, return = "data");  date_vars(x, return = "data") 
+
+- replace 또한 가능하다.
+num_vars(x) <- value;   cat_vars(x) <- value;   char_vars(x) <- value; 
+fact_vars(x) <- value;  logi_vars(x) <- value;  date_vars(x) <- value
+```
+
+## Efficient programming
+
+```         
+    > quick data conversion
+-   qDF(),  qDT(),  qTBL(),   qM(),   mrtl(),   mctl()
+    
+-   anyv(x, value) / allv(x, value)     # Faster than any/all(x == value)
+-   allNA(x)                            # Faster than all(is.na(x))
+-   whichv(x, value, invert = F)        # Faster than which(x (!/=)= value)
+-   whichNA(x, invert = FALSE)          # Faster than which((!)is.na(x))
+-   x %(!/=)=% value                    # Infix for whichv(v, value, TRUE/FALSE)
+-   setv(X, v, R, ...)                  # x\[x(!/=)=v\]\<-r / x\[v\]\<-r\[v\] (by reference)
+-   setop(X, op, V, rowwise = F)        # Faster than X \<- X +/-/\*// V (by reference)
+-   X %(+,-,\*,/)=% V                   # Infix for setop,()
+-   na_rm(x)                            # Fast: if(anyNA(x)) x\[!is.na(x)\] else x,
+-   na_omit(X, cols = NULL, ...)        # Faster na.omit for matrices and data frames
+-   vlengths(X, use.names=TRUE)         # Faster version of lengths()
+-   frange(x, na.rm = TRUE)             # Much faster base::range
+-   fdim(X)                             # Faster dim for data frames
+```
+
+# Collapse and data.table
+
+**data.table**에서 **collapse**의 적용을 알아보자.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+DT <- qDT(wlddev) # as.data.table(wlddev)
+DT %>% fgroup_by(country) %>% get_vars(9:13) %>% fmean()  #fgroup_by == gby
+
+DT[, lapply(.SD, mean, na.rm = TRUE), keyby = country, .SDcols = 9:13] %>%  invisible()
+collap(DT, ~ country, fmean, cols = 9:13) %>% invisible()     #same
+
+microbenchmark(collapse     = DT %>% gby(country) %>% get_vars(9:13) %>% fmean,
+               data.table   = DT[, lapply(.SD, mean, na.rm = TRUE), keyby = country, .SDcols = 9:13],
+               data.table2  = DT[, lapply(.SD, fmean, na.rm = TRUE), keyby = country, .SDcols = 9:13])
+```
+
+-   *DT\[, lapply(.SD, fmean,...)\]*가 *DT\[, lapply(.SD,
+    mean,...)\]*보다 느린 것을 확인할 수 있다. **data.table** 내에서
+    **mean**은 **baseR**의 **mean**이 아닌 **gmean**으로
+    **data.table**에 최적화되어있다. 반면, **lapply**와 함께 **fmean**을
+    사용하면 최적화된 방식으로 동작하지 않아 오히려 더 느리다.
+
+-   위 방식은 아래와 처리되는 방식이 유사하다. **fmean**을 모든 **group, columns**에 적용하기에 느리다.
+
+```{r}
+#| eval: false
+#| message: false
+#| warning: false
+
+BY(gv(DT, 9:13), g, fmean) 
+
+```
+
+이때, 아래와 같은 방법으로 이를 일정 수준 해결할 수 있다.
+
+```{r}
+#| echo: true
+#| eval: false
+#| message: false
+#| warning: false
+
+ fmean(gv(DT, 9:13), DT$country)
+ g <- GRP(DT, "country"); add_vars(g[["groups"]], fmean(gv(DT, 9:13), g))
+ 
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+DT <- qDT(wlddev); g <- GRP(DT, "country")
+#gv: abbreviation for get_vars()
+microbenchmark(a = fmean(gv(DT, 9:13), DT$country),
+               b0= g <- GRP(DT, "country"),
+               b = add_vars(g[["groups"]], fmean(gv(DT, 9:13), g)),
+               dt_fmean = DT[, lapply(.SD, fmean, na.rm = TRUE), keyby = country, .SDcols = 9:13],
+               dt_gmean = DT[, lapply(.SD, mean, na.rm = TRUE), keyby = country, .SDcols = 9:13]) 
+```
+
+-   **dplyr**의 data %\>% group_by(...) %\>% summarize(...) 및
+    **data.table**의 \[i, j, by\] 구문은 데이터 그룹에 함수를 적용하기
+    위한 보편적인 방식이다. 이는 다양한 함수를 그룹화된 데이터에
+    적용하며, 특히 **data.table**은 몇몇 내장 함수(**min, max, mean**,
+    등)를 GForce; 내부적으로 최적화하여 처리한다.
+
+-   **collapse**는 데이터를 그룹화하여**(fgroup_by, collap)** 통계 및
+    변환 함수를 처리한다. (by C++)
+
+-   **collapse**의 모든 기능(BY는 예외)은 GForce 최적화가 되어 있지만,
+    **data.table** 내에서 최적화 정도의 차이, **lapply** 적용 상의
+    문제가 있는 것으로 추정된다.
+
+-   그렇다면 **fmean**을 **data.table**내에서 쓸 수는 없을까.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+DT[, fmean(.SD, country), .SDcols = 9:13]
+DT[, fmean(gby(.SD, country)), .SDcols = c(1L, 9:13)] #gby = abbrviation for fgroup_by()
+
+microbenchmark(collapse        = DT %>% gby(country) %>% get_vars(9:13) %>% fmean,
+               data.table      = DT[, lapply(.SD, mean, na.rm = TRUE), keyby = country, .SDcols = 9:13],
+               data.table_base = DT[, lapply(.SD, base::mean, na.rm = TRUE), keyby = country, .SDcols = 9:13],
+               hybrid_bad      = DT[, lapply(.SD, fmean), keyby = country, .SDcols = 9:13],
+               hybrid_ok       = DT[, fmean(gby(.SD, country)), .SDcols = c(1L, 9:13)])
+
+
+```
+
+-   **data.table**내에서 **fmean** 등을 같이 쓰는 것은 **바람직하지
+    않다.**
+
+```         
+DT %>% gby(country) %>% get_vars(9:13) %>% fmean
+fmean(gv(DT, 9:13), DT$country)
+```
+
+-   보다 효율적인 작업을 위해 위와 같이 **data.table** 외에서 처리하는
+    방식을 사용하자.
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+
+#fmean 이외의 예시: fsum
+
+# 국가별 ODA 합산 = 아래는 모두 동일. 
+DT[, sum_ODA := sum(ODA, na.rm = TRUE), by = country]
+DT[, sum_ODA := fsum(ODA, country, TRA = "replace_fill")]  
+settfm(DT, sum_ODA = fsum(ODA, country, TRA = "replace_fill"))  # settfm/tfm= settransform/ftransform 
+
+# 여러 열을 변경할 때 settransform이 ':=' 보다 편리하다. 
+settfm(DT, perc_c_ODA = fsum(ODA, country, TRA = "%"),
+           perc_y_ODA = fsum(ODA, year, TRA = "%"))
+
+microbenchmark(
+  S1 = DT[, sum_ODA := sum(ODA, na.rm = TRUE), by = country],
+  S2 = DT[, sum_ODA := fsum(ODA, country, TRA = "replace_fill")],
+  S3 = settfm(DT, sum_ODA = fsum(ODA, country, TRA = "replace_fill"))
+)
+```
+
+-   위와 같이 **data.table** 외에서 처리하는 방식을 사용하자.
+
+-   data.table에서 data 처리에 유용한 **collapse** 함수들:
+
+```         
+"fcumsum()"   "fscale()"    "fbetween()"    "fwithin()"   "fhdbetween()" 
+"fhdwithin()"   "flag()"    "fdiff()"       "fgrowth()"
+```
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+
+
+ 
+# Centering GDP
+#DT[, demean_PCGDP := PCGDP - mean(PCGDP, na.rm = TRUE), by = country]
+DT[, demean_PCGDP := fwithin(PCGDP, country)]
+settfm(DT, demean_PCGDP = fwithin(PCGDP, country)) #settfm를 사용하자.
+
+# Lagging GDP
+#DT[order(year), lag_PCGDP := shift(PCGDP, 1L), by = country]
+DT[, lag_PCGDP := flag(PCGDP, 1L, country, year)]
+
+
+# Computing a growth rate
+#DT[order(year), growth_PCGDP := (PCGDP / shift(PCGDP, 1L) - 1) * 100, by = country]
+DT[, lag_PCGDP := fgrowth(PCGDP, 1L, 1L, country, year)] # 1 lag, 1 iteration
+
+# Several Growth rates
+#DT[order(year), paste0("growth_", .c(PCGDP, LIFEEX, GINI, ODA)) := (.SD / shift(.SD, 1L) - 1) * 100, by = country, .SDcols = 9:13]
+DT %<>% tfm(gv(., 9:13) %>% fgrowth(1L, 1L, country, year) %>% add_stub("growth_"))
+settfmv(DT, 9:13, G, 1L, 1L, country, year, apply = FALSE)
+ 
+result <- DT[sample(.N, 7)] |> fselect(9:ncol(DT)); print(result)
+```
+
+-   := 은 data.table내에서 최적화 정도가 낮아 collapse를 이용하는 것이
+    대부분의 경우 더 빠르다.
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+
+microbenchmark(
+  W1 = DT[, demean_PCGDP := PCGDP - mean(PCGDP, na.rm = TRUE), by = country],
+  W2 = DT[, demean_PCGDP := fwithin(PCGDP, country)],
+  L1 = DT[order(year), lag_PCGDP := shift(PCGDP, 1L), by = country],
+  L2 = DT[, lag_PCGDP := flag(PCGDP, 1L, country, year)],
+  L3 = DT[, lag_PCGDP := shift(PCGDP, 1L), by = country], # Not ordered
+  L4 = DT[, lag_PCGDP := flag(PCGDP, 1L, country)] # Not ordered
+)
+
+# flag와 같은 time series는 우선적으로 재정렬을 하지 않아 분명한 성능 차이가 존재한다. 
+```
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+
+m <- qM(mtcars)
+# matrix to data: mrtl
+mrtl(m, names = T, return = "data.table") %>% head(2) # convert: data.table
+```
+
+-   fast linear model: **flm**
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+
+wlddev %>% fselect(country, PCGDP, LIFEEX) %>% na_omit(cols = -1) %>%  
+   fsubset(fnobs(PCGDP, country, "replace_fill") > 20L) %>% qDT %>% 
+  .[, qDT(coeftest(lm(G(PCGDP) ~ G(LIFEEX))), "Coef"), keyby = country] %>% head
+
+#절편과 변화율만 빠르게 알고싶다면 flm w/ mrtl: (no standard errors)
+wlddev %>% fselect(country, PCGDP, LIFEEX) %>% na_omit(cols = -1L) %>% 
+  fsubset(fnobs(PCGDP, country, "replace_fill") > 20L) %>% qDT %>% 
+  .[, mrtl(flm(fgrowth(PCGDP)[-1L], 
+               cbind(Intercept = 1, LIFEEX = fgrowth(LIFEEX)[-1L])), TRUE), keyby = country] %>% head
+
+microbenchmark(
+  A= wlddev %>% fselect(country, PCGDP, LIFEEX) %>% na_omit(cols = -1) %>%  
+   fsubset(fnobs(PCGDP, country, "replace_fill") > 20L) %>% qDT %>% 
+  .[, qDT(coeftest(lm(G(PCGDP) ~ G(LIFEEX))), "Coef"), keyby = country] ,
+  
+  B= wlddev %>% fselect(country, PCGDP, LIFEEX) %>% na_omit(cols = -1L) %>% 
+   fsubset(fnobs(PCGDP, country, "replace_fill") > 20L) %>% qDT %>% 
+  .[, mrtl(flm(fgrowth(PCGDP)[-1L], 
+               cbind(Intercept = 1, LIFEEX = fgrowth(LIFEEX)[-1L])), TRUE), keyby = country]
+)
+
+# coeftest + lm + G 를 flm + fgrowth와 같은 collapse식으로 대체하여 큰 속도 이득을 볼 수 있다.
+```
+
+-   **collapse** w/ list; **rsplit; rapply2d; get_elem; unlist2d**
+
+```{r}
+#| eval: true
+#| echo: true
+#| include: false
+#| message: false
+#| warning: false
+
+DT_list <- rsplit(DT, country + year + PCGDP + LIFEEX ~ region + income) 
+
+str(DT_list, give.attr = F)
+
+# List of 7
+#  $ East Asia & Pacific       :List of 3
+#   ..$ High income        :Classes ‘data.table’ and 'data.frame':	793 obs. of  4 variables:
+#   .. ..$ country: chr [1:793] "Australia" "Australia" "Australia" "Australia" ...
+#   .. ..$ year   : int [1:793] 1960 1961 1962 1963 1964 1965 1966 1967 1968 1969 ...
+#   .. ..$ PCGDP  : num [1:793] 19378 19469 19246 20053 21036 ...
+#   .. ..$ LIFEEX : num [1:793] 70.8 71 70.9 70.9 70.9 ...
+
+
+```
+
+**rapply2d()**: **data.table/frame**에 function 적용.
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+
+lm_summary_list <- DT_list %>% 
+  rapply2d(lm, formula = G(PCGDP) ~ G(LIFEEX) + B(G(LIFEEX), country)) %>% 
+  rapply2d(summary, classes = "lm")
+
+
+```
+
+**get_elem()**: 원하는 부분을 추출, 이후 **unlist2d** 로
+**data.table**로 만들 수 있다.
+
+```{r}
+
+ lm_summary_list %>%
+  get_elem("coefficients") %>% 
+  unlist2d(idcols = .c(Region, Income), row.names = "Coef", DT = TRUE) %>% head
+```
+
+```{r}
+#| eval: false
+#| echo: true
+#| message: false
+#| warning: false
+# 물론, 이렇게도 할 수 있다. 
+DT[, qDT(coeftest(lm(G(PCGDP) ~ G(LIFEEX) + B(G(LIFEEX), country))), "Coef"), 
+   keyby = .(region, income)]
+
+```
+
+# Summary
+
+1.  **collapse**는 빠르며, data/memory 측면에서 경제적이다.
+
+2.  **vector, matrix, data.table** 등 데이터 형식에 구애받지 않고 사용
+    가능하다.
+
+3.  (**dplyr, tidyverse, data.table** 등) 기존 **framework**와 통합하여
+    사용 가능하다.
+
+4.  **data.table**과 혼용하여 쓸 경우, **dt\[\]** 내부에서 사용하면
+    성능이 저하된다. 이는 내부적 데이터 처리 과정의 차이에서 기인한다.
+
+5.  **data.table** 형식을 처리할 때는, **아래**와 같은 문법으로 사용해야
+    이의 효과를 기대할 수 있다.
+
+```         
+권장되지 않음:
+>   DT[order(year), paste0("growth_", .c(PCGDP, LIFEEX, GINI, ODA)) := (.SD / shift(.SD, 1L) - 1) * 100, 
+          by = country, .SDcols = 9:13]
+권장됨
+>>    DT %<>% tfm(gv(., 9:13) %>% fgrowth(1L, 1L, country, year) %>% add_stub("growth_"))
+>>    settfmv(DT, 9:13, G, 1L, 1L, country, year, apply = FALSE)
+```
