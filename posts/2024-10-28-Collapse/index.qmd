@@ -17,9 +17,7 @@ execute:
   freeze: true
 draft: false
 license: CC BY-NC
-editor: 
-  markdown: 
-    wrap: 72
+
 ---
 
 ```         
@@ -28,17 +26,13 @@ editor:
 # Introduction
 
 -   **Collapse**
-    1.  C/C++ 기반의 패키지로 큰 데이터셋을 보다 쉽게 다룰 수 있도록
-        구성됨.
+    1.  C/C++ 기반의 패키지로 큰 데이터셋을 보다 쉽게 다룰 수 있도록 구성됨.
 
-    2.  R code의 성능을 획기적으로 개선하여 대규모 데이터를 **빠르고
-        효율적**으로 처리함을 목표로 함.
+    2.  R code의 성능을 획기적으로 개선하여 대규모 데이터를 **빠르고 효율적**으로 처리함을 목표로 함.
 
-    3.  성능을 극대화함과 동시에, 기존 데이터 조작 framework와 통합할 수
-        있도록 안정적이고 최적화된 사용자 API를 제공함. (dplyr,
-        tidyverse, data.table 등)
--   **MAIN FOCUS** -\> **data.table**과 함께 이용하여 보다 빠르게 연산을
-    처리하자.
+    3.  성능을 극대화함과 동시에, 기존 데이터 조작 framework와 통합할 수 있도록 안정적이고 최적화된 사용자 API를 제공함. 
+        (dplyr, tidyverse, data.table 등)
+-   **MAIN FOCUS** -\> **data.table**과 함께 이용하여 보다 빠르게 연산을 처리하자.
 
 ## Setup
 
@@ -107,8 +101,7 @@ roworder(dt, HGHT) %>% fsubset(EXMD_BZ_YYYY %in% 2009:2012 & BMI >= 25) %>%
 
 # Collapse package
 
-지금까지 collapse에서의 행/열 처리에 대해 알아보았다. 다음은
-collapse에서 보다 빠른 연산 및 데이터 처리를 도와주는 도구들이다.
+지금까지 collapse에서의 행/열 처리에 대해 알아보았다. 다음은 collapse에서 보다 빠른 연산 및 데이터 처리를 도와주는 도구들이다.
 
 ## Fast Statistical Function
 
@@ -145,19 +138,16 @@ microbenchmark(colMeans(dt), sapply(dt, mean), fmean(dt))
 
 ```
 
--   Data size가 더 클 경우, 보다 유용하다. *(GGDC10S: 5000rows, 11cols,
-    \~10% missing values)*
+-   Data size가 더 클 경우, 보다 유용하다. *(GGDC10S: 5000rows, 11cols, ~10% missing values)*
 
 ```{r}
 #| echo: true
 #| message: false
 #| warning: false
-microbenchmark(base = sapply(GGDC10S[6:16], mean, na.rm = TRUE), 
-               fmean(GGDC10S[6:16]))
+microbenchmark(base = sapply(GGDC10S[6:16], mean, na.rm = TRUE), fmean(GGDC10S[6:16]))
 ```
 
--   이처럼, **Collapse**는 data 형식에 구애받지 않고, 보다 빠른 속도를
-    특징으로 하는 package이다.
+-   이처럼, **Collapse**는 data 형식에 구애받지 않고, 보다 빠른 속도를 특징으로 하는 package이다.
 
 이들의 문법을 알아보자.
 
@@ -280,8 +270,7 @@ microbenchmark(baseR= Sepal.Length - ave(Sepal.Length, g = Species),
                TRA_fmean = TRA(Sepal.Length, fmean(Sepal.Length, g = Species), "-", g = Species));detach(iris)
 ```
 
--   **TRA()**를 사용하기보다 **Fast Statistical Function**에서 **TRA**
-    기능을 호출하자!
+-   **TRA()**를 사용하기보다 **Fast Statistical Function**에서 **TRA** 기능을 호출하자!
 
 ```{r}
 #| echo: true
@@ -333,8 +322,7 @@ fmean(num_vars(iris), iris$Species)
 
 ## Factors in operation
 
-**Collaspe**는 형식에 구애받지 않는다; factor를 바로 연산할 수 있으며,
-**qF**로 빠르게 factor를 생성할 수 있다.
+**Collaspe**는 형식에 구애받지 않는다; factor를 바로 연산할 수 있으며, **qF**로 빠르게 factor를 생성할 수 있다.
 
 ```{r}
 #| echo: true
@@ -484,8 +472,7 @@ microbenchmark(a=mtcars %>% ftransform(mpg_sum = fsum(mpg, g = cyl, TRA = "repla
                c=mtcars %>% fgroup_by(cyl) %>% fmutate(mpg_sum = fsum(mpg)))
 ```
 
--   **ftransform()**은 앞의 **fgroupby**를 무시한다. 아래 둘은 값이
-    다르다. (**fmutate, fsummarise**만 이전 group을 반영한다.)
+-   **ftransform()**은 앞의 **fgroupby**를 무시한다. 아래 둘은 값이 다르다. (**fmutate, fsummarise**만 이전 group을 반영한다.)
 
 ```{r}
 #| echo: true
@@ -610,11 +597,9 @@ microbenchmark(collapse     = DT %>% gby(country) %>% get_vars(9:13) %>% fmean,
                data.table2  = DT[, lapply(.SD, fmean, na.rm = TRUE), keyby = country, .SDcols = 9:13])
 ```
 
--   *DT\[, lapply(.SD, fmean,...)\]*가 *DT\[, lapply(.SD,
-    mean,...)\]*보다 느린 것을 확인할 수 있다. **data.table** 내에서
-    **mean**은 **baseR**의 **mean**이 아닌 **gmean**으로
-    **data.table**에 최적화되어있다. 반면, **lapply**와 함께 **fmean**을
-    사용하면 최적화된 방식으로 동작하지 않아 오히려 더 느리다.
+-   *DT\[, lapply(.SD, fmean,...)\]*가 *DT\[, lapply(.SD, mean,...)\]*보다 느린 것을 확인할 수 있다. 
+    **data.table** 내에서 **mean**은 **baseR**의 **mean**이 아닌 **gmean**으로 **data.table**에 최적화되어있다. 
+    반면, **lapply**와 함께 **fmean**을 사용하면 최적화된 방식으로 동작하지 않아 오히려 더 느리다.
 
 -   위 방식은 아래와 처리되는 방식이 유사하다. **fmean**을 모든 **group, columns**에 적용하기에 느리다.
 
@@ -654,18 +639,14 @@ microbenchmark(a = fmean(gv(DT, 9:13), DT$country),
                dt_gmean = DT[, lapply(.SD, mean, na.rm = TRUE), keyby = country, .SDcols = 9:13]) 
 ```
 
--   **dplyr**의 data %\>% group_by(...) %\>% summarize(...) 및
-    **data.table**의 \[i, j, by\] 구문은 데이터 그룹에 함수를 적용하기
-    위한 보편적인 방식이다. 이는 다양한 함수를 그룹화된 데이터에
-    적용하며, 특히 **data.table**은 몇몇 내장 함수(**min, max, mean**,
-    등)를 GForce; 내부적으로 최적화하여 처리한다.
+-   **dplyr**의 data %\>% group_by(...) %\>% summarize(...) 및 **data.table**의 \[i, j, by\] 구문은 
+    데이터 그룹에 함수를 적용하기 위한 보편적인 방식이다. 이는 다양한 함수를 그룹화된 데이터에
+    적용하며, 특히 **data.table**은 몇몇 내장 함수(**min, max, mean** 등)를 GForce; 내부적으로 최적화하여 처리한다.
 
--   **collapse**는 데이터를 그룹화하여**(fgroup_by, collap)** 통계 및
-    변환 함수를 처리한다. (by C++)
+-   **collapse**는 데이터를 그룹화하여**(fgroup_by, collap)** 통계 및 변환 함수를 처리한다. (by C++)
 
--   **collapse**의 모든 기능(BY는 예외)은 GForce 최적화가 되어 있지만,
-    **data.table** 내에서 최적화 정도의 차이, **lapply** 적용 상의
-    문제가 있는 것으로 추정된다.
+-   **collapse**의 모든 기능(BY는 예외)은 GForce 최적화가 되어 있지만, **data.table** 내에서 최적화 정도의 차이, 
+    **lapply** 적용 상의 문제가 있는 것으로 추정된다.
 
 -   그렇다면 **fmean**을 **data.table**내에서 쓸 수는 없을까.
 
@@ -685,16 +666,14 @@ microbenchmark(collapse        = DT %>% gby(country) %>% get_vars(9:13) %>% fmea
 
 ```
 
--   **data.table**내에서 **fmean** 등을 같이 쓰는 것은 **바람직하지
-    않다.**
+-   **data.table**내에서 **fmean** 등을 같이 쓰는 것은 **바람직하지 않다.**
 
 ```         
 DT %>% gby(country) %>% get_vars(9:13) %>% fmean
 fmean(gv(DT, 9:13), DT$country)
 ```
 
--   보다 효율적인 작업을 위해 위와 같이 **data.table** 외에서 처리하는
-    방식을 사용하자.
+-   보다 효율적인 작업을 위해 위와 같이 **data.table** 외에서 처리하는 방식을 사용하자.
 
 ```{r}
 #| eval: true
@@ -759,8 +738,7 @@ settfmv(DT, 9:13, G, 1L, 1L, country, year, apply = FALSE)
 result <- DT[sample(.N, 7)] |> fselect(9:ncol(DT)); print(result)
 ```
 
--   := 은 data.table내에서 최적화 정도가 낮아 collapse를 이용하는 것이
-    대부분의 경우 더 빠르다.
+-   := 은 data.table내에서 최적화 정도가 낮아 collapse를 이용하는 것이 대부분의 경우 더 빠르다.
 
 ```{r}
 #| eval: true
@@ -862,8 +840,7 @@ lm_summary_list <- DT_list %>%
 
 ```
 
-**get_elem()**: 원하는 부분을 추출, 이후 **unlist2d** 로
-**data.table**로 만들 수 있다.
+**get_elem()**: 원하는 부분을 추출, 이후 **unlist2d**를 이용해 **data.table**로 만들 수 있다.
 
 ```{r}
 
@@ -887,17 +864,14 @@ DT[, qDT(coeftest(lm(G(PCGDP) ~ G(LIFEEX) + B(G(LIFEEX), country))), "Coef"),
 
 1.  **collapse**는 빠르며, data/memory 측면에서 경제적이다.
 
-2.  **vector, matrix, data.table** 등 데이터 형식에 구애받지 않고 사용
-    가능하다.
+2.  **vector, matrix, data.table** 등 데이터 형식에 구애받지 않고 사용가능하다.
 
-3.  (**dplyr, tidyverse, data.table** 등) 기존 **framework**와 통합하여
-    사용 가능하다.
+3.  (**dplyr, tidyverse, data.table** 등) 기존 **framework**와 통합하여 사용 가능하다.
 
-4.  **data.table**과 혼용하여 쓸 경우, **dt\[\]** 내부에서 사용하면
-    성능이 저하된다. 이는 내부적 데이터 처리 과정의 차이에서 기인한다.
+4.  **data.table**과 혼용하여 쓸 경우, **dt\[\]** 내부에서 사용하면 성능이 저하된다. 
+    이는 내부적 데이터 처리 과정의 차이에서 기인한다.
 
-5.  **data.table** 형식을 처리할 때는, **아래**와 같은 문법으로 사용해야
-    이의 효과를 기대할 수 있다.
+5.  **data.table** 형식을 처리할 때는, **아래**와 같은 문법으로 사용해야 이의 효과를 기대할 수 있다.
 
 ```         
 권장되지 않음:
