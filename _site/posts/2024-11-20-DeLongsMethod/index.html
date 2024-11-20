@@ -635,52 +635,49 @@ Area under the curve: 0.7314</code></pre>
 <span>        <span class="va">se_auc</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span>        <span class="va">p_value</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span>      <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>        <span class="co"># SE calculation using var(roc_result)</span></span>
+<span>        <span class="co"># SE </span></span>
 <span>        <span class="va">se_auc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu">var</span><span class="op">(</span><span class="va">roc_result</span><span class="op">)</span><span class="op">)</span></span>
-<span>        <span class="co"># P-value calculation</span></span>
+<span>        <span class="co"># P-value</span></span>
 <span>        <span class="va">z_value</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">auc_value</span> <span class="op">-</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">/</span> <span class="va">se_auc</span></span>
 <span>        <span class="va">p_value</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">z_value</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>      <span class="op">}</span></span>
+<span>  </span>
+<span>    <span class="va">p_value_display</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">p_value</span> <span class="op">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt;0.001"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">p_value</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>    </span>
+<span>    <span class="co"># 비교하고픈 cutoff가 있다면 비교하여 Sensitivity, Specificity, PPV, NPV, Accuracy등 다양한 값을 구할 수 있다. </span></span>
+<span>      <span class="co">#ex. median으로 cutoff를 지정하여 비교할 수 있다. (결과에는 포함하지 않음.)</span></span>
+<span>      <span class="co">#median cutoff.</span></span>
+<span>      <span class="va">median_cutoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="va">predictor_var</span><span class="op">]</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>      </span>
-<span>  <span class="co">#median cutoff.</span></span>
-<span>  <span class="va">median_cutoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="va">predictor_var</span><span class="op">]</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="co"># print(paste("Median cutoff:", median_cutoff))  # Debugging</span></span>
+<span>      <span class="co"># </span></span>
+<span>      <span class="va">data</span><span class="op">$</span><span class="va">predicted</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[[</span><span class="va">predictor_var</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;=</span> <span class="va">median_cutoff</span></span>
+<span>      <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">outcome</span>, <span class="va">data</span><span class="op">$</span><span class="va">predicted</span><span class="op">)</span></span>
+<span></span>
 <span>  </span>
-<span>  <span class="va">data</span><span class="op">$</span><span class="va">predicted</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[[</span><span class="va">predictor_var</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;=</span> <span class="va">median_cutoff</span></span>
-<span>  <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">outcome</span>, <span class="va">data</span><span class="op">$</span><span class="va">predicted</span><span class="op">)</span></span>
-<span>  <span class="co"># print("Confusion matrix:")          # Debugging</span></span>
-<span>  <span class="co"># print(table1)                       # Debugging</span></span>
-<span>  </span>
-<span>  <span class="co"># 구조 점검.</span></span>
-<span>  <span class="va">row_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">table1</span><span class="op">)</span></span>
-<span>  <span class="va">col_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">table1</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"Good"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">row_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"Good"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"Poor"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">row_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"Poor"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"TRUE"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">col_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"TRUE"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"FALSE"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">col_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"FALSE"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">TP</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Good"</span>, <span class="st">"TRUE"</span><span class="op">]</span></span>
-<span>  <span class="va">FP</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Poor"</span>, <span class="st">"TRUE"</span><span class="op">]</span></span>
-<span>  <span class="va">FN</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Good"</span>, <span class="st">"FALSE"</span><span class="op">]</span></span>
-<span>  <span class="va">TN</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Poor"</span>, <span class="st">"FALSE"</span><span class="op">]</span></span>
-<span>  </span>
-<span>  <span class="va">Sensitivity</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TP</span> <span class="op">/</span> <span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">FN</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
-<span>  <span class="va">Specificity</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TN</span> <span class="op">/</span> <span class="op">(</span><span class="va">TN</span> <span class="op">+</span> <span class="va">FP</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
-<span>  <span class="va">PPV</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TP</span> <span class="op">/</span> <span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">FP</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
-<span>  <span class="va">NPV</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TN</span> <span class="op">/</span> <span class="op">(</span><span class="va">TN</span> <span class="op">+</span> <span class="va">FN</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
-<span>  <span class="va">Accuracy</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">TN</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">FP</span> <span class="op">+</span> <span class="va">TN</span> <span class="op">+</span> <span class="va">FN</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">p_value_display</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">p_value</span> <span class="op">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt;0.001"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">p_value</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span>  </span>
+<span>        <span class="co"># 구조 점검.</span></span>
+<span>        <span class="va">row_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">table1</span><span class="op">)</span></span>
+<span>        <span class="va">col_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">table1</span><span class="op">)</span></span>
+<span>        </span>
+<span>        <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"Good"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">row_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"Good"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"Poor"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">row_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"Poor"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"TRUE"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">col_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"TRUE"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"FALSE"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">col_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"FALSE"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>        </span>
+<span>        <span class="va">TP</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Good"</span>, <span class="st">"TRUE"</span><span class="op">]</span></span>
+<span>        <span class="va">FP</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Poor"</span>, <span class="st">"TRUE"</span><span class="op">]</span></span>
+<span>        <span class="va">FN</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Good"</span>, <span class="st">"FALSE"</span><span class="op">]</span></span>
+<span>        <span class="va">TN</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Poor"</span>, <span class="st">"FALSE"</span><span class="op">]</span></span>
+<span>        </span>
+<span>        <span class="va">Sensitivity</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TP</span> <span class="op">/</span> <span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">FN</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>        <span class="va">Specificity</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TN</span> <span class="op">/</span> <span class="op">(</span><span class="va">TN</span> <span class="op">+</span> <span class="va">FP</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>        <span class="va">PPV</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TP</span> <span class="op">/</span> <span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">FP</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>        <span class="va">NPV</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TN</span> <span class="op">/</span> <span class="op">(</span><span class="va">TN</span> <span class="op">+</span> <span class="va">FN</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>        <span class="va">Accuracy</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">TN</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">FP</span> <span class="op">+</span> <span class="va">TN</span> <span class="op">+</span> <span class="va">FN</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>    </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
 <span>    AUC <span class="op">=</span> <span class="va">auc_value</span>,</span>
 <span>    AUC_CI <span class="op">=</span> <span class="va">auc_CI</span>,</span>
-<span>    Sensitivity <span class="op">=</span> <span class="va">Sensitivity</span>,</span>
-<span>    Specificity <span class="op">=</span> <span class="va">Specificity</span>,</span>
-<span>    PPV <span class="op">=</span> <span class="va">PPV</span>,</span>
-<span>    NPV <span class="op">=</span> <span class="va">NPV</span>,</span>
-<span>    Accuracy <span class="op">=</span> <span class="va">Accuracy</span>,</span>
 <span>    `P value` <span class="op">=</span> <span class="va">p_value_display</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -707,12 +704,11 @@ Area under the curve: 0.7314</code></pre>
 <span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>          Group <span class="op">=</span> <span class="va">group_name</span>,               </span>
 <span>          Predictor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Predictor"</span>, <span class="va">i</span><span class="op">)</span>, </span>
-<span>          `AUC(95% CI)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">AUC_CI</span><span class="op">)</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">AUC_CI</span><span class="op">)</span><span class="op">)</span>, <span class="co"># AUC CI 생성</span></span>
-<span>          `P value` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">`P value`</span> <span class="op">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt;0.001"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">`P value`</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="co"># P value 형식</span></span>
+<span>          `AUC(95% CI)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">AUC_CI</span><span class="op">)</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">AUC_CI</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>          `P value` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">`P value`</span> <span class="op">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt;0.001"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">`P value`</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span> </span>
 <span>        <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span></span>
-<span>          <span class="va">Group</span>, <span class="va">Predictor</span>, <span class="va">AUC</span>, <span class="va">`AUC(95% CI)`</span>, <span class="va">`P value`</span>,</span>
-<span>          <span class="va">Sensitivity</span>, <span class="va">Specificity</span></span>
+<span>          <span class="va">Group</span>, <span class="va">Predictor</span>, <span class="va">AUC</span>, <span class="va">`AUC(95% CI)`</span>, <span class="va">`P value`</span></span>
 <span>        <span class="op">)</span> </span>
 <span>    <span class="op">}</span></span>
 <span>  <span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
@@ -727,37 +723,39 @@ Area under the curve: 0.7314</code></pre>
 <span>  <span class="va">Predictor</span> <span class="op">==</span> <span class="st">"Predictor 4"</span> <span class="op">~</span> <span class="st">"s100b"</span>,</span>
 <span>  <span class="va">Predictor</span> <span class="op">==</span> <span class="st">"Predictor 5"</span> <span class="op">~</span> <span class="st">"ndka"</span></span>
 <span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># cause CI, 3 row created. rm. </span></span>
 <span><span class="va">result_tables_filtered</span> <span class="op">&lt;-</span> <span class="va">result_tables</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">result_tables</span><span class="op">)</span>, by <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">result_tables_filtered</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Group Predictor   AUC AUC(95% CI) P value Sensitivity Specificity
-             &lt;char&gt;    &lt;char&gt; &lt;num&gt;      &lt;char&gt;  &lt;char&gt;       &lt;num&gt;       &lt;num&gt;
- 1:            data      gos6 1.000         1-1    &lt;NA&gt;       0.917       1.000
- 2:            data       age 0.615 0.508-0.722  &lt;0.001       0.431       0.366
- 3:            data      wfns 0.824 0.749-0.899   0.531       0.486       0.049
- 4:            data     s100b 0.731  0.63-0.833   0.182       0.417       0.317
- 5:            data      ndka 0.612 0.501-0.723  &lt;0.001       0.444       0.390
- 6:     age_over_50      gos6 1.000         1-1    &lt;NA&gt;       1.000       1.000
- 7:     age_over_50       age 0.517  0.36-0.675  &lt;0.001       0.516       0.462
- 8:     age_over_50      wfns 0.738 0.613-0.864   0.334       0.548       0.077
- 9:     age_over_50     s100b 0.725 0.588-0.861    0.28       0.323       0.269
-10:     age_over_50      ndka 0.626 0.473-0.778   0.025       0.387       0.346
-11: age_50_or_below      gos6 1.000         1-1    &lt;NA&gt;       0.951       1.000
-12: age_50_or_below       age 0.541 0.387-0.695  &lt;0.001       0.488       0.467
-13: age_50_or_below      wfns 0.910 0.837-0.983   0.003       0.439       0.000
-14: age_50_or_below     s100b 0.702 0.529-0.874   0.266       0.463       0.267
-15: age_50_or_below      ndka 0.612 0.453-0.771   0.021       0.415       0.267
-16:            male      gos6 1.000         1-1    &lt;NA&gt;       1.000       1.000
-17:            male       age 0.680 0.514-0.845   0.154       0.409       0.400
-18:            male      wfns 0.876 0.773-0.979   0.148       0.364       0.050
-19:            male     s100b 0.773 0.632-0.914   0.707       0.318       0.300
-20:            male      ndka 0.552 0.371-0.734   0.007       0.409       0.400
-21:          female      gos6 1.000         1-1    &lt;NA&gt;       0.940       1.000
-22:          female       age 0.635   0.49-0.78   0.026       0.460       0.381
-23:          female      wfns 0.779  0.67-0.887   0.705       0.540       0.048
-24:          female     s100b 0.720   0.57-0.87   0.296       0.460       0.286
-25:          female      ndka 0.667 0.526-0.808   0.064       0.460       0.381
-              Group Predictor   AUC AUC(95% CI) P value Sensitivity Specificity</code></pre>
+<pre><code>              Group Predictor   AUC AUC(95% CI) P value
+             &lt;char&gt;    &lt;char&gt; &lt;num&gt;      &lt;char&gt;  &lt;char&gt;
+ 1:            data      gos6 1.000         1-1    &lt;NA&gt;
+ 2:            data       age 0.615 0.508-0.722  &lt;0.001
+ 3:            data      wfns 0.824 0.749-0.899   0.531
+ 4:            data     s100b 0.731  0.63-0.833   0.182
+ 5:            data      ndka 0.612 0.501-0.723  &lt;0.001
+ 6:     age_over_50      gos6 1.000         1-1    &lt;NA&gt;
+ 7:     age_over_50       age 0.517  0.36-0.675  &lt;0.001
+ 8:     age_over_50      wfns 0.738 0.613-0.864   0.334
+ 9:     age_over_50     s100b 0.725 0.588-0.861    0.28
+10:     age_over_50      ndka 0.626 0.473-0.778   0.025
+11: age_50_or_below      gos6 1.000         1-1    &lt;NA&gt;
+12: age_50_or_below       age 0.541 0.387-0.695  &lt;0.001
+13: age_50_or_below      wfns 0.910 0.837-0.983   0.003
+14: age_50_or_below     s100b 0.702 0.529-0.874   0.266
+15: age_50_or_below      ndka 0.612 0.453-0.771   0.021
+16:            male      gos6 1.000         1-1    &lt;NA&gt;
+17:            male       age 0.680 0.514-0.845   0.154
+18:            male      wfns 0.876 0.773-0.979   0.148
+19:            male     s100b 0.773 0.632-0.914   0.707
+20:            male      ndka 0.552 0.371-0.734   0.007
+21:          female      gos6 1.000         1-1    &lt;NA&gt;
+22:          female       age 0.635   0.49-0.78   0.026
+23:          female      wfns 0.779  0.67-0.887   0.705
+24:          female     s100b 0.720   0.57-0.87   0.296
+25:          female      ndka 0.667 0.526-0.808   0.064
+              Group Predictor   AUC AUC(95% CI) P value</code></pre>
 </div>
 </div>
 <blockquote class="blockquote">
@@ -765,9 +763,12 @@ Area under the curve: 0.7314</code></pre>
 </blockquote>
 </section><section id="conclusion" class="level1"><h1>Conclusion</h1>
 <ul>
-<li><strong>ROC curve를 그리고, AUC 값을 구할 수 있다.</strong></li>
-<li><strong>AUC 값의 SE, CI, 특정 값과 비교한 p-value를 구할 수 있다.</strong></li>
-<li><strong>이를 실제 데이터에 적용/연습해 보았다.</strong></li>
+<li>
+<strong>ROC curve</strong>를 그리고, <strong>AUC</strong> 값을 구할 수 있다.</li>
+<li>
+<strong>AUC</strong> 값의 <strong>SE, CI</strong>를 구할 수 있다.</li>
+<li>threshold와 비교하여 <strong>p-value</strong>를 구할 수 있다.</li>
+<li>이를 실제 데이터에 적용/연습해 보았다.</li>
 </ul></section><section id="reference" class="level1"><h1>Reference</h1>
 <p>[1] E. DeLong, D. DeLong, and D. Clarke-Pearson, “Comparing the areasunder two or more correlated receiver operating characteristic curves: anonparametric approach,” Biometrics, pp.&nbsp;837–845, 1988</p>
 
