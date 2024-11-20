@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hojun LEE">
+<meta name="dcterms.date" content="2024-11-20">
+<meta name="description" content="ROC AUC와 관련된 통계; SE 추정과 이의 CI 구하기.">
+<title>DeLong’s Method; for ROC AUC – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script><style>html{ scroll-behavior: smooth; }</style>
+<script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">Applications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R packages</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
+<li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributors.html"> 
+<span class="menu-text">Contributors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Partners</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
+<li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">
+<li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+</li>
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">DeLong’s Method; for ROC AUC</h1>
+                  <div>
+        <div class="description">
+          <p>ROC AUC와 관련된 통계; SE 추정과 이의 CI 구하기.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">statistics</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Hojun LEE </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 20, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li>
+<a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+<li><a href="#roc-curve-recevier-operating-characteristic-curve" id="toc-roc-curve-recevier-operating-characteristic-curve" class="nav-link" data-scroll-target="#roc-curve-recevier-operating-characteristic-curve">ROC curve (Recevier Operating Characteristic Curve)</a></li>
+  <li><a href="#empirical-roc-curve" id="toc-empirical-roc-curve" class="nav-link" data-scroll-target="#empirical-roc-curve">Empirical ROC Curve</a></li>
+  <li><a href="#auc" id="toc-auc" class="nav-link" data-scroll-target="#auc">AUC</a></li>
+  <li><a href="#standard-error" id="toc-standard-error" class="nav-link" data-scroll-target="#standard-error">Standard Error</a></li>
+  </ul>
+</li>
+  <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#reference" id="toc-reference" class="nav-link" data-scroll-target="#reference">Reference</a></li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="introduction" class="level1"><h1>Introduction</h1>
+<p>우리는 <strong>ROC</strong> 곡선에서 <strong>AUC</strong> 값을 구할 수 있다. <strong>AUC</strong> 값이 1에 가까우면 모델의 성능이 좋다라고 하며, 0.5에 가까워질 수록 성능이 나쁘다- 라고 한다. 그렇다면, <strong>ROC</strong>에서 신뢰구간은 어떻게 구할까? 특정 <strong>AUC</strong>값과 비교하여 <strong>p value</strong>를 구하려면 어떻게 해야 할까?</p>
+<p>이를 위해 <strong>DeLong</strong>의 <strong>AUC 표준 오차</strong>를 구하는 방법을 소개하려 한다. (E. DeLong, 1988)</p>
+<section id="roc-curve-recevier-operating-characteristic-curve" class="level2"><h2 class="anchored" data-anchor-id="roc-curve-recevier-operating-characteristic-curve">ROC curve (Recevier Operating Characteristic Curve)</h2>
+<ul>
+<li>
+<strong>ROC</strong> 곡선은 이진 분류 문제에서 모델의 성능을 평가하는데 사용되는 시각적 도구이다.</li>
+<li>다양한 임계값에서의 민감도, False Positive Rate의 관계를 시각화,</li>
+<li>
+<strong>민감도(Sensitivity)</strong>를 Y축으로, <strong>1 - 특이도(False Positive Rate)</strong>을 X축으로 하여 관계를 그린 그래프이다.</li>
+</ul>
+<p><strong>민감도(Sensitivity, True Positive Rate)</strong> - 실제 양성 사례를 얼마나 잘 분류하는지/ 실제 양성인 샘플을 양성으로 올바르게 분류한 비율 <span class="math display">\[
+Sens = \frac{True Positives(TP)}{True Positives(TP) + False Negatives(FN)}
+\]</span></p>
+<p><strong>특이도(Specificity, True Negative Rate)</strong> - 실제 음성성 사례를 얼마나 잘 분류하는지/ 실제 음성인 샘플을 음성으로 올바르게 분류한 비율 - <strong>False Positive Rate(FPR)</strong> : 1-Spec, 실제 음성인 샘플을 잘못 양성으로 분류한 비율 <span class="math display">\[
+Spec = \frac{True Negatives(TN)}{True\ Negatives(TN) + False \ Positives(FP)}
+\]</span></p>
+<p><strong>이상적인 ROC 곡선</strong> - 이상적인 분류는 <strong>ROC</strong>가 (0,1)을 지날 때, 즉 <strong>FPR</strong>이 0이고, <strong>TPR</strong>이 1인 경우. - 무작위 분류는 <strong>ROC</strong>가 <strong>y=x</strong>일 때, <strong>TPR = FPR</strong>인 경우.</p>
+<p><strong>AUC(Area Under the Curve)</strong> - <strong>AUC</strong>는 <strong>ROC</strong> 곡선 아래 면적을 의미한다. - <strong>AUC</strong>가 1에 가까울수록 성능이 좋은 모델. 0.5에 가까울수록 성능이 안좋은 모델.</p>
+<p><strong>이미지 삽입</strong></p>
+</section><section id="empirical-roc-curve" class="level2"><h2 class="anchored" data-anchor-id="empirical-roc-curve">Empirical ROC Curve</h2>
+<ul>
+<li>아래와 같이 <strong>ROC Curve</strong>를 추정할 수 있다.</li>
+<li>test를 시행한 총 집단의 수를 N이라 할 때, 실제로 이벤트가 발생한 집단을 <span class="math inline">\(C_1\)</span>(<span class="math inline">\(X_i\)</span>,n=m), 발생하지 않은 집단을 <span class="math inline">\(C2\)</span>(<span class="math inline">\(Y_i\)</span>,n=n)이라 하자.</li>
+</ul>
+<p>$$ \</p>
+<p>Sens(z) = _{i=1}^{m}{I(X_i z)}, \</p>
+Spec(z) = _{j=1}^{n}{I(Y_i &lt; z)}, \ I(A) =
+<span class="math display">\[\begin{cases}
+1, &amp;  A \text{ is true} \\
+0, &amp; \text{otherwise}
+\end{cases}\]</span>
+<p>$$ - 이때 실수 z가 variable 내 가능한 값들 내에서 움직인다면, <strong>ROC curve</strong>는 <strong>[1 - spec(z)]</strong>를 X로,<strong>Sens(z)</strong>를 Y로 갖는 plot이라 할 수 있다. 만약 z가 가능한 최대값보다 크다면 curve는 (0,0)을, 최솟값보다 작다면(1,1)을 지날 것이다. <strong>Sens(z) = 1 - Spec(z)</strong>라면 y=x 위, 45도 선 위에 놓일 것이다.</p>
+<p><img src="auc.png"></p>
+</section><section id="auc" class="level2"><h2 class="anchored" data-anchor-id="auc">AUC</h2>
+<ul>
+<li><p><strong>ROC curve</strong>는 위와 같이 구할 수 있다. 그럼 이의 넓이: <strong>AUC</strong> 값은 어떻게 구할까? 보통, 곡선 아래 넓이는 <em>trapezoidal rule</em>을 통해 구한다. 고등학교 때 배운 적분을 떠올리면 된다. 수많은 사다리꼴로 쪼개어 넓이를 근사하던 기억을 되살려 보자. <img src="trapezes.png"> 여기서, <em>Mann-Whitney two sample statistic</em>에 따르면, ROC curve 아래 넓이를 구할때, <em>trapezodial rule</em>로 구한 넓이는 <em>Mann-Whitney two sample statistic</em>으로 구할 수 있다.</p></li>
+<li><p><strong>Mann-Whitney statistic</strong>는 확률<span class="math inline">\(\theta\)</span>를 예측한다. <span class="math inline">\(C_2\)</span>에서 무작위 추출한 값이 <span class="math inline">\(C_1\)</span>의 값보다 같거나 작을 확률을 추정한다. <em>(test를 시행한 총 집단의 수를 N이라 할 때, 실제로 이벤트가 발생한 집단을 <span class="math inline">\(C_1\)</span>(<span class="math inline">\(X_i\)</span>,n=m), 발생하지 않은 집단을 <span class="math inline">\(C2\)</span>(<span class="math inline">\(Y_i\)</span>,n=n)이라 하자)</em></p></li>
+</ul>
+<p><span class="math display">\[
+\hat{\theta} = \frac{1}{mn}\sum_{j=1}^{n}\sum_{i=1}^{m}{\psi(X_i, Y_j)}
+\\
+\psi(X,Y) = \begin{cases}
+1 &amp;  \ Y &lt; X \\
+1/2 &amp; \  Y=X \\
+0 &amp; \ Y&gt;X
+\end{cases}
+\]</span> - 모든 (X, Y) 쌍에 대해 X &gt; Y이면 1을, X = Y이면 <span class="math inline">\(\frac{1}{2}\)</span>, X &lt; Y 이면 0을 부여하여 확률을 구한다. - 직관적으로, <strong>ROC curve</strong>와 <strong>AUC</strong> 값은 곧 모델의 추정이 옳을 확률이며, 이의 성능의 최고값은 1, 최저값은 1/2이라는 점을 고민하면 위의 추정은 그럴듯 하다.</p>
+<p><span class="math display">\[
+E(\hat{\theta}) = Pr(X&gt;Y) + \frac{1}{2}Pr(X= Y)
+\]</span> - 그럼, <strong>확률(AUC)</strong>은 위와 같이 정리할 수 있다.</p>
+</section><section id="standard-error" class="level2"><h2 class="anchored" data-anchor-id="standard-error">Standard Error</h2>
+<p>이제, <strong>AUC</strong>값의 신뢰성을 측정하기 위해서는 <strong>SE(standard Error)</strong>를 계산하는 것이 필요하다. 이는 <strong>DeLong(1988)</strong>이 제시한 방법을 참고하자.</p>
+<p>ξ를 각각의 집단 간 공분산이라 하자. ξ₁₀은 <span class="math inline">\(C_1\)</span>의 <span class="math inline">\(X_i\)</span>와 <span class="math inline">\(C_2\)</span>의 <span class="math inline">\(Y_j, Y_k\)</span>간 공분산, ξ₀₁은 <span class="math inline">\(C_2\)</span>의 <span class="math inline">\(Y_j\)</span>와 <span class="math inline">\(C_1\)</span>의 <span class="math inline">\(X_i, Y_k\)</span>간 공분산, ξ₁₁은 <span class="math inline">\(C_1\)</span>의 <span class="math inline">\(X_i\)</span>와 <span class="math inline">\(C_2\)</span>의 <span class="math inline">\(Y_j\)</span>간 자기공분산이다. ξ₁₀, ξ₀₁, ξ₁₁의 기대값은 아래와 같고, 이를 기반으로 <strong>AUC</strong> 추정치의 분산을 계산할 수 있다.</p>
+<p>$$ ξ_{10} = E[(X_i, Y_j) (X_i,Y_k)]-^2, \ ξ_{01} = E[(X_i, Y_j) (X_k,Y_j)]-^2, \ ξ_{11} = E[(X_i, Y_j) (X_i,Y_j)]-^2, \<br>
+\<br></p>
+<p>var() = + \</p>
+<p>$$</p>
+<p>이와 같은 방법으로 단일 표본 집합에서의 <strong>AUC</strong>의 <strong>표준 오차</strong>를 구할 수 있다.</p>
+<p>이제, 단일 표본 집합이 아닌 다른 표본집합 r과 s에 대해 다뤄보자.</p>
+<p>여러 표본 집합이 있을 경우, 각 표본 간의 <strong>상호 공분산</strong> 또한 고려되어야한다.</p>
+<p>두 표본 집합 r과 s에 대해 AUC의 공분산 계산은 아래와 같다.</p>
+<p><span class="math display">\[
+ξ_{10}^{rs} = E[\psi(X_i^r, Y_j^r) \psi(X_i^s,Y_k^s)]-\theta^r \theta^s,
+\\
+ξ_{01}^{rs} = E[\psi(X_i^r, Y_j^r) \psi(X_i^s,Y_k^s)]-\theta^r \theta^s,
+\\
+ξ_{11}^{rs} = E[\psi(X_i^r, Y_j^r) \psi(X_i^s,Y_k^s)]-\theta^r \theta^s,
+\\
+\]</span></p>
+<p>이제, 아래 식을 통해 표본 집합의 <strong>AUC</strong> 값 간의 <strong>공분산</strong>을 계산할 수 있다.</p>
+<p><span class="math display">\[
+cov(\hat{\theta^r},\hat{\theta^s}) = \frac{(n-1)ξ_{10}^{rs}+(m-1)ξ_{01}^{rs}}{mn} + \frac{ξ_{11}^{rs}}
+\\
+\]</span> 이 수식을 통해 여러 표본 집합 간의 공분산을 반영하여 <strong>AUC의 표준 오차</strong>를 더 정확하게 추정할 수 있다.</p>
+<ul>
+<li><p>이를 바탕으로 우리가 궁금한 값 <strong>“표준 오차”</strong>에 접근해 보자.</p></li>
+<li><p><strong>(Hoeffding_1948, Bamber_1975, Sen_1960)</strong>과 같은 분들 덕분에, 우리는 <strong>AUC 표준 오차</strong>를 보다 정확히 추정할 수 있다.</p></li>
+</ul>
+<p><span class="math display">\[
+V^r_{10}(X_i) = \frac{1}{n} \sum_{j=1}^n\psi(X_i^r,Y_j^r)\ \ \ \ \ (i= 1,2,...,m)
+\\
+V^r_{01}(Y_j) = \frac{1}{m} \sum_{i=1}^m\psi(X_i^r,Y_j^r)\ \ \ \ \ (j= 1,2,...,m)
+\\ \  
+\\ \
+\]</span> <span class="math inline">\(V^r_{10}(X_i)\)</span>은 집합r에서 값을 기반으로 한 분산이다. <span class="math inline">\(\psi(X_i^r,Y_j^r)\)</span>는 <span class="math inline">\(X_i^r,Y_j^r\)</span>의 관계를 나타내며, 이를 통해 분산을 구한다.</p>
+<p><span class="math inline">\(V^r_{01}(Y_j)\)</span>은 집합 <span class="math inline">\(Y^r_j\)</span>에서의 분산이다.</p>
+<p>두 값을 통해 각 표본 집합에 대한 분산을 따로 계산한 후, 이를 결합하여 최종적으로 <strong>표준 오차</strong>를 추정할 수 있다. 각 분산 값이 표본 크기에 따라 가중평균되며, <strong>AUC 표준 오차 S</strong>는 아래와 같다.</p>
+<p><span class="math display">\[
+\\
+S = \frac{1}{m}S_{10} + \frac{1}{n}S_{01}
+\\
+\]</span></p>
+<ul>
+<li>표준 오차를 통해 우리는 AUC 값이 얼마나 신뢰할 수 있는지 평가할 수 있으며, 이는 모델의 성능을 명확히 이해하는데 중요한 역할을 한다.</li>
+</ul></section></section><section id="code" class="level1"><h1>Code</h1>
+<p>이를 R에서는 <strong>pROC package</strong>를 통해 이용할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://xrobin.github.io/pROC/">pROC</a></span><span class="op">)</span>;<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>;<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">aSAH</span><span class="op">)</span></span>
+<span><span class="va">SAH</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html">as.data.table</a></span><span class="op">(</span><span class="va">aSAH</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">SAH</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    gos6 outcome gender   age  wfns s100b  ndka
+   &lt;ord&gt;  &lt;fctr&gt; &lt;fctr&gt; &lt;int&gt; &lt;ord&gt; &lt;num&gt; &lt;num&gt;
+1:     5    Good Female    42     1  0.13  3.01
+2:     5    Good Female    37     1  0.14  8.54
+3:     5    Good Female    42     1  0.10  8.09
+4:     5    Good Female    27     1  0.04 10.42
+5:     1    Poor Female    42     3  0.13 17.40
+6:     1    Poor   Male    48     2  0.10 12.75</code></pre>
+</div>
+</div>
+<p>데이터는 pROC 패키지 내장 데이터인 aSAH 데이터를 사용하였다.</p>
+<p>aSAH는 뇌동맥류 파열로 인해 발생하는 SAH에 대한 데이터이다.</p>
+<p>n=113명이며, 변수는 아래와 같다.</p>
+<pre><code>  gos6        (Glasgow Outcome scale), 
+  outcome     (clinical outcome: Good/Poor)
+  gender      (성별:  Male/female)       
+  age         (나이)        
+  wfns        (신경학적 평가 점수: 1~5, 1= 가장 양호), 
+  s100b       (혈액 내 S100B 단백질 농도: 뇌손상 biomarker)
+  ndka        (혈액 내 neuron-specific enoalse 농도: 신경 손상 biomarker)</code></pre>
+<p>위 변수 중 100b를 사용하여 outcome을 예측하는 ROC curve와 AUC 값을 구해보자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">roc_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pROC/man/roc.html">roc</a></span><span class="op">(</span>response <span class="op">=</span> <span class="va">SAH</span><span class="op">$</span><span class="va">outcome</span>, </span>
+<span>                  predictor <span class="op">=</span> <span class="va">SAH</span><span class="op">$</span><span class="va">s100b</span>, </span>
+<span>                  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Good"</span>, <span class="st">"Poor"</span><span class="op">)</span>,  <span class="co"># outcome의 순서 지정</span></span>
+<span>                  direction <span class="op">=</span> <span class="st">"&lt;"</span><span class="op">)</span>  </span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">roc_result</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+roc.default(response = SAH$outcome, predictor = SAH$s100b, levels = c("Good",     "Poor"), direction = "&lt;")
+
+Data: SAH$s100b in 72 controls (SAH$outcome Good) &lt; 41 cases (SAH$outcome Poor).
+Area under the curve: 0.7314</code></pre>
+</div>
+</div>
+<p>위와 같이 지정한 변수 및 AUC 값을 확인할 수 있다.</p>
+<p>여기서 ROC curve를 직접 보고싶으면 아래와 같이 확인할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">roc_result</span>,</span>
+<span>  col <span class="op">=</span> <span class="st">"blue"</span>,    <span class="co"># curve 색깔 지정</span></span>
+<span>  lwd <span class="op">=</span> <span class="fl">2</span>,         <span class="co"># curve 두께 지정</span></span>
+<span>  main <span class="op">=</span> <span class="st">"ROC Curve for s100b"</span>      <span class="co">#그래프 제목 지정</span></span>
+<span>  <span class="co"># xlim = c(1, 0),                 # x축 범위, 일반적으로 1-spec(FPR)   </span></span>
+<span>  <span class="co"># ylim = c(0, 1)                  # y축 범위, 일반적으로 Sensitivity       </span></span>
+<span>  <span class="co"># type = "1"                      # 그래프의 형태, 기본값은 선그래프</span></span>
+<span>  <span class="co"># xlab/ylab = "1-Specificity"     # x/y축 레이블 지정.</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span>             <span class="co"># curve와 함께 AUC값 표기.</span></span>
+<span>  x <span class="op">=</span> <span class="fl">0.6</span>, y <span class="op">=</span> <span class="fl">0.4</span>, </span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"AUC ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/pROC/man/auc.html">auc</a></span><span class="op">(</span><span class="va">roc_result</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>  col <span class="op">=</span> <span class="st">"red"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>이처럼 ROC curve, AUC값을 구할 수 있다.</li>
+<li>이제 AUC 값에 대해 추가적으로 알아보자.</li>
+</ul>
+<p>pROC package을 이용해 AUC의 표준오차(SE)와 신뢰구간(CI)를 구할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">auc_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pROC/man/auc.html">auc</a></span><span class="op">(</span><span class="va">roc_result</span><span class="op">)</span>   <span class="co">#이전에 구한 roc_result 사용</span></span>
+<span></span>
+<span><span class="va">se_auc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu">var</span><span class="op">(</span><span class="va">roc_result</span><span class="op">)</span><span class="op">)</span>  <span class="co">#</span></span>
+<span></span>
+<span><span class="va">ci_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pROC/man/ci.auc.html">ci.auc</a></span><span class="op">(</span><span class="va">roc_result</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">auc_result</span><span class="op">)</span>;<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">ci_result</span><span class="op">)</span>;<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">se_auc</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve: 0.7314</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI: 0.6301-0.8326 (DeLong)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.05165929</code></pre>
+</div>
+</div>
+<ul>
+<li>위처럼 SE/CI를 구하는 것에 더해, ROC curve에서 특정 threshold(0.7)와 비교한 p-value를 구할 수 있다.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">z_value</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">auc_result</span> <span class="op">-</span> <span class="fl">0.7</span><span class="op">)</span><span class="op">/</span><span class="va">se_auc</span></span>
+<span><span class="va">p_value</span> <span class="op">&lt;-</span> <span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">z_value</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"p-value for AUC &gt; 0.7:"</span>, <span class="va">p_value</span>, <span class="st">"\n"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value for AUC &gt; 0.7: 0.5437048 </code></pre>
+</div>
+</div>
+<ul>
+<li>위 경우는 유의하지 않다.</li>
+</ul></section><section id="example" class="level1"><h1>Example</h1>
+<ul>
+<li>위와 같은 방법으로 aSAH의 다양한 변수들 중, outcome 예측에 가장 좋은 변수를 확인하자. 또한, age/gender를 기준으로 subgroup analysis까지 진행하자.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://xrobin.github.io/pROC/">pROC</a></span><span class="op">)</span>;<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>;<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">aSAH</span><span class="op">)</span></span>
+<span><span class="va">SAH</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html">as.data.table</a></span><span class="op">(</span><span class="va">aSAH</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#subgroup</span></span>
+<span><span class="va">subgroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">SAH</span>,</span>
+<span>  age_over_50 <span class="op">=</span> <span class="va">SAH</span><span class="op">[</span><span class="va">age</span> <span class="op">&gt;</span> <span class="fl">50</span><span class="op">]</span>,</span>
+<span>  age_50_or_below <span class="op">=</span> <span class="va">SAH</span><span class="op">[</span><span class="va">age</span> <span class="op">&lt;=</span> <span class="fl">50</span><span class="op">]</span>,</span>
+<span>  male <span class="op">=</span> <span class="va">SAH</span><span class="op">[</span><span class="va">gender</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">]</span>,</span>
+<span>  female <span class="op">=</span> <span class="va">SAH</span><span class="op">[</span><span class="va">gender</span> <span class="op">==</span> <span class="st">"Female"</span><span class="op">]</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ROC 및 성능 평가 함수(threshold: 0.8)</span></span>
+<span><span class="va">evaluate_roc</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">predictor_var</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co">#predictor_var는 numeric variable이어야.</span></span>
+<span>   <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="va">predictor_var</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">data</span><span class="op">[[</span><span class="va">predictor_var</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="va">predictor_var</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>   <span class="op">}</span></span>
+<span>  </span>
+<span>  <span class="co"># outcome variable은 factor variable이어야.</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">is.factor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">outcome</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">data</span><span class="op">$</span><span class="va">outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">outcome</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Poor"</span>, <span class="st">"Good"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  </span>
+<span>  <span class="co">#ROC</span></span>
+<span>  <span class="va">roc_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pROC/man/roc.html">roc</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">outcome</span>, <span class="va">data</span><span class="op">[[</span><span class="va">predictor_var</span><span class="op">]</span><span class="op">]</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Poor"</span>, <span class="st">"Good"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co">#AUC, CI</span></span>
+<span>  <span class="va">auc_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pROC/man/auc.html">auc</a></span><span class="op">(</span><span class="va">roc_result</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>  <span class="va">auc_CI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pROC/man/ci.auc.html">ci.auc</a></span><span class="op">(</span><span class="va">roc_result</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>  </span>
+<span>      <span class="co"># Handle AUC == 1</span></span>
+<span>      <span class="kw">if</span> <span class="op">(</span><span class="va">auc_value</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="kw"><a href="https://rdrr.io/r/base/warning.html">warning</a></span><span class="op">(</span><span class="st">"AUC is 1. SE and p-value may be undefined."</span><span class="op">)</span></span>
+<span>        <span class="va">se_auc</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span>        <span class="va">p_value</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span>      <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>        <span class="co"># SE calculation using var(roc_result)</span></span>
+<span>        <span class="va">se_auc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu">var</span><span class="op">(</span><span class="va">roc_result</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="co"># P-value calculation</span></span>
+<span>        <span class="va">z_value</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">auc_value</span> <span class="op">-</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">/</span> <span class="va">se_auc</span></span>
+<span>        <span class="va">p_value</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">z_value</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">}</span></span>
+<span>      </span>
+<span>  <span class="co">#median cutoff.</span></span>
+<span>  <span class="va">median_cutoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="va">predictor_var</span><span class="op">]</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="co"># print(paste("Median cutoff:", median_cutoff))  # Debugging</span></span>
+<span>  </span>
+<span>  <span class="va">data</span><span class="op">$</span><span class="va">predicted</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[[</span><span class="va">predictor_var</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;=</span> <span class="va">median_cutoff</span></span>
+<span>  <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">outcome</span>, <span class="va">data</span><span class="op">$</span><span class="va">predicted</span><span class="op">)</span></span>
+<span>  <span class="co"># print("Confusion matrix:")          # Debugging</span></span>
+<span>  <span class="co"># print(table1)                       # Debugging</span></span>
+<span>  </span>
+<span>  <span class="co"># Check if table has expected structure</span></span>
+<span>  <span class="va">row_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">table1</span><span class="op">)</span></span>
+<span>  <span class="va">col_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">table1</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"Good"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">row_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"Good"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"Poor"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">row_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"Poor"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"TRUE"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">col_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"TRUE"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"FALSE"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">col_levels</span><span class="op">)</span><span class="op">)</span> <span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">table1</span>, <span class="st">"FALSE"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">TP</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Good"</span>, <span class="st">"TRUE"</span><span class="op">]</span></span>
+<span>  <span class="va">FP</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Poor"</span>, <span class="st">"TRUE"</span><span class="op">]</span></span>
+<span>  <span class="va">FN</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Good"</span>, <span class="st">"FALSE"</span><span class="op">]</span></span>
+<span>  <span class="va">TN</span> <span class="op">&lt;-</span> <span class="va">table1</span><span class="op">[</span><span class="st">"Poor"</span>, <span class="st">"FALSE"</span><span class="op">]</span></span>
+<span>  </span>
+<span>  <span class="va">Sensitivity</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TP</span> <span class="op">/</span> <span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">FN</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>  <span class="va">Specificity</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TN</span> <span class="op">/</span> <span class="op">(</span><span class="va">TN</span> <span class="op">+</span> <span class="va">FP</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>  <span class="va">PPV</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TP</span> <span class="op">/</span> <span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">FP</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>  <span class="va">NPV</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">TN</span> <span class="op">/</span> <span class="op">(</span><span class="va">TN</span> <span class="op">+</span> <span class="va">FN</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>  <span class="va">Accuracy</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">TN</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">TP</span> <span class="op">+</span> <span class="va">FP</span> <span class="op">+</span> <span class="va">TN</span> <span class="op">+</span> <span class="va">FN</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">p_value_display</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">p_value</span> <span class="op">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt;0.001"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">p_value</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    AUC <span class="op">=</span> <span class="va">auc_value</span>,</span>
+<span>    AUC_CI <span class="op">=</span> <span class="va">auc_CI</span>,</span>
+<span>    Sensitivity <span class="op">=</span> <span class="va">Sensitivity</span>,</span>
+<span>    Specificity <span class="op">=</span> <span class="va">Specificity</span>,</span>
+<span>    PPV <span class="op">=</span> <span class="va">PPV</span>,</span>
+<span>    NPV <span class="op">=</span> <span class="va">NPV</span>,</span>
+<span>    Accuracy <span class="op">=</span> <span class="va">Accuracy</span>,</span>
+<span>    `P value` <span class="op">=</span> <span class="va">p_value_display</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># ROC 분석</span></span>
+<span><span class="va">predictor_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"gos6"</span>, <span class="st">"age"</span>, <span class="st">"wfns"</span>, <span class="st">"s100b"</span>, <span class="st">"ndka"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">subgroups</span>, <span class="kw">function</span><span class="op">(</span><span class="va">group</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">predictor_vars</span>, <span class="kw">function</span><span class="op">(</span><span class="va">var</span><span class="op">)</span> <span class="fu">evaluate_roc</span><span class="op">(</span><span class="va">group</span>, <span class="va">var</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result_tables</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">group_name</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="co">#subgroup 가져오기</span></span>
+<span>  <span class="va">group_results</span> <span class="op">&lt;-</span> <span class="va">results</span><span class="op">[[</span><span class="va">group_name</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="co"># 예측 변수 가져오기</span></span>
+<span>  <span class="va">group_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span><span class="op">(</span><span class="va">group_results</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="co"># 인덱스(i)</span></span>
+<span>    <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">group_results</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span></span>
+<span>    </span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html">as.data.table</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>          Group <span class="op">=</span> <span class="va">group_name</span>,               <span class="co"># 하위 그룹 이름 추가</span></span>
+<span>          Predictor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Predictor"</span>, <span class="va">i</span><span class="op">)</span>, <span class="co"># 인덱스 기반 예측 변수 이름 추가</span></span>
+<span>          `AUC(95% CI)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">AUC_CI</span><span class="op">)</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">AUC_CI</span><span class="op">)</span><span class="op">)</span>, <span class="co"># AUC CI 생성</span></span>
+<span>          `P value` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">`P value`</span> <span class="op">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt;0.001"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">`P value`</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="co"># P value 형식</span></span>
+<span>        <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span></span>
+<span>          <span class="va">Group</span>, <span class="va">Predictor</span>, <span class="va">AUC</span>, <span class="va">`AUC(95% CI)`</span>, <span class="va">`P value`</span>,</span>
+<span>          <span class="va">Sensitivity</span>, <span class="va">Specificity</span>, <span class="va">PPV</span>, <span class="va">NPV</span>, <span class="va">Accuracy</span></span>
+<span>        <span class="op">)</span> <span class="co"># 필요한 열만 선택하여 반환</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">group_data</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span>, use.names <span class="op">=</span> <span class="cn">TRUE</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">result_tables</span><span class="op">[</span>, <span class="va">Predictor</span> <span class="op">:=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
+<span>  <span class="va">Predictor</span> <span class="op">==</span> <span class="st">"Predictor 1"</span> <span class="op">~</span> <span class="st">"gos6"</span>,</span>
+<span>  <span class="va">Predictor</span> <span class="op">==</span> <span class="st">"Predictor 2"</span> <span class="op">~</span> <span class="st">"age"</span>,</span>
+<span>  <span class="va">Predictor</span> <span class="op">==</span> <span class="st">"Predictor 3"</span> <span class="op">~</span> <span class="st">"wfns"</span>,</span>
+<span>  <span class="va">Predictor</span> <span class="op">==</span> <span class="st">"Predictor 4"</span> <span class="op">~</span> <span class="st">"s100b"</span>,</span>
+<span>  <span class="va">Predictor</span> <span class="op">==</span> <span class="st">"Predictor 5"</span> <span class="op">~</span> <span class="st">"ndka"</span></span>
+<span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">result_tables_filtered</span> <span class="op">&lt;-</span> <span class="va">result_tables</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">result_tables</span><span class="op">)</span>, by <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">result_tables_filtered</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Group Predictor   AUC AUC(95% CI) P value Sensitivity Specificity
+             &lt;char&gt;    &lt;char&gt; &lt;num&gt;      &lt;char&gt;  &lt;char&gt;       &lt;num&gt;       &lt;num&gt;
+ 1:            data      gos6 1.000         1-1    &lt;NA&gt;       0.917       1.000
+ 2:            data       age 0.615 0.508-0.722  &lt;0.001       0.431       0.366
+ 3:            data      wfns 0.824 0.749-0.899   0.531       0.486       0.049
+ 4:            data     s100b 0.731  0.63-0.833   0.182       0.417       0.317
+ 5:            data      ndka 0.612 0.501-0.723  &lt;0.001       0.444       0.390
+ 6:     age_over_50      gos6 1.000         1-1    &lt;NA&gt;       1.000       1.000
+ 7:     age_over_50       age 0.517  0.36-0.675  &lt;0.001       0.516       0.462
+ 8:     age_over_50      wfns 0.738 0.613-0.864   0.334       0.548       0.077
+ 9:     age_over_50     s100b 0.725 0.588-0.861    0.28       0.323       0.269
+10:     age_over_50      ndka 0.626 0.473-0.778   0.025       0.387       0.346
+11: age_50_or_below      gos6 1.000         1-1    &lt;NA&gt;       0.951       1.000
+12: age_50_or_below       age 0.541 0.387-0.695  &lt;0.001       0.488       0.467
+13: age_50_or_below      wfns 0.910 0.837-0.983   0.003       0.439       0.000
+14: age_50_or_below     s100b 0.702 0.529-0.874   0.266       0.463       0.267
+15: age_50_or_below      ndka 0.612 0.453-0.771   0.021       0.415       0.267
+16:            male      gos6 1.000         1-1    &lt;NA&gt;       1.000       1.000
+17:            male       age 0.680 0.514-0.845   0.154       0.409       0.400
+18:            male      wfns 0.876 0.773-0.979   0.148       0.364       0.050
+19:            male     s100b 0.773 0.632-0.914   0.707       0.318       0.300
+20:            male      ndka 0.552 0.371-0.734   0.007       0.409       0.400
+21:          female      gos6 1.000         1-1    &lt;NA&gt;       0.940       1.000
+22:          female       age 0.635   0.49-0.78   0.026       0.460       0.381
+23:          female      wfns 0.779  0.67-0.887   0.705       0.540       0.048
+24:          female     s100b 0.720   0.57-0.87   0.296       0.460       0.286
+25:          female      ndka 0.667 0.526-0.808   0.064       0.460       0.381
+              Group Predictor   AUC AUC(95% CI) P value Sensitivity Specificity
+      PPV   NPV Accuracy
+    &lt;num&gt; &lt;num&gt;    &lt;num&gt;
+ 1: 1.000 0.872    0.947
+ 2: 0.544 0.268    0.407
+ 3: 0.473 0.051    0.327
+ 4: 0.517 0.236    0.381
+ 5: 0.561 0.286    0.425
+ 6: 1.000 1.000    1.000
+ 7: 0.533 0.444    0.491
+ 8: 0.415 0.125    0.333
+ 9: 0.345 0.250    0.298
+10: 0.414 0.321    0.368
+11: 1.000 0.882    0.964
+12: 0.714 0.250    0.482
+13: 0.545 0.000    0.321
+14: 0.633 0.154    0.411
+15: 0.607 0.143    0.375
+16: 1.000 1.000    1.000
+17: 0.429 0.381    0.405
+18: 0.296 0.067    0.214
+19: 0.333 0.286    0.310
+20: 0.429 0.381    0.405
+21: 1.000 0.875    0.958
+22: 0.639 0.229    0.437
+23: 0.574 0.042    0.394
+24: 0.605 0.182    0.408
+25: 0.639 0.229    0.437
+      PPV   NPV Accuracy</code></pre>
+</div>
+</div>
+<p>데이터 상 크게 유의미한 변수는 없다.</p>
+</section><section id="conclusion" class="level1"><h1>Conclusion</h1>
+<ul>
+<li>ROC curve를 그리고, AUC 값을 구할 수 있다.</li>
+<li>AUC 값의 SE, CI, 특정 값과 비교한 p-value를 구할 수 있다.</li>
+<li>이를 실제 데이터에 적용/연습해 보았다.</li>
+</ul></section><section id="reference" class="level1"><h1>Reference</h1>
+<p>[1] E. DeLong, D. DeLong, and D. Clarke-Pearson, “Comparing the areasunder two or more correlated receiver operating characteristic curves: anonparametric approach,” Biometrics, pp.&nbsp;837–845, 1988</p>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lee2024,
+  author = {LEE, Hojun},
+  title = {DeLong’s {Method;} for {ROC} {AUC}},
+  date = {2024-11-20},
+  url = {https://blog.zarathu.com/posts/2024-11-20-DeLong’s Method/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lee2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+LEE, Hojun. 2024. <span>“DeLong’s Method; for ROC AUC.”</span> November
+20, 2024. <a href="https://blog.zarathu.com/posts/2024-11-20-DeLong’s Method/">https://blog.zarathu.com/posts/2024-11-20-DeLong’s
+Method/</a>.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
