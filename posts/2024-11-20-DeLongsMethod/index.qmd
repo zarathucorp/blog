@@ -1,0 +1,454 @@
+---
+title: "DeLong's Method; for ROC AUC"
+description: | 
+  ROC AUC와 관련된 통계; SE 추정과 이의 CI 구하기.
+categories:
+  - R
+  - statistics
+author:
+  name: "Hojun LEE"
+  url: https://github.com/21-HJ
+image: img/logo.png
+fig_width: 400
+date: 2024-11-20
+format: html
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+  
+# Introduction
+  
+  우리는 **ROC** 곡선에서 **AUC** 값을 구할 수 있다. **AUC** 값이 1에 가까우면 모델의 성능이 좋다라고 하며, 0.5에 가까워질 수록 성능이 나쁘다- 라고 한다. 그렇다면, **ROC**에서 신뢰구간은 어떻게 구할까? 특정 **AUC**값과 비교하여 **p value**를 구하려면 어떻게 해야 할까? 
+  
+  이를 위해 **DeLong**의  **AUC 표준 오차** 구하는 방법을 소개하려 한다. (E. DeLong, 1988) 
+
+## ROC curve (Recevier Operating Characteristic Curve)
+ 
+-   **ROC** 곡선은 이진 분류 문제에서 모델의 성능을 평가하는데 사용되는 시각적 도구이다.
+-   다양한 임계값에서의 민감도와 False Positive Rate의 관계를 시각화한 것으로,
+-   **민감도(Sensitivity)**를 **Y**축으로, **1 - 특이도(False Positive Rate)**을 **X**축으로 하여 관계를 그린 그래프이다. 
+
+**민감도(Sensitivity, True Positive Rate)**
+
+-   실제 양성 사례를 얼마나 잘 분류하는지/ 실제 양성인 샘플을 양성으로 올바르게 분류한 비율
+$$
+Sens = \frac{True Positives(TP)}{True Positives(TP) + False Negatives(FN)}
+$$
+
+**특이도(Specificity, True Negative Rate)**
+
+-   실제 음성 사례를 얼마나 잘 분류하는지/ 실제 음성인 샘플을 음성으로 올바르게 분류한 비율
+-   **False Positive Rate(FPR)** : 1-Spec, 실제 음성인 샘플을 잘못 양성으로 분류한 비율
+
+$$
+Spec = \frac{True Negatives(TN)}{True\ Negatives(TN) + False \ Positives(FP)}
+$$
+
+
+**이상적인 ROC 곡선**
+
+-   이상적인 분류는 **ROC**가 (0,1)을 지날 때, 즉 **FPR**이 0이고, **TPR**이 1인 경우.
+-   무작위 분류는 **ROC**가 **y=x**일 때, **TPR = FPR**인 경우.
+
+**AUC(Area Under the Curve)**
+
+-   **AUC**는 **ROC** 곡선 아래 면적을 의미한다.
+-   **AUC**가 1에 가까울수록 성능이 좋은 모델. 0.5에 가까울수록 성능이 안좋은 모델.
+
+ ![ROC](img/logo.png){#fig-1 width="250" fig-align="center"}
+
+## Empirical ROC Curve
+-   아래와 같이 **ROC Curve**를 추정할 수 있다.
+-   test를 시행한 총 집단의 수를 N이라 할 때, 실제로 이벤트가 발생한 집단을 $C_1$($X_i$,n=m), 발생하지 않은 집단을 $C2$($Y_i$,n=n)이라 하자. 
+
+
+$$
+\text{for any real number z,} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 
+$$
+
+$$
+Sens(z) = \frac{1}{m}\sum_{i=1}^{m}{I(X_i \geq z)}, 
+$$
+
+$$
+Spec(z) = \frac{1}{n}\sum_{j=1}^{n}{I(Y_i < z)}, 
+$$
+
+$$
+I(A) =
+\begin{cases} 
+1, &  A \text{ is true} \\
+0, & \text{otherwise}
+\end{cases}
+$$
+
+-   이때 실수 z가 variable 내 가능한 값들 내에서 움직인다면, **ROC curve**는 **[1 - spec(z)]**를 **X**로, **Sens(z)**를 **Y**로 갖는 plot이라 할 수 있다. 만약 **z**가 가능한 최대값보다 크다면 curve는 (0,0)을, 최솟값보다 작다면(1,1)을 지날 것이다. 
+    **Sens(z) = 1 - Spec(z)**라면 y=x 위, 45도 선 위에 놓일 것이다.
+    
+ ![AUC](img/auc.png){#fig-2 width="250" fig-align="center"}
+
+## AUC
+-   **ROC curve**는 위와 같이 구할 수 있다. 그럼 이의 넓이: **AUC** 값은 어떻게 구할까? 
+  보통, 곡선 아래 넓이는 *trapezoidal rule*을 통해 구한다. 고등학교 때 배운 적분을 떠올리면 된다. 수많은 사다리꼴로 쪼개어 넓이를 근사하던 기억을 되살려 보자. 
+ ![Trapezes](img/trapezes.png){#fig-3 width="250" fig-align="center"}
+ 
+ 
+  여기서, *Mann-Whitney two sample statistic*에 따르면, ROC curve 아래 넓이를 구할때, *trapezodial rule*로 구한 넓이는 *Mann-Whitney two sample statistic*으로 구한 넓이로 대체할 수 있다.
+  
+-   **Mann-Whitney statistic**는 확률$\theta$를 예측한다. $C_2$에서 무작위 추출한 값이 $C_1$의 값보다 같거나 작을 확률을 추정한다. 
+*(test를 시행한 총 집단의 수를 N이라 할 때, 실제로 이벤트가 발생한 집단을 $C_1$($X_i$,n=m), 발생하지 않은 집단을 $C2$($Y_i$,n=n)이라 하자)*
+
+$$
+\hat{\theta} = \frac{1}{mn}\sum_{j=1}^{n}\sum_{i=1}^{m}{\psi(X_i, Y_j)} 
+$$
+
+$$
+\psi(X,Y) = \begin{cases} 
+1 &  \ Y < X \\
+1/2 & \  Y=X \\
+0 & \ Y>X
+\end{cases}
+$$
+
+- 모든 (X, Y) 쌍에 대해 X > Y이면 1을, X = Y이면 $\frac{1}{2}$, X < Y 이면 0을 부여하여 확률을 구한다. 
+- 직관적으로, **ROC curve**와 **AUC** 값은 곧 모델의 추정이 옳을 확률이며, 이의 성능의 최고값은 1, 최저값은 1/2이라는 점을 고민하면 위의 추정은 그럴듯 하다. 
+
+$$
+E(\hat{\theta}) = Pr(X>Y) + \frac{1}{2}Pr(X= Y)
+$$
+
+- 그럼, **확률(AUC)**은 위와 같이 정리할 수 있다. 
+
+## Standard Error
+이제, **AUC**값의 신뢰성을 측정하기 위해서는 **SE(standard Error)**를 계산하는 것이 필요하다. 
+이는 **DeLong(1988)**이 제시한 방법을 참고하자. 
+
+
+ξ를 각각의 집단 간 공분산이라 하자.
+
+ξ₁₀은 $C_1$의 $X_i$와 $C_2$의 $Y_j, Y_k$간 공분산,
+
+ξ₀₁은 $C_2$의 $Y_j$와 $C_1$의 $X_i, Y_k$간 공분산,
+
+ξ₁₁은 $C_1$의 $X_i$와 $C_2$의 $Y_j$간 자기공분산이다.
+
+ξ₁₀, ξ₀₁, ξ₁₁의 기대값은 아래와 같다. 
+
+$$
+ξ_{10} = E[\psi(X_i, Y_j) \psi(X_i,Y_k)]-\theta^2, 
+$$
+
+$$
+ξ_{01} = E[\psi(X_i, Y_j) \psi(X_k,Y_j)]-\theta^2, 
+$$
+
+$$
+ξ_{11} = E[\psi(X_i, Y_j) \psi(X_i,Y_j)]-\theta^2, 
+$$
+
+기댓값들을 이용하여 **AUC** 추정치의 분산을 계산할 수 있다.
+
+$$
+var(\hat{\theta}) = \frac{(n-1)ξ_{10}+(m-1)ξ_{01}}{mn} + \frac{ξ_{11}}{mn}
+$$
+
+이와 같은 방법으로 단일 표본 집합에서의 **AUC**의 **표준 오차**를 구할 수 있다. 
+
+-   이제, 단일 표본 집합이 아닌 다른 표본집합 r과 s에 대해 다뤄보자. 여러 표본 집합이 있을 경우, 각 표본 간의 **상호 공분산** 또한 고려되어야한다. 두 표본 집합 r과 s에 대해 AUC의 공분산 계산은 아래와 같다. 
+
+
+$$
+ξ_{10}^{rs} = E[\psi(X_i^r, Y_j^r) \psi(X_i^s,Y_k^s)]-\theta^r \theta^s,
+$$
+
+$$
+ξ_{01}^{rs} = E[\psi(X_i^r, Y_j^r) \psi(X_i^s,Y_k^s)]-\theta^r \theta^s,
+$$
+
+$$
+ξ_{11}^{rs} = E[\psi(X_i^r, Y_j^r) \psi(X_i^s,Y_k^s)]-\theta^r \theta^s, 
+$$
+
+이제, 아래 식을 통해 표본 집합의 **AUC** 값 간의 **공분산**을 계산할 수 있다.
+
+$$
+cov(\hat{\theta^r},\hat{\theta^s}) = \frac{(n-1)ξ_{10}^{rs}+(m-1)ξ_{01}^{rs}}{mn} + \frac{ξ_{11}^{rs}}{mn}
+$$
+이 수식을 통해 여러 표본 집합 간의 공분산을 반영하여 **AUC의 표준 오차**를 더 정확하게 추정할 수 있다.
+
+
+* 이를 바탕으로 우리가 궁금한 값 **"표준 오차"**에 접근해 보자.
+**(Hoeffding_1948, Bamber_1975, Sen_1960)**과 같은 분들 덕분에, 우리는 **AUC 표준 오차**를 보다 정확히 추정할 수 있다.
+
+$$
+V^r_{10}(X_i) = \frac{1}{n} \sum_{j=1}^n\psi(X_i^r,Y_j^r)\ \ \ \ \ (i= 1,2,...,m)
+$$
+
+$$
+V^r_{01}(Y_j) = \frac{1}{m} \sum_{i=1}^m\psi(X_i^r,Y_j^r)\ \ \ \ \ (j= 1,2,...,m)
+$$
+
+*   $V^r_{10}(X_i)$은 집합r에서 값을 기반으로 한 분산이다.
+
+$\psi(X_i^r,Y_j^r)$는 $X_i^r,Y_j^r$의 관계를 나타내며, 이를 통해 분산을 구한다.
+$V^r_{01}(Y_j)$은 집합 $Y^r_j$에서의 분산이다. 
+
+두 값을 통해 각 표본 집합에 대한 분산을 따로 계산한 후, 이를 결합하여 최종적으로 **표준 오차**를 추정할 수 있다. 
+각 분산 값이 표본 크기에 따라 가중평균되며, **AUC 표준 오차 S**는 아래와 같다.
+
+$$
+\\ 
+S = \frac{1}{m}S_{10} + \frac{1}{n}S_{01}
+\\
+$$
+
+> 표준 오차를 통해 우리는 AUC 값이 얼마나 신뢰할 수 있는지 평가할 수 있으며, 이는 모델의 성능을 명확히 이해하는데 중요한 역할을 한다. 
+
+  
+# Code
+
+이를 R에서는 **pROC package**를 통해 이용할 수 있다.
+
+```{r}
+#| echo: true
+#| warning: false
+
+
+library(pROC);library(dplyr);library(data.table)
+data(aSAH)
+SAH <- as.data.table(aSAH)
+head(SAH)
+
+```
+
+
+>데이터는 pROC 패키지 내장 데이터인 aSAH 데이터를 사용하였다. aSAH는 뇌동맥류 파열로 인해 발생하는 SAH에 대한 데이터이다. n=113명이며, 변수는 아래와 같다.
+
+```
+  gos6        (Glasgow Outcome scale), 
+  outcome     (clinical outcome: Good/Poor)
+  gender      (성별:  Male/female)       
+  age         (나이)        
+  wfns        (신경학적 평가 점수: 1~5, 1= 가장 양호), 
+  s100b       (혈액 내 S100B 단백질 농도: 뇌손상 biomarker)
+  ndka        (혈액 내 neuron-specific enoalse 농도: 신경 손상 biomarker)
+```
+
+위 변수 중 100b를 사용하여 outcome을 예측하는 **ROC curve**와 **AUC** 값을 구해보자.
+```{r}
+roc_result <- roc(response = SAH$outcome, 
+                  predictor = SAH$s100b, 
+                  levels = c("Good", "Poor"),  # outcome의 순서 지정
+                  direction = "<")  
+
+print(roc_result)
+```
+
+위와 같이 지정한 변수 및 **AUC** 값을 확인할 수 있다.
+
+여기서 **ROC curve**를 직접 보고싶으면 아래와 같이 확인할 수 있다.
+
+```{r}
+
+plot(
+  roc_result,
+  col = "blue",    # curve 색깔 지정
+  lwd = 2,         # curve 두께 지정
+  main = "ROC Curve for s100b"      #그래프 제목 지정
+  # xlim = c(1, 0),                 # x축 범위, 일반적으로 1-spec(FPR)   
+  # ylim = c(0, 1)                  # y축 범위, 일반적으로 Sensitivity       
+  # type = "1"                      # 그래프의 형태, 기본값은 선그래프
+  # xlab/ylab = "1-Specificity"     # x/y축 레이블 지정.
+)
+text(             # curve와 함께 AUC값 표기.
+  x = 0.6, y = 0.4, 
+  labels = paste("AUC =", round(auc(roc_result), 3)), 
+  col = "red"
+)
+```
+
+이처럼 **ROC curve, AUC**값을 구할 수 있다. 
+이제 **AUC** 값에 대해 추가적으로 알아보자.
+
+-   **pROC package**을 이용해 **AUC**의 **표준오차(SE)와 신뢰구간(CI)**를 구할 수 있다.
+  
+```{r}
+
+auc_result <- auc(roc_result)   #이전에 구한 roc_result 사용
+
+se_auc <- sqrt(var(roc_result))  
+
+ci_result <- ci.auc(roc_result)
+
+print(auc_result);print(ci_result);print(se_auc)
+```
+
+-   위처럼 **SE/CI**를 구하는 것에 더해, ROC curve에서 **특정 threshold(0.7)**와 비교한 **p-value**를 구할 수 있다.
+
+```{r}
+z_value <- (auc_result - 0.7)/se_auc
+p_value <- 2*(1- pnorm(abs(z_value)))
+cat("p-value for AUC > 0.7:", p_value, "\n")
+```
+
+>  위 경우는 유의하지 않다. 
+
+
+# Example
+
+-   위와 같은 방법으로 aSAH의 다양한 변수들 중, **outcome 예측**에 가장 좋은 변수를 확인하자.
+또한, **age/gender**를 기준으로 **subgroup analysis**도 진행하자. 
+
+```{r}
+#| warning: false
+#| message: false
+
+library(pROC);library(data.table);library(dplyr)
+#data
+data(aSAH)
+SAH <- as.data.table(aSAH)
+
+#subgroup
+subgroups <- list(
+  data = SAH,
+  age_over_50 = SAH[age > 50],
+  age_50_or_below = SAH[age <= 50],
+  male = SAH[gender == "Male"],
+  female = SAH[gender == "Female"]
+)
+
+# ROC 및 성능 평가 함수(threshold: 0.8)
+evaluate_roc <- function(data, predictor_var) {
+  #predictor_var는 numeric variable이어야.
+   if (!is.numeric(data[[predictor_var]])) {
+    data[[predictor_var]] <- as.numeric(data[[predictor_var]])
+   }
+  
+  # outcome variable은 factor variable이어야.
+  if (!is.factor(data$outcome)) {
+    data$outcome <- factor(data$outcome, levels = c("Poor", "Good"))
+  }
+  
+  #ROC
+  roc_result <- roc(data$outcome, data[[predictor_var]], levels = c("Poor", "Good"))
+  
+  #AUC, CI
+  auc_value <- auc(roc_result) %>% round(3)
+  auc_CI <- ci.auc(roc_result) %>% round(3)
+  
+      # Handle AUC == 1
+      if (auc_value == 1) {
+        warning("AUC is 1. SE and p-value may be undefined.")
+        se_auc <- NA
+        p_value <- NA
+      } else {
+        # SE calculation using var(roc_result)
+        se_auc <- sqrt(var(roc_result))
+        # P-value calculation
+        z_value <- (auc_value - 0.8) / se_auc
+        p_value <- 2 * (1 - pnorm(abs(z_value)))
+      }
+      
+  #median cutoff.
+  median_cutoff <- median(data[[predictor_var]], na.rm = TRUE)
+  # print(paste("Median cutoff:", median_cutoff))  # Debugging
+  
+  data$predicted <- data[[predictor_var]] >= median_cutoff
+  table1 <- table(data$outcome, data$predicted)
+  # print("Confusion matrix:")          # Debugging
+  # print(table1)                       # Debugging
+  
+  # 구조 점검.
+  row_levels <- rownames(table1)
+  col_levels <- colnames(table1)
+  
+  if (!("Good" %in% row_levels)) table1 <- rbind(table1, "Good" = c(0, 0))
+  if (!("Poor" %in% row_levels)) table1 <- rbind(table1, "Poor" = c(0, 0))
+  if (!("TRUE" %in% col_levels)) table1 <- cbind(table1, "TRUE" = c(0, 0))
+  if (!("FALSE" %in% col_levels)) table1 <- cbind(table1, "FALSE" = c(0, 0))
+  
+  TP <- table1["Good", "TRUE"]
+  FP <- table1["Poor", "TRUE"]
+  FN <- table1["Good", "FALSE"]
+  TN <- table1["Poor", "FALSE"]
+  
+  Sensitivity <- (TP / (TP + FN)) %>% round(3)
+  Specificity <- (TN / (TN + FP)) %>% round(3)
+  PPV <- (TP / (TP + FP)) %>% round(3)
+  NPV <- (TN / (TN + FN)) %>% round(3)
+  Accuracy <- ((TP + TN) / (TP + FP + TN + FN)) %>% round(3)
+  
+  p_value_display <- ifelse(p_value < 0.001, "<0.001", round(p_value, 3))
+  
+  list(
+    AUC = auc_value,
+    AUC_CI = auc_CI,
+    Sensitivity = Sensitivity,
+    Specificity = Specificity,
+    PPV = PPV,
+    NPV = NPV,
+    Accuracy = Accuracy,
+    `P value` = p_value_display
+  )
+}
+
+
+# ROC 분석
+predictor_vars <- c("gos6", "age", "wfns", "s100b", "ndka")
+
+results <- lapply(subgroups, function(group) {
+  lapply(predictor_vars, function(var) evaluate_roc(group, var))
+})
+
+result_tables <- rbindlist(lapply(names(results), function(group_name) {
+  
+  #subgroup 가져오기
+  group_results <- results[[group_name]]
+  # 예측 변수 가져오기
+  group_data <- rbindlist(lapply(seq_along(group_results), function(i) {
+    # 인덱스(i)
+    data <- group_results[[i]]
+    
+    if (length(data) > 0) {
+      as.data.table(data) %>%
+        mutate(
+          Group = group_name,               
+          Predictor = paste("Predictor", i), 
+          `AUC(95% CI)` = paste0(min(AUC_CI), "-", max(AUC_CI)), # AUC CI 생성
+          `P value` = ifelse(`P value` < 0.001, "<0.001", round(`P value`, 3)) # P value 형식
+        ) %>%
+        select(
+          Group, Predictor, AUC, `AUC(95% CI)`, `P value`,
+          Sensitivity, Specificity
+        ) 
+    }
+  }))
+  
+  return(group_data)
+}), use.names = TRUE, fill = TRUE) 
+
+result_tables[, Predictor := case_when(
+  Predictor == "Predictor 1" ~ "gos6",
+  Predictor == "Predictor 2" ~ "age",
+  Predictor == "Predictor 3" ~ "wfns",
+  Predictor == "Predictor 4" ~ "s100b",
+  Predictor == "Predictor 5" ~ "ndka"
+)]
+result_tables_filtered <- result_tables[seq(1, nrow(result_tables), by = 3), ]
+print(result_tables_filtered)
+```
+
+>  데이터 상 크게 유의미한 변수는 없다. 
+
+
+# Conclusion
+
+-   **ROC curve를 그리고, AUC 값을 구할 수 있다.**
+-   **AUC 값의 SE, CI, 특정 값과 비교한 p-value를 구할 수 있다.**
+-   **이를 실제 데이터에 적용/연습해 보았다.**
+
+
+# Reference
+[1]   E. DeLong, D. DeLong, and D. Clarke-Pearson, “Comparing the areasunder two or more correlated receiver operating characteristic curves: anonparametric approach,” Biometrics, pp. 837–845, 1988
