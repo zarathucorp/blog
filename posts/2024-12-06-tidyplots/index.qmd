@@ -305,12 +305,13 @@ study %>%
 ggplot2 라이브러리에서는 그래프의 세부 요소를 매우 다양하게 조정할 수 있는데, `as_tidyplot()`을 통해 미리 만들어 놓은 ggplot object를 tidyplots object로 변환하여 tidyplots 문법으로 나머지 작업을 시행할 수 있다.
 
 ```{r echo=T, eval=T}
-gg <-
-  study %>%
-  ggplot2::ggplot(ggplot2::aes(x = treatment, y = score, color = treatment)) +
-  ggplot2::geom_point()
+gg <- ggplot(study, aes(x = treatment, y = score, color = treatment)) +
+  geom_point()
+
+gg
 
 gg %>% as_tidyplot() %>% 
+  remove_legend() %>% 
   adjust_size(width = NA, height = NA)
 ```
 

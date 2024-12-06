@@ -715,23 +715,29 @@ ga('send', {
 <section id="ggplot-to-tidyplot-add" class="level2"><h2 class="anchored" data-anchor-id="ggplot-to-tidyplot-add">1. ggplot to tidyplot, add</h2>
 <p>ggplot2 라이브러리에서는 그래프의 세부 요소를 매우 다양하게 조정할 수 있는데, <code><a href="https://jbengler.github.io/tidyplots/reference/as_tidyplot.html">as_tidyplot()</a></code>을 통해 미리 만들어 놓은 ggplot object를 tidyplots object로 변환하여 tidyplots 문법으로 나머지 작업을 시행할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gg</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">study</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">treatment</span>, y <span class="op">=</span> <span class="va">score</span>, color <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">study</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">treatment</span>, y <span class="op">=</span> <span class="va">score</span>, color <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">gg</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span> <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/as_tidyplot.html">as_tidyplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/adjust_size.html">adjust_size</a></span><span class="op">(</span>width <span class="op">=</span> <span class="cn">NA</span>, height <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">gg</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gg</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span> <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/as_tidyplot.html">as_tidyplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/remove_legend.html">remove_legend</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/adjust_size.html">adjust_size</a></span><span class="op">(</span>width <span class="op">=</span> <span class="cn">NA</span>, height <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 <p>또한 tidyplot 코드 내부에서 ggplot2의 기능을 사용하고 싶을때는 <code>add::ggplot2()</code>함수를 사용하여 파이프로 연결하여 적용할 수 있다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">study</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">study</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/tidyplot.html">tidyplot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">treatment</span>, y <span class="op">=</span> <span class="va">score</span>, color <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/add.html">add</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/adjust_size.html">adjust_size</a></span><span class="op">(</span>width <span class="op">=</span> <span class="cn">NA</span>, height <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -745,7 +751,7 @@ ga('send', {
 </section><section id="split" class="level2"><h2 class="anchored" data-anchor-id="split">2. split</h2>
 <p>tidyplots에서 제공하는 기능 중 하나는 그래프를 그린 후. 특정 컬럼을 기준으로 그룹핑 후 그래프를 분리할 수 있는 기능이다. 이는 <code><a href="https://jbengler.github.io/tidyplots/reference/split_plot.html">split_plot()</a></code>으로 시행 가능하다. argument는 다음과 같다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/split_plot.html">split_plot</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/split_plot.html">split_plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">plot</span>,</span>
 <span>  <span class="va">by</span>,</span>
 <span>  ncol <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -761,7 +767,7 @@ ga('send', {
 </div>
 <p>특정 컬럼을 지정하면 그 컬럼을 기준으로 그래프가 분리되며, nrow, ncol을 지정하면 페이지가 분리가 된다. 주의할 점은 <code><a href="https://jbengler.github.io/tidyplots/reference/split_plot.html">split_plot()</a></code>은 코드의 맨 뒤에 위치해야 한다는 점이다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Before splitting</span></span>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Before splitting</span></span>
 <span><span class="va">energy</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2005</span>, <span class="fl">2010</span>, <span class="fl">2015</span>, <span class="fl">2020</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/tidyplot.html">tidyplot</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">power</span>, color <span class="op">=</span> <span class="va">energy_source</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
@@ -773,7 +779,7 @@ ga('send', {
 </figure>
 </div>
 </div>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Split by year</span></span>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Split by year</span></span>
 <span><span class="va">energy</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2005</span>, <span class="fl">2010</span>, <span class="fl">2015</span>, <span class="fl">2020</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/tidyplot.html">tidyplot</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">power</span>, color <span class="op">=</span> <span class="va">energy_source</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
@@ -789,7 +795,7 @@ ga('send', {
 </figure>
 </div>
 </div>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Spread plots across multiple pages</span></span>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Spread plots across multiple pages</span></span>
 <span><span class="va">energy</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2005</span>, <span class="fl">2010</span>, <span class="fl">2015</span>, <span class="fl">2020</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://jbengler.github.io/tidyplots/reference/tidyplot.html">tidyplot</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">power</span>, color <span class="op">=</span> <span class="va">energy_source</span><span class="op">)</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
@@ -822,7 +828,7 @@ ga('send', {
 </section><section id="vector-graphics" class="level2"><h2 class="anchored" data-anchor-id="vector-graphics">3. vector graphics</h2>
 <p>tidyplots object도 ggplot2 object와. <code>rvg</code> 패키지로 동일하게 그래프를 벡터 그래픽으로 변환 후 <code>officer</code> 패키지와 연계하여 수정 가능한 pptx 파일로 저장할 수 있다. 그 예시를 소개한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/officeverse/">officer</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/officeverse/">officer</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/officeverse/">rvg</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">plot3</span> <span class="op">&lt;-</span> <span class="va">energy</span> <span class="op"><a href="https://jbengler.github.io/tidyplots/reference/grapes-greater-than-grapes.html">%&gt;%</a></span></span>
