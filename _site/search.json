@@ -3770,6 +3770,6 @@
     "href": "posts/2024-12-06-tidyplots/index.html#ggplot-to-tidyplot-add",
     "title": "tidyplots: 간편한 그래프 작성 라이브러리",
     "section": "1. ggplot to tidyplot, add",
-    "text": "1. ggplot to tidyplot, add\nggplot2 라이브러리에서는 그래프의 세부 요소를 매우 다양하게 조정할 수 있는데, as_tidyplot()을 통해 미리 만들어 놓은 ggplot object를 tidyplots object로 변환하여 tidyplots 문법으로 나머지 작업을 시행할 수 있다.\n\ngg &lt;-\n  study %&gt;%\n  ggplot2::ggplot(ggplot2::aes(x = treatment, y = score, color = treatment)) +\n  ggplot2::geom_point()\n\ngg %&gt;% as_tidyplot() %&gt;% \n  adjust_size(width = NA, height = NA)\n\n\n\n\n\n\n\n또한 tidyplot 코드 내부에서 ggplot2의 기능을 사용하고 싶을때는 add::ggplot2()함수를 사용하여 파이프로 연결하여 적용할 수 있다.\n\nstudy %&gt;%\n  tidyplot(x = treatment, y = score, color = treatment) %&gt;%\n  add(ggplot2::geom_point()) %&gt;% \n  adjust_size(width = NA, height = NA)"
+    "text": "1. ggplot to tidyplot, add\nggplot2 라이브러리에서는 그래프의 세부 요소를 매우 다양하게 조정할 수 있는데, as_tidyplot()을 통해 미리 만들어 놓은 ggplot object를 tidyplots object로 변환하여 tidyplots 문법으로 나머지 작업을 시행할 수 있다.\n\ngg &lt;- ggplot(study, aes(x = treatment, y = score, color = treatment)) +\n  geom_point()\n\ngg\n\n\n\n\n\n\ngg %&gt;% as_tidyplot() %&gt;% \n  remove_legend() %&gt;% \n  adjust_size(width = NA, height = NA)\n\n\n\n\n\n\n\n또한 tidyplot 코드 내부에서 ggplot2의 기능을 사용하고 싶을때는 add::ggplot2()함수를 사용하여 파이프로 연결하여 적용할 수 있다.\n\nstudy %&gt;%\n  tidyplot(x = treatment, y = score, color = treatment) %&gt;%\n  add(ggplot2::geom_point()) %&gt;% \n  adjust_size(width = NA, height = NA)"
   }
 ]
