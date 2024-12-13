@@ -51,8 +51,13 @@ result_dt <- dt1[dt2, on = .(key_column1, key_column2), roll = Inf] # roll optio
 ```
 
 # 2. Data.table의 roll merge option
-## 1. `roll = ` 옵션  
-```{r echo=F, eval=T}
+## 1. `roll = ` 옵션
+
+아래는 실습에 사용할 데이터를 전처리하는 코드이다. 실습 데이터는 [다음 링크](https://1drv.ms/u/s!AvwFxLQIpBXdiJoyMrc7YufAVCG6fA?e=8RBnZ9)에서 다운받을 수 있으며, 4개 파일을 사용하여 실습을 진행할 것이다.
+
+```{r echo=T, eval=T}
+library(data.table);library(magrittr)
+
 bnc <- fread("data/nsc2_bnc_1000.csv") 
 bnd <- fread("data/nsc2_bnd_1000.csv")[, Deathdate := (lubridate::ym(DTH_YYYYMM) %>% lubridate::ceiling_date(unit = "month") - 1)][]
 m20 <- fread("data/nsc2_m20_1000.csv") 
@@ -73,7 +78,7 @@ data.asd <- merge(bnd, bnc[, .(SEX = SEX[1]), keyby = "RN_INDI"], by = "RN_INDI"
            Day_FU = as.integer(pmin(as.Date("2015-12-31"), Deathdate, na.rm =T) - Indexdate))] %>% .[, -c("BTH_YYYY", "DTH_YYYYMM", "Deathdate")] 
 ```
 
-```{r echo=F, eval=T}
+```{r echo=T, eval=T}
 code.cci <- list(
   MI = c("I21", "I22", "I252"),
   CHF = c(paste0("I", c("099", 110, 130, 132, 255, 420, 425:429, 43, 50)), "P290"),
@@ -160,7 +165,6 @@ info.MI <- m40 %>%
 print(info.MI[40:50])
 ```
 
-
 `roll = -Inf`로 옵션을 주었기 때문에 m40의 날짜를 기준으로 data.asd를 연결할 때 정확히 일치하는 날짜가 없다면 data.asd의 날짜를 앞으로 당겨서 일치하는 날짜를 찾는다. 결과적으로 data.asd의 Indexdate 기준으로 뒤 날짜에 m40의 Incidate가 존재한다면 병합이 되는 로직이라고 할 수 있다. (여기서는 시작 날짜도 포함하였다.)
 
 roll merge를 사용하지 않는다면 `cartesian = T` 옵션을 사용하여 모든 가능한 조합을 허용하여 merge하고 그후에 조건에 맞게 필터링하는 과정을 거쳐야 한다. 다음은 rolling join을 사용하지 않은 코드의 예시이다.
@@ -204,4 +208,3 @@ print(head(info.cci[[10]], n = 5))
 - rolling join은 inequality join의 일종으로, 기준 값이 완벽하게 일치하지 않아도 주어진 목적에 맞게 두 집합을 병합할 수 있게 해 준다.
 - rolling join의 옵션은 바깥 dt를 기준으로 하여 `Inf(순방향), -Inf(역방향), number(숫자 범위), 'nearest'(방향무관)`이 있다.
 - `rollends =` 옵션을 사용하여 경계에서의 roll 여부를 결정할 수 있다.
-
