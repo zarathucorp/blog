@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.3.433">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hojun LEE">
 <meta name="dcterms.date" content="2024-10-29">
 <meta name="description" content="collapse; fast, flexible, parsimonoius code package for R.">
-<title>collapse 패키지 소개 v2 – 차라투 블로그</title>
+<title>차라투 블로그 - collapse 패키지 소개 v2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -69,21 +69,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-0626ff4d7a71b55c8707dcae1d04a9b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-12f9b1590e9172db5cd2178fc043c68b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
+  "limit": 20,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -92,7 +87,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
-    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -114,9 +108,10 @@ ga('send', {
 </head>
 <body class="floating nav-fixed">
 
+
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
     <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
     <a class="navbar-brand" href="../../index.html">
@@ -124,97 +119,97 @@ ga('send', {
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
-<span class="menu-text">Home</span></a>
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
-<span class="menu-text">Applications</span></a>
+    <a class="nav-link" href="https://openstat.ai/" rel="" target="_blank">
+ <span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
  <span class="menu-text">R packages</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
 <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" rel="" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" rel="" target="_blank">
  <span class="dropdown-text">jskm</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" rel="" target="_blank">
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html"> 
-<span class="menu-text">Contributors</span></a>
+    <a class="nav-link" href="../../contributors.html" rel="" target="">
+ <span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
  <span class="menu-text">Partners</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
 <li>
-    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" rel="" target="_blank">
  <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+    <a class="dropdown-item" href="https://github.com/shinykorea/" rel="" target="_blank">
  <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
   </li>  
     </ul>
 </li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/zarathucorp" rel="" target="_blank"><i class="bi bi-github" role="img">
 </i> 
-<span class="menu-text"></span></a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
 </i> 
-<span class="menu-text"></span></a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+    <a class="nav-link" href="../../index.xml" rel="" target="_blank"><i class="bi bi-rss" role="img" aria-label="RSS">
 </i> 
-<span class="menu-text"></span></a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
       <i class="bi bi-translate" role="img">
 </i> 
  <span class="menu-text"></span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">
 <li>
-    <a class="dropdown-item" href="../../../index.html">
+    <a class="dropdown-item" href="../../../index.html" rel="" target="">
  <span class="dropdown-text">한국어</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../../en/index.html">
+    <a class="dropdown-item" href="../../../en/index.html" rel="" target="">
  <span class="dropdown-text">English</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../../jp/index.html">
+    <a class="dropdown-item" href="../../../jp/index.html" rel="" target="">
  <span class="dropdown-text">日本語</span></a>
   </li>  
     </ul>
 </li>
 </ul>
-</div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
+<div class="quarto-navbar-tools">
 </div>
+          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
@@ -255,7 +250,7 @@ ga('send', {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
 <li>
@@ -283,9 +278,9 @@ ga('send', {
   <li><a href="#collapse-and-data.table" id="toc-collapse-and-data.table" class="nav-link" data-scroll-target="#collapse-and-data.table">Collapse and data.table</a></li>
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
   </ul></nav>
-</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
@@ -442,7 +437,7 @@ ga('send', {
 <div class="cell">
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># collapse; baseR과 비교했을 때 보다 빠른 속도를 보인다.</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1e7</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu">fmean</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu">fmean</span><span class="op">(</span><span class="va">x</span>, nthreads <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">microbenchmark</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu">fmean</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu">fmean</span><span class="op">(</span><span class="va">x</span>, nthreads <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
                    expr       min        lq      mean    median        uq
@@ -454,7 +449,7 @@ ga('send', {
  15.57999   100  b 
  11.20740   100   c</code></pre>
 </div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">mean</span><span class="op">)</span>, <span class="fu">fmean</span><span class="op">(</span><span class="va">dt</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">mean</span><span class="op">)</span>, <span class="fu">fmean</span><span class="op">(</span><span class="va">dt</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
              expr      min       lq       mean   median        uq      max
@@ -472,7 +467,7 @@ ga('send', {
 </li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>base <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">GGDC10S</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">16</span><span class="op">]</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fu">fmean</span><span class="op">(</span><span class="va">GGDC10S</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">16</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="op">(</span>base <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">GGDC10S</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">16</span><span class="op">]</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fu">fmean</span><span class="op">(</span><span class="va">GGDC10S</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">16</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
                  expr     min      lq     mean   median       uq      max neval
@@ -543,7 +538,7 @@ versicolor     5.918636    2.698947     4.259102   1.2888099
 virginica      6.568402    2.959146     5.577613   2.0433786</code></pre>
 </div>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 속도 상의 이점. </span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>fmean <span class="op">=</span> <span class="fu">fmean</span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span>, <span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">)</span>,</span>
+<span><span class="fu">microbenchmark</span><span class="op">(</span>fmean <span class="op">=</span> <span class="fu">fmean</span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span>, <span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">)</span>,</span>
 <span>               tapply <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span>, <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
@@ -578,7 +573,7 @@ virginica      6.568402    2.959146     5.577613   2.0433786</code></pre>
 5        Andorra       NA      NA   NA   NA    NA           NA
 6         Angola 48.66667    51.3 42.7 52.0 146.0 1.139065e+05</code></pre>
 </div>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fu">collap</span><span class="op">(</span><span class="va">wlddev</span>, <span class="va">GINI</span> <span class="op">~</span> <span class="va">country</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">mean</span>, <span class="va">median</span>, <span class="va">min</span>, <span class="va">max</span>, <span class="va">sum</span>, <span class="va">prod</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="op">(</span>a <span class="op">=</span> <span class="fu">collap</span><span class="op">(</span><span class="va">wlddev</span>, <span class="va">GINI</span> <span class="op">~</span> <span class="va">country</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">mean</span>, <span class="va">median</span>, <span class="va">min</span>, <span class="va">max</span>, <span class="va">sum</span>, <span class="va">prod</span><span class="op">)</span>,</span>
 <span>                          na.rm <span class="op">=</span> <span class="cn">TRUE</span>, give.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>               b<span class="op">=</span><span class="fu">collap</span><span class="op">(</span><span class="va">wlddev</span>, <span class="va">GINI</span> <span class="op">~</span> <span class="va">country</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">fmean</span>, <span class="va">fmedian</span>, <span class="va">fmin</span>, <span class="va">fmax</span>, <span class="va">fsum</span>, <span class="va">fprod</span><span class="op">)</span>,</span>
 <span>                        give.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -625,7 +620,7 @@ virginica      6.568402    2.959146     5.577613   2.0433786</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>baseR<span class="op">=</span> <span class="va">Sepal.Length</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html">ave</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, g <span class="op">=</span> <span class="va">Species</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="op">(</span>baseR<span class="op">=</span> <span class="va">Sepal.Length</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html">ave</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, g <span class="op">=</span> <span class="va">Species</span><span class="op">)</span>,</span>
 <span>               fmean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, g <span class="op">=</span> <span class="va">Species</span>, TRA<span class="op">=</span> <span class="st">"-"</span><span class="op">)</span>,</span>
 <span>               TRA_fmean <span class="op">=</span> <span class="fu">TRA</span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="fu">fmean</span><span class="op">(</span><span class="va">Sepal.Length</span>, g <span class="op">=</span> <span class="va">Species</span><span class="op">)</span>, <span class="st">"-"</span>, g <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span>;<span class="kw"><a href="https://rdrr.io/r/base/detach.html">detach</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -747,7 +742,7 @@ virginica         6.588       2.974        5.552       2.026</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span><span class="fu">fmean</span><span class="op">(</span><span class="va">x</span>, <span class="va">g</span><span class="op">)</span>, </span>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="op">(</span><span class="fu">fmean</span><span class="op">(</span><span class="va">x</span>, <span class="va">g</span><span class="op">)</span>, </span>
 <span>               <span class="fu">fmean</span><span class="op">(</span><span class="va">x</span>, <span class="va">gg</span><span class="op">)</span>, </span>
 <span>               <span class="fu">fmean</span><span class="op">(</span><span class="va">x</span>, <span class="va">gg</span>, na.rm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, </span>
 <span>               <span class="fu">fmean</span><span class="op">(</span><span class="va">x</span>, <span class="va">f</span><span class="op">)</span><span class="op">)</span></span>
@@ -801,7 +796,7 @@ colorder[v](),  [f/set]rename(),                [set]relabel()</code></pre>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">fdim</span><span class="op">(</span><span class="va">wlddev</span><span class="op">)</span>    <span class="co">##faster dim for dt. col/row: 13176 13</span></span>
 <span></span>
 <span><span class="co"># 1990년 이후를 기준으로, ODA/POP의 값 (g: region, income, OECD)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span> </span>
+<span><span class="fu">microbenchmark</span><span class="op">(</span> </span>
 <span>  </span>
 <span>dplyr <span class="op">=</span> <span class="fu">qDT</span><span class="op">(</span><span class="va">wlddev</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">&gt;=</span> <span class="fl">1990</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -863,7 +858,7 @@ Merc 280          19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4   138.2</c
 </li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>a<span class="op">=</span><span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">ftransform</span><span class="op">(</span>mpg_sum <span class="op">=</span> <span class="fu">fsum</span><span class="op">(</span><span class="va">mpg</span>, g <span class="op">=</span> <span class="va">cyl</span>, TRA <span class="op">=</span> <span class="st">"replace_fill"</span><span class="op">)</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="op">(</span>a<span class="op">=</span><span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">ftransform</span><span class="op">(</span>mpg_sum <span class="op">=</span> <span class="fu">fsum</span><span class="op">(</span><span class="va">mpg</span>, g <span class="op">=</span> <span class="va">cyl</span>, TRA <span class="op">=</span> <span class="st">"replace_fill"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>               b<span class="op">=</span><span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">fgroup_by</span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">ftransform</span><span class="op">(</span>mpg_sum <span class="op">=</span> <span class="fu">fsum</span><span class="op">(</span><span class="va">mpg</span>, <span class="fu">GRP</span><span class="op">(</span><span class="va">.</span><span class="op">)</span>, TRA <span class="op">=</span> <span class="st">"replace_fill"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>               c<span class="op">=</span><span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">fgroup_by</span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">fmutate</span><span class="op">(</span>mpg_sum <span class="op">=</span> <span class="fu">fsum</span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -904,7 +899,7 @@ Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1   642.9</co
 <li>위 언급과 같이 <strong>baseR</strong> 의 <strong>“/”</strong>보다 <strong>collapse</strong>의 <strong>TRA function</strong>을 이용하는 것이 더 빠르다.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="op">(</span></span>
 <span><span class="st">"/"</span><span class="op">=</span>      <span class="va">mtcars</span> <span class="op">|&gt;</span> <span class="fu">fgroup_by</span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">fmutate</span><span class="op">(</span>mpg_prop <span class="op">=</span> <span class="va">mpg</span> <span class="op">/</span> <span class="fu">fsum</span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span><span class="op">)</span>      <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span>,     </span>
 <span><span class="st">"TRA=/"</span> <span class="op">=</span> <span class="va">mtcars</span> <span class="op">|&gt;</span> <span class="fu">fgroup_by</span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">fmutate</span><span class="op">(</span>mpg_prop <span class="op">=</span> <span class="fu">fsum</span><span class="op">(</span><span class="va">mpg</span>, TRA <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1062,7 +1057,7 @@ fact_vars(x) &lt;- value;  logi_vars(x) &lt;- value;  date_vars(x) &lt;- value</
 <div class="sourceCode" id="cb96"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">DT</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span>, .SDcols <span class="op">=</span> <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>  <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">collap</span><span class="op">(</span><span class="va">DT</span>, <span class="op">~</span> <span class="va">country</span>, <span class="va">fmean</span>, cols <span class="op">=</span> <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="op">)</span>     <span class="co">#same</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>collapse     <span class="op">=</span> <span class="va">DT</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">gby</span><span class="op">(</span><span class="va">country</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">get_vars</span><span class="op">(</span><span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">fmean</span>,</span>
+<span><span class="fu">microbenchmark</span><span class="op">(</span>collapse     <span class="op">=</span> <span class="va">DT</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">gby</span><span class="op">(</span><span class="va">country</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">get_vars</span><span class="op">(</span><span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">fmean</span>,</span>
 <span>               data.table   <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span>, .SDcols <span class="op">=</span> <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">]</span>,</span>
 <span>               data.table2  <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">fmean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span>, .SDcols <span class="op">=</span> <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1088,7 +1083,7 @@ fact_vars(x) &lt;- value;  logi_vars(x) &lt;- value;  date_vars(x) &lt;- value</
 <div class="cell">
 <div class="sourceCode" id="cb100"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">DT</span> <span class="op">&lt;-</span> <span class="fu">qDT</span><span class="op">(</span><span class="va">wlddev</span><span class="op">)</span>; <span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">GRP</span><span class="op">(</span><span class="va">DT</span>, <span class="st">"country"</span><span class="op">)</span></span>
 <span><span class="co">#gv: abbreviation for get_vars()</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fu">fmean</span><span class="op">(</span><span class="fu">gv</span><span class="op">(</span><span class="va">DT</span>, <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span>, <span class="va">DT</span><span class="op">$</span><span class="va">country</span><span class="op">)</span>,</span>
+<span><span class="fu">microbenchmark</span><span class="op">(</span>a <span class="op">=</span> <span class="fu">fmean</span><span class="op">(</span><span class="fu">gv</span><span class="op">(</span><span class="va">DT</span>, <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span>, <span class="va">DT</span><span class="op">$</span><span class="va">country</span><span class="op">)</span>,</span>
 <span>               b0<span class="op">=</span> <span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">GRP</span><span class="op">(</span><span class="va">DT</span>, <span class="st">"country"</span><span class="op">)</span>,</span>
 <span>               b <span class="op">=</span> <span class="fu">add_vars</span><span class="op">(</span><span class="va">g</span><span class="op">[[</span><span class="st">"groups"</span><span class="op">]</span><span class="op">]</span>, <span class="fu">fmean</span><span class="op">(</span><span class="fu">gv</span><span class="op">(</span><span class="va">DT</span>, <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span>, <span class="va">g</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>               dt_fmean <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">fmean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span>, .SDcols <span class="op">=</span> <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">]</span>,</span>
@@ -1142,7 +1137,7 @@ fact_vars(x) &lt;- value;  logi_vars(x) &lt;- value;  date_vars(x) &lt;- value</
 215:                Zambia  1318.8627 51.09263 52.68889  734624330  8614972.38
 216:              Zimbabwe  1219.4360 54.53360 45.93333  397104997  9402160.33</code></pre>
 </div>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span>collapse        <span class="op">=</span> <span class="va">DT</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">gby</span><span class="op">(</span><span class="va">country</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">get_vars</span><span class="op">(</span><span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">fmean</span>,</span>
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="op">(</span>collapse        <span class="op">=</span> <span class="va">DT</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">gby</span><span class="op">(</span><span class="va">country</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">get_vars</span><span class="op">(</span><span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">fmean</span>,</span>
 <span>               data.table      <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span>, .SDcols <span class="op">=</span> <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">]</span>,</span>
 <span>               data.table_base <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fu">base</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span>, .SDcols <span class="op">=</span> <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">]</span>,</span>
 <span>               hybrid_bad      <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">fmean</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span>, .SDcols <span class="op">=</span> <span class="fl">9</span><span class="op">:</span><span class="fl">13</span><span class="op">]</span>,</span>
@@ -1185,7 +1180,7 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 <span><span class="fu">settfm</span><span class="op">(</span><span class="va">DT</span>, perc_c_ODA <span class="op">=</span> <span class="fu">fsum</span><span class="op">(</span><span class="va">ODA</span>, <span class="va">country</span>, TRA <span class="op">=</span> <span class="st">"%"</span><span class="op">)</span>,</span>
 <span>           perc_y_ODA <span class="op">=</span> <span class="fu">fsum</span><span class="op">(</span><span class="va">ODA</span>, <span class="va">year</span>, TRA <span class="op">=</span> <span class="st">"%"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<span><span class="fu">microbenchmark</span><span class="op">(</span></span>
 <span>  S1 <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="va">sum_ODA</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">ODA</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">country</span><span class="op">]</span>,</span>
 <span>  S2 <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="va">sum_ODA</span> <span class="op">:=</span> <span class="fu">fsum</span><span class="op">(</span><span class="va">ODA</span>, <span class="va">country</span>, TRA <span class="op">=</span> <span class="st">"replace_fill"</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>  S3 <span class="op">=</span> <span class="fu">settfm</span><span class="op">(</span><span class="va">DT</span>, sum_ODA <span class="op">=</span> <span class="fu">fsum</span><span class="op">(</span><span class="va">ODA</span>, <span class="va">country</span>, TRA <span class="op">=</span> <span class="st">"replace_fill"</span><span class="op">)</span><span class="op">)</span></span>
@@ -1259,7 +1254,7 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 <li>:= 은 data.table내에서 최적화 정도가 낮아 collapse를 이용하는 것이 대부분의 경우 더 빠르다.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="op">(</span></span>
 <span>  W1 <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="va">demean_PCGDP</span> <span class="op">:=</span> <span class="va">PCGDP</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">PCGDP</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">country</span><span class="op">]</span>,</span>
 <span>  W2 <span class="op">=</span> <span class="va">DT</span><span class="op">[</span>, <span class="va">demean_PCGDP</span> <span class="op">:=</span> <span class="fu">fwithin</span><span class="op">(</span><span class="va">PCGDP</span>, <span class="va">country</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>  L1 <span class="op">=</span> <span class="va">DT</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span>, <span class="va">lag_PCGDP</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/shift.html">shift</a></span><span class="op">(</span><span class="va">PCGDP</span>, <span class="fl">1L</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">country</span><span class="op">]</span>,</span>
@@ -1317,7 +1312,7 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 <div class="cell">
 <div class="sourceCode" id="cb119"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wlddev</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">fselect</span><span class="op">(</span><span class="va">country</span>, <span class="va">PCGDP</span>, <span class="va">LIFEEX</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">na_omit</span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>  </span>
 <span>   <span class="fu">fsubset</span><span class="op">(</span><span class="fu">fnobs</span><span class="op">(</span><span class="va">PCGDP</span>, <span class="va">country</span>, <span class="st">"replace_fill"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">20L</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">qDT</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="va">.</span><span class="op">[</span>, <span class="fu">qDT</span><span class="op">(</span><span class="fu">coeftest</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="fu">G</span><span class="op">(</span><span class="va">PCGDP</span><span class="op">)</span> <span class="op">~</span> <span class="fu">G</span><span class="op">(</span><span class="va">LIFEEX</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"Coef"</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">head</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="fu">qDT</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="fu">G</span><span class="op">(</span><span class="va">PCGDP</span><span class="op">)</span> <span class="op">~</span> <span class="fu">G</span><span class="op">(</span><span class="va">LIFEEX</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"Coef"</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">head</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Key: &lt;country&gt;
    country        Coef   Estimate Std. Error    t value    Pr(&gt;|t|)
@@ -1345,10 +1340,10 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 5:           Argentina  1.14613567 -0.2896305
 6:             Armenia  0.08178344 11.5523992</code></pre>
 </div>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="op">(</span></span>
 <span>  A<span class="op">=</span> <span class="va">wlddev</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">fselect</span><span class="op">(</span><span class="va">country</span>, <span class="va">PCGDP</span>, <span class="va">LIFEEX</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">na_omit</span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>  </span>
 <span>   <span class="fu">fsubset</span><span class="op">(</span><span class="fu">fnobs</span><span class="op">(</span><span class="va">PCGDP</span>, <span class="va">country</span>, <span class="st">"replace_fill"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">20L</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">qDT</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="va">.</span><span class="op">[</span>, <span class="fu">qDT</span><span class="op">(</span><span class="fu">coeftest</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="fu">G</span><span class="op">(</span><span class="va">PCGDP</span><span class="op">)</span> <span class="op">~</span> <span class="fu">G</span><span class="op">(</span><span class="va">LIFEEX</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"Coef"</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span><span class="op">]</span> ,</span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="fu">qDT</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="fu">G</span><span class="op">(</span><span class="va">PCGDP</span><span class="op">)</span> <span class="op">~</span> <span class="fu">G</span><span class="op">(</span><span class="va">LIFEEX</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"Coef"</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="va">country</span><span class="op">]</span> ,</span>
 <span>  </span>
 <span>  B<span class="op">=</span> <span class="va">wlddev</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">fselect</span><span class="op">(</span><span class="va">country</span>, <span class="va">PCGDP</span>, <span class="va">LIFEEX</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">na_omit</span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>   <span class="fu">fsubset</span><span class="op">(</span><span class="fu">fnobs</span><span class="op">(</span><span class="va">PCGDP</span>, <span class="va">country</span>, <span class="st">"replace_fill"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">20L</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">qDT</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -1400,7 +1395,7 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 </div>
 <div class="cell">
 <div class="sourceCode" id="cb129"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 물론, 이렇게도 할 수 있다. </span></span>
-<span><span class="va">DT</span><span class="op">[</span>, <span class="fu">qDT</span><span class="op">(</span><span class="fu">coeftest</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="fu">G</span><span class="op">(</span><span class="va">PCGDP</span><span class="op">)</span> <span class="op">~</span> <span class="fu">G</span><span class="op">(</span><span class="va">LIFEEX</span><span class="op">)</span> <span class="op">+</span> <span class="fu">B</span><span class="op">(</span><span class="fu">G</span><span class="op">(</span><span class="va">LIFEEX</span><span class="op">)</span>, <span class="va">country</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"Coef"</span><span class="op">)</span>, </span>
+<span><span class="va">DT</span><span class="op">[</span>, <span class="fu">qDT</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="fu">G</span><span class="op">(</span><span class="va">PCGDP</span><span class="op">)</span> <span class="op">~</span> <span class="fu">G</span><span class="op">(</span><span class="va">LIFEEX</span><span class="op">)</span> <span class="op">+</span> <span class="fu">B</span><span class="op">(</span><span class="fu">G</span><span class="op">(</span><span class="va">LIFEEX</span><span class="op">)</span>, <span class="va">country</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"Coef"</span><span class="op">)</span>, </span>
 <span>   keyby <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">region</span>, <span class="va">income</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="summary" class="level1"><h1>Summary</h1>
@@ -1419,16 +1414,16 @@ fmean(gv(DT, 9:13), DT$country)</code></pre>
 &gt;&gt;    settfmv(DT, 9:13, G, 1L, 1L, country, year, apply = FALSE)</code></pre>
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lee2024,
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lee2024,
   author = {LEE, Hojun},
   title = {Collapse {패키지} {소개} V2},
   date = {2024-10-29},
-  url = {https://blog.zarathu.com/posts/2024-10-28-Collapse/},
+  url = {https://blog.zarathu.com/posts/2024-10-28-Collapse},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lee2024" class="csl-entry quarto-appendix-citeas" role="listitem">
 LEE, Hojun. 2024. <span>“Collapse 패키지 소개 V2.”</span> October 29,
-2024. <a href="https://blog.zarathu.com/posts/2024-10-28-Collapse/">https://blog.zarathu.com/posts/2024-10-28-Collapse/</a>.
+2024. <a href="https://blog.zarathu.com/posts/2024-10-28-Collapse">https://blog.zarathu.com/posts/2024-10-28-Collapse</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -1464,7 +1459,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const onCopySuccess = function(e) {
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1496,48 +1502,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
   });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
-    });
-    clipboardModal.on('success', onCopySuccess);
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com");
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
-      }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+  function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
+      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1547,17 +1516,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start',
+      placement: 'bottom-start'
     };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1569,129 +1529,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
-          }
-        }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
-        }
-        return container.innerHTML
-      } else {
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(note);
-        }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
-      }
-    }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
-          }
-        } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
-            if (note !== null) {
-              const html = processXRef(id, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
+      return note.innerHTML;
     });
   }
       let selectedAnnoteEl;
@@ -1735,7 +1573,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
-            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1761,32 +1598,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1846,15 +1657,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</script>
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
-    <div class="nav-footer-left">
-<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
-</div>   
-    <div class="nav-footer-center">
-<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
-</div>
+    <div class="nav-footer-left">Powered by <a href="https://quarto.org">Quarto</a>.</div>   
+    <div class="nav-footer-center">© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
