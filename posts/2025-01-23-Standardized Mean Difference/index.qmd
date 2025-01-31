@@ -1,0 +1,139 @@
+---
+title: "Standardized Mean Difference"
+description: | 
+  Effect size 중 하나인 Standardized Mean Difference의 개념을 살펴보고, SMD를 활용해 baseline covariate의 balance 평가를 해보자.
+  
+categories:
+  - statistics
+  - R
+  
+author:
+  name: "Donghyung Lee"
+  email: donlee.med@gmail.com
+  url: https://github.com/donleemed
+image: img/logo.png
+fig_width: 400
+date: 2025-01-23
+format: html
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+
+# Standardized Mean Difference
+
+## Background
+
+Randomized controlled trial(RCT)를 시행할 때, control/treatment group의 baseline characteristics이 비슷하게 맞춰주기 위해 subject를 random하게 배정한다. Observational study에서도 RCT와 유사한 causality를 확보하기 위한 방법 중 propensity score analysis가 있다. propensity score가 비슷한 subject끼리는 baseline characteristics도 비슷하다는 특성이 있다. 이 때, 두 군 baseline covariates의 유사성을 어떻게 평가할 수 있을까? 이 때 Standardized Mean Difference(SMD)를 사용하면 유사성을 평가할 수 있다.
+
+SMD는 두 군의 mean차이를 measure하는 Effect size의 일종이다. 보통 의학 논문 연구에서는시 귀무/대립 가설 및 p-value를 표시하여 결과를 보고한다. 통계적 유의성을 검정하는 방식으로 진행되는데, 통계적으로 유의하다 할 지라도 effect가 얼마나 큰 지에 대해서는 말할 수가 없다는 한계가 있다. 이를 해결하기 위해 도입된 개념이 Effect size이다.
+
+Effect size는 세 가지 특징을 살펴보자. 첫째, Effect size는 연구 결과의 해석을 이분법이 아닌 연속 선상에서 할 수 있게 해준다. 기존에 사용되던 p-value는 귀무가설 기각 여부밖에 알려주지 못하지만, effect size는 실제로 얼마나 큰 차이가 있는 지를 구체적으로 보여준다. 둘째, effect size는 p-value와는 달리 표본 수에 의한 영향을 받지 않는다. p-value를 이용한 검정의 경우 표본 수가 커질 때, power가 증가한다. 그 말은 통계적으로 유의하지 않음에도 불구하고, 단지 표본 수가 많다는 이유 만으로 유의하다는 결과를 얻을 수 있다는 뜻이다. 이에 비해 effect size는 표본 수의 영향을 받지 않는다. 셋째, 효과크기는 다양한 형태의 결과들을 비교 가능한 공통의 단위로 변화 시켜줌으로써 다른 통계적 방법에 의해 시행된 연구 결과들을 비교할 수 있게 해준다. 이 특성은 메타분석 시 자주 이용된다.
+
+이제 SMD의 수식에 대해 살펴보자. 참고로 통상적으로 SMD는 0.2 - 0.5일 경우 small, 0.5 - 0.8일 경우 medium, 0.8을 넘을 때 large라고 한다.
+
+## Standardized Mean Difference
+
+SMD는 크게 SMD for continuous or categorical baseline variables 두 가지가 있고, formula는 다음과 같다.
+
+1.  Continuous baseline variable
+
+    $$
+    d = \frac{\overline{X}_1 - \overline{X}_2}{\sqrt{\frac{s_1^2 + s_2^2}{2}}}
+    $$
+
+$\overline{X}_1$, $\overline{X}_2$은 각 group의 baseline variable의 sample mean, $s_1, s_2$은 각 group의 sample variance를 의미한다. variable이 치우쳐 있다면(skewed), d를 rank statistics을 이용하여 modify하여 사용하면 된다.
+
+2.  Categorical baseline variable
+
+    1\) Binary categorical variable
+
+    $$
+    d = \frac{\hat{P}_1 - \hat{P}_2}{\sqrt{\frac{\hat{P}_1(1 - \hat{P}_1) + \hat{P}_2(1 - \hat{P}_2)}{2}}}
+    $$
+
+    $\hat{P_1}, \hat{P_2}$는 control/treatment group의 binary baseline variable의 proportion(mean)을 의미한다.
+
+    2\) Categorical variable with K levels
+
+    ![](img/20250123_145028.png){width="379"}
+
+    Table 1처럼 baseline variable이 2개 초과의 level을 가지는 categorical variable의 SMD에 대해 살펴보자.
+
+$$ T = (\hat{P}_{12}, \hat{P}_{13}, ..., \hat{P}_{1K})'$$ $$ C = (\hat{P}_{22}, \hat{P}_{23}, ..., \hat{P}_{2K})'$$
+
+이 때, $\hat{P}_{JK} =$ Pr(category k\|treatment group j), \$ j \in {1, 2}\$ and $k \in \{2, 3, ..., K\}$
+
+Standardized difference는 다음과 같이 정의된다.
+
+$$
+ d = \sqrt{(T - C)'S^{-1}(T-C)}
+$$
+
+S는 (k - 1)X(k - 1) covariance이며, 다음과 같다.
+
+$$
+S = [S_{kl}] = \begin{cases}\dfrac{[\hat{P}_{1k}(1-\hat{P}_{1k})+\hat{P}_{2k}(1-\hat{P}_{2k})]}{2}, & k = l \\\dfrac{[\hat{P}_{1k}\hat{P}_{1l}+\hat{P}_{2k}\hat{P}_{2l}]}{2}, & k \neq l\end{cases}
+$$
+
+지금까지 SMD를 구하는 과정을 살펴보았다. RCT시 subject의 group 배정 후 혹은 propensity score analysis시 baseline covariates의 balance를 확인할 때, SMD를 이용한다. SMD가 0.1미만이면 작은 차이로 간주하고, 대부분의 변수에서 SMD 0.1미만이면서, 모두 0.2 미만이면 balance가 잘 맞는 것으로 평가한다.
+
+## Confidence interval for standardized difference
+
+Hedges and Olkin (1985)에서 SMD에 대한 confidence interval 공식을 내놓았는데 식은 다음과 같다.
+
+$$
+d\;\pm 1.96\times\sigma[d]
+$$
+
+$$
+\sigma[d] = \sqrt{\frac{n_1 + n_2}{n_1 \times n_2} + \frac{d^2}{2(n_1 + n_2)}}
+$$
+
+## Example
+
+예제 데이터와 tableone package를 이용해 SMD를 구하는 과정을 살펴보자. tableone package에 대한 자세한 사용법이 궁금한다면 이 [포스트](https://blog.zarathu.com/posts/2022-02-07-tableone/#argument-customize)를 참고하길 바란다.
+
+데이터를 불러오는 과정이다.
+
+```{r setting, echo=TRUE}
+library(data.table)
+library(curl)
+library(magrittr)
+library(tableone)
+
+# Load file
+url <- "https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv"
+dt <- fread(url,header=T)
+
+head(dt)
+```
+
+tableone object를 생성한 뒤 print function을 이용해 결과물을 출력할 수 있다. 이때 smd = TRUE로 처리해주면 smd값이 같이 출력된다.
+
+```{r customizing table}
+myVars <- c("HGHT", "WGHT", "BMI", "HDL", "LDL", "TG", "SGPT", 
+            "Q_PHX_DX_STK", "Q_PHX_DX_HTDZ", "Q_HBV_AG", "Q_SMK_YN")
+# Categorical variables
+catVars <- c("Q_PHX_DX_STK", "Q_PHX_DX_HTDZ", "Q_HBV_AG", "Q_SMK_YN")
+t1 <- CreateTableOne(vars = myVars, factorVars = catVars, data = dt)
+t1
+
+t2 <- CreateTableOne(data = dt,
+                     vars = myVars,
+                     strata = "Q_SMK_YN",
+                     factorVars = catVars,
+                     includeNA = F)
+print(t2, smd = T)
+
+```
+
+Q_HBV_AG, Q_SMK_YN등의 3개의 level을 가지는 categorical variable도 하나의 SMD를 출력해줌을 알 수 있다. 참고로 tableone package에서는 strata가 3개 이상일 때도 하나의 SMD를 출력해준다. 이는 n개의 strata에 대해 pairwise로 $\binom{n}{2}$개의의 SMD를 구한 뒤, 절댓값을 취하고, 평균을 낸 값이다.
+
+## Reference
+
+1.  Yang, D. and Dalton, JE. (2012). A unified approach to measuring the effect size between two groups using SAS. SAS Global Forum 2012, Paper 335-2012.
+2.  Hedges LV, Olkin I. (1985). Statistical Methods for Meta-Analysis. Academic Press: San Diego, CA .
+3.  남상건.(2015). 효과크기의 이해. Hanyang Medical Reviews. Paper 40-43
+4.  이유진(2022). tableone 패키지 소개. 차라투 블로그
