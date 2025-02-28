@@ -328,8 +328,8 @@ window.Quarto = {
 </section><section id="generalized-linear-models-glms" class="level2"><h2 class="anchored" data-anchor-id="generalized-linear-models-glms">1. Generalized Linear Models (GLMs)</h2>
 <section id="linear-model-한계" class="level3"><h3 class="anchored" data-anchor-id="linear-model-한계">1.1. Linear Model 한계</h3>
 <hr>
-<p>1장에서 본 <strong>Linear Regression Model</strong>은 (1) 선형성(Linearity) 가정, (2) 오차항의 정규성(Normality) 가정, (3) 오차항의 독립성(Independence) 가정, (4) 오차항의 등분산성(Homoscedasticity) 가정에서 비롯된 모델이었고, Heteroskedasticity-Consistent Standard Errors (HC Standard Errors)를 통해 오차항의 등분산성(Homoscedasticity) 가정이 깨진 data에 대해서도 Linear model로부터 얻은 모델 parameter의 분산을 robust하게 추정할 수 있었습니다. 그러나, 위에서 언급하였듯 <strong>outcome of single yes/no, outcome of single K-way, count 등 많은 data는 반응 변수 Y가 정규분포를 따르지 않거나 등분산성 가정, 선형성에 위배</strong>됩니다. 각각에 대해서 좀 더 설명하자면, 어떤 사건이나 행동이 일어나거나 그렇지 않은 경우를 고려하는 <strong>이진 데이터(binary data, outcome of single yes/no)</strong>의 경우, <span class="math inline">\(Y \in \{0, 1\}\)</span>로 제한되며 이를 <span class="math inline">\(Y \in \mathbb{R}\)</span>인 정규분포를 가정하는 것은 옳지 않습니다. 특정 기간 동안 발생하는 사건의 횟수 등, 이진 분류처럼 discrete한 종속변수 값을 가지는 <strong>카운트 데이터(count data)</strong> 또한 discrete(정수) 값만 갖으며, 이 두 경우는 종종 분산이 평균(모델의 예측)에 비례하는 형태를 갖을 수 있고, 이는 당연하게도 등분산성 가정을 위배합니다.</p>
-<p>이러한 데이터의 경우 단순히 독립변수의 선형결합 형태, 또는 기하학적으로는 Hyper plane 형태로 모델을 만들면, 비선형적인 (이진 데이터 등) 위 같은 경우에 대해서는 올바르게 고려하지 못할 것입니다. 이러한 기존의 Linear Regression 모델의 한계를 극복하고, (종속변수의) 다양한 형태의 데이터를 모델링하기 위해 여러 함수를 설계함으로써 유연성을 확장한 <strong>Generalized Linear Models</strong>이 개발되었습니다. <strong>Generalized Linear Models(GLMs)</strong>의 중요 구성 요소들과 원리를 간략히 설명해보자면, 선형 결합으로 바로 종속변수를 예측하는 대신, non-linear한 <strong>Link Function</strong>에 넣어 최종 예측을 함으로써 non-linear한 종속변수에도 fit 할 수 있고, 이에 따라 종속변수의 분포가 <strong>정규분포가 아닌 다른 분포(Exponential Family)</strong>도 포함할 수 있도록 하였으며, 이 <strong>Exponential Family와 Variance function</strong>구성은 종속변수의 분산이 모델의 예측값(종속변수의 mean)마다 다를 수 있도록 합니다. 이를 통해 <strong>Generalized Linear Models</strong>는 위 네 개의 Linear Regression 가정 중 (1) 선형성(Linearity) 가정, (2) 오차항의 정규성(Normality) 가정, (4) 오차항의 등분산성(Homoscedasticity) 가정을 깼으며, 위에서 Linear Model의 한계로 언급한 데이터들을 고려할 수 있는 모델입니다.</p>
+<p>1장에서 본 <strong>Linear Regression Model</strong>은 (1) 선형성(Linearity) 가정, (2) 오차항의 정규성(Normality) 가정, (3) 오차항의 독립성(Independence) 가정, (4) 오차항의 등분산성(Homoscedasticity) 가정에서 비롯된 모델이었고, Heteroskedasticity-Consistent Standard Errors (HC Standard Errors)를 통해 오차항의 등분산성(Homoscedasticity) 가정이 깨진 data에 대해서도 Linear model로부터 얻은 모델 parameter의 분산을 robust하게 추정할 수 있었습니다. 그러나, 위에서 언급하였듯 <strong>outcome of single yes/no, outcome of single K-way, count 등 많은 data는 반응 변수 Y가 정규분포를 따르지 않거나 등분산성 가정, 선형성에 위배</strong>됩니다. 각각에 대해서 좀 더 설명하자면, 어떤 사건이나 행동이 일어나거나 그렇지 않은 경우를 고려하는 <strong>이진 데이터(binary data, outcome of single yes/no)</strong>의 경우, <span class="math inline">\(Y \in \{0, 1\}\)</span>로 제한되며 이를 <span class="math inline">\(Y \in \mathbb{R}\)</span>인 정규분포로 가정하는 것은 옳지 않습니다. 특정 기간 동안 발생하는 사건의 횟수 등, 이진 분류처럼 discrete한 종속변수 값을 가지는 <strong>카운트 데이터(count data)</strong> 또한 discrete(정수) 값만 갖으며, 이 두 경우는 종종 분산이 평균(모델의 예측)에 비례하는 형태를 갖을 수 있고, 이는 당연하게도 등분산성 가정을 위배합니다.</p>
+<p>이러한 데이터의 경우 단순히 독립변수의 선형결합 형태, 또는 기하학적으로는 Hyper plane 형태로 모델을 만들면, 비선형적인 (이진 데이터 등) 위 같은 경우에 대해서는 올바르게 고려하지 못할 것입니다. 이러한 기존의 Linear Regression 모델의 한계를 극복하고, (종속변수의) 다양한 형태의 데이터를 모델링하기 위해 여러 함수를 설계함으로써 유연성을 확장한 <strong>Generalized Linear Models</strong>이 개발되었습니다. <strong>Generalized Linear Models(GLMs)</strong>의 중요 구성 요소들과 원리를 간략히 설명해보자면, 선형 결합으로 바로 종속변수를 예측하는 대신, non-linear한 <strong>Link Function</strong>에 넣어 최종적으로 예측함으로써 non-linear한 종속변수에도 fit 할 수 있고, 이에 따라 종속변수의 분포가 <strong>정규분포가 아닌 다른 분포(Exponential Family)</strong>도 포함할 수 있도록 하였으며, 이 <strong>Exponential Family와 Variance function</strong>구성은 종속변수의 분산이 모델의 예측값(종속변수의 mean)마다 다를 수 있도록 합니다. 이를 통해 <strong>Generalized Linear Models</strong>는 위 네 개의 Linear Regression 가정 중 (1) 선형성(Linearity) 가정, (2) 오차항의 정규성(Normality) 가정, (4) 오차항의 등분산성(Homoscedasticity) 가정을 깼으며, 위에서 Linear Model의 한계로 언급한 데이터들을 고려할 수 있는 모델입니다.</p>
 </section><section id="glm-정의-및-수학적-표현" class="level3"><h3 class="anchored" data-anchor-id="glm-정의-및-수학적-표현">1.2. GLM 정의 및 수학적 표현</h3>
 <hr>
 <p><strong>GLM</strong>은 세 가지 구성 요소 (Random component, Systematic component, Link function)으로 정의 되며, 이때 Random component는 Y를 Exponential Family로, Systematic component는 Linear predictor와 Link function으로 구성됩니다. 어떻게 <strong>Generalized Linear Models</strong>가 설계되었는지 component들을 하나하나 자세히 다뤄보겠습니다.</p>
@@ -548,27 +548,37 @@ Var(Y) = a(\phi) V(\mu_i) = a(\phi)b''(\theta)
 </section><section id="glms-parameter-추정식-유도" class="level3"><h3 class="anchored" data-anchor-id="glms-parameter-추정식-유도">2.3. GLMs’ parameter 추정식 유도</h3>
 <hr>
 <p>이제 필요한 식이 준비되었으니, 위에서 계속 다루고 있는 log likelihood을 이용해서 MLE estimation으로 GLMs’ parameter을 추정하는 과정을 살펴볼 것입니다. 이때, 추정 과정은 계속 언급한대로 Exponential Family distribution을 따르는 종속변수에 대해서 log likelihood의 model parameter에 대해 미분한 식이 (parameter가 벡터이므로, 좀더 엄밀하게 정의해야 하지만, 의미는 같으니 이렇게 얘기하겠습니다.) 0이 되게 하는 parameter를 찾음으로써 수행되며, <strong>이 때의 함수 (log likelihood의 1차 도함수)를 앞으로는 score function</strong>이라고 부르겠습니다.</p>
-<p>우리는 MLE estimation을 통해 여러 Exponential Family distributions에 대해 통일된 estimation algorithm으로 parameter를 추정할 수 있습니다. (이러한 분포 가정 마저 없다면, 3장 GEE에서 보겠지만 분포에 대한 직접적 가정없이&nbsp;cumulative generating function 등 몇 함수 만으로 Likelihood를 고려하는 Quasi-likelihood Estimation의 개념으로 이어집니다.)</p>
+<p>우리는 MLE estimation을 통해 여러 Exponential Family distributions에 대해 통일된 estimation algorithm으로 parameter를 추정할 수 있습니다. (이러한 분포 가정 마저 없다면, 3장 GEE에서 보겠지만 분포에 대한 직접적 가정없이 cumulative generating function 등 몇 함수 만으로 Likelihood를 고려하는 Quasi-likelihood Estimation의 개념으로 이어집니다.)</p>
 <p>주어진 data가 <span class="math inline">\((y_1, ... , y_n)\)</span>일 때, 위에서부터 계속 사용해왔던 log-likelihood function은 다음과 같습니다.</p>
 <p><span class="math display">\[
 l = \sum_{i=1}^{n} \left( \frac{y_i \theta_i - b(\theta_i)}{\phi_i} + c(y_i, \phi_i) \right)
 \]</span></p>
 <p><strong>지금까지 우리는</strong> <span class="math inline">\(\theta\)</span><strong>로 log likelihood를 다뤘지만, 추정해야 하는 parameter는</strong> <span class="math inline">\(\boldsymbol{\beta}\)</span><strong>입니다</strong>. <span class="math inline">\(\boldsymbol{\beta}\)</span>는 벡터이기 때문에 이 중 하나의 파라미터 <span class="math inline">\(\beta_j\)</span>에 대해 먼저 log likelihood를 미분해보면 아래와 같은 식이 나옵니다. (<span class="math inline">\(\text{Var}(y) = \phi_i V(\mu_i)\)</span>, <span class="math inline">\(\frac{\partial \mu}{\partial \eta} = \frac{1}{g'(\mu_i)}\)</span>)임은 위에서 보았습니다. g는 link function이었습니다.)</p>
 <p><span class="math display">\[
-\frac{\partial l}{\partial \beta_j} = s(\beta_j) \\
-= \left(\frac{\partial l}{\partial \theta} \right) \left(\frac{\partial \theta}{\partial \mu} \right) \left(\frac{\partial \mu}{\partial \eta} \right) \left(\frac{\partial \eta}{\partial \beta_j} \right) \\
-= \frac{y_i - \mu_i}{\text{Var}(y_i)} \left( \frac{\partial \mu}{\partial \eta} \right) x_{ij}, \quad \text{or} \\
+\frac{\partial l}{\partial \beta_j} = s(\beta_j)
+\]</span></p>
+<p><span class="math display">\[
+= \left(\frac{\partial l}{\partial \theta} \right) \left(\frac{\partial \theta}{\partial \mu} \right) \left(\frac{\partial \mu}{\partial \eta} \right) \left(\frac{\partial \eta}{\partial \beta_j} \right)
+\]</span></p>
+<p><span class="math display">\[
+= \frac{y_i - \mu_i}{\text{Var}(y_i)} \left( \frac{\partial \mu}{\partial \eta} \right) x_{ij}, \quad \text{or}
+\]</span></p>
+<p><span class="math display">\[
 = \sum_{i=1}^{n} \frac{y_i - \mu_i}{\phi_i V(\mu_i)} \times \frac{x_{ij}}{g'(\mu_i)} = 0
 \]</span></p>
 <p>식이 혼란스러울 수 있는데, 이는 단지 chain rule을 이용해서 <span class="math inline">\(\beta\)</span>에 대한 <span class="math inline">\(\ell\)</span>의 기울기를 구하는 과정이며, 위에서 GLM을 구성하는 과정을 차근차근 복기하면 각각의 변화율은 다음과 같이 구할 수 있기 때문에 최종 식을 얻을 수 있었음을 알 수 있습니다.</p>
 <p><span class="math display">\[
 \frac{\partial l}{\partial \theta} =
 \frac{y - b'(\theta)}{a(\phi)} =
-\frac{y - \mu}{a(\phi)} \\
+\frac{y - \mu}{a(\phi)}
+\]</span></p>
+<p><span class="math display">\[
 \frac{\partial \theta}{\partial \mu} =
 \frac{1}{b''(\theta)} =
 \frac{1}{V(\mu)} =
-\frac{a(\phi)}{\text{Var}(y)} \\
+\frac{a(\phi)}{\text{Var}(y)}
+\]</span></p>
+<p><span class="math display">\[
 \frac{\partial \eta}{\partial \beta_j} = x_{ij}
 \]</span></p>
 <p>이제 이 score function의 음의 미분(또는 분산)의 기댓값을 전개하면 다음과 같습니다.</p>
@@ -835,7 +845,6 @@ E\left[\widehat{\text{Var}}(\hat{\boldsymbol{\beta}})\right] = (\mathbf{X}^\top 
 <span><span class="co">#coeftest(glm_fit, vcov = cluster_se)  # 결과 출력</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="마무리하며" class="level2"><h2 class="anchored" data-anchor-id="마무리하며">마무리하며</h2>
-<hr>
 <p>이번 2장에서는 1장에서 다룬 Linear Model을 outcome of single yes/no, outcome of single K-way, count 등 non-normal한 종속변수에서도 분석할 수 있도록 확장한 <strong>Generalized linear model</strong>의 기본 개념과, 실제로 패키지에서 이 GLM의 parameter를 estimate할 때 사용하는 대표적인 알고리즘인 IRLS(Fisher scoring)을 수학적으로 상당히 깊게 살펴보았습니다. 이후, HC standard errors의 clustered data 버전인 Cluster-robust standard error를 보고, GLMs에서도 이 둘을 사용할 수 있다는 것을 밝힌 뒤 그 변형된 수식을 보았습니다. 다음 3장에서는 아직 깨지 못한 가정이었던 오차항의 독립, 즉 data(observations)간의 correlation이 존재하는 경우 자체를 모델에 반영하기 위해 개발된 모델들인 GEE, GLMM에 대하여 어느 정도 살펴보고 (GLMM의 내용은 너무 길어지기 때문에 얕게 다룰 것입니다.), 모델의 분산을 robust하게 추정하기 위한 가장 general한 형태의 Sandwich estimator를 M-estimation의 개념과 함께 공부할 것입니다.</p>
 
 
