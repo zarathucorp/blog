@@ -324,7 +324,6 @@ window.Quarto = {
 
   gtag('config', 'G-L0DYYSH9KM');
 </script><section id="들어가며" class="level2"><h2 class="anchored" data-anchor-id="들어가며">들어가며</h2>
-<hr>
 <p>2장에서는 1장에서 다룬 기본 linear regression에서 link function을 도입하여 regression의 개념을 outcome of single yes/no, outcome of single K-way, count 등 non-normal한 종속변수로 확장한 Generalized linear model의 개념을 Exponential Family, Link Function와 같은 핵심개념과 함께 깊게 살펴보며, model의 parameter를 estimate하는 알고리즘인 IRLS(Fisher scoring) 집중적으로 estimation methods를 소개합니다. 이후, HC standard errors의 clustered data 버전인 Cluster-robust standard error를 보고 마치겠습니다.<br></p>
 </section><section id="generalized-linear-models-glms" class="level2"><h2 class="anchored" data-anchor-id="generalized-linear-models-glms">1. Generalized Linear Models (GLMs)</h2>
 <section id="linear-model-한계" class="level3"><h3 class="anchored" data-anchor-id="linear-model-한계">1.1. Linear Model 한계</h3>
@@ -812,7 +811,6 @@ E\left[\widehat{\text{Var}}(\hat{\boldsymbol{\beta}})\right] = (\mathbf{X}^\top 
 <p><span class="math display">\[ \widehat{\mathrm{Var}}_{\text{cluster}}(\hat{\boldsymbol{\beta}}) = (\mathbf{X}^\top \hat{\mathbf{W}} \mathbf{X})^{-1} \left( \sum_{g=1}^G (\mathbf{X}_g^\top \hat{\mathbf{W}}_g^{1/2}) \, \hat{\mathbf{u}}_g \hat{\mathbf{u}}_g^\top \, (\hat{\mathbf{W}}_g^{1/2} \mathbf{X}_g) \right) (\mathbf{X}^\top \hat{\mathbf{W}} \mathbf{X})^{-1}, \]</span></p>
 <p>와 같은 꼴이 됩니다(마찬가지로 패키지마다 표기 방식이나 구현 세부가 약간씩 다를 수 있습니다).각 항들 또한 한 번 더 설명하자면, <span class="math inline">\(\hat{\mathbf{u}}_g\)</span>는 클러스터 <span class="math inline">\(g\)</span> 내 잔차 벡터(pearson 또는 deviance 잔차 등).<span class="math inline">\(\mathbf{X}_g\)</span>는 클러스터 <span class="math inline">\(g\)</span>에 해당하는 행만 추출한 <span class="math inline">\(\mathbf{X}\)</span>의 서브 행렬. <span class="math inline">\(\hat{\mathbf{W}}\)</span>는 클러스터 (<span class="math inline">\(g\)</span>)에 해당하는 마찬가지로 가중치 서브 행렬이고, 이때 1/2승을 한다는 의미는 이가 diagonal matrix이므로 이 경우에는 단순히 diagonal 성분들 각각을 루트 씌운 값입니다.<br></p>
 </section></section><section id="r-예시-glm-cluster-robust-se" class="level2"><h2 class="anchored" data-anchor-id="r-예시-glm-cluster-robust-se">4. R 예시: GLM, Cluster-robust SE</h2>
-<hr>
 <p>아래 R 코드를 복사하여 로컬 환경에서 돌려보세요. GLM모델의 분산과 cluster-robust 분산을 비교하시면서 해석하면 됩니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## 필요한 패키지 설치 (필요시)</span></span>
