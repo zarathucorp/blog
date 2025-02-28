@@ -315,11 +315,9 @@ window.Quarto = {
 
   gtag('config', 'G-L0DYYSH9KM');
 </script><section id="들어가며" class="level2"><h2 class="anchored" data-anchor-id="들어가며">들어가며</h2>
-<hr>
 <p>차라투 블로그 “Exploring Regression Models for Regression Analysis”에서는 세(네) 장에 걸쳐서 통계에서의 Regression Analysis를 위한 여러 Regression Model들을 수학적으로 깊게 탐구합니다. 1장에서는 Regression Analysis의 개념, (simple, multiple or general) linear regression에 대한 개념 및 Analysis 과정에 대한 소개로 시작해서 data의 특성 중 하나인 Homo, Heteroskedasticity의 개념, Heteroskedasticity로 추정되는 경우 linear regression 모델의 robust한 (co)variance를 구하는 방법 중 하나이자 필수로 고려해야 하는 Heteroskedasticity-consistent standard errors (heteroskedasticity-robust standard errors)와 Wild Bootstrap를 살펴볼 것입니다. 2장에서는 1장에서 다룬 기본 linear regression에서 link function을 도입하여 regression의 개념을 outcome of single yes/no, outcome of single K-way, count 등 non-normal한 종속변수로 확장한 Generalized linear model의 개념을 Exponential Family, Link Function와 같은 핵심 개념과 함께 깊게 살펴보며, model의 parameter를 estimate하는 알고리즘인 IRLS(Fisher scoring), HC standard errors의 clustered data 버전인 Cluster-robust standard error를 다룹니다. 3장에서는 GLM에서 여전히 남아있는 observations의 independent 조건(오차항의 독립성)을 극복하여 clustered(panel, longitudinal..) data를 고려할 수 있는 모델인 GEE, GLMM의 근본적인 원리를 M-estimator, robust (sandwich) estimator와 같은 수학적 개념들과 함께 탐구할 것입니다. <strong>{4장은 계획 중에 있습니다.}</strong></p>
 <p>결국 “Exploring Regression Models for Regression Analysis”는 Regression Analysis을 논리적으로 수행하기 위해 어떤 Regression Model 들이 있으며, 이들의 수학적인 원리가 무엇인지를 deep dive 하는 글입니다. 영문 글들 중에서도 이 내용들을 이어지게 다뤄주는 글은 거의 없고, 아주 친절하게 수식을 전개하였기 때문에 근본적인 Regression Models의 수학적 원리를 공부하기 좋은 글들이라고 생각하며, R 코드는 간단하게만 주석 형태로 제공하기 때문에 로컬에서 주석 해제 후 돌려보시고, 실제 의학 연구에 관련 분석이 필요하시다면 해당 연구를 <a href="https://www.zarathu.com/en">차라투</a>로 문의해주시길 바랍니다.<br></p>
 </section><section id="regression-analysis" class="level2"><h2 class="anchored" data-anchor-id="regression-analysis">1. Regression Analysis</h2>
-<hr>
 <p><strong>Regression Analysis</strong>는 통계학에서 가장 널리 사용되는 방법론 중 하나로, 어떤 종속변수(dependent variable)와 하나 이상의 독립변수(independent variables) 간의 관계를 추정하고 해석하는 분석 기법입니다. (종속변수 또한 벡터, 즉 여러 개일 수 있습니다.)</p>
 <p>의학 분야에서는 예후를 예측하는 모델을 만들거나(예: 특정 약물 투여 후 혈압, outcome 등의 변화를 예측), 특정 위험인자(risk factor)가 결과에 유의미한 영향을 미치는지(예: 어떤 치료법이 환자의 생존율에 유의미한 차이를 주는지) 등을 살펴보기 위해 <strong>Regression Analysis</strong>가 필수적으로 활용됩니다. 이러한 Regression Analysis을 완벽하게 수행하기 위해서는 본인의 <em>data가 어떤 특성을 갖고 있는지 파악하고</em>, 이에 대해 <em>어떠한 Regression Model을 고려해야 하는지</em> 알고, 이 모델이 <em>어떻게 data에 적합(fit)하는지</em>에 대한 대략적인 수학 또는 알고리즘의 원리와, 적합된 모델이 <em>통계적으로 유의미한지 검정(test)</em>하고 예측 성능이나 해석력을 평가하는 방법까지 전 과정을 이해해야 합니다. 본 1장에서는 가장 간단한, 대신 많은 가정이 필요한 Regression Model인 (General) Linear Regression에 대해서 위 과정과 함께 살펴볼 것이며, 이후의 장들에서는 data의 가정이 조금씩 깨질 때 (data의 특성이 변할 때) 어떤 Regression Model을 고려해야 하는지와 이 Model들의 parameters는 어떻게 수학적으로 추정하는지 살펴볼 것입니다.<br></p>
 </section><section id="linear-regression-lm" class="level2"><h2 class="anchored" data-anchor-id="linear-regression-lm">2. Linear Regression (LM)</h2>
@@ -419,7 +417,6 @@ J(\beta) = \frac{1}{2} (X\beta - y)^\top (X\beta - y) = \frac{1}{2} \sum_{i=1}^{
 \]</span></p>
 <p>위 증명은 MLE로 LM의 parameter를 추정한 것이 아니라 식 전개를 통해 OLS와 목적식이 같음을 보인 것이고, 실제 MLE로 parameter를 추정하는 과정은 2장부터 자세히 보게 될 것입니다. 한 가지 첨언하자면, Linear model에서는 이 두 추정량이 같지만, 정규성 가정이 깨진 경우 두 추정량은 같지 않을 수 있습니다. 이유를 생각해보면, 정규분포는 확률이 가장 큰, 즉 mode가 mean이며 mean을 기준으로 양 옆이 symmetric한 분포이기 때문에 두 추정량이 같으며, 정규분포가 아닐 경우 mean을 추정하려고 하는 MLE는 절대적인 거리를 좁히려는 OLS와 다른 값을 추정하게 된다고 직관적으로 생각해볼 수 있습니다.<br></p>
 </section></section><section id="linear-regression-in-homo-vs.-heteroskedasticity" class="level2"><h2 class="anchored" data-anchor-id="linear-regression-in-homo-vs.-heteroskedasticity">3. Linear Regression in Homo vs.&nbsp;Heteroskedasticity</h2>
-<hr>
 <p>앞서 언급한 Linear Regression 모형은 “오차항의 등분산성(homoscedasticity)”을 가정합니다. 그러나 실제 연구 상황에서는 이 가정이 위배되는 경우가 흔합니다. <strong>Heteroskedasticity</strong>는 이러한 오차항은 독립 변수에 따라 같지 않을 수 있다는 뜻으로, 등분산성 가정이 깨진 경우를 의미합니다. 즉,</p>
 <ul>
 <li>
@@ -561,7 +558,6 @@ y^* = \hat{y} + w_i \hat{e}.
 \]</span></p>
 <p>이때 <strong>가중치 분포</strong> 로 사용되는 대표적인 예시는 Rademacher: <span class="math inline">\(w_i \in \{-1, 1\}\)</span>, Mammen: <span class="math inline">\(w_i = \frac{\sqrt{5} \pm 1}{2}\)</span>, Webb: 6점 분포(<span class="math inline">\(w_i \in \left\{ -\sqrt{\frac{3}{2}}, -\sqrt{\frac{2}{2}}, -\sqrt{\frac{1}{2}}, \sqrt{\frac{1}{2}}, \sqrt{\frac{2}{2}}, \sqrt{\frac{3}{2}} \right\}\)</span>)로 클러스터별 정규분포 등 다른 적용도 가능합니다. 위에서 언급하였듯, 이외에도 <strong>케이스 기반 (XY) 부트스트랩</strong>, <strong>잔차 부트스트랩</strong>, <strong>프랙셔널 부트스트랩(Fractional Bootstrap)</strong>등의 방법론이 있지만, data를 크게 왜곡하지 않는 Wild가 이러한 분산 추정에서 디폴트하게 고려됩니다.</p>
 </section></section><section id="r-예시-hc03-및-부트스트랩" class="level2"><h2 class="anchored" data-anchor-id="r-예시-hc03-및-부트스트랩">6. R 예시: HC0~3 및 부트스트랩</h2>
-<hr>
 <p>아래 R 코드를 복사하여 로컬 환경에서 돌려보세요. 위 내용 중 “시리즈가 클 수록 강건하게 추정한다”는 점을 기억하시고 해석하면 됩니다.</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## mtcars 데이터에서 mpg(연비)를 wt(차량 무게), hp(마력)으로 설명하는 회귀모형</span></span>
