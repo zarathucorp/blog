@@ -49,7 +49,7 @@ outcome of single K-way, count 등 많은 data는 반응 변수 Y가 정규분�
 따르지 않거나 등분산성 가정, 선형성에 위배**됩니다. 각각에 대해서 좀 더
 설명하자면, 어떤 사건이나 행동이 일어나거나 그렇지 않은 경우를 고려하는
 **이진 데이터(binary data, outcome of single yes/no)**의 경우,
-$Y \in \{0, 1\}$로 제한되며 이를 $Y \in \mathbb{R}$인 정규분포를
+$Y \in \{0, 1\}$로 제한되며 이를 $Y \in \mathbb{R}$인 정규분포로
 가정하는 것은 옳지 않습니다. 특정 기간 동안 발생하는 사건의 횟수 등,
 이진 분류처럼 discrete한 종속변수 값을 가지는 **카운트 데이터(count
 data)** 또한 discrete(정수) 값만 갖으며, 이 두 경우는 종종 분산이
@@ -64,7 +64,7 @@ data)** 또한 discrete(정수) 값만 갖으며, 이 두 경우는 종종 분�
 **Generalized Linear Models**이 개발되었습니다. **Generalized Linear
 Models(GLMs)**의 중요 구성 요소들과 원리를 간략히 설명해보자면, 선형
 결합으로 바로 종속변수를 예측하는 대신, non-linear한 **Link Function**에
-넣어 최종 예측을 함으로써 non-linear한 종속변수에도 fit 할 수 있고, 이에
+넣어 최종적으로 예측함으로써 non-linear한 종속변수에도 fit 할 수 있고, 이에
 따라 종속변수의 분포가 **정규분포가 아닌 다른 분포(Exponential
 Family)**도 포함할 수 있도록 하였으며, 이 **Exponential Family와
 Variance function**구성은 종속변수의 분산이 모델의 예측값(종속변수의
@@ -509,7 +509,7 @@ parameter를 찾음으로써 수행되며, **이 때의 함수 (log likelihood�
 우리는 MLE estimation을 통해 여러 Exponential Family distributions에
 대해 통일된 estimation algorithm으로 parameter를 추정할 수 있습니다.
 (이러한 분포 가정 마저 없다면, 3장 GEE에서 보겠지만 분포에 대한 직접적
-가정없이 cumulative generating function 등 몇 함수 만으로 Likelihood를
+가정없이 cumulative generating function 등 몇 함수 만으로 Likelihood를
 고려하는 Quasi-likelihood Estimation의 개념으로 이어집니다.)
 
 주어진 data가 $(y_1, ... , y_n)$일 때, 위에서부터 계속 사용해왔던
@@ -528,9 +528,18 @@ $\frac{\partial \mu}{\partial \eta} = \frac{1}{g'(\mu_i)}$)임은 위에서
 보았습니다. g는 link function이었습니다.)
 
 $$ 
-\frac{\partial l}{\partial \beta_j} = s(\beta_j) \\ 
-= \left(\frac{\partial l}{\partial \theta} \right) \left(\frac{\partial \theta}{\partial \mu} \right) \left(\frac{\partial \mu}{\partial \eta} \right) \left(\frac{\partial \eta}{\partial \beta_j} \right) \\ 
-= \frac{y_i - \mu_i}{\text{Var}(y_i)} \left( \frac{\partial \mu}{\partial \eta} \right) x_{ij}, \quad \text{or} \\ 
+\frac{\partial l}{\partial \beta_j} = s(\beta_j)
+$$
+
+$$ 
+= \left(\frac{\partial l}{\partial \theta} \right) \left(\frac{\partial \theta}{\partial \mu} \right) \left(\frac{\partial \mu}{\partial \eta} \right) \left(\frac{\partial \eta}{\partial \beta_j} \right)
+$$
+
+$$
+= \frac{y_i - \mu_i}{\text{Var}(y_i)} \left( \frac{\partial \mu}{\partial \eta} \right) x_{ij}, \quad \text{or}
+$$
+
+$$
 = \sum_{i=1}^{n} \frac{y_i - \mu_i}{\phi_i V(\mu_i)} \times \frac{x_{ij}}{g'(\mu_i)} = 0
 $$
 
@@ -542,11 +551,17 @@ $$
 $$
 \frac{\partial l}{\partial \theta} =
 \frac{y - b'(\theta)}{a(\phi)} =
-\frac{y - \mu}{a(\phi)} \\
+\frac{y - \mu}{a(\phi)}
+$$
+
+$$
 \frac{\partial \theta}{\partial \mu} =
 \frac{1}{b''(\theta)} =
 \frac{1}{V(\mu)} =
-\frac{a(\phi)}{\text{Var}(y)} \\
+\frac{a(\phi)}{\text{Var}(y)}
+$$
+
+$$
 \frac{\partial \eta}{\partial \beta_j} = x_{ij}
 $$
 
@@ -1193,7 +1208,7 @@ cluster-robust 분산을 비교하시면서 해석하면 됩니다.
 
 ## 마무리하며
 
-------------------------------------------------------------------------
+
 
 이번 2장에서는 1장에서 다룬 Linear Model을 outcome of single yes/no,
 outcome of single K-way, count 등 non-normal한 종속변수에서도 분석할 수

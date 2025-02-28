@@ -21,8 +21,6 @@ editor:
 
 ## 들어가며
 
-
-
 차라투 블로그 “Exploring Regression Models for Regression
 Analysis”에서는 세(네) 장에 걸쳐서 통계에서의 Regression Analysis를 위한
 여러 Regression Model들을 수학적으로 깊게 탐구합니다. 1장에서는
@@ -56,8 +54,6 @@ Analysis을 논리적으로 수행하기 위해 어떤 Regression Model 들이 �
 문의해주시길 바랍니다.\
 
 ## 1. Regression Analysis
-
-
 
 **Regression Analysis**는 통계학에서 가장 널리 사용되는 방법론 중
 하나로, 어떤 종속변수(dependent variable)와 하나 이상의
@@ -148,9 +144,14 @@ $$
 
 혹은 Matrix 형태로 간단히 쓰면,
 
+$$ 
+\mathbf{y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}
 $$
-    \mathbf{y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon} \\
-    where, \quad \mathbf{y} \in \mathbb{R}^n, \mathbf{X} \in \mathbb{R}^{n \times p}, \boldsymbol{\beta} \in \mathbb{R}^p, \boldsymbol{\varepsilon} \in \mathbb{R}^n
+
+$$ 
+where, \quad \mathbf{y} \in \mathbb{R}^n, \mathbf{X}
+\in \mathbb{R}^{n \times p}, \boldsymbol{\beta} \in \mathbb{R}^p,
+\boldsymbol{\varepsilon} \in \mathbb{R}^n 
 $$
 
 -   $\mathbf{y} \in \mathbb{R}^n$: 관측된 종속변수들의 벡터
@@ -342,13 +343,14 @@ $\boldsymbol{\beta}$에 영향을 주지 않으므로 제거하면, $$
 - \log \mathcal{L}(\boldsymbol{\beta}) \approx \frac{1}{2 \sigma^2} \sum_{i=1}^{n} (y^{(i)} - \mathbf{x}^{(i)^\top} \boldsymbol{\beta})^2
 $$
 
-가 됩니다. 위에서 보았듯 OLS estimator는 SSR을 최소화하는 아래 문제로
+가 됩니다. 아까 보았듯 OLS estimator는 SSR을 최소화하는 아래 문제로
 정의되므로, $$
 \hat{\boldsymbol{\beta}}_{\text{OLS}} = \arg \min_{\boldsymbol{\beta}} \sum_{i=1}^{n} (y^{(i)} - \mathbf{x}^{(i)^\top} \boldsymbol{\beta})^2
 $$
 
-결국 위 두 식, OLS estimator와 MLE estimator의 목적식이 같고, 따라서
-추정량 또한 같습니다. $$
+결국 위 두 식, OLS estimator와 MLE estimator의 목적식이 같음을 알 수
+있고(종속변수와 모델 예측의 차이의 제곱을 모든 data point에서 더한 값을
+최소화 하는 beta), 따라서 추정량 또한 같습니다. $$
 \hat{\boldsymbol{\beta}}_{\text{MLE}} = \hat{\boldsymbol{\beta}}_{\text{OLS}}
 $$
 
@@ -363,8 +365,6 @@ mean이며 mean을 기준으로 양 옆이 symmetric한 분포이기 때문에 �
 있습니다.\
 
 ## 3. Linear Regression in Homo vs. Heteroskedasticity
-
-
 
 앞서 언급한 Linear Regression 모형은 “오차항의
 등분산성(homoscedasticity)”을 가정합니다. 그러나 실제 연구 상황에서는 이
@@ -527,11 +527,11 @@ $\hat{\Phi} = \operatorname{diag}(e_i^2)$를 사용하여 이분산성의 구체
 
 이 HC Standard Error가 나온 이후, 위 식으로부터 구한 분산은 소표본에서는
 **모델의 overfitting(과적합, 딥러닝과 머신러닝에서도 자주 대두되는
-문제로 데이터가 적어 학습한 데이터에서는 오차가 적지만 보지 못한
-데이터에 대해서는 오차가 크게 나오는 상황, 통계 분석은 test data를 따로
-두지 않기 때문에 overfitting 대처가 더욱 중요.)**에 의해 residual이 작게
-나오고, 이에 따라 **모델의 covariance가 과소평가**될 가능성이 크다는
-문제가 제시되었습니다. 이에, 소표본에서도 안정적으로 추정하기 위해
+문제로 데이터가 적어 학습한 데이터에서는 오차가 지만 보지 못한 데이터에
+대해서는 오차가 크게 나오는 상황, 통계 분석은 test data를 따로 두지 않기
+때문에 overfitting 대처가 더욱 중요.)**에 의해 residual이 작게 나오고,
+이에 따라 **모델의 covariance가 과소평가**될 가능성이 크다는 문제가
+제시되었습니다. 이에, 소표본에서도 안정적으로 추정하기 위해
 White(1980)의 HC Standard Errors를 HC0로 두고, 여러 버전의 HC Standard
 Errors가 최근까지 다양한 학자들에 의해 연구되고 있습니다. 보통
 HC0\~HC5까지를 HC Standard Errors로 부르며, HC 오른쪽 숫자가 버전을
@@ -610,10 +610,10 @@ $$ 여기서 $\mathbf{H}$는 대칭 행렬($\mathbf{H} = \mathbf{H}^T$)이고 �
 $$
 
 $i$번째 잔차 $e_i$의 분산은 공분산 행렬의 $i$번째 대각 성분이고, $$
-\text{Var}(e_i) = [\text{Cov}(\mathbf{e})]_{ii} = \sigma^2 (1 - h_{ii}).
+\text{Var}(e_i) = [\text{Cov}(\mathbf{e})]_{ii} = \sigma_i^2 (1 - h_{ii}).
 $$ 에러 제곱의 기댓값은 잔차의 분산과 동일하므로 (에러의 mean이
 0이므로), $$
-E[e_i^2] = \text{Var}(e_i) = \sigma^2 (1 - h_{ii}).
+E[e_i^2] = \text{Var}(e_i) = \sigma_i^2 (1 - h_{ii}).
 $$ 가 증명됩니다.
 
 #### HC3: 강화된 Leverage 보정
@@ -630,7 +630,7 @@ $$
 위 내용을 간단하게 표로 정리하면 다음과 같습니다.
 
 | 유형 | 수식                              | 보정 요소    | 사용 시나리오       |
-|------|-----------------------------------|--------------|---------------------|
+|--------------|----------------------------|--------------|----------------|
 | HC0  | $\operatorname{diag}(e_i^2)$      | 없음         | 대표본              |
 | HC1  | $\frac{n}{n-k}\operatorname{HC0}$ | 자유도       | 소표본 기본         |
 | HC2  | $\frac{e_i^2}{1-h_{ii}}$          | 레버리지 1차 | 고레버리지 존재 시  |
@@ -652,12 +652,15 @@ method는 특정 가정으로부터 수학적인 추정식을 세워 분산을 �
 Bootstraping 통계 기법을 사용하여 data 만으로 경험적인 분산을
 추정합니다. 때문에 이번에 소개하는 (Wild) Bootstrap 은 어떤 가정이나
 모델이든 사용할 수 있는, 심지어 2장에서 다룰 clustered(grouped) data
-에서도 사용할 수 있는 방법입니다.(가정이 전혀 들어가지 않았기
-떄문입니다.) 이후에 다룰 **샌드위치 추정량(Sandwich Estimator)**과, 그의
-OLS 버전인 **HC(Heteroskedasticity-Consistent)** 시리즈가 개발되었지만,
-이들은 결국 대표본 점근적 성질로부터 얻은 수식이고, 극단적인 **쇼포본**
-같은 작은 클러스터 수에서는 이러한 부트스트랩이 더 강력한 대안이 될 수도
-있습니다. 이를 소개하기 전에 간단히 중요한 통계학적 resampling 기법인
+에서도 사용할 수 있는 방법입니다.(사용 대상인 모델이 정해지지 않은,
+데이터 만으로 구하는 분산이기 때문에 가정이 전혀 들어가지 않아서입니다.
+예를 들어 LM에서 HC se를 사용하는 경우 나머지 세 가정이 만족해야 했지만,
+Bootstrap은 그렇지 않습니다.) 이후에 다룰 **샌드위치 추정량(Sandwich
+Estimator)**과, 그의 OLS 버전인 **HC(Heteroskedasticity-Consistent)**
+시리즈가 개발되었지만, 이들은 결국 대표본에서의 점근적 성질로부터 얻은
+수식이고, 극단적인 **쇼포본** 같은 작은 클러스터 수에서는 이러한 데이터
+만을 고려하여 추정하는 부트스트랩이 더 강력한 대안이 될 수도 있습니다.
+이를 소개하기 전에 간단히 중요한 통계학적 resampling 기법인
 잭나이프(Jackknife)와 부트스트랩(Bootstrap)을 얘기해보겠습니다. 이 둘은
 모두 표본을 계속해서 얻기 힘든 상황 (현실에서는 대부분 그럴
 것입니다.)에서 모수를 추정하기 위해, 이미 갖고 있는 표본의 data로부터
@@ -710,8 +713,6 @@ data를 크게 왜곡하지 않는 Wild가 이러한 분산 추정에서 디폴�
 
 ## 6. R 예시: HC0\~3 및 부트스트랩
 
-
-
 아래 R 코드를 복사하여 로컬 환경에서 돌려보세요. 위 내용 중 "시리즈가 클
 수록 강건하게 추정한다"는 점을 기억하시고 해석하면 됩니다.
 
@@ -750,7 +751,7 @@ data를 크게 왜곡하지 않는 Wild가 이러한 분산 추정에서 디폴�
 
 ## 마무리하며
 
-------------------------------------------------------------------------
+
 
 이번 1장에서는 **Regression Analysis**의 기본 개념과 **(simple, multiple
 or General) Linear Regression**의 이론적 배경, 그리고 등분산성 가정이

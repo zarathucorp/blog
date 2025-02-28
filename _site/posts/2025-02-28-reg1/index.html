@@ -351,8 +351,12 @@ Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \cdots + \beta_k X_{ik} + \var
 \]</span></p>
 <p>혹은 Matrix 형태로 간단히 쓰면,</p>
 <p><span class="math display">\[
-    \mathbf{y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon} \\
-    where, \quad \mathbf{y} \in \mathbb{R}^n, \mathbf{X} \in \mathbb{R}^{n \times p}, \boldsymbol{\beta} \in \mathbb{R}^p, \boldsymbol{\varepsilon} \in \mathbb{R}^n
+\mathbf{y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}
+\]</span></p>
+<p><span class="math display">\[
+where, \quad \mathbf{y} \in \mathbb{R}^n, \mathbf{X}
+\in \mathbb{R}^{n \times p}, \boldsymbol{\beta} \in \mathbb{R}^p,
+\boldsymbol{\varepsilon} \in \mathbb{R}^n
 \]</span></p>
 <ul>
 <li><p><span class="math inline">\(\mathbf{y} \in \mathbb{R}^n\)</span>: 관측된 종속변수들의 벡터</p></li>
@@ -409,10 +413,10 @@ J(\beta) = \frac{1}{2} (X\beta - y)^\top (X\beta - y) = \frac{1}{2} \sum_{i=1}^{
 <p>이고, 상수 <span class="math inline">\(-n \log \frac{1}{\sqrt{2 \pi \sigma^2}}\)</span>는 <span class="math inline">\(\boldsymbol{\beta}\)</span>에 영향을 주지 않으므로 제거하면, <span class="math display">\[
 - \log \mathcal{L}(\boldsymbol{\beta}) \approx \frac{1}{2 \sigma^2} \sum_{i=1}^{n} (y^{(i)} - \mathbf{x}^{(i)^\top} \boldsymbol{\beta})^2
 \]</span></p>
-<p>가 됩니다. 위에서 보았듯 OLS estimator는 SSR을 최소화하는 아래 문제로 정의되므로, <span class="math display">\[
+<p>가 됩니다. 아까 보았듯 OLS estimator는 SSR을 최소화하는 아래 문제로 정의되므로, <span class="math display">\[
 \hat{\boldsymbol{\beta}}_{\text{OLS}} = \arg \min_{\boldsymbol{\beta}} \sum_{i=1}^{n} (y^{(i)} - \mathbf{x}^{(i)^\top} \boldsymbol{\beta})^2
 \]</span></p>
-<p>결국 위 두 식, OLS estimator와 MLE estimator의 목적식이 같고, 따라서 추정량 또한 같습니다. <span class="math display">\[
+<p>결국 위 두 식, OLS estimator와 MLE estimator의 목적식이 같음을 알 수 있고(종속변수와 모델 예측의 차이의 제곱을 모든 data point에서 더한 값을 최소화 하는 beta), 따라서 추정량 또한 같습니다. <span class="math display">\[
 \hat{\boldsymbol{\beta}}_{\text{MLE}} = \hat{\boldsymbol{\beta}}_{\text{OLS}}
 \]</span></p>
 <p>위 증명은 MLE로 LM의 parameter를 추정한 것이 아니라 식 전개를 통해 OLS와 목적식이 같음을 보인 것이고, 실제 MLE로 parameter를 추정하는 과정은 2장부터 자세히 보게 될 것입니다. 한 가지 첨언하자면, Linear model에서는 이 두 추정량이 같지만, 정규성 가정이 깨진 경우 두 추정량은 같지 않을 수 있습니다. 이유를 생각해보면, 정규분포는 확률이 가장 큰, 즉 mode가 mean이며 mean을 기준으로 양 옆이 symmetric한 분포이기 때문에 두 추정량이 같으며, 정규분포가 아닐 경우 mean을 추정하려고 하는 MLE는 절대적인 거리를 좁히려는 OLS와 다른 값을 추정하게 된다고 직관적으로 생각해볼 수 있습니다.<br></p>
@@ -463,7 +467,7 @@ J(\beta) = \frac{1}{2} (X\beta - y)^\top (X\beta - y) = \frac{1}{2} \sum_{i=1}^{
 <p>이는 variance 식으로부터 시작해서 얻은 식이고, 데이터로부터 얻은 matrix <span class="math inline">\(\hat{\Phi} = \operatorname{diag}(e_i^2)\)</span>를 사용하여 이분산성의 구체적 형태를 가정하지 않았기 때문에 안정적으로 heteroskedasticity를 고려합니다. 이처럼 <strong>앞 뒤가 같은 모양 사이에 데이터로부터 얻은 분산 추정 식이 들어간 형태가 샌드위치 같다고 해서 Sandwich Estimator</strong>라고도 부르며, 여전히 <strong>가운데 matrix 항이 diagonal 함</strong>을 통해 오차(또는 관측치)간의 <strong>상관관계는 없다</strong>는 것도 기억해야 합니다.</p>
 </section></section><section id="hccme-13-수학적-표현" class="level3"><h3 class="anchored" data-anchor-id="hccme-13-수학적-표현">4.3. HC(CME) 1~3 수학적 표현</h3>
 <hr>
-<p>이 HC Standard Error가 나온 이후, 위 식으로부터 구한 분산은 소표본에서는 <strong>모델의 overfitting(과적합, 딥러닝과 머신러닝에서도 자주 대두되는 문제로 데이터가 적어 학습한 데이터에서는 오차가 적지만 보지 못한 데이터에 대해서는 오차가 크게 나오는 상황, 통계 분석은 test data를 따로 두지 않기 때문에 overfitting 대처가 더욱 중요.)</strong>에 의해 residual이 작게 나오고, 이에 따라 <strong>모델의 covariance가 과소평가</strong>될 가능성이 크다는 문제가 제시되었습니다. 이에, 소표본에서도 안정적으로 추정하기 위해 White(1980)의 HC Standard Errors를 HC0로 두고, 여러 버전의 HC Standard Errors가 최근까지 다양한 학자들에 의해 연구되고 있습니다. 보통 HC0~HC5까지를 HC Standard Errors로 부르며, HC 오른쪽 숫자가 버전을 뜻하여 이 수가 커질수록 최근에 나온 것이고, 각각은 simulation 실험을 통해 소표본에서 더욱 강건함을 보이는 식으로 논문이 나옵니다. 중요한 점은, 첫 번째로 이 <strong>HC Standard Errors들은 소표본에서는 값이 다르지만 표본의 크기가 무수히 커질수록 asymptotically하게 같으며</strong> 소표본에서의 고려를 위해 값을 더 크게 만드는 추가 term을 넣어준다는 점(물론 수식적으로 필요성을 증명하지만), 둘 째로 R의 sandwich 패키지에서는 4까지 지원하고, 3을 넘는 HC 시리즈가 쓰이는 경우는 거의 볼 수 없기 때문에 3까지의 식 정도만 다루어도 충분하다는 점, 마지막으로 위 직관적인 이유로나 수식적으로나 식을 해석해 보면 거의 모든 표본 cases에 대해 <strong>버전이 클수록 분산을 더욱 크게 추정한다는 점</strong>입니다. <del>따라서 유의성을 보이기 위해서는 버전이 작은게 유리할 것입니다.^^</del> 아래에서는 HC1부터 3까지의 수식을 살펴보겠습니다. 각각의 철학에 대한 자세한 증명 과정 또한 다룰까 했지만 중요하지 않기 때문에 간단히 소개한 후 로컬에서 돌려 보실 R 예시 코드를 보여드릴 것입니다.</p>
+<p>이 HC Standard Error가 나온 이후, 위 식으로부터 구한 분산은 소표본에서는 <strong>모델의 overfitting(과적합, 딥러닝과 머신러닝에서도 자주 대두되는 문제로 데이터가 적어 학습한 데이터에서는 오차가 지만 보지 못한 데이터에 대해서는 오차가 크게 나오는 상황, 통계 분석은 test data를 따로 두지 않기 때문에 overfitting 대처가 더욱 중요.)</strong>에 의해 residual이 작게 나오고, 이에 따라 <strong>모델의 covariance가 과소평가</strong>될 가능성이 크다는 문제가 제시되었습니다. 이에, 소표본에서도 안정적으로 추정하기 위해 White(1980)의 HC Standard Errors를 HC0로 두고, 여러 버전의 HC Standard Errors가 최근까지 다양한 학자들에 의해 연구되고 있습니다. 보통 HC0~HC5까지를 HC Standard Errors로 부르며, HC 오른쪽 숫자가 버전을 뜻하여 이 수가 커질수록 최근에 나온 것이고, 각각은 simulation 실험을 통해 소표본에서 더욱 강건함을 보이는 식으로 논문이 나옵니다. 중요한 점은, 첫 번째로 이 <strong>HC Standard Errors들은 소표본에서는 값이 다르지만 표본의 크기가 무수히 커질수록 asymptotically하게 같으며</strong> 소표본에서의 고려를 위해 값을 더 크게 만드는 추가 term을 넣어준다는 점(물론 수식적으로 필요성을 증명하지만), 둘 째로 R의 sandwich 패키지에서는 4까지 지원하고, 3을 넘는 HC 시리즈가 쓰이는 경우는 거의 볼 수 없기 때문에 3까지의 식 정도만 다루어도 충분하다는 점, 마지막으로 위 직관적인 이유로나 수식적으로나 식을 해석해 보면 거의 모든 표본 cases에 대해 <strong>버전이 클수록 분산을 더욱 크게 추정한다는 점</strong>입니다. <del>따라서 유의성을 보이기 위해서는 버전이 작은게 유리할 것입니다.^^</del> 아래에서는 HC1부터 3까지의 수식을 살펴보겠습니다. 각각의 철학에 대한 자세한 증명 과정 또한 다룰까 했지만 중요하지 않기 때문에 간단히 소개한 후 로컬에서 돌려 보실 R 예시 코드를 보여드릴 것입니다.</p>
 <section id="hc1-소표본-편향-보정" class="level4"><h4 class="anchored" data-anchor-id="hc1-소표본-편향-보정">HC1: 소표본 편향 보정</h4>
 <p>HC1은 소표본에서 자유도 조정 인자 <span class="math inline">\(\frac{n}{n-k}\)</span>를 도입하여 편향을 줄인다는 철학에서 출발하여, 잔차 <span class="math inline">\(e_i^2\)</span>의 기대값이 <span class="math inline">\(\sigma_i^2(1-h_{ii})\)</span>이므로, <span class="math inline">\(E(e_i^2) \approx \sigma_i^2\)</span>이 되도록 HC0에 <span class="math inline">\(\frac{N}{N-K}\)</span>을 나누어서(1보다 크며, n이 커짐에 따라 1로 수렴하는 term 추가) 스케일링합니다. 즉, 식은 다음과 같습니다: <span class="math display">\[
 \operatorname{HC1} = \frac{N}{N-K} \cdot \operatorname{HC0} \\
@@ -490,9 +494,9 @@ e_i = y_i - \hat{y}_i.
 \text{Cov}(\mathbf{e}) = \sigma_i^2 (\mathbf{I} - \mathbf{H}).
 \]</span></p>
 <p><span class="math inline">\(i\)</span>번째 잔차 <span class="math inline">\(e_i\)</span>의 분산은 공분산 행렬의 <span class="math inline">\(i\)</span>번째 대각 성분이고, <span class="math display">\[
-\text{Var}(e_i) = [\text{Cov}(\mathbf{e})]_{ii} = \sigma^2 (1 - h_{ii}).
+\text{Var}(e_i) = [\text{Cov}(\mathbf{e})]_{ii} = \sigma_i^2 (1 - h_{ii}).
 \]</span> 에러 제곱의 기댓값은 잔차의 분산과 동일하므로 (에러의 mean이 0이므로), <span class="math display">\[
-E[e_i^2] = \text{Var}(e_i) = \sigma^2 (1 - h_{ii}).
+E[e_i^2] = \text{Var}(e_i) = \sigma_i^2 (1 - h_{ii}).
 \]</span> 가 증명됩니다.</p>
 </section><section id="hc3-강화된-leverage-보정" class="level4"><h4 class="anchored" data-anchor-id="hc3-강화된-leverage-보정">HC3: 강화된 Leverage 보정</h4>
 <p>HC3은 <strong>Jackknife 접근법</strong>에서 영감을 받아 HC2에서 <span class="math inline">\(\Phi\)</span>의 분모 term을 더 강하게 <span class="math inline">\((1-h_{ii})^2\)</span>로 둡니다. 직관적으로, 같은 <span class="math inline">\(h_{ii}\)</span>에 대해 더 크게 분산을 추정 (<span class="math inline">\((1-h_{ii})^2 &lt; 1-h_{ii}\)</span>)하여, 고레버리지, 즉 outlier에 대해 더 안정적으로 소표본의 분산을 추정할 수 있습니다. <span class="math display">\[
@@ -502,10 +506,10 @@ E[e_i^2] = \text{Var}(e_i) = \sigma^2 (1 - h_{ii}).
 <p>위 내용을 간단하게 표로 정리하면 다음과 같습니다.</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 7%">
-<col style="width: 46%">
-<col style="width: 18%">
-<col style="width: 27%">
+<col style="width: 19%">
+<col style="width: 38%">
+<col style="width: 19%">
+<col style="width: 22%">
 </colgroup>
 <thead><tr class="header">
 <th>유형</th>
@@ -542,7 +546,7 @@ E[e_i^2] = \text{Var}(e_i) = \sigma^2 (1 - h_{ii}).
 </table>
 <p>정리하자면, 동분산성 검정을 검정하여 이분산성이 확인되면 HC se 시리즈의 적용을 고려해야 하고, 표본 크기가 <span class="math inline">\(n &lt; 50\)</span>인 경우는 HC3 또는 아래에서 다룰 bootstrap기반의 (Clustered) Bootstrap Covariance Matrix Estimation를, <span class="math inline">\(n &gt; 500\)</span>인 경우는 HC0/HC1로 충분하다고 간단하게 생각해볼 수 있습니다. (물론 이는 정해진 규칙이 아니고, 시작은 항상 HC0부터 검정해보는 것이 맞습니다.)<br></p>
 </section></section></section><section id="wild-bootstrap" class="level2"><h2 class="anchored" data-anchor-id="wild-bootstrap">5. (Wild) Bootstrap</h2>
-<p>마지막으로, sandwich estimator는 아니지만, 모든 모델에서 data로부터 안정적으로 분산을 추정하여 의학 연구에서 인정하는 기법 중 하나인 Bootstraping을 통한 분산 term 추정 기법을 간단하게 소개드리겠습니다. 이 method는 특정 가정으로부터 수학적인 추정식을 세워 분산을 추정하는 대신, Bootstraping 통계 기법을 사용하여 data 만으로 경험적인 분산을 추정합니다. 때문에 이번에 소개하는 (Wild) Bootstrap 은 어떤 가정이나 모델이든 사용할 수 있는, 심지어 2장에서 다룰 clustered(grouped) data 에서도 사용할 수 있는 방법입니다.(가정이 전혀 들어가지 않았기 떄문입니다.) 이후에 다룰 <strong>샌드위치 추정량(Sandwich Estimator)</strong>과, 그의 OLS 버전인 <strong>HC(Heteroskedasticity-Consistent)</strong> 시리즈가 개발되었지만, 이들은 결국 대표본 점근적 성질로부터 얻은 수식이고, 극단적인 <strong>쇼포본</strong> 같은 작은 클러스터 수에서는 이러한 부트스트랩이 더 강력한 대안이 될 수도 있습니다. 이를 소개하기 전에 간단히 중요한 통계학적 resampling 기법인 잭나이프(Jackknife)와 부트스트랩(Bootstrap)을 얘기해보겠습니다. 이 둘은 모두 표본을 계속해서 얻기 힘든 상황 (현실에서는 대부분 그럴 것입니다.)에서 모수를 추정하기 위해, 이미 갖고 있는 표본의 data로부터 resampling을 하여 추정하는 통계학적 방법론입니다.</p>
+<p>마지막으로, sandwich estimator는 아니지만, 모든 모델에서 data로부터 안정적으로 분산을 추정하여 의학 연구에서 인정하는 기법 중 하나인 Bootstraping을 통한 분산 term 추정 기법을 간단하게 소개드리겠습니다. 이 method는 특정 가정으로부터 수학적인 추정식을 세워 분산을 추정하는 대신, Bootstraping 통계 기법을 사용하여 data 만으로 경험적인 분산을 추정합니다. 때문에 이번에 소개하는 (Wild) Bootstrap 은 어떤 가정이나 모델이든 사용할 수 있는, 심지어 2장에서 다룰 clustered(grouped) data 에서도 사용할 수 있는 방법입니다.(사용 대상인 모델이 정해지지 않은, 데이터 만으로 구하는 분산이기 때문에 가정이 전혀 들어가지 않아서입니다. 예를 들어 LM에서 HC se를 사용하는 경우 나머지 세 가정이 만족해야 했지만, Bootstrap은 그렇지 않습니다.) 이후에 다룰 <strong>샌드위치 추정량(Sandwich Estimator)</strong>과, 그의 OLS 버전인 <strong>HC(Heteroskedasticity-Consistent)</strong> 시리즈가 개발되었지만, 이들은 결국 대표본에서의 점근적 성질로부터 얻은 수식이고, 극단적인 <strong>쇼포본</strong> 같은 작은 클러스터 수에서는 이러한 데이터 만을 고려하여 추정하는 부트스트랩이 더 강력한 대안이 될 수도 있습니다. 이를 소개하기 전에 간단히 중요한 통계학적 resampling 기법인 잭나이프(Jackknife)와 부트스트랩(Bootstrap)을 얘기해보겠습니다. 이 둘은 모두 표본을 계속해서 얻기 힘든 상황 (현실에서는 대부분 그럴 것입니다.)에서 모수를 추정하기 위해, 이미 갖고 있는 표본의 data로부터 resampling을 하여 추정하는 통계학적 방법론입니다.</p>
 <section id="잭나이프jackknife" class="level4"><h4 class="anchored" data-anchor-id="잭나이프jackknife">잭나이프(Jackknife)</h4>
 <p><strong>Jackknife</strong> method는 한 번에 하나의 클러스터를 제외하고 모델을 추정 하는 것을 모든 클러스터에 대해 반복하여 분산을 계산합니다:</p>
 <p><span class="math display">\[
@@ -592,7 +596,6 @@ y^* = \hat{y} + w_i \hat{e}.
 <span><span class="co">## 주의: 부트스트랩 결과는 실행 횟수 R, 실행 시마다 다를 수 있음</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="마무리하며" class="level2"><h2 class="anchored" data-anchor-id="마무리하며">마무리하며</h2>
-<hr>
 <p>이번 1장에서는 <strong>Regression Analysis</strong>의 기본 개념과 <strong>(simple, multiple or General) Linear Regression</strong>의 이론적 배경, 그리고 등분산성 가정이 깨진(Heteroskedasticity) 상황에서 유용하게 쓰이는 <strong>Heteroskedasticity-Consistent Standard Errors(HC standard errors)</strong>에 대해 살펴보았습니다.</p>
 <p><strong>HC standard errors</strong>를 사용하면, Linear Regression 모델에서 등분산성 가정이 위배되더라도 Standard Errors(or Covariance Matrix)를 좀 더 타당하게 추정할 수 있습니다. 하지만, “<strong>오차항의 독립성</strong>, <strong>선형성</strong>, <strong>정규성</strong>” 등 나머지 가정이 크게 어긋난다면, 단순히 HC SE로 분산을 보정하는 것만으로는 해결되지 않습니다. HC SE가 기본 OLS 분산추정치와 크게 다르다면, “정말 모델이 맞는지”를 다시 고민하고, 필요하다면 모델을 재설정하거나 다른 방법을 모색해야 합니다.</p>
 <p>어쨌든, Heteroskedasticity가 의심되는 상황에서 가장 먼저 고려할 만한 접근인 <strong>HC(Heteroskedasticity-Consistent) standard errors</strong>는 모델의 유의성 검정을 위해 안정적으로 분산을 추정할 때 널리 쓰이며, 의학 연구에서도 일상적으로 활용되고 있습니다. 다음 2장에서는 이런 Linear Regression을 더 확장한 <strong>Generalized Linear Model(GLM)</strong>의 개념을 본격적으로 다루고, HC standard errors의 <strong>clustered data</strong> 버전인 <strong>Cluster-robust standard error</strong>에 대해서도 다룰 예정입니다.</p>
