@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<meta name="author" content="Jinseob Kim">
-<meta name="dcterms.date" content="2018-11-08">
-<meta name="description" content="아인슈타인의 일반상대성이론은 태양 근처에서 빛이 휘어지는 현상을 빛이 아닌 시공간이 휘어지는 것으로 해석합니다. 비슷한 아이디어를 통계학에 적용하여 U-shape 관계를 휘어진 다차원 공간에서의 선형모형으로 재해석하였습니다.">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="quarto-1.5.47" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+
+<meta name="author" content="Jinseob Kim" />
+<meta name="dcterms.date" content="2018-11-08" />
+<meta name="description" content="아인슈타인의 일반상대성이론은 태양 근처에서 빛이 휘어지는 현상을 빛이 아닌 시공간이 휘어지는 것으로 해석합니다. 비슷한 아이디어를 통계학에 적용하여 U-shape 관계를 휘어진 다차원 공간에서의 선형모형으로 재해석하였습니다." />
+
 <title>선형모형의 다차원공간으로의 확장 (Linear Model in Multidimensional Space) – 차라투 블로그</title>
 <style>
 code{white-space: pre-wrap;}
@@ -42,23 +47,8 @@ div.csl-indent {
   margin-left: 2em;
 }</style>
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-html/quarto.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-0626ff4d7a71b55c8707dcae1d04a9b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-12f9b1590e9172db5cd2178fc043c68b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<!-- htmldependencies:E3FAD763 -->
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -83,7 +73,9 @@ div.csl-indent {
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script type="text/javascript">
+}</script>
+
+<script type="text/javascript">
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -95,8 +87,13 @@ ga('send', {
   hitType: 'pageview',
   'anonymizeIp': true,
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
-<script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -121,27 +118,35 @@ const typesetMath = (el) => {
 window.Quarto = {
   typesetMath
 };
-</script><link rel="stylesheet" href="../../styles.css">
+</script>
+
+<link rel="stylesheet" href="../../styles.css" />
 </head>
-<body class="floating nav-fixed">
+
+<body>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
-    <a class="navbar-brand" href="../../index.html">
+    <a href="/index.html" class="navbar-brand navbar-brand-logo">
+    <img src="/img/logo.png" alt="" class="navbar-logo" />
+    </a>
+    <a class="navbar-brand" href="/index.html">
     <span class="navbar-title">차라투 블로그</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+  aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation"
+  onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+  <li class="nav-item">
+    <a class="nav-link" href="/index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
@@ -149,11 +154,11 @@ window.Quarto = {
 <span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false" >
  <span class="menu-text">R packages</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
     <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
  <span class="dropdown-text">jstable</span></a>
   </li>  
@@ -166,68 +171,107 @@ window.Quarto = {
  <span class="dropdown-text">jsmodule</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../contributors.html"> 
+    <a class="nav-link" href="/contributors.html"> 
 <span class="menu-text">Contributors</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false" >
  <span class="menu-text">Partners</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
-<li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
     <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
- <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+ <span class="dropdown-text">&lt;img src=&#39;https://www.r-bloggers.com/favicon.ico&#39;&gt;  R-bloggers</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
- <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+ <span class="dropdown-text">&lt;img width = &#39;16px&#39; src=&#39;https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4&#39;&gt; Shinykorea</span></a>
   </li>  
     </ul>
-</li>
+  </li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i 
+  class="bi bi-github" 
+  role="img" 
+>
 </i> 
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i 
+  class="bi bi-linkedin" 
+  role="img" 
+>
 </i> 
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+    <a class="nav-link" href="/index.xml" target="_blank"> <i 
+  class="bi bi-rss" 
+  role="img" 
+  aria-label="RSS" 
+>
 </i> 
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="bi bi-translate" role="img">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false" >
+      <i 
+  class="bi bi-translate" 
+  role="img" 
+>
 </i> 
  <span class="menu-text"></span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">
-<li>
-    <a class="dropdown-item" href="../../../index.html">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">    
+        <li>
+    <a class="dropdown-item" href="/../index.html">
  <span class="dropdown-text">한국어</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../../en/index.html">
+    <a class="dropdown-item" href="/../en/index.html">
  <span class="dropdown-text">English</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../../jp/index.html">
+    <a class="dropdown-item" href="/../jp/index.html">
  <span class="dropdown-text">日本語</span></a>
   </li>  
     </ul>
-</li>
+  </li>
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div id="quarto-toc-target"></div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" ></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script>
+
+
+<header id="title-block-header" class="quarto-title-block default toc-left">
+  <div class="quarto-title-banner">
     <div class="quarto-title column-body">
       <h1 class="title">선형모형의 다차원공간으로의 확장 (Linear Model in Multidimensional Space)</h1>
                   <div>
@@ -272,60 +316,51 @@ window.Quarto = {
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
-<!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+  </header>
+
+<nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract</a></li>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
-  <li>
-<a href="#formula" id="toc-formula" class="nav-link" data-scroll-target="#formula">Formula</a>
-  <ul class="collapse">
-<li><a href="#independent-variables-2-dimensions" id="toc-independent-variables-2-dimensions" class="nav-link" data-scroll-target="#independent-variables-2-dimensions">2 independent variables, 2 dimensions</a></li>
-  <li><a href="#p-independent-variable-2-dimensions" id="toc-p-independent-variable-2-dimensions" class="nav-link" data-scroll-target="#p-independent-variable-2-dimensions"><span class="math inline">\(p\)</span> independent variable, 2 dimensions</a></li>
-  <li><a href="#p-independent-variable-p-dimensions" id="toc-p-independent-variable-p-dimensions" class="nav-link" data-scroll-target="#p-independent-variable-p-dimensions"><span class="math inline">\(p\)</span> independent variable, <span class="math inline">\(p\)</span> dimensions</a></li>
+  <li><a href="#abstract" id="toc-abstract">Abstract</a></li>
+  <li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+  <li><a href="#formula" id="toc-formula">Formula</a>
+  <ul>
+  <li><a href="#independent-variables-2-dimensions" id="toc-independent-variables-2-dimensions">2 independent variables, 2 dimensions</a></li>
+  <li><a href="#p-independent-variable-2-dimensions" id="toc-p-independent-variable-2-dimensions"><span class="math inline">\(p\)</span> independent variable, 2 dimensions</a></li>
+  <li><a href="#p-independent-variable-p-dimensions" id="toc-p-independent-variable-p-dimensions"><span class="math inline">\(p\)</span> independent variable, <span class="math inline">\(p\)</span> dimensions</a></li>
+  </ul></li>
+  <li><a href="#estimation" id="toc-estimation">Estimation</a>
+  <ul>
+  <li><a href="#beta-estimation" id="toc-beta-estimation"><span class="math inline">\(\beta\)</span> Estimation</a></li>
+  <li><a href="#estimation-of-g_ij" id="toc-estimation-of-g_ij">Estimation of <span class="math inline">\(g_{ij}\)</span></a></li>
+  </ul></li>
+  <li><a href="#simulation" id="toc-simulation">Simulation</a>
+  <ul>
+  <li><a href="#scenario-1-y-x_1-x_2" id="toc-scenario-1-y-x_1-x_2">Scenario 1: <span class="math inline">\(Y = X_1 + X_2\)</span></a></li>
+  <li><a href="#scenario-2-y2-x_12-x_22" id="toc-scenario-2-y2-x_12-x_22">Scenario 2: <span class="math inline">\(Y^2 = X_1^2 + X_2^2\)</span></a></li>
+  <li><a href="#scenario-3-boldsymbolvecy-beta_01-beta_1x_1boldsymbolvecg_1-beta_02-beta_2x_2boldsymbolvecg_2" id="toc-scenario-3-boldsymbolvecy-beta_01-beta_1x_1boldsymbolvecg_1-beta_02-beta_2x_2boldsymbolvecg_2">Scenario 3: <span class="math inline">\(\boldsymbol{\vec{Y}} = (\beta_{01} + \beta_1X_1)\boldsymbol{\vec{g}}_1 + (\beta_{02} + \beta_2X_2)\boldsymbol{\vec{g}}_2\)</span></a></li>
+  </ul></li>
+  <li><a href="#apply-to-real-data" id="toc-apply-to-real-data">Apply to Real data</a></li>
+  <li><a href="#discussion" id="toc-discussion">Discussion</a></li>
   </ul>
-</li>
-  <li>
-<a href="#estimation" id="toc-estimation" class="nav-link" data-scroll-target="#estimation">Estimation</a>
-  <ul class="collapse">
-<li><a href="#beta-estimation" id="toc-beta-estimation" class="nav-link" data-scroll-target="#beta-estimation"><span class="math inline">\(\beta\)</span> Estimation</a></li>
-  <li><a href="#estimation-of-g_ij" id="toc-estimation-of-g_ij" class="nav-link" data-scroll-target="#estimation-of-g_ij">Estimation of <span class="math inline">\(g_{ij}\)</span></a></li>
-  </ul>
-</li>
-  <li>
-<a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation">Simulation</a>
-  <ul class="collapse">
-<li><a href="#scenario-1-y-x_1-x_2" id="toc-scenario-1-y-x_1-x_2" class="nav-link" data-scroll-target="#scenario-1-y-x_1-x_2">Scenario 1: <span class="math inline">\(Y = X_1 + X_2\)</span></a></li>
-  <li><a href="#scenario-2-y2-x_12-x_22" id="toc-scenario-2-y2-x_12-x_22" class="nav-link" data-scroll-target="#scenario-2-y2-x_12-x_22">Scenario 2: <span class="math inline">\(Y^2 = X_1^2 + X_2^2\)</span></a></li>
-  <li><a href="#scenario-3-boldsymbolvecy-beta_01-beta_1x_1boldsymbolvecg_1-beta_02-beta_2x_2boldsymbolvecg_2" id="toc-scenario-3-boldsymbolvecy-beta_01-beta_1x_1boldsymbolvecg_1-beta_02-beta_2x_2boldsymbolvecg_2" class="nav-link" data-scroll-target="#scenario-3-boldsymbolvecy-beta_01-beta_1x_1boldsymbolvecg_1-beta_02-beta_2x_2boldsymbolvecg_2">Scenario 3: <span class="math inline">\(\boldsymbol{\vec{Y}} = (\beta_{01} + \beta_1X_1)\boldsymbol{\vec{g}}_1 + (\beta_{02} + \beta_2X_2)\boldsymbol{\vec{g}}_2\)</span></a></li>
-  </ul>
-</li>
-  <li><a href="#apply-to-real-data" id="toc-apply-to-real-data" class="nav-link" data-scroll-target="#apply-to-real-data">Apply to Real data</a></li>
-  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
-  </ul></nav>
-</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
-<!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-    </div>
-<!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-L0DYYSH9KM');
-</script><p>본 연구는 <a href="https://github.com/jinseob2kim">김진섭</a> 대표가 박사학위 논문으로 계획했던 연구로, 결과적으로 학술지 게재와 심사통과에 실패했다는 것을 미리 알려드립니다. 계산법은 <a href="https://github.com/jinseob2kim/MDLM">R package</a> 로 만들었습니다.</p>
-<section id="abstract" class="level2"><h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+</nav>
+<p>본 연구는 <a href="https://github.com/jinseob2kim">김진섭</a> 대표가 박사학위 논문으로 계획했던 연구로, 결과적으로 학술지 게재와 심사통과에 실패했다는 것을 미리 알려드립니다. 계산법은 <a href="https://github.com/jinseob2kim/MDLM">R package</a> 로 만들었습니다.</p>
+<section id="abstract" class="level2">
+<h2>Abstract</h2>
 <p>선형모형을 적용하기 어려운 <span class="math inline">\(J,U\)</span>-shape같은 curved linear relationship을 비선형모형으로 분석하면 선형모형에 비해 해석이 어려워진다. 이에 본 연구에서는 선형관계의 컨셉은 유지하면서 <span class="math inline">\(J,U\)</span>-shape 같은 curved linear relationship을 표현할 수 있는 모형을 제안한다. 이것은 선형모형의 무대를 1차원에서 휘어진 다차원 공간으로 확장함으로서 가능하며, curved linear relationship을 다차원공간에서의 선형관계로 재해석할 수 있다. 시뮬레이션 결과 선형관계는 기존의 선형모형과 동등한 성능으로 추정하면서 더 우수한 성능으로 curved relationship를 추정할 수 있었고, 실제 <span class="math inline">\(U\)</span>-shape을 보이는 관계를 다차원공간에서의 선형관계로 쉽게 설명할 수 있었으며 <span class="math inline">\(U\)</span>-shape의 cut-off값도 쉽게 계산할 수 있었다. 선형모형을 완벽히 포함하여 확장한 본 연구의 제안이 건강연구의 새로운 표준으로 자리잡을 수 있으리라 자신한다.</p>
-</section><section id="introduction" class="level2"><h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+</section>
+<section id="introduction" class="level2">
+<h2>Introduction</h2>
 <p>Multivariable Linear Model은 분석결과의 해석이 간단하면서도 여러 독립변수들을 동시에 고려할 수 있는 장점이 있어 Health Science에서 널리 이용된다<span class="citation" data-cites="schneider2010linear">(<a href="#ref-schneider2010linear" role="doc-biblioref">Schneider, Hommel, and Blettner 2010</a>)</span>. 그러나 모든 관계가 선형관계인 것은 아니며 흔한 non-linear relationship으로 <span class="math inline">\(J,U\)</span>-shape같은 curved linear relationship이 있다<span class="citation" data-cites="calabrese2001u power1998u de2009depression knutson2006u">(<a href="#ref-calabrese2001u" role="doc-biblioref">Calabrese and Baldwin 2001</a>; <a href="#ref-power1998u" role="doc-biblioref">Power, Rodgers, and Hope 1998</a>; <a href="#ref-de2009depression" role="doc-biblioref">de Wit et al. 2009</a>; <a href="#ref-knutson2006u" role="doc-biblioref">Knutson and Turek 2006</a>)</span>. 이런 관계를 단순히 선형모형으로 분석하게 되면 간단하긴 하나 정확한 추정을 할 수 없으며 exponential, Log나 제곱, 루트를 이용해 변수를 치환하여 선형모형을 이용할 수 있다<span class="citation" data-cites="jagodzinski1981testing">(<a href="#ref-jagodzinski1981testing" role="doc-biblioref">Jagodzinski and Weede 1981</a>)</span>. 그러나 치환으로 선형관계를 만들 수 있는 경우는 극히 일부분에 지나지 않아 많은 경우에 비선형모형(non-linear model)을 활용하는데, 대표적인 방법으로는 독립변수의 고차항을 모형에 추가하거나(Polynomial Model) 비모수적인 방법으로 곡선을 추정하는 Additive Model, 그리고 Multi-layer를 이용한 neural network이 있다<span class="citation" data-cites="jagodzinski1981testing buja1989linear hornik1989multilayer">(<a href="#ref-jagodzinski1981testing" role="doc-biblioref">Jagodzinski and Weede 1981</a>; <a href="#ref-buja1989linear" role="doc-biblioref">Buja, Hastie, and Tibshirani 1989</a>; <a href="#ref-hornik1989multilayer" role="doc-biblioref">Hornik, Stinchcombe, and White 1989</a>)</span>. 그러나 이런 비선형모형들은 휘어진 모양을 해석하기 때문에 직선으로 해석하는 선형모형에 비해 해석이 복잡할 수 밖에 없다.</p>
 <p>이와 비슷한 문제가 20세기 초 물리학에서도 있었는데 태양 주위에서 빛이 휘는 문제가 바로 그것이다. 이 현상은 뉴턴의 물리학으로 설명되지 않았었는데, 아인슈타인(<em>Albert Einstein</em>)은 빛이 휘는 것이 아니라 태양 근처의 4차원 시공간(spacetime)이 휘어진 것이라는 발상의 전환을 통해 이 문제를 설명하였다<span class="citation" data-cites="coles2001einstein">(<a href="#ref-coles2001einstein" role="doc-biblioref">Coles 2001</a>)</span>. 이것이 유명한 일반상대성이론으로 공간의 무대를 3차원이 아니라 휘어진 4차원으로 확장한다면 빛은 여전히 직선임을 의미한다<span class="citation" data-cites="verlinde2011origin">(<a href="#ref-verlinde2011origin" role="doc-biblioref">Verlinde 2011</a>)</span>.</p>
 <p>이에 저자는 아인슈타인의 아이디어와 비슷하게 선형모형의 무대를 휘어진 다차원 공간으로 확장함으로서 <span class="math inline">\(J,U\)</span>-shape을 선형관계로 해석할 수 있는 Multi-dimensional Linear Model(MDLM)을 제안한다. 이것은 기존의 선형모형에 차원(dimension)의 개념을 추가하여 일반화한 것으로 모든 독립변수(independent variable)들이 같은 dimension의 정보라면 기존의 Linear Model과 일치한다. 먼저 개념을 수식으로 정리한 후 계수들을 추정하는 방법을 설명할 것이며 다양한 시나리오를 시뮬레이션하여 MDLM의 유용성을 살펴보겠다. 마지막으로 실제 <span class="math inline">\(U\)</span>-shape을 갖는 데이터에 본 모형을 적용하여 유용성을 평가할 것이다.</p>
-</section><section id="formula" class="level2"><h2 class="anchored" data-anchor-id="formula">Formula</h2>
+</section>
+<section id="formula" class="level2">
+<h2>Formula</h2>
 <p>음이 아닌 실수 <span class="math inline">\(Y\)</span>를 종속변수로 실수 <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_2\)</span>,<span class="math inline">\(\cdots\)</span>, <span class="math inline">\(X_n\)</span>들을 독립변수라 하자.</p>
-<section id="independent-variables-2-dimensions" class="level3"><h3 class="anchored" data-anchor-id="independent-variables-2-dimensions">2 independent variables, 2 dimensions</h3>
+<section id="independent-variables-2-dimensions" class="level3">
+<h3>2 independent variables, 2 dimensions</h3>
 <p><span class="math inline">\(Y\)</span>와 <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_2\)</span>의 선형관계를 2차원 벡터공간에서 표현하면 아래와 같다.</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -335,8 +370,10 @@ window.Quarto = {
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="index_files/figure-html/fig1-1.png" class="img-fluid figure-img" width="2100"></p>
-<figcaption>MDLM with 2 variables, 2 dimensions</figcaption></figure>
+<figure>
+<p><img src="index_files/figure-html/fig1-1.png" class="img-fluid" width="2100" /></p>
+<figcaption>MDLM with 2 variables, 2 dimensions</figcaption>
+</figure>
 </div>
 </div>
 </div>
@@ -357,8 +394,9 @@ d\boldsymbol{\vec{Y}} &amp;= \beta_1dX_1\boldsymbol{\vec{g}}_1 +\beta_2dX_2\bold
 <p>벡터로 표현된 위 식을 <span class="math inline">\(\boldsymbol{\vec{g}}_1\)</span>과 <span class="math inline">\(\boldsymbol{\vec{g}}_2\)</span>의 내적값인 <span class="math inline">\(g_{12}\)</span>를 이용해 스칼라로 표현하면 아래와 같다.</p>
 <p><span class="math display">\[Y^2 = (\beta_{01} + \beta_1X_1)^2 + (\beta_{02} + \beta_2X_2)^2 + 2g_{12}(\beta_{01} + \beta_1X_1)(\beta_{02} + \beta_2X_2)\]</span></p>
 <p>만약 <span class="math inline">\(g_{12}=0\)</span> 즉, <span class="math inline">\(X_1, X_2\)</span>가 독립된 차원을 갖는다면 <span class="math inline">\(X_2\)</span>가 고정되었을 때 <span class="math inline">\(X_1\)</span>과 <span class="math inline">\(Y\)</span>의 관계는 <span class="math inline">\(X_1=-\frac{\beta_{01}}{\beta_1}\)</span>에서 최소값을 갖는 <span class="math inline">\(U\)</span>-shape을 보이며 <span class="math inline">\(X_2\)</span>와 <span class="math inline">\(Y\)</span>의 관계도 마찬가지이다. 일반적으로 <span class="math inline">\(Y^2 = (\beta_{01} + \beta_1X_1 + g_{12}(\beta_{02} + \beta_2X_2))^2+ (1-g_{12}^2)(\beta_{02} + \beta_2X_2)^2\)</span>로 식을 변형하면 <span class="math inline">\(X_2\)</span>가 고정되었을 때 <span class="math inline">\(X_1\)</span>과 <span class="math inline">\(Y\)</span>의 관계는 <span class="math inline">\(X_1 = -\frac{\beta_{01}+g_{12}(\beta_{02} + \beta_2X_2)}{\beta_1}\)</span>에서 최소값을 갖는 <span class="math inline">\(U\)</span>-shape을 보임을 확인할 수 있다.</p>
-</section><section id="p-independent-variable-2-dimensions" class="level3"><h3 class="anchored" data-anchor-id="p-independent-variable-2-dimensions">
-<span class="math inline">\(p\)</span> independent variable, 2 dimensions</h3>
+</section>
+<section id="p-independent-variable-2-dimensions" class="level3">
+<h3><span class="math inline">\(p\)</span> independent variable, 2 dimensions</h3>
 <p>일반적으로 독립변수가 <span class="math inline">\(p\)</span>개인 경우 <span class="math inline">\(X_1, \cdot, X_l\)</span>이 같은 차원, <span class="math inline">\(X_{l+1}, \cdot, X_p\)</span>가 같은 차원에 있다고 가정하면 다음과 같이 벡터식과 스칼라식을 표현할 수 있다.</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -367,8 +405,9 @@ Y^2 &amp;= (\beta_{01} + \beta_1X_1 + \cdots + \beta_lX_l)^2 + (\beta_{02} + \be
 + &amp; 2g_{12}(\beta_{01} + \beta_1X_1 + \cdots + \beta_lX_l)(\beta_{02} + \beta_{l+1}X_{l+1} \cdots + \beta_pX_p)
 \end{aligned}
 \]</span></p>
-</section><section id="p-independent-variable-p-dimensions" class="level3"><h3 class="anchored" data-anchor-id="p-independent-variable-p-dimensions">
-<span class="math inline">\(p\)</span> independent variable, <span class="math inline">\(p\)</span> dimensions</h3>
+</section>
+<section id="p-independent-variable-p-dimensions" class="level3">
+<h3><span class="math inline">\(p\)</span> independent variable, <span class="math inline">\(p\)</span> dimensions</h3>
 <p>마지막으로 독립변수들이 전부 다른 방향을 갖고 있다고 가정한다면 아래와 같은 벡터식과 스칼라식을 얻는다.</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -381,13 +420,16 @@ Y^2 &amp;= \sum_{i=1}^{p}{(\beta_{0i} + \beta_iX_i)\boldsymbol{\vec{g}}_i} \cdot
 \]</span></p>
 <p>여기서 <span class="math inline">\(g_{ij}\)</span>는 <span class="math inline">\(X_i\)</span>방향의 단위벡터 <span class="math inline">\(\boldsymbol{\vec{g}}_i\)</span>와 <span class="math inline">\(X_j\)</span>방향의 단위벡터 <span class="math inline">\(\boldsymbol{\vec{g}}_j\)</span>의 내적값으로 두 벡터의 dependency를 나타낸다. 위의 경우와 마찬가지로 모든 <span class="math inline">\(g_{i}\)</span>들의 방향이 같다면 아래와 같이 기존의 선형모형과 같은 관계를 얻는다.</p>
 <p><span class="math display">\[Y= \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p\]</span> (단, (<span class="math inline">\(\beta_0 = \beta_{01}+\beta_{02}+\cdots + \beta_{0p}\)</span>) )</p>
-</section></section><section id="estimation" class="level2"><h2 class="anchored" data-anchor-id="estimation">Estimation</h2>
+</section>
+</section>
+<section id="estimation" class="level2">
+<h2>Estimation</h2>
 <p><span class="math inline">\(\beta = (\beta_1, \beta_2, \cdots, \beta_p, \beta_{01}, \beta_{02}, \cdots, \beta_{0p})\)</span> estimation을 위해 최소화해야 할 cost function은 아래와 같이 오차제곱의 합(Sum of Squared Error: SSE)으로 하면 자연스럽게 기존 선형모형의 최소제곱 추정을 일반화 할 수 있다.</p>
 <p><span class="math display">\[SSE(\beta) = \sum_{k=1}^N (Y_k - \sqrt{\sum_{i=1}^n(\beta_iX_{ki}+\beta_{i0})^2 + 2\sum_{i&lt;j}g_{ij}(\beta_iX_{ki}+\beta_{i0})(\beta_jX_{kj}+\beta_{j0})})^2\]</span></p>
 <p>(<span class="math inline">\(Y_k, X_{ki}\)</span>: <span class="math inline">\(k\)</span>th individual’s <span class="math inline">\(Y, X_{i}\)</span> value)</p>
 <p>위 식에서 <span class="math inline">\(g_{ij}\)</span>가 전부 1이라면 <span class="math inline">\(SSE(\beta) = \sum_{k=1}^N (Y_k- \beta_0 -\beta_1X_{k1} - \beta_2X_{k2} - \cdots - \beta_pX_{kp})^2\)</span>로 기존 선형모형의 최소제곱추정과 동일한 것을 확인할 수 있다.</p>
-<section id="beta-estimation" class="level3"><h3 class="anchored" data-anchor-id="beta-estimation">
-<span class="math inline">\(\beta\)</span> Estimation</h3>
+<section id="beta-estimation" class="level3">
+<h3><span class="math inline">\(\beta\)</span> Estimation</h3>
 <p>기존 선형모형과 달리 <span class="math inline">\(SSE(\beta)\)</span>를 최소로 하는 <span class="math inline">\(\beta\)</span>값은 직접 계산하기 어려워, optimization technique을 이용하며 Nelder-Mead, BFGS, CG, L-BFGS-B 등 다양한 방법이 있다 <span class="citation" data-cites="nelder1965simplex fletcher1964function byrd1995limited">(<a href="#ref-nelder1965simplex" role="doc-biblioref">Nelder and Mead 1965</a>; <a href="#ref-fletcher1964function" role="doc-biblioref">Fletcher 1964</a>; <a href="#ref-byrd1995limited" role="doc-biblioref">Byrd et al. 1995</a>)</span>. 위의 방법들을 활용하여 우리는 초기 <span class="math inline">\(\beta\)</span>값들부터 시작해서 반복적인 계산을 통해 수렴값을 얻게 된다. 한편 초기값이 바뀌면 <span class="math inline">\(SSE(\beta)\)</span>의 값은 같더라도 <span class="math inline">\(\beta\)</span>들의 부호가 다른 결과를 얻을 가능성이 있는데 이는 <span class="math inline">\(SSE(\beta)\)</span>가 <span class="math inline">\(\beta\)</span>들의 2차식으로만 구성되어 있기 때문이며, <span class="math inline">\(\beta\)</span>들의 부호가 바뀌더라도 <span class="math inline">\(SSE(\beta)\)</span>가 같다면 해석은 동일하다.</p>
 <p>추정된 <span class="math inline">\(\beta\)</span>값들의 standard error들은 <span class="math inline">\(SSE(\beta)\)</span>의 hessian matrix(<span class="math inline">\(H\)</span>)로 부터 구할 수 있다. 어떤 함수 <span class="math inline">\(f(\theta)\)</span>의 hessian matrix란 <span class="math inline">\(f(\theta)\)</span>를 2번 미분한 성분들로 이루어진 행렬인데, 일반적으로 <span class="math inline">\(\theta\)</span>의 variance와 반비례함이 알려져 있다<span class="citation" data-cites="Dov__1991">(<a href="#ref-Dov__1991" role="doc-biblioref">Dovi, Paladino, and Reverberi 1991</a>)</span>. 여기에서는 1변수 함수의 예를 통해 직관적으로 이해해보도록 하자. <span class="math inline">\(f(\theta)\)</span>가 <span class="math inline">\(\theta_0\)</span>에서 최소값을 갖을 때 <span class="math inline">\(f\)</span>를 1번 미분한 값은 0임을 이용, <span class="math inline">\(f\)</span>를 <span class="math inline">\(\theta_0\)</span> 부근에서 2차항까지만 테일러 급수전개를 하면</p>
 <p><span class="math display">\[
@@ -401,10 +443,14 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 <p>일반적으로 <span class="math inline">\(SSE(\beta)\)</span>를 최소로 하는 <span class="math inline">\(\hat{\beta}\)</span>들의 variance-covariance matrix는 아래와 같이 표현되며, 대각성분에 루트를 취하면 <span class="math inline">\(\beta\)</span>들의 standard error 값이 되어 p-value와 confidence interval(CI)을 계산할 수 있다<span class="citation" data-cites="Dov__1991">(<a href="#ref-Dov__1991" role="doc-biblioref">Dovi, Paladino, and Reverberi 1991</a>)</span>.</p>
 <p><span class="math display">\[\text{vcov}(\hat{\beta}) = 2\cdot H^{-1}\cdot MSE(\hat{\beta})\]</span></p>
 <p>(<span class="math inline">\(MSE\)</span>: Mean Squared Error)</p>
-</section><section id="estimation-of-g_ij" class="level3"><h3 class="anchored" data-anchor-id="estimation-of-g_ij">Estimation of <span class="math inline">\(g_{ij}\)</span>
-</h3>
+</section>
+<section id="estimation-of-g_ij" class="level3">
+<h3>Estimation of <span class="math inline">\(g_{ij}\)</span></h3>
 <p>위에 설명한 추정은 <span class="math inline">\(g_{ij}\)</span>가 고정되었을 때를 가정한 것인데, <span class="math inline">\(g_{ij}\)</span>를 데이터에서 직접 구할 수도 있으며 이것은 Generalized Estimating Equation(GEE)에서 working correlation matrix를 직접 계산할 수 있는 것과 마찬가지이다<span class="citation" data-cites="pan2002selecting">(<a href="#ref-pan2002selecting" role="doc-biblioref">Pan and Connett 2002</a>)</span>. 이 때는 <span class="math inline">\(g_{ij}\)</span>들은 <span class="math inline">\(\beta\)</span>들과 달리 -1에서 1까지의 값을 갖는다는 제한조건이 있어 constrained optimization technique를 이용해야 하며 나머지는 앞서와 동일하다<span class="citation" data-cites="rios2013derivative">(<a href="#ref-rios2013derivative" role="doc-biblioref">Rios and Sahinidis 2013</a>)</span>.</p>
-</section></section><section id="simulation" class="level2"><h2 class="anchored" data-anchor-id="simulation">Simulation</h2>
+</section>
+</section>
+<section id="simulation" class="level2">
+<h2>Simulation</h2>
 <p><span class="math inline">\(Y\)</span>와 <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_2\)</span>의 여러가지 관계에 대한 Simulation을 이용해 MDLM의 유용성을 살펴볼 것이며 구체적으로 다음의 5개 모형을 비교하겠다.</p>
 <ol type="1">
 <li><p>Linear Model (LM)</p></li>
@@ -415,22 +461,23 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 </ol>
 <p>모형비교는 Root Mean Square Error(RMSE)와 Akaike Information Criterion(AIC)을 이용하였으며 GAM의 경우는 effective degree of freedom(edf)를 AIC 계산에 활용하였다<span class="citation" data-cites="wood2001mgcv">(<a href="#ref-wood2001mgcv" role="doc-biblioref">Wood 2001</a>)</span>.</p>
 <p>편의상 <span class="math inline">\(X_1\)</span>과 <span class="math inline">\(X_2\)</span>는 각각 1부터 10까지의 자연수를 갖는 것으로 가정하였으며 따라서 샘플수는 100이다. 모든 계산은 <code>R</code> 3.5.1의 <strong>optim</strong>, <strong>constrOptim</strong> 함수를 이용하였다.</p>
-<section id="scenario-1-y-x_1-x_2" class="level3"><h3 class="anchored" data-anchor-id="scenario-1-y-x_1-x_2">Scenario 1: <span class="math inline">\(Y = X_1 + X_2\)</span>
-</h3>
+<section id="scenario-1-y-x_1-x_2" class="level3">
+<h3>Scenario 1: <span class="math inline">\(Y = X_1 + X_2\)</span></h3>
 <p><span class="math inline">\(Y \sim N(X_1 + X_2, 1)\)</span> 로 샘플링해 데이터를 생성하였으며 100회의 시뮬레이션을 수행해 RMSE와 AIC를 비교하였다(Table 1).</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Results: <span class="math inline">\(Y = X_1 + X_2\)</span>
-</caption>
-<thead><tr class="header">
+<table class="caption-top">
+<caption>Results: <span class="math inline">\(Y = X_1 + X_2\)</span></caption>
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: center;">LM</th>
 <th style="text-align: center;">MDLM(1)</th>
 <th style="text-align: center;">MDLM(2)</th>
 <th style="text-align: center;">Quadratic</th>
 <th style="text-align: center;">GAM</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">RMSE</td>
@@ -461,30 +508,32 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 </div>
 </div>
 <p>비교 결과 선형모형이 적은 parameter로 효율적인 추정을 하고 있음을 알 수 있었으며 <span class="math inline">\(g_{12}\)</span>를 고정하지 않은 MDLM(2)가 선형모형과 비슷한 성능을 보이는데 이는 MDLM이 선형모형을 포함한 개념임을 생각했을 때 자연스러운 결과이다.</p>
-</section><section id="scenario-2-y2-x_12-x_22" class="level3"><h3 class="anchored" data-anchor-id="scenario-2-y2-x_12-x_22">Scenario 2: <span class="math inline">\(Y^2 = X_1^2 + X_2^2\)</span>
-</h3>
+</section>
+<section id="scenario-2-y2-x_12-x_22" class="level3">
+<h3>Scenario 2: <span class="math inline">\(Y^2 = X_1^2 + X_2^2\)</span></h3>
 <p>이번엔 <span class="math inline">\(Y \sim N(\sqrt{X_1^2 + X_2^2}, 1)\)</span>로 샘플링해 데이터를 생성하여 마찬가지로 100회의 시뮬레이션을 수행하였다(Table 2).</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Results: <span class="math inline">\(Y^2 = X_1^2 + X_2^2\)</span>
-</caption>
+<table class="caption-top">
+<caption>Results: <span class="math inline">\(Y^2 = X_1^2 + X_2^2\)</span></caption>
 <colgroup>
-<col style="width: 6%">
-<col style="width: 18%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 18%">
-<col style="width: 18%">
+<col style="width: 6%" />
+<col style="width: 18%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: center;">LM</th>
 <th style="text-align: center;">MDLM(1)</th>
 <th style="text-align: center;">MDLM(2)</th>
 <th style="text-align: center;">Quadratic</th>
 <th style="text-align: center;">GAM</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">RMSE</td>
@@ -515,30 +564,32 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 </div>
 </div>
 <p>이번엔 MDLM(1)이 선형모형보다 확실히 우수한 추정값을 보이는것을 확인할 수 있으며, <span class="math inline">\(g_{12}\)</span>를 고정하지 않은 MDLM(2) 또한 MDLM(1)과 비슷한 성능을 보이는 것을 확인할 수 있다.</p>
-</section><section id="scenario-3-boldsymbolvecy-beta_01-beta_1x_1boldsymbolvecg_1-beta_02-beta_2x_2boldsymbolvecg_2" class="level3"><h3 class="anchored" data-anchor-id="scenario-3-boldsymbolvecy-beta_01-beta_1x_1boldsymbolvecg_1-beta_02-beta_2x_2boldsymbolvecg_2">Scenario 3: <span class="math inline">\(\boldsymbol{\vec{Y}} = (\beta_{01} + \beta_1X_1)\boldsymbol{\vec{g}}_1 + (\beta_{02} + \beta_2X_2)\boldsymbol{\vec{g}}_2\)</span>
-</h3>
+</section>
+<section id="scenario-3-boldsymbolvecy-beta_01-beta_1x_1boldsymbolvecg_1-beta_02-beta_2x_2boldsymbolvecg_2" class="level3">
+<h3>Scenario 3: <span class="math inline">\(\boldsymbol{\vec{Y}} = (\beta_{01} + \beta_1X_1)\boldsymbol{\vec{g}}_1 + (\beta_{02} + \beta_2X_2)\boldsymbol{\vec{g}}_2\)</span></h3>
 <p>마지막으로 Scenario2를 일반화한 경우를 시뮬레이션하였다. <span class="math inline">\(\beta\)</span>들은 -5~5, <span class="math inline">\(g_{12}\)</span>는 -1~1의 값을 임의로 선택하여 <span class="math inline">\(\boldsymbol{\vec{Y}} = (\beta_{01} + \beta_1X_1)\boldsymbol{\vec{g}}_1 + (\beta_{02} + \beta_2X_2)\boldsymbol{\vec{g}}_2\)</span>를 만족하는 <span class="math inline">\(Y\)</span>를 샘플링하였다. 즉, <span class="math inline">\(Y \sim N(\sqrt{(\beta_{01} + \beta_1X_1)^2 + (\beta_{02} + \beta_2X_2)^2 + 2g_{12}(\beta_{01} + \beta_1X_1)(\beta_{02} + \beta_2X_2)}, 1)\)</span>로 샘플링해 데이터를 생성하여 마찬가지로 100회의 시뮬레이션을 수행하였다(Table 3).</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Results: <span class="math inline">\(\boldsymbol{\vec{Y}} = (\beta_{01} + \beta_1X_1)\boldsymbol{\vec{g}}_1 + (\beta_{02} + \beta_2X_2)\boldsymbol{\vec{g}}_2\)</span>
-</caption>
+<table class="caption-top" style="width:100%;">
+<caption>Results: <span class="math inline">\(\boldsymbol{\vec{Y}} = (\beta_{01} + \beta_1X_1)\boldsymbol{\vec{g}}_1 + (\beta_{02} + \beta_2X_2)\boldsymbol{\vec{g}}_2\)</span></caption>
 <colgroup>
-<col style="width: 7%">
-<col style="width: 18%">
-<col style="width: 19%">
-<col style="width: 18%">
-<col style="width: 18%">
-<col style="width: 18%">
+<col style="width: 7%" />
+<col style="width: 18%" />
+<col style="width: 19%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: center;">LM</th>
 <th style="text-align: center;">MDLM(1)</th>
 <th style="text-align: center;">MDLM(2)</th>
 <th style="text-align: center;">Quadratic</th>
 <th style="text-align: center;">GAM</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">RMSE</td>
@@ -569,7 +620,10 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 </div>
 </div>
 <p>시뮬레이션 결과 <span class="math inline">\(g_{12}\)</span>를 추정할 수 있는 MDLM(2)가 다른 모형들보다 압도적으로 우수한 성능을 보이는 것을 확인할 수 있었다.</p>
-</section></section><section id="apply-to-real-data" class="level2"><h2 class="anchored" data-anchor-id="apply-to-real-data">Apply to Real data</h2>
+</section>
+</section>
+<section id="apply-to-real-data" class="level2">
+<h2>Apply to Real data</h2>
 <p>이번에는 실제 <span class="math inline">\(U\)</span>-shape을 보이는 데이터를 MDLM으로 분석해보겠다. http://biostat.mc.vanderbilt.edu/dupontwd/wddtext/data/3.25.2.SUPPORT.csv의 데이터에는 응급실 내원 당시 평균 동맥압(mean arterial pressure, MAP)과 재실기간(length of stay,LOS)의 정보가 있는데 MAP와 LOS의 natural logarithm값의 관계가 <span class="math inline">\(U\)</span>-shape이다. 이제 log(LOS)와 MAP의 관계를 아래와 같이 모델링 하였다.</p>
 <p><span class="math display">\[\boldsymbol{\vec{\text{log(LOS)}}} = \beta_{00}\boldsymbol{\vec{g_{1}}} + (\beta_{01}+ \beta_1\cdot \text{MAP})\boldsymbol{\vec{g_{2}}}\]</span></p>
 <p>즉 log(LOS)를 intercept와 MAP의 독립된 2차원으로 바라보는 관점으로 스칼라로 표현한 모형은 아래와 같다.</p>
@@ -578,12 +632,16 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="index_files/figure-html/fig2-1.png" class="img-fluid figure-img" width="2100"></p>
-<figcaption>Relation between mean arterial pressure(mmHg) and length of stay day(log scale)</figcaption></figure>
+<figure>
+<p><img src="index_files/figure-html/fig2-1.png" class="img-fluid" width="2100" /></p>
+<figcaption>Relation between mean arterial pressure(mmHg) and length of stay day(log scale)</figcaption>
+</figure>
 </div>
 </div>
 </div>
-</section><section id="discussion" class="level2"><h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
+</section>
+<section id="discussion" class="level2">
+<h2>Discussion</h2>
 <p>MDLM을 이용해서 기존의 선형모형을 완벽히 포괄하면서 선형모형의 개념을 휘어진 다차원 공간으로 확장할 수 있었고, 이를 통해 <span class="math inline">\(J,U\)</span>-shape같은 curved linear relationship을 잘 추정하고 cut-off값도 쉽게 확인할 수 있는 장점을 확인할 수 있었다. 기존 선형모형의 틀은 유지하면서 그것만이 진실은 아닐 수 있다는 것을 보여줬다는 점, 이를 통해 선형관계가 아닌 것을 선형관계로 해석할 수 있는 방법을 제시하였다는 점에서 큰 의미가 있다. 향후 연구자들이 평면에서의 선형관계에 국한되지 않고 가설을 검증할 수 있을 것이며, 이를 토대로 Health science 연구에서 MDLM이 기존 선형모형을 포괄하는 새로운 표준으로 자리잡을 수 있으리라 예상한다.</p>
 <p>MDLM의 추정식은 제곱근이 포함되어 있어 <span class="math inline">\(Y\)</span>가 음수값을 갖고 있는 경우에는 적용하기 어렵다는 한계가 있다. 그러나 Health Science 분야에서 음수값을 갖는 지표는 별로 많지 않아 큰 문제는 아닐 것으로 생각하며, 변수변환을 통해 (+)로만 이루어진 새로운 변수를 만들어 해결할 수도 있다. 이 문제는 물리학자 <em>Paul Dirac</em>이 특수상대성이론을 고려한 양자역학의 방정식을 만들 때 겪었던 문제와 비슷한데, 그는 방정식의 계수가 꼭 숫자일 필요가 없고 행렬일 수도 있다는 기발한 아이디어로 이를 해결했다<span class="citation" data-cites="dirac1928quantum">(<a href="#ref-dirac1928quantum" role="doc-biblioref">Dirac 1928</a>)</span>. 예를 들어 <span class="math inline">\(Y = \sqrt{\beta_0^2 + \beta_1^2x_1^2 + \beta_2^2x_2^2 }\)</span> 일 때, <span class="math inline">\(\beta_0, \beta_1, \beta_2\)</span>가 숫자일 필요가 없다는 것이다. <span class="math inline">\(\beta\)</span>들을 행렬로 간주한다면 <span class="math inline">\(Y = \sqrt{\beta_0^2 + \beta_1^2x_1^2 + \beta_2^2x_2^2 } = \beta_0 + \beta_1x_1 + \beta_2x_2\)</span> 꼴이 되어 제곱근을 없애는 것이 가능하다. 이 행렬들은 최소 <span class="math inline">\(4\times 4\)</span> 이상의 정방행렬이어야 함이 알려져 있으며, 대표적인 예로 Cliford Algebra를 만족하는 Dirac matrices 있는데 <span class="math inline">\(\beta\)</span>들의 예를 하나 들면 아래와 같다<span class="citation" data-cites="deTraubenberg2009">(<a href="#ref-deTraubenberg2009" role="doc-biblioref">Traubenberg 2009</a>)</span>.</p>
 <p><span class="math display">\[
@@ -615,10 +673,19 @@ SSE(\hat{\theta} + d\theta) &amp;= SSE(\hat{\theta}) + H \cdot\dfrac{(d\theta)^2
 <p><span class="math inline">\(SSE(\beta)\)</span>를 최소화하는<span class="math inline">\(\beta\)</span>를 구하기 위해 optimization tequnique을 활용한 것도 문제가 될 수 있는데, 얻은 <span class="math inline">\(SSE(\beta)\)</span>값이 진짜 최소값(global minimum)인지 보장할 수 없기 때문이다. 이를 local minima problem이라 한다. 그러나 machine learning의 유행과 더불어 optimization technique도 빠르게 발전되고 있어 조만간 이 문제가 해결되리라 예상한다. 게다가 최근 연구에서 high-dimensional space인 경우 local minima problem은 매우 희귀한 것으로 나타났는데, 모든 차원에서 local minima일 가능성은 매우 낮기 때문으로 여겨진다<span class="citation" data-cites="dauphin2014identifying">(<a href="#ref-dauphin2014identifying" role="doc-biblioref">Dauphin et al. 2014</a>)</span>.</p>
 <p>Introduction에서 언급했듯이 아인슈타인(<em>Albert Einstein</em>)은 공간의 무대를 3차원이 아니라 휘어진 4차원으로 확장한다면 빛은 여전히 직선임을 설명하였는데, 수식으로 살펴보면 3차원 공간에서 기술된 뉴턴의 중력장 방정식 <span class="math inline">\(\nabla^2\Phi = 4 \pi G\rho_0\)</span>를 휘어진 4차원에서의 방정식 <span class="math inline">\(\boldsymbol{R}_{uv}-\dfrac{1}{2}\boldsymbol{g}_{uv} = \dfrac{8\pi G}{c^4}\boldsymbol{T}_{uv}\)</span>로 확장한 것이다<span class="citation" data-cites="verlinde2011origin">(<a href="#ref-verlinde2011origin" role="doc-biblioref">Verlinde 2011</a>)</span>. 본 연구의 MDLM을 통해 선형공간의 무대를 다차원으로 확장하여 <span class="math inline">\(U\)</span>-shape같은 curved linear relationship을 선형관계로 바라볼 수 있게 되었다는 점에서 물리학에서의 아인슈타인 방정식과 비슷한 의미를 가진다고 감히 주장해 본다. 실제로 <span class="math inline">\(\beta_i^2\)</span> 를 <span class="math inline">\(g_{ii}\)</span>, <span class="math inline">\(g_{ij}\beta_i\beta_j\)</span>를 합쳐서 <span class="math inline">\(g_{ij}\)</span>라 놓으면 <span class="math inline">\(g_{ij}\)</span>는 아인슈타인 중력장 방정식을 표현하는데 쓰이는 계량텐서(metric tensor) <span class="math inline">\(g_{uv}\)</span>와 같은 의미를 갖게 되는데, <span class="math inline">\((dY)^2\)</span>를 표현하는 식은 <span class="math inline">\(\sum_{i,j}g_{ij}(dX_i)(dX_j)\)</span>로 휘어진 시공간에서 두 지점 사이의 거리를 나타내는 방법과 정확히 일치한다. 뉴턴의 방정식으로도 일상적인 운동을 잘 설명할 수 있으나 우주 공간같은 거시적인 스케일에서는 아인슈타인 방정식이 필요해지는데, 이와 마찬가지로 다차원 공간에서 기술된 본 연구의 MDLM이 population level에서 기존 선형모형보다 더 정확히 건강관련 현상을 설명할 수 있으리라 예상한다.</p>
 <p>한편 일반상대성이론은 원자 이하의 미시세계의 현상을 잘 설명하지 못한다는 문제점이 있으며,불확정성의 원리(uncertainty principle)와 슈뢰딩거 방정식(Schrödinger equation)으로 대표되는 양자역학(quantum mechanics)의 논리가 이곳을 지배한다. 슈뢰딩거 방정식은 입자의 운동은 확률로 기술되고 그 확률은 파동처럼 행동한다는 내용으로 파동을 기술하는 함수가 복소수로 표현되어 있다는 것이 특이한 점이다. 복소수는 그 자체로는 실제 세계를 해석하기 어렵지만 켤레복소수와의 곱을 통해 확률을 표현하게 되고 놀라운 정확도로 미시세계의 현상을 설명할 수 있다. 이것은 Health science에도 중요한 시사점이 될 수 있는데, Health science에서 가장 큰 문제점 중 하나가 population level의 연구결과가 개인의 건강상태를 잘 설명하지 못한다는 것이다. 상태를 확률로 기술한다는 점에서는 베이지안 접근법(bayesian approach)이 양자역학의 접근과 비슷하지만 복소수를 활용할 수 없다는 점에서 차이가 있다. 양자역학이 미시세계의 현상을 설명하는 새로운 방법이 된 것과 마찬가지로 확률을 복소수를 포함한 파동함수로 표현하는 방법이 향후 Health science에서 개인의 건강상태를 설명하는 새로운 방법이 될 것이라 과감히 추측해 본다.</p>
-
-
-
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="quarto-navigation-envelope" class="hidden">
+<p><span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-sidebar-title">차라투 블로그</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar-title">차라투 블로그</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:Home">Home</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:/index.html">/index.html</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:Applications">Applications</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:https://openstat.ai/">https://openstat.ai/</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:R packages">R packages</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:jstable">jstable</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:https://jinseob2kim.github.io/jstable/">https://jinseob2kim.github.io/jstable/</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:jskm">jskm</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:https://jinseob2kim.github.io/jskm/">https://jinseob2kim.github.io/jskm/</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:jsmodule">jsmodule</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:https://jinseob2kim.github.io/jsmodule/">https://jinseob2kim.github.io/jsmodule/</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:Contributors">Contributors</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:/contributors.html">/contributors.html</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:Partners">Partners</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:&lt;img src=&#39;https://www.r-bloggers.com/favicon.ico&#39;&gt;  R-bloggers"><img src='https://www.r-bloggers.com/favicon.ico'> R-bloggers</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:https://www.r-bloggers.com/">https://www.r-bloggers.com/</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:&lt;img width = &#39;16px&#39; src=&#39;https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4&#39;&gt; Shinykorea"><img width = '16px' src='https://avatars.githubusercontent.com/u/46996346?s=200&v=4'> Shinykorea</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:https://github.com/shinykorea/">https://github.com/shinykorea/</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:https://github.com/zarathucorp">https://github.com/zarathucorp</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:https://www.linkedin.com/company/zarathu/">https://www.linkedin.com/company/zarathu/</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:/index.xml">/index.xml</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:한국어">한국어</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:/../index.html">/../index.html</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:English">English</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:/../en/index.html">/../en/index.html</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:日本語">日本語</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:/../jp/index.html">/../jp/index.html</span></p>
+<div class="hidden quarto-markdown-envelope-contents" data-render-id="footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>
+<div class="hidden quarto-markdown-envelope-contents" data-render-id="footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+</div>
+<div id="quarto-meta-markdown" class="hidden">
+<p><span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-metatitle">선형모형의 다차원공간으로의 확장 (Linear Model in Multidimensional Space) – 차라투 블로그</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-twittercardtitle">선형모형의 다차원공간으로의 확장 (Linear Model in Multidimensional Space) – 차라투 블로그</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-ogcardtitle">선형모형의 다차원공간으로의 확장 (Linear Model in Multidimensional Space) – 차라투 블로그</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-metasitename">차라투 블로그</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-twittercarddesc">아인슈타인의 일반상대성이론은 태양 근처에서 빛이 휘어지는 현상을 빛이 아닌 시공간이 휘어지는 것으로 해석합니다. 비슷한 아이디어를 통계학에 적용하여 U-shape 관계를 휘어진 다차원 공간에서의 선형모형으로 재해석하였습니다.</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-ogcardddesc">아인슈타인의 일반상대성이론은 태양 근처에서 빛이 휘어지는 현상을 빛이 아닌 시공간이 휘어지는 것으로 해석합니다. 비슷한 아이디어를 통계학에 적용하여 U-shape 관계를 휘어진 다차원 공간에서의 선형모형으로 재해석하였습니다.</span></p>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-buja1989linear" class="csl-entry" role="listitem">
 Buja, Andreas, Trevor Hastie, and Robert Tibshirani. 1989. <span>“Linear Smoothers and Additive Models.”</span> <em>The Annals of Statistics</em> 17 (2): 453–510. <a href="http://www.jstor.org/stable/2241560">http://www.jstor.org/stable/2241560</a>.
 </div>
@@ -679,18 +746,11 @@ Verlinde, Erik. 2011. <span>“On the Origin of Gravity and the Laws of Newton.�
 <div id="ref-wood2001mgcv" class="csl-entry" role="listitem">
 Wood, Simon N. 2001. <span>“Mgcv: <span>GAM</span>s and Generalized Ridge Regression for <span>R</span>.”</span> <em>R News</em> 1 (2): 20–25. <a href="http://CRAN.R-project.org/doc/Rnews/">http://CRAN.R-project.org/doc/Rnews/</a>.
 </div>
-</div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2018,
-  author = {Kim, Jinseob},
-  title = {선형모형의 {다차원공간으로의} {확장} {(Linear} {Model} in
-    {Multidimensional} {Space)}},
-  date = {2018-11-08},
-  url = {https://blog.zarathu.com/posts/2018-11-08-mdlm/},
-  langid = {en}
-}
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2018" class="csl-entry quarto-appendix-citeas" role="listitem">
-Kim, Jinseob. 2018. <span>“선형모형의 다차원공간으로의 확장 (Linear
-Model in Multidimensional Space).”</span> November 8, 2018. <a href="https://blog.zarathu.com/posts/2018-11-08-mdlm/">https://blog.zarathu.com/posts/2018-11-08-mdlm/</a>.
-</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id = "quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -772,6 +832,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -882,6 +944,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
+      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1106,22 +1169,41 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</script>
+<script src="https://giscus.app/client.js"
+        data-repo="zarathucorp/giscus-blog"
+        data-repo-id="R_kgDOHztuxg"
+        data-category="General"
+        data-category-id="DIC_kwDOHztuxs4CQ6h5"
+        data-mapping="title"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="light"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
-<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
-</div>   
+      <div class='footer-contents'>Powered by [Quarto](https://quarto.org).
+</div>  
+    </div>   
     <div class="nav-footer-center">
-<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
-</div>
+      <div class='footer-contents'>&copy; 2019. [Zarathu Co.,Ltd.](https://www.zarathu.com) All rights reserved.
+Licence: [MIT](https://opensource.org/license/mit-0/).
+</div>  
+    </div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
 
+</body>
 
-<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
-</body></html>
+</html>
