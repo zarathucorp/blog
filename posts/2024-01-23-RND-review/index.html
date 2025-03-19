@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Changwoo Lim">
+<meta name="dcterms.date" content="2024-01-23">
+<meta name="description" content="R&amp;D 시험인증 및 R&amp;D 관련 느낀점입니다.">
+
+<title>R&amp;D 시험인증 후기 및 개발, 행정 관련 느낀 점 – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-0626ff4d7a71b55c8707dcae1d04a9b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-12f9b1590e9172db5cd2178fc043c68b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">Applications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R packages</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributors.html"> 
+<span class="menu-text">Contributors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Partners</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">    
+        <li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">R&amp;D 시험인증 후기 및 개발, 행정 관련 느낀 점</h1>
+                  <div>
+        <div class="description">
+          <p>R&amp;D 시험인증 및 R&amp;D 관련 느낀점입니다.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R&amp;D</div>
+                <div class="quarto-category">review</div>
+                <div class="quarto-category">IITP</div>
+                <div class="quarto-category">시험인증</div>
+                <div class="quarto-category">행정</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/ChangwooLim">Changwoo Lim</a> <a href="mailto:limcw@zarathu.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 23, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#개발" id="toc-개발" class="nav-link active" data-scroll-target="#개발">개발</a></li>
+  <li><a href="#행정" id="toc-행정" class="nav-link" data-scroll-target="#행정">행정</a></li>
+  <li><a href="#결론-요약" id="toc-결론-요약" class="nav-link" data-scroll-target="#결론-요약">결론 요약</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script>
+
+
+
+
+
+<p>공개SW 기반의 클라우드 통계 패키지SW 과제를 수행하면서, 외부 공인 기관에 시험인증을 의뢰해야 했습니다. 이와 관련된 후기, 또 전반적인 과제 관련 정보를 남깁니다. 당사로서는 처음 수행하는 R&amp;D였습니다. 저희 팀원들과 공동연구기관에서 다 같이 열심히 참여하였기에 잘 완수할 수 있었습니다. 그러나 그 과정에서 어쩔 수 없이 겪은 몇가지 어려움이 있었기에 이를 공유합니다.</p>
+<section id="개발" class="level3">
+<h3 class="anchored" data-anchor-id="개발">개발</h3>
+<p>최초에 R&amp;D 연구개발계획서를 작성하면서, 계획서 표지(요약 페이지)와 하단에, 높은 TRL단계를 달성하겠다고 기재하였습니다. 또, 하단에는 외부 기관으로부터 인증을 받겠다고도 기재하였습니다.</p>
+<p>이를 인지하지 못하고 있다, 2차년도 10/26에 최초로 위와 같이 기재한 것을 발견하였습니다. 관련하여 주관 기관에, 수행하지 않아도 될지에 대해 문의하였으나 외부 시험이 필요할 것이라는 회신을 받았습니다(사유: 최초 연구개발계획서에 기재되어 있고, TRL이 높은 단계인 점 등 고려)</p>
+<p>그 후, 12/18에 현장 테스트가 완료되었으며, 12/27경 최종 보고서 초안를 받았습니다. 시험 준비부터 완료까지 거의 2달이 소요됩니다. 만약 이러한 준비가 되어 있지 않은 경우 마감이 아주 촉박해 제때 마무리 하지 못할 우려가 있습니다. 우리만 준비되면 되는 것이 아니고, 시험인증 업체측 일정도 고려해야 합니다. SW인증업체가 전국에 10개소 정도밖에 되지 않는 것으로 알고 있습니다. SW R&amp;D는 최소 100건은 될 것입니다. 모두가 시험인증을 거치는 것은 아니지만, 미리 준비해야 합니다. 제가 10월 말경 문의하였을때 이미 12월 말까지 일정이 있어 의뢰받지 못한다고 회신한 업체도 2~3개정도 있었습니다.</p>
+<p>시험인증은 상당히 시간이 많이 소요되는 작업입니다. 가능하다면 피하는 것이 좋으나, 현재 우리 회사의 기술 수준을 볼 때 대부분 상용화/성숙 단계 R&amp;D일 것이므로 피하기 어려울 것입니다. 미리 준비해야 합니다.</p>
+<section id="연구개발계획서-내용을-rd-참가-인원과-잘-공유하고-우리가-해야-할-것을-정리" class="level5">
+<h5 class="anchored" data-anchor-id="연구개발계획서-내용을-rd-참가-인원과-잘-공유하고-우리가-해야-할-것을-정리">연구개발계획서 내용을 R&amp;D 참가 인원과 잘 공유하고, 우리가 해야 할 것을 정리</h5>
+<p>처음 연구개발계획서를 가장 잘 쓰는 것이 중요하고, 그 R&amp;D 전 기간에 거쳐 참가할 사람과 공유하여 향후 어떠한 검증을 외부 업체에서 받아야 하는지를 사전에 알고 있는 것이 중요합니다. 그렇게 해야만 해당 부분의 유지보수를 조금 더 잘 할 수 있으리라 생각합니다.</p>
+<p>현재는 연구개발계획서를 다 같이 보는 것이 아니라, 대표님이 작성하시고 그것을 개개인이 읽어 보는 형태로 진행되고 있습니다. 하지만 앞으로는 <strong>한 자리에 모여 다같이 연구개발계획서를 검토하고, 비현실적인 부분이 있는지, 또는 미리 준비해야 하는 부분이 있는지</strong>를 검토하고 가능하면 쉽게 수행할 수 있도록 향후 우려되는 요소를 미리 제거한 연구개발계획서를 작성하는 것이 중요하겠습니다.</p>
+</section>
+<section id="rfp에-기반한-목표치를-알맞게-설정" class="level5">
+<h5 class="anchored" data-anchor-id="rfp에-기반한-목표치를-알맞게-설정">RFP에 기반한 목표치를 알맞게 설정</h5>
+<p>RFP의 ‘국내 기업 최고치’, ‘해외 기업 최고치’를 준용하지 않는 경우(즉, 해당 값을 변경하거나 새로운 기준을 만드는 경우)에는 ’국내 기업 최고치’, ’해외 기업 최고치’가 해당 값인 것도 우리가 입증해야 함에 주의하여야 합니다(간사 문의사항). 다행히도, 이번 과제의 경우 RFP상에서 국내/해외 기업 최고치를 제시하였기에 우리가 입증 할 필요가 없었습니다. 시험인증이 불가하여 외부에 위탁하지는 않았지만, 예를 들어 ’분석 속도’에 정확한 기준을 적지 않은 채, 해외 기업을 100%라고 한 경우 매우 곤란한 경우가 생길 수도 있으리라 생각됩니다. 연구개발계획서를 작성 할 때에는 상대적인 수치가 아닌, <strong>절대치로 기재하는것이 좋겠으며</strong> 달성이 어렵더라도, <strong>입증 자체는 쉽게 할 수 있는 항목을 기재</strong>하는 것이 최종 결과보고서 작성에 유리합니다.</p>
+</section>
+<section id="다른-업체와의-업무-분담-명확화" class="level5">
+<h5 class="anchored" data-anchor-id="다른-업체와의-업무-분담-명확화">다른 업체와의 업무 분담 명확화</h5>
+<p>이번 시험인증에서는 다른 공동연구개발기관와 함께 시험인증을 진행했습니다. 그 공동연구개발기관 역시 시험인증에 대한 준비가 되지 않은 상황이었으며, 상대측 실무자 또한 경험이 많이 없어 미숙한 면이 있었다고 보입니다. 마찬가지로 연구개발계획서를 작성 할 때에 언제쯤, 어떻게 시험을 진행할 지, 각자 서류작업(페이퍼워크)의 분담은 어떻게 할 지 등을 미리 검토 할 필요가 있습니다. 그렇지 않으면 서로 소통이 되지 않아 일을 이중으로 하게 됩니다.</p>
+<p>이번 시험인증의 경우 다른 공동연구개발기관에 요청한 서류 대부분을 사용하지 못하고 우리 회사측에서 새로 작성하였습니다. 주관기관으로 참여할 경우 대부분의 페이퍼워크를 우리가 부담해야 하니 미리 알고 있을 필요가 있습니다.</p>
+</section>
+<section id="사전에-검증-가능한-항목인지-공인인증-업체에-미리-확인" class="level5">
+<h5 class="anchored" data-anchor-id="사전에-검증-가능한-항목인지-공인인증-업체에-미리-확인">사전에 검증 가능한 항목인지, 공인인증 업체에 미리 확인</h5>
+<p>통계분석 시간 단축률 항목의 경우, 다른 상용 프로그램과의 비교가 불가능하다는 시험인증 업체의 회신을 받았습니다, 이는 최종 평가에서 분명히 마이너스 요소가 될 수 있는 사안입니다. 다음 연구개발계획서 작성 시에는, 평가 항목을 사전에 업체와 조율하여 평가가 가능한지를 파악한 후 이를 기재하는것이 바람직하리라 생각됩니다.</p>
+</section>
+<section id="개발-시-시험항목과-테스트-항목에-맞추어-개발" class="level5">
+<h5 class="anchored" data-anchor-id="개발-시-시험항목과-테스트-항목에-맞추어-개발">개발 시 시험항목과 테스트 항목에 맞추어 개발</h5>
+<p>기능을 개발 할 때에, 시험항목에 포함되는 개발 항목과, 시험 항목에 포함되지는 않지만 연구개발계획서에는 존재하는 항목이 있습니다. 시험인증을 하지 않아도 되는 항목의 경우 일단 구현만 하면 연구개발계획서를 어기지는 않은 반면, 시험인증을 해야 하는 항목의 경우 여러 번/여러 플랫폼에서 테스트를 할 필요가 있고, 기능 명세도 작성해야 합니다. 또 이러한 항목의 경우 코드에 <strong>주석 작업을 철저히 하여 추후 오류가 발생했을 때 쉽게 수정할 수 있어야</strong> 할 것입니다. 미리미리 해 두지 않으면 추후 유지보수가 굉장히 어려워, 시간이 2~3배 더 소요될 수 있습니다.</p>
+</section>
+<section id="양식-작성-시-스크린샷은-최대한-자세하게" class="level5">
+<h5 class="anchored" data-anchor-id="양식-작성-시-스크린샷은-최대한-자세하게">양식 작성 시 스크린샷은 최대한 자세하게</h5>
+<p>이번 시험인증을 진행한 업체를 포함해, 약 4개정도의 업체에서 견적을 받거나, 최소한 문의하여 양식을 작성했습니다. 공통적인(비슷한) 양식이 있는 것을 보니 정형화된 서류가 존재하는 듯 합니다.</p>
+<p>이번에 수행한 업체의 경우, 해당 서류를 작성해서 제출했음에도 불구하고, 그 이후에 해당 서류의 내용을 바탕으로 전체적인 테스트를 수행한 후 보내달라고 하였습니다. 최초에 테스트 할 항목을 작성할 때, 미리 테스트를 겸하여 어떻게 작동되는지를 스크린샷으로 촬영 해 두면 간편하게 시험인증을 마무리 할 수 있습니다.</p>
+</section>
+<section id="테스트-도구의-도입" class="level5">
+<h5 class="anchored" data-anchor-id="테스트-도구의-도입">테스트 도구의 도입</h5>
+<p>아직 한번도 이런 도구를 사용해보진 못했지만, 이러한 도구의 필요성을 절실히 느꼈습니다. 예를 들어, statgarten의 ML 중 lightGBM 패키지가 업데이트 되어, 특정 버전을 지정하여 설치하도록 한 경우에는 다른 ML에 영향이 없는지 확인이 필요합니다. 어떤 dependency가 업데이트 되었을 때, 테스트 도구가 없다면 매번 모든 항목을 수동으로 테스트 해야 합니다. 이런 번거로움을 막고자 테스트 도구 도입을 검토 할 필요가 있습니다.</p>
+</section>
+</section>
+<section id="행정" class="level3">
+<h3 class="anchored" data-anchor-id="행정">행정</h3>
+<section id="연구비는-인건비와-연구활동비-위주로-편성" class="level5">
+<h5 class="anchored" data-anchor-id="연구비는-인건비와-연구활동비-위주로-편성">연구비는 인건비와 연구활동비 위주로 편성</h5>
+<p>연구비로 회사에 필요한 비품을 구매하거나, 용역을 주는 것은 쉽지 않습니다, 이번 IITP에서 회계를 제가 담당할 때는 대부분 인건비와 식비였기에 예산 집행에 큰 어려움은 없었습니다. 하지만 그 후에, NIPA나 창업도약패키지 연구비 집행을 옆에서 지켜 본 결과, 사실상 인건비와 식사 이외에는 사용하지 말라는 의도라고 생각하게 되었습니다. 실물 재료가 필요한 다른 연구와는 달리, 우리는 SW개발업이기에 인건비가 가장 많은 비중을 차지하고, 최대한 인건비를 연구비로 계상하는 것이 중요할 것 같습니다. 만약 다른 항목(예: 장비 구매 등)이 꼭 필요하다면, “협약 초기”에 끝내는 것이 좋겠습니다.</p>
+<p>2024년 1월 추가: 2023년 12월 28일부터 회의비 사용이 어려워졌습니다. 대부분 인건비로 처리가 필요합니다.</p>
+</section>
+<section id="간사와의-연락은-메일로" class="level5">
+<h5 class="anchored" data-anchor-id="간사와의-연락은-메일로">간사와의 연락은 메일로</h5>
+<p>출장 등으로 전화가 잘 되지 않을 뿐더러, 상대가 전화를 선호하지 않습니다. 한 명의 간사가 10개 이상의 사업을 관리하는 경우도 있기에 메일이 좋습니다. 또 추후 문제가 생겼을 때 우리가 대응하기 굉장히 껄끄러운 상대방입니다. 따라서 가능한 한 기록이 남는 메일로 연락을 주고받는것이 좋겠습니다.</p>
+</section>
+<section id="협약-변경은-한번에" class="level5">
+<h5 class="anchored" data-anchor-id="협약-변경은-한번에">협약 변경은 한번에</h5>
+<p>비교적 자유로웠던 IITP과제와는 달리, 현재 수행중인 타 과제는 협약 변경이 매우 번거롭습니다. 그 기관의 특성으로 보이나, 연구 분야를 보았을 때 우리가 추가로 R&amp;D를 수행한다면 그 기관 과제일 확률이 매우 높습니다. 앞에 언급 한 것처럼 최대한 최초 연구개발계획서에 구체적으로, 우리가 유리한 방향으로 작성하는것이 좋습니다.</p>
+<p>또 위 기관의 경우 한번 협약 변경에 오랜 시일이 걸립니다. 지난 10월경 협약변경한 건은 약 1개월 걸렸으며, 그 과정에서 반려도 최소 5회 이상 당했습니다. 또, 과제 종료 시기(11월 이후?)가 되면, 원래는 협약변경 가능한 시기임에도 불구하고 협약변경을 잘 해주지 않으려 합니다. 이 점 감안하셔서, 하반기 진입 시 과제 상황을 한 번 체크하시는 것이 좋습니다.</p>
+</section>
+<section id="전문연구사업자" class="level5">
+<h5 class="anchored" data-anchor-id="전문연구사업자">전문연구사업자</h5>
+<p>전문연구사업자 자격이 있으므로 기존인력 인건비 계상이 가능합니다. 현재 수행하고 있는 R&amp;D의 주관기관은 거부하였는데 해당 법령 소관기관인 과기부 문의 결과 부처 상관없이 기존인력 인건비 계상이 가능하여야 합니다. 현재는 기존인력인건비 계상이 꼭 필요하지는 않았지만, 앞으로 필요시 과기부 문의 결과를 바탕으로 요청해보아야 할 것 같습니다.</p>
+</section>
+<section id="slack을-통한-계획서-공유는-지양" class="level5">
+<h5 class="anchored" data-anchor-id="slack을-통한-계획서-공유는-지양">Slack을 통한 계획서 공유는 지양</h5>
+<p>Slack으로 계획서를 공유하면 간편하지만, 버전 관리 문제가 발생합니다. 같은 파일에 각기 다른 내용이 추가되고, 이들을 합칠 수 없는 문제가 생깁니다. 그리 길지 않은 문서라면 대조하며 확인이 가능하지만, 백 페이지가 넘는 문서들은 그렇게 대조하는 것이 매우 고통스러운 작업일 것입니다. 가급적이면 버전 관리가 가능한 회사 드라이브를 통해 하는 것이 좋습니다.</p>
+</section>
+<section id="주관기관이-대부분의-일을-합니다" class="level5">
+<h5 class="anchored" data-anchor-id="주관기관이-대부분의-일을-합니다">주관기관이 대부분의 일을 합니다</h5>
+<p>만약 우리가 주관기관으로 참여하게 되면 대부분의 서류 작업을 우리가 해야 합니다. 각 기관별 예산/성과등은 각 기관에게 요청할 수 있지만, 대부분의 페이퍼워크를 우리가 해야 하므로 미리 준비해야 합니다.</p>
+</section>
+</section>
+<section id="결론-요약" class="level3">
+<h3 class="anchored" data-anchor-id="결론-요약">결론 요약</h3>
+<ol type="1">
+<li>과제 지원/시작 단계에서 다같이 모여 연구개발계획서와 (있는 경우) 과업지시서를 읽고 논의하자</li>
+<li>개발 단계부터 체계를 갖추고, 테스트를 잘 수행하자</li>
+<li>협약 관련 사항은 여름까지는 완료하고, 인건비 이외 지출항목은 가능하면 연초에 소진하자</li>
+</ol>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lim2024,
+  author = {Lim, Changwoo},
+  title = {R\&amp;D {시험인증} {후기} {및} {개발,} {행정} {관련} {느낀}
+    {점}},
+  date = {2024-01-23},
+  url = {https://blog.zarathu.com/posts/2024-01-23-RND-review/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lim2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+Lim, Changwoo. 2024. <span>“R&amp;D 시험인증 후기 및 개발, 행정 관련
+느낀 점.”</span> January 23, 2024. <a href="https://blog.zarathu.com/posts/2024-01-23-RND-review/">https://blog.zarathu.com/posts/2024-01-23-RND-review/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
