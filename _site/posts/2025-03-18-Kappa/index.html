@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="YeJi Kang">
+<meta name="dcterms.date" content="2025-03-18">
+<meta name="description" content="여러 종류의 Kappa 분석 방법을 설명하고, R 코드 예제를 통해 실전에서 활용하는 방법을 정리하였습니다.">
+
+<title>Kappa 분석 이해하기 – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-0626ff4d7a71b55c8707dcae1d04a9b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-12f9b1590e9172db5cd2178fc043c68b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">Applications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R packages</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributors.html"> 
+<span class="menu-text">Contributors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Partners</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">    
+        <li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Kappa 분석 이해하기</h1>
+                  <div>
+        <div class="description">
+          <p>여러 종류의 Kappa 분석 방법을 설명하고, R 코드 예제를 통해 실전에서 활용하는 방법을 정리하였습니다.</p>
+        </div>
+      </div>
+                </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/YejiKang63">YeJi Kang</a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 18, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Kappa 분석 알아보기</h2>
+   
+  <ul>
+  <li><a href="#시작하기-전에" id="toc-시작하기-전에" class="nav-link active" data-scroll-target="#시작하기-전에">시작하기 전에</a>
+  <ul class="collapse">
+  <li><a href="#단순-일치율-vs.-kappa-계수" id="toc-단순-일치율-vs.-kappa-계수" class="nav-link" data-scroll-target="#단순-일치율-vs.-kappa-계수">단순 일치율 vs.&nbsp;Kappa 계수</a></li>
+  </ul></li>
+  <li><a href="#cohens-kappa" id="toc-cohens-kappa" class="nav-link" data-scroll-target="#cohens-kappa">1. Cohen’s Kappa</a>
+  <ul class="collapse">
+  <li><a href="#cohens-kappa-공식" id="toc-cohens-kappa-공식" class="nav-link" data-scroll-target="#cohens-kappa-공식">1.1 Cohen’s Kappa 공식</a>
+  <ul class="collapse">
+  <li><a href="#observed-accuracy-p_o" id="toc-observed-accuracy-p_o" class="nav-link" data-scroll-target="#observed-accuracy-p_o">Observed Accuracy <span class="math inline">\(P_o\)</span></a></li>
+  <li><a href="#expected-accuracy-p_e" id="toc-expected-accuracy-p_e" class="nav-link" data-scroll-target="#expected-accuracy-p_e">Expected Accuracy <span class="math inline">\(P_e\)</span></a></li>
+  <li><a href="#binary-classifications" id="toc-binary-classifications" class="nav-link" data-scroll-target="#binary-classifications">Binary Classifications</a></li>
+  </ul></li>
+  <li><a href="#example-1" id="toc-example-1" class="nav-link" data-scroll-target="#example-1">1.2 Example 1</a></li>
+  <li><a href="#example-2" id="toc-example-2" class="nav-link" data-scroll-target="#example-2">1.3 Example 2</a></li>
+  </ul></li>
+  <li><a href="#weighted-kappa" id="toc-weighted-kappa" class="nav-link" data-scroll-target="#weighted-kappa">2. Weighted Kappa</a>
+  <ul class="collapse">
+  <li><a href="#weighted-kappa-공식" id="toc-weighted-kappa-공식" class="nav-link" data-scroll-target="#weighted-kappa-공식">2.1 Weighted Kappa 공식</a>
+  <ul class="collapse">
+  <li><a href="#observed-accuracy-p_o-1" id="toc-observed-accuracy-p_o-1" class="nav-link" data-scroll-target="#observed-accuracy-p_o-1">Observed Accuracy (<span class="math inline">\(P_o\)</span>)</a></li>
+  <li><a href="#expected-accuracy-p_e-1" id="toc-expected-accuracy-p_e-1" class="nav-link" data-scroll-target="#expected-accuracy-p_e-1">Expected Accuracy (<span class="math inline">\(P_e\)</span>)</a></li>
+  </ul></li>
+  <li><a href="#가중치w의-종류" id="toc-가중치w의-종류" class="nav-link" data-scroll-target="#가중치w의-종류">2.2 가중치(<span class="math inline">\(W\)</span>)의 종류</a>
+  <ul class="collapse">
+  <li><a href="#선형-가중치-linear-weights" id="toc-선형-가중치-linear-weights" class="nav-link" data-scroll-target="#선형-가중치-linear-weights">선형 가중치 (Linear weights)</a></li>
+  <li><a href="#제곱-가중치-quadratic-weights" id="toc-제곱-가중치-quadratic-weights" class="nav-link" data-scroll-target="#제곱-가중치-quadratic-weights">제곱 가중치 (Quadratic weights)</a></li>
+  <li><a href="#가중치-선택-방법" id="toc-가중치-선택-방법" class="nav-link" data-scroll-target="#가중치-선택-방법">가중치 선택 방법</a></li>
+  </ul></li>
+  <li><a href="#example-1-1" id="toc-example-1-1" class="nav-link" data-scroll-target="#example-1-1">2.3 Example 1</a></li>
+  </ul></li>
+  <li><a href="#fleiss-kappa" id="toc-fleiss-kappa" class="nav-link" data-scroll-target="#fleiss-kappa">3. Fleiss’ Kappa</a>
+  <ul class="collapse">
+  <li><a href="#fleiss-kappa-공식" id="toc-fleiss-kappa-공식" class="nav-link" data-scroll-target="#fleiss-kappa-공식">3.1 Fleiss’ Kappa 공식</a>
+  <ul class="collapse">
+  <li><a href="#observed-agreement-barp_o" id="toc-observed-agreement-barp_o" class="nav-link" data-scroll-target="#observed-agreement-barp_o">Observed agreement <span class="math inline">\(\bar{P}_o\)</span>:</a></li>
+  <li><a href="#expected-agreement-by-chance-barp_e" id="toc-expected-agreement-by-chance-barp_e" class="nav-link" data-scroll-target="#expected-agreement-by-chance-barp_e">Expected agreement by chance <span class="math inline">\(\bar{P_e}\)</span></a></li>
+  </ul></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">3.2 Example</a></li>
+  </ul></li>
+  <li><a href="#generalized-fleiss-kappa" id="toc-generalized-fleiss-kappa" class="nav-link" data-scroll-target="#generalized-fleiss-kappa">4. Generalized Fleiss’ Kappa</a>
+  <ul class="collapse">
+  <li><a href="#generalized-fleiss-kappa-공식" id="toc-generalized-fleiss-kappa-공식" class="nav-link" data-scroll-target="#generalized-fleiss-kappa-공식">4.1 Generalized Fleiss’ Kappa 공식</a></li>
+  <li><a href="#example-3" id="toc-example-3" class="nav-link" data-scroll-target="#example-3">4.2 Example</a></li>
+  </ul></li>
+  <li><a href="#krippendorffs-alpha" id="toc-krippendorffs-alpha" class="nav-link" data-scroll-target="#krippendorffs-alpha">5. Krippendorff’s Alpha</a>
+  <ul class="collapse">
+  <li><a href="#신뢰도-데이터" id="toc-신뢰도-데이터" class="nav-link" data-scroll-target="#신뢰도-데이터">5.1 신뢰도 데이터</a></li>
+  <li><a href="#krippendorffs-alpha-공식" id="toc-krippendorffs-alpha-공식" class="nav-link" data-scroll-target="#krippendorffs-alpha-공식">5.1 Krippendorff’s Alpha 공식</a>
+  <ul class="collapse">
+  <li><a href="#observed-disagreement-d_o" id="toc-observed-disagreement-d_o" class="nav-link" data-scroll-target="#observed-disagreement-d_o">Observed Disagreement <span class="math inline">\(D_o\)</span></a></li>
+  <li><a href="#expected-disagreement-by-chance-d_e" id="toc-expected-disagreement-by-chance-d_e" class="nav-link" data-scroll-target="#expected-disagreement-by-chance-d_e">Expected Disagreement by chance <span class="math inline">\(D_e\)</span></a></li>
+  <li><a href="#krippendorffs-alpha-값-해석" id="toc-krippendorffs-alpha-값-해석" class="nav-link" data-scroll-target="#krippendorffs-alpha-값-해석">Krippendorff’s Alpha 값 해석</a></li>
+  </ul></li>
+  <li><a href="#example-4" id="toc-example-4" class="nav-link" data-scroll-target="#example-4">5.2 Example</a></li>
+  </ul></li>
+  <li><a href="#마치며" id="toc-마치며" class="nav-link" data-scroll-target="#마치며">마치며</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script>
+
+
+
+
+
+<section id="시작하기-전에" class="level1">
+<h1>시작하기 전에</h1>
+<p><a href="https://en.wikipedia.org/wiki/Cohen%27s_kappa">Kappa 통계</a>는 <strong>두 명 이상의 평가자(rater)가 범주형 데이터를 얼마나 일관되게 평가하는지를 측정하는 방법</strong>이다. 단순한 일치율과 달리, Kappa 계수는 무작위로 일치할 가능성을 보정하여 보다 신뢰할 수 있는 평가 일치도를 제공한다.이는 평가자의 주관적인 판단이 개입되는 연구에서 필수적이라고 볼 수 있다.</p>
+<p>Kappa 분석에는 여러 가지 변형이 있으며, 상황에 따라 적절한 방법을 선택해야 한다. 대표적인 Kappa 분석 방법은 다음과 같다:</p>
+<ol type="1">
+<li><strong>Cohen’s Kappa (κ)</strong>: 두 명의 평가자가 범주형 데이터를 평가할 때 사용</li>
+<li><strong>Cohen’s Weighted Kappa</strong>: 평가자 간의 불일치 정도를 가중치로 고려할 때 사용 (순위형 변수)</li>
+<li><strong>Fleiss’ Kappa</strong>: 두 명 이상의 평가자가 있을 때 사용 (범주형 변수)</li>
+<li><strong>Generalized Fleiss’ Kappa</strong>: Fleiss’ Kappa의 확장판으로, 순위형 데이터를 다룰 때 사용</li>
+<li><strong>Krippendorff’s Alpha</strong>: 범주형, 순위형, 연속형 데이터 모두 적용 가능</li>
+</ol>
+<p>Cohen’s와 Cohen’s Weighted는 평가자가 두 명일때 적용되고, Fleiss’와 Generalized Fleiss’는 두 명 이상일 때 사용된다.</p>
+<p>이 글에서는 R을 활용하여 다양한 Kappa 분석 방법을 구현하는 방법을 설명한다.</p>
+<section id="단순-일치율-vs.-kappa-계수" class="level2">
+<h2 class="anchored" data-anchor-id="단순-일치율-vs.-kappa-계수">단순 일치율 vs.&nbsp;Kappa 계수</h2>
+<p>단순한 일치율(Percent Agreement)은 평가자 간의 동일한 판단이 나온 비율을 계산하는 방식이다. 하지만, 이는 무작위로 일치한 경우도 포함하기 때문에 신뢰도가 낮을 수 있다.</p>
+<p>예를 들어, 두 평가자가 100개의 사례를 평가했을 때, 70개에서 동일한 판단을 내렸다면 단순 일치율은 70%이다. 하지만, 무작위로도 70%의 일치가 나올 가능성이 있다면, 실제 평가자의 일치 정도를 과대평가할 수 있다.</p>
+<p>이를 보완하기 위해 Kappa 계수(<span class="math inline">\(κ\)</span>)는 무작위 일치율(Expected Agreement)을 고려하여 조정된 값을 제공한다. 즉, Kappa 계수는 실제 일치율과 무작위 일치율 간의 차이를 기반으로 계산되며, 0~1 사이의 값으로 표현된다.</p>
+<ul>
+<li>Kappa 계수(<span class="math inline">\(κ\)</span>) 해석:
+<ul>
+<li><span class="math inline">\(κ\)</span> = 1: 완벽한 일치</li>
+<li><span class="math inline">\(κ\)</span> = 0: 무작위 일치 수준</li>
+<li><span class="math inline">\(κ\)</span> &lt; 0: 평가자가 오히려 무작위보다 더 불일치</li>
+<li>0.6 ≤ <span class="math inline">\(κ\)</span> ≤ 0.8: 상당한 일치</li>
+<li>0.4 ≤ <span class="math inline">\(κ\)</span> &lt; 0.6: 중간 수준의 일치</li>
+</ul></li>
+</ul>
+<p>따라서 <span class="math inline">\(κ\)</span>의 값은 크면 클수록 좋은 것이라고 본다.</p>
+<p>이제 Kappa 분석이 왜 중요한지를 이해했으므로, 다음 섹션에서는 각 Kappa 분석 방법을 살펴보고, R을 이용하여 실제 데이터를 분석하는 방법을 설명한다.</p>
+</section>
+</section>
+<section id="cohens-kappa" class="level1">
+<h1>1. Cohen’s Kappa</h1>
+<p>Cohen’s Kappa(<span class="math inline">\(κ\)</span>)는 <strong>두 명의 평가자가 범주형 데이터를 평가할 때</strong> 사용되는 가장 기본적인 Kappa 계수이다. 여기서 측정되는 범주형 변수에서는 서로 다른 특성을 구분할 수 있지만, 이 특성 간의 순위나 서열 관계는 존재하지 않는다.</p>
+<section id="cohens-kappa-공식" class="level2">
+<h2 class="anchored" data-anchor-id="cohens-kappa-공식">1.1 Cohen’s Kappa 공식</h2>
+<p>Cohen’s Kappa는 다음과 같은 공식으로 계산된다:</p>
+<p><span class="math display">\[
+κ = \frac{P_o - P_e}{1 - P_e}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(P_o\)</span>: 평가자간 일치 확률 (Observed Accuracy)</li>
+<li><span class="math inline">\(P_e\)</span>: 우연히 일치된 평가를 받을 비율 (Expected Accuracy)</li>
+</ul>
+<p>여기서 <span class="math inline">\(P_e\)</span>는 ’우연히 일치할 확률’을 나타낸다. 예를 들어, 두 명의 상담사가 환자에게 우울증이 있는지 없는지에 대해 완전히 무작위로 판단했다고 가정한다. 마치 동전을 던지는 것처럼 말이다. 그럼에도 불구하고 두 상담사가 우연히 같은 결론을 내릴 가능성이 어느 정도 존재하게 되는데, 이 우연에 의한 일치 확률을 나타내는 값이 바로 <span class="math inline">\(P_e\)</span>가 된다. 즉, <span class="math inline">\(P_e\)</span>는 평가자들이 실제로 동의한 정도가 아니라, 순전히 우연으로 평가 결과가 같아질 가능성을 나타내는 가상의 확률이라고 이해하면 된다. <span class="math inline">\(P_e\)</span>의 비율이 높을 수록 우연하게 일치한다는 것이고, 이 값이 최소에 가까워질수록 높은 <span class="math inline">\(κ\)</span>의 값을 얻을 수 있게 된다.</p>
+<section id="observed-accuracy-p_o" class="level3">
+<h3 class="anchored" data-anchor-id="observed-accuracy-p_o">Observed Accuracy <span class="math inline">\(P_o\)</span></h3>
+<p><span class="math display">\[
+P_0 = \frac{1}{n} \sum_{i=1}^{g} f_{ii}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(n\)</span>: 전체 평가 개수</li>
+<li><span class="math inline">\(g\)</span>: 평가 범주의 개수 (예: 3개의 등급, 5개의 점수 등)</li>
+<li><span class="math inline">\(f_{ii}\)</span>: 평가자 두 명이 동일한 범주를 선택한 횟수</li>
+</ul>
+<p>즉, <span class="math inline">\(P_0\)</span>는 전체 평가 중에서 평가자들이 동일한 범주를 선택한 비율을 의미한다. 이는 실제 데이터에서 평가자들이 얼마나 일치했는지를 보여주는 값이다.</p>
+</section>
+<section id="expected-accuracy-p_e" class="level3">
+<h3 class="anchored" data-anchor-id="expected-accuracy-p_e">Expected Accuracy <span class="math inline">\(P_e\)</span></h3>
+<p><span class="math display">\[
+P_e = \frac{1}{n^2} \sum_{i=1}^{g} f_{i+} f_{+i}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(f_{i+}\)</span>: 특정 범주의 행 합 (첫 번째 평가자가 해당 범주를 선택한 횟수)</li>
+<li><span class="math inline">\(f_{+i}\)</span>: 특정 범주의 열 합 (두 번째 평가자가 해당 범주를 선택한 횟수)</li>
+</ul>
+<p><span class="math inline">\(P_e\)</span>는 평가자들이 무작위로 평가했을 때 동일한 범주를 선택할 확률을 의미한다. 이는 두 평가자가 특정 범주를 선택할 확률을 각각 곱하여 계산되며, 모든 범주에 대해 합산하여 전체적인 기대 일치도를 구하는 방식이다.</p>
+</section>
+<section id="binary-classifications" class="level3">
+<h3 class="anchored" data-anchor-id="binary-classifications">Binary Classifications</h3>
+<p>Cohen’s Kappa는 이진 분류에서도 모델의 예측 신뢰도를 평가하는 중요한 지표로 활용될 수 있다. 이는 다음과 같은 공식으로 표현된다.</p>
+<p><span class="math display">\[
+κ = \frac{2 \times (TP \times TN - FN \times FP)}
+{(TP + FP) \times (FP + TN) + (TP + FN) \times (FN + TN)}
+\]</span></p>
+<p>여기서 각 항목은 다음과 같은 의미를 가진다:</p>
+<ul>
+<li><span class="math inline">\(TP\)</span> (True Positives): 실제로 긍정(positive)인 경우를 정확하게 예측한 수</li>
+<li><span class="math inline">\(FP\)</span> (False Positives): 실제로는 부정(negative)이지만, 긍정으로 잘못 예측한 수</li>
+<li><span class="math inline">\(TN\)</span> (True Negatives): 실제로 부정인 경우를 정확하게 예측한 수</li>
+<li><span class="math inline">\(FN\)</span> (False Negatives): 실제로는 긍정이지만, 부정으로 잘못 예측한 수</li>
+</ul>
+<p>이진 분류에서 Cohen’s Kappa는 단순한 정확도보다는 무작위 예측과 비교하여 모델이 얼마나 신뢰할 만한지를 측정하는 데 유용하다. 예를 들어, 불균형한 데이터에서 단순한 정확도는 높은 값이 나올 수 있지만, Kappa 값이 낮게 나오는 경우가 있을 수 있다. 이는 모델이 특정 클래스를 과도하게 예측하고 있음을 나타낼 수 있다.</p>
+</section>
+</section>
+<section id="example-1" class="level2">
+<h2 class="anchored" data-anchor-id="example-1">1.2 Example 1</h2>
+<p>첫 번째 예시에서는 두 평가자가 다섯 개 항목을 각각 평가한 뒤, Cohen’s Kappa 통계량을 이용해 두 평가자 간의 일치도를 분석했다. R에서 Cohen’s Kappa를 구하기 위해서는 irr 패키지를 사용한다 (Desc Tools, psych 등 다른 패키지도 존재).</p>
+<pre><code>library(irr)
+
+# 두 평가자가 5개의 항목을 평가
+ratings &lt;- data.frame(
+  rater1 = c("A", "A", "B", "A", "C"),
+  rater2 = c("A", "B", "B", "A", "C")
+)
+
+# Cohen's Kappa 계산
+result &lt;- kappa2(ratings, weight = "unweighted")
+print(result)</code></pre>
+<p><strong>출력:</strong></p>
+<pre><code> Cohen's Kappa for 2 Raters (Weights: unweighted)
+
+ Subjects = 5 
+   Raters = 2 
+    Kappa = 0.688 
+
+        z = 2.28 
+  p-value = 0.0224</code></pre>
+<p>이 예시의 결과는 Kappa 값이 0.688로 나타났고, z 통계량은 2.28, p값은 0.0224로 나타나 통계적으로 유의미한 일치도를 보였다. 이는 두 평가자가 단순히 우연히 일치하는 것을 넘어 실제로 상당히 일치된 평가를 내렸다는 의미로 해석할 수 있다.</p>
+</section>
+<section id="example-2" class="level2">
+<h2 class="anchored" data-anchor-id="example-2">1.3 Example 2</h2>
+<p>다음 예시는 실제 의료 환경에서 자주 발생하는 사례를 바탕으로 Cohen’s Kappa를 적용한 것이다. 두 명의 영상의학 전문의가 CT, MRI, PET, X-ray 총 4가지 영상진단 방식으로 환자를 각각 독립적으로 평가했을 때, 두 전문의 간 평가가 얼마나 일치하는지를 분석한다.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2); <span class="fu">library</span>(officer)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>imaging.modalities <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"CT"</span>, <span class="st">"MRI"</span>, <span class="st">"PET"</span>, <span class="st">"Xray"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>kappa.results <span class="ot">&lt;-</span> <span class="fu">sapply</span>(imaging.modalities, <span class="cf">function</span>(modality){</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  var1 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(modality, <span class="st">"_Rater1"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  var2 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(modality, <span class="st">"_Rater2"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  kappa_calc <span class="ot">&lt;-</span> irr<span class="sc">::</span><span class="fu">kappa2</span>(diagnosis_data[, .SD, <span class="at">.SDcols =</span> <span class="fu">c</span>(var1, var2)], <span class="at">weight =</span> <span class="st">"unweighted"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  standard_error <span class="ot">&lt;-</span> kappa_calc<span class="sc">$</span>value <span class="sc">/</span> kappa_calc<span class="sc">$</span>statistic</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  conf_interval <span class="ot">&lt;-</span> <span class="fu">c</span>(kappa_calc<span class="sc">$</span>value <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> standard_error,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                     kappa_calc<span class="sc">$</span>value <span class="sc">+</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> standard_error)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">paste0</span>(<span class="fu">round</span>(kappa_calc<span class="sc">$</span>value, <span class="dv">3</span>), <span class="st">" (95% CI: "</span>, <span class="fu">round</span>(conf_interval[<span class="dv">1</span>], <span class="dv">3</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                <span class="st">"-"</span>, <span class="fu">round</span>(conf_interval[<span class="dv">2</span>], <span class="dv">3</span>), <span class="st">")"</span>))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이 예시에서 계산된 Kappa 값은 각 영상진단 방식별로 제공되며, 각 값에 대한 표준오차와 95% 신뢰구간도 함께 계산된다. irr::kappa2 함수를 통해 두 평가자 간의 Cohen’s Kappa 값을 계산했고, weight = “unweighted” 옵션으로 평가 항목 간의 차이에 동일한 가중치를 부여한다.</p>
+<p>이와 같이 Cohen’s Kappa는 두 평가자가 같은 값을 측정했는지 여부를 고려하지만, 불일치의 정도는 고려하지 않는다. Example 1을 보면 Cohen’s Kappa는 평가자가 A와 C를 선택했을 때와 A와 B를 선택했을 때를 동일한 불일치로 간주하고 있는 것을 확인할 수 있다. 그렇다면 범주형 변수가 아닌 순위형 변수가 있다면 어떨까?</p>
+</section>
+</section>
+<section id="weighted-kappa" class="level1">
+<h1>2. Weighted Kappa</h1>
+<p>순위형 변수, 즉 특성을 정렬할 수 있는 변수가 있다면 그 순서 또한 고려해야 한다.</p>
+<p>예를 들어, ‘불만족’, ’중립’과 ’만족’이 있다고 하자. 불만족과 중립 사이에는 불만족과 만족 사이보다 작은 차이가 있다. 이러한 차이를 고려하는 것이 바로 Weighted Kappa다.</p>
+<p>다시 말해, Weighted Kappa는 <strong>순위형 데이터를 평가하는 두 명의 평가자 간 일치도를 측정하는 방법</strong>이다. Cohen’s Kappa은 일치 vs.&nbsp;불일치를 1과 0으로 구분하는 반면, Weighted Kappa는 평가자의 불일치 정도에 가중치를 부여하여 더 세밀한 분석이 가능하다.</p>
+<section id="weighted-kappa-공식" class="level2">
+<h2 class="anchored" data-anchor-id="weighted-kappa-공식">2.1 Weighted Kappa 공식</h2>
+<p><span class="math display">\[
+\kappa_w = \frac{P_o - P_e}{1 - P_e}
+\]</span></p>
+<p>이 식은 일반적인 Cohen’s Kappa의 공식과 같지만, Weighted Kappa의 경우 Observed Accuracy <span class="math inline">\(P_o\)</span>와 Expected Accuracy <span class="math inline">\(P_e\)</span>을 계산할 때 가중치를 적용한 값을 사용한다는 점에서 차이가 있다. 각 항목은 다음과 같이 계산한다.</p>
+<section id="observed-accuracy-p_o-1" class="level3">
+<h3 class="anchored" data-anchor-id="observed-accuracy-p_o-1">Observed Accuracy (<span class="math inline">\(P_o\)</span>)</h3>
+<p><span class="math inline">\(P_o\)</span>는 두 평가자의 실제 평가 결과를 바탕으로 각 범주 간에 가중치를 적용하여 계산한 값이다.</p>
+<p><span class="math display">\[
+P_{o} = \sum_{i}\sum_{j} W_{ij}P_{ij}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(W_{ij}\)</span> : 각 범주(i,j) 간의 가중치</li>
+<li><span class="math inline">\(P_{ij}\)</span> : 두 평가자가 범주 (i,j)를 선택한 관측 비율</li>
+</ul>
+</section>
+<section id="expected-accuracy-p_e-1" class="level3">
+<h3 class="anchored" data-anchor-id="expected-accuracy-p_e-1">Expected Accuracy (<span class="math inline">\(P_e\)</span>)</h3>
+<p><span class="math inline">\(P_e\)</span>는 각 평가자의 범주별 평가 확률의 곱에 가중치를 곱하여 계산된다.</p>
+<p><span class="math display">\[
+P_e = \sum_{i}\sum_{j} W_{ij}P_{i+}P_{+j}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(P_{i+}\)</span> : 평가자 1이 범주 i를 선택한 전체 비율 (행 방향)</li>
+<li><span class="math inline">\(P_{+j}\)</span> : 평가자 2가 범주 j를 선택한 전체 비율 (열 방향)</li>
+</ul>
+</section>
+</section>
+<section id="가중치w의-종류" class="level2">
+<h2 class="anchored" data-anchor-id="가중치w의-종류">2.2 가중치(<span class="math inline">\(W\)</span>)의 종류</h2>
+<p>Weighted Kappa에서 주로 사용하는 대표적인 가중치 부여 방식은 두 가지다: 선형(linear)과 제곱(quadratic)</p>
+<section id="선형-가중치-linear-weights" class="level3">
+<h3 class="anchored" data-anchor-id="선형-가중치-linear-weights">선형 가중치 (Linear weights)</h3>
+<p>선형 가중치는 <strong>Cicchetti-Allison weights</strong>라고도 하며, 평가 항목 간의 불일치 정도에 따라 <strong>일정한 간격으로</strong> 가중치를 부여한다. 즉, 두 평가자 간의 평가가 한 단계씩 멀어질 때마다 일정한 비율로 일치도가 감소한다. 특징은 각 평가 간의 차이에 비례하여(선형적으로) 가중치를 부여한다는 것이다.</p>
+<p><strong>수식 표현:</strong></p>
+<p><span class="math display">\[
+W_{ij}^{linear} = 1 - \frac{|i - j|}{k - 1}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(i\)</span>, <span class="math inline">\(j\)</span>: 두 평가자가 선택한 범주(단계)</li>
+<li><span class="math inline">\(k\)</span>: 범주의 전체 개수</li>
+</ul>
+<p><strong>예시:</strong><br>
+범주가 1~4단계로 구성된 경우 (<span class="math inline">\(k\)</span>=4):</p>
+<ul>
+<li>평가자가 각각 1단계와 2단계를 선택했다면:</li>
+</ul>
+<p><span class="math display">\[
+W_{12}^{linear} = 1 - \frac{|1 - 2|}{4 - 1} = \frac{2}{3} \approx 0.67
+\]</span></p>
+<p>이는 평가자들이 약 67% 정도로 일치하고 있다고 볼 수 있으며, 33%는 불일치한다고 해석할 수 있다. 이 결과를 제곱 가중치를 적용했을 때와 비교해 본다.</p>
+</section>
+<section id="제곱-가중치-quadratic-weights" class="level3">
+<h3 class="anchored" data-anchor-id="제곱-가중치-quadratic-weights">제곱 가중치 (Quadratic weights)</h3>
+<p>제곱 가중치는 <strong>Fleiss-Cohen weights</strong>라고도 하며, 평가 항목 간의 불일치가 클수록 가중치를 <strong>제곱에 비례하여(비선형적으로)</strong> 부여한다. 특히 평가자 간의 작은 불일치는 가볍게, 큰 불일치는 더 무겁게 여긴다. 즉, 불일치의 정도가 증가할수록 가중치는 비선형적으로(제곱의 비율로) 감소하게 된다.</p>
+<p><strong>수식 표현:</strong></p>
+<p><span class="math display">\[
+W_{ij}^{quadratic} = 1 - \frac{(i - j)^2}{(k - 1)^2}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(i\)</span>, <span class="math inline">\(j\)</span>: 두 평가자가 선택한 범주(단계) - (<span class="math inline">\(k\)</span>): 범주의 전체 개수</li>
+</ul>
+<p><strong>예시:</strong><br>
+Linear의 예시와 마찬가지로 범주가 1~4단계로 구성된 경우(<span class="math inline">\(k\)</span>=4):</p>
+<ul>
+<li>평가자가 각각 1단계와 2단계를 선택했다면:</li>
+</ul>
+<p><span class="math display">\[
+W_{12}^{quadratic} = 1 - \frac{(1 - 2)^2}{(4 - 1)^2} = 1 - \frac{1}{9} = \frac{8}{9} \approx 0.89
+\]</span></p>
+<p>이는 평가자들이 약 89%로 상당히 높은 일치도를 나타내며, 한 단계만 차이가 나기에 작은 불일치 정도에 높은 가중치를 부여한 것이다. 그러나 두 단계 이상의 큰 차이가 발생하면 가중치가 급격히 감소하여, 큰 불일치로 인식을 한다.</p>
+<p>이와 같이 Quadratic 방식에서는 큰 불일치를 더욱 엄격하게 평가한다.</p>
+</section>
+<section id="가중치-선택-방법" class="level3">
+<h3 class="anchored" data-anchor-id="가중치-선택-방법">가중치 선택 방법</h3>
+<ul>
+<li><strong>선형 가중치(Linear weights)</strong>는 모든 단계 간의 차이를 동일한 중요도로 평가할 때 사용한다.
+<ul>
+<li>진단 결과가 1단계에서 2단계로 바뀌는 것과, 2단계에서 3단계로 바뀌는 것의 중요도가 같은 경우</li>
+</ul></li>
+<li><strong>제곱 가중치(Quadratic weights)</strong>는 작은 차이보다 큰 차이에 더 큰 중요성을 부여할 때 적합하다.
+<ul>
+<li>1단계와 2단계 간의 차이는 그리 크지 않지만, 2단계와 3단계 간의 차이는 매우 큰 의미를 가지는 경우</li>
+</ul></li>
+</ul>
+<p>결국, 분석하려는 데이터와 평가 기준의 특성에 따라 적절한 가중치를 선택하면 된다.</p>
+</section>
+</section>
+<section id="example-1-1" class="level2">
+<h2 class="anchored" data-anchor-id="example-1-1">2.3 Example 1</h2>
+<p>Weighted Kappa는 R코드를 활용해 수월하게 구할 수 있다.</p>
+<p>아래는 두 명의 영상의학 전문의가 MRI 영상을 보고 병변의 심각도를 5단계 척도(1: 정상, 2: 경미, 3: 중등도, 4: 심함, 5: 매우 심함)로 평가한 경우를 예로 든 것이다. 두 평가자 간의 일치도를 Weighted Kappa를 사용하여 분석하며, 선형(linear) 가중치를 적용하여 평가 간의 차이를 부분적으로 반영한다.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(irr)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 평가 데이터 예시 (랜덤하게 생성)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>lesion_assessment <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Rater1 =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Rater2 =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 두 평가자 간의 Weighted Cohen's Kappa</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>kap <span class="ot">&lt;-</span> irr<span class="sc">::</span><span class="fu">kappa2</span>(lesion_assessment, <span class="at">weight =</span> <span class="st">"equal"</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> kap<span class="sc">$</span>value <span class="sc">/</span> kap<span class="sc">$</span>statistic</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>ci_lower <span class="ot">&lt;-</span> kap<span class="sc">$</span>value <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> se</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ci_upper <span class="ot">&lt;-</span> kap<span class="sc">$</span>value <span class="sc">+</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> se</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>weighted_kappa_result <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">round</span>(kap<span class="sc">$</span>value, <span class="dv">3</span>), <span class="st">" (95% CI: "</span>, <span class="fu">round</span>(ci_lower, <span class="dv">3</span>), <span class="st">"~"</span>, <span class="fu">round</span>(ci_upper, <span class="dv">3</span>), <span class="st">")"</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>weighted_kappa_result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이 예시를 통해 두 평가자 간의 의견 일치 수준을 파악할 수 있다.위 코드 실행 결과로 선형 가중치를 사용한 Weighted Kappa 값을 확인할 수 있으며, 범주 간의 불일치 정도를 반영한 평가자 간 일치도를 평가할 수 있다. 여기서 quadratic 가중치를 부여하기 위해서는 weight = “squared”로 수정하면 된다.</p>
+<p><strong>출력:</strong></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"0.048 (95% CI: -0.089~0.185)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>처음에 설명했던 것 처럼, Cohen’s Kappa 값이 0.048이라는 것은 두 평가자가 거의 무작위로 평가를 했거나, 일치도가 매우 낮다는 것을 의미한다. Example의 결과 값으로 0.048로 나타났기 때문에 이런 경우 평가자 간의 의견이 거의 일치하지 않는다고 결론을 내린다.</p>
+<p>신뢰구간을 살펴보면 -0.089에서 0.185 사이에 위치하고 있다. 95% 신뢰구간은 실제 모집단에서의 Kappa 값이 이 범위 안에 있을 확률이 95%라는 뜻이다. 하지만 이 신뢰구간에는 음수 값(-0.089)이 포함되어 있으므로 일반적으로 평가자 간의 일치도가 단순한 우연보다도 낮다는 뜻이다. 이는 평가자들이 무작위로 답변한 것보다도 더 일치도가 낮을 가능성이 있다는 것이며, 신뢰구간이 넓다는 것은 데이터가 불안정하거나, 평가자 간의 일치도가 일정하지 않다는 것을 나타낸다.</p>
+<p>예시에서 이러한 결과가 나오는 이유는 평가 데이터 자체가 랜덤하게 생성되었기 때문이다. 그러므로 당연히 통계적으로 신뢰하기 어려운 결과가 나온다. 실제 상황에서 이러한 Kappa 값이 나온다면, 평가 기준을 명확하게 정리하고, 데이터의 질을 개선하는 것이 필요할 것이다.</p>
+</section>
+</section>
+<section id="fleiss-kappa" class="level1">
+<h1>3. Fleiss’ Kappa</h1>
+<p>앞서 살펴본 Cohen’s와 Weighted Kappa는 평가자 또는 연구자가 정확히 두 명일 때만 적용이 가능하다. 그렇다면 평가자 수가 세 명 이상일 경우에는 어떻게 해야 하는가. 이런 상황을 해결하기 위해 다양한 접근이 제안되었다. 평가자들을 두 명씩 묶어 모든 조합의 Cohen’s kappa 값을 구한 뒤 그 평균을 사용하는 방법이 존재하기도 하나, 현재 학계에서 가장 폭넓게 사용되고 인정받는 방식은 Fleiss Kappa이다.</p>
+<p><strong>Fleiss’ Kappa</strong>(<span class="math inline">\(\kappa\)</span>)는 세 명 이상의 평가자가 범주형 데이터를 평가할 때, 평가자 간의 전반적인 <strong>일치도(agreement)</strong> 를 측정하는 통계 지표다. Cohen’s Kappa가 두 명의 평가자에 대해서만 사용되는 반면, Fleiss’ Kappa는 다수의 평가자가 있는 경우에도 적용이 가능하다.</p>
+<p>또한, Fleiss’ Kappa는 한 명의 평가자가 같은 항목을 <strong>두 번 이상 서로 다른 시점에서 반복하여 평가</strong>할 때도 사용할 수 있다. 이 경우 Fleiss’ Kappa는 동일한 평가자가 여러 번 평가했을 때, 각각의 평가가 얼마나 일관성 있게 일치하는지를 나타내는 지표가 된다. 즉, 동일 평가자의 시간에 따른 평가 일관성을 측정하는 데에도 Fleiss’ Kappa가 활용될 수 있는 것이다.</p>
+<section id="fleiss-kappa-공식" class="level2">
+<h2 class="anchored" data-anchor-id="fleiss-kappa-공식">3.1 Fleiss’ Kappa 공식</h2>
+<p>Fleiss’ Kappa(<span class="math inline">\(\kappa\)</span>)를 정의하는 수식은 다음과 같다.</p>
+<p><span class="math display">\[
+\kappa = \frac{\bar{P_o} - \bar{P_e}}{1 - \bar{P_e}}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\bar{P_o}\)</span>: 관찰된 평균 일치율 (Observed agreement)</li>
+<li><span class="math inline">\(\bar{P_e}\)</span>: 우연에 의한 평균 일치율 (Expected agreement)</li>
+</ul>
+<p>이와 같이 Fleiss’ Kappa는 관찰된 평균 일치율(<span class="math inline">\(\bar{P}_0\)</span>)과 우연에 의한 평균 일치율(<span class="math inline">\(\bar{P}_e\)</span>)을 사용하여 계산한다. 각각의 공식은 아래와 같다.</p>
+<section id="observed-agreement-barp_o" class="level3">
+<h3 class="anchored" data-anchor-id="observed-agreement-barp_o">Observed agreement <span class="math inline">\(\bar{P}_o\)</span>:</h3>
+<p><span class="math inline">\(\bar{P}_o\)</span>는 평가자들이 실제로 얼마나 의견이 일치했는지를 측정하는 값인데, 이는 실제 평가에서 동일한 범주를 선택한 평가자들의 비율을 정량적으로 나타내는 값이며, 다음과 같은 수식으로 계산된다.</p>
+<p><span class="math display">\[
+\bar{P}_o = \frac{1}{N n (n - 1)}\left(\sum_{i=1}^{N}\sum_{j=1}^{k}n_{ij}^{2} - N n\right)
+\]</span> - <span class="math inline">\(N\)</span>: 평가 항목의 총 개수 - <span class="math inline">\(n\)</span>: 각 대상당 평가자의 수 - <span class="math inline">\(k\)</span>: 평가 범주의 수 - <span class="math inline">\(n_{ij}\)</span>: <span class="math inline">\(i\)</span>번째 대상에서 <span class="math inline">\(j\)</span>번째 카테고리를 선택한 평가자의 수</p>
+<p>이 공식에서 첫 번째 항인 <span class="math inline">\(\sum_{i=1}^{N}\sum_{j=1}^{k}n_{ij}^{2}\)</span>는 특정 범주를 선택한 평가자 수를 제곱하고 합산한다. 동일한 범주를 선택한 평가자가 많을수록 그 값이 더 커지며, 평가자들이 일관된 결정을 내릴수록 이 항의 값이 증가하게 된다. 이 식에서 <span class="math inline">\(Nn\)</span>을 빼는 이유는, <span class="math inline">\(\sum n_{ij}^2\)</span> 항에는 평가자가 한 명만 특정 범주를 선택한 경우도 포함되기 때문이다. 평가자 수가 많을수록 이 값이 증가하므로, 이를 보정하기 위해 전체 평가 대상 개수(<span class="math inline">\(N\)</span>)와 평가자 수(<span class="math inline">\(n\)</span>)를 곱한 값을 빼준다. 이를 통해, 평가자가 많을수록 발생할 수 있는 단순한 일치 효과를 제거하고, 실제로 의미 있는 평가자 간의 일치도를 측정할 수 있도록 조정한다.</p>
+<p>마지막으로, 이 값을 <span class="math inline">\(N n (n - 1)\)</span>로 나누어 정규화한다. 이는 전체 평가 수에 대해 평균을 구하는 과정이며, 결과적으로 Observed Agreement는 “평균적인 일치도”를 나타내는 값이 된다. 이 값이 클수록 평가자들이 동일한 평가를 내린 비율이 높다는 것을 의미하며, 평가자 간의 의견이 더욱 일관되게 나타난다는 것을 보여준다. 이 값은 Expected Agreement(<span class="math inline">\(\bar{P}_e\)</span>)와 비교하여 Fleiss’ Kappa 값을 계산하는 핵심 요소다.</p>
+</section>
+<section id="expected-agreement-by-chance-barp_e" class="level3">
+<h3 class="anchored" data-anchor-id="expected-agreement-by-chance-barp_e">Expected agreement by chance <span class="math inline">\(\bar{P_e}\)</span></h3>
+<p><span class="math inline">\(\bar{P_e}\)</span>은 평가자들이 평가를 무작위로 진행했을 때 결과가 우연히 일치하게 될 확률을 나타낸다.</p>
+<p><span class="math display">\[
+\bar{P}_e = \sum_{j=1}^{k} P_j^{2}
+\]</span></p>
+<p>여기서 <span class="math inline">\(P_j\)</span>는 모든 대상과 평가자를 통틀어 <span class="math inline">\(j\)</span>번째 카테고리에 선택된 횟수의 합을 전체 평가 횟수(<span class="math inline">\(N \times n\)</span>)로 나눈 값이다. 이를 식으로 표현할 수 있다.</p>
+<p><span class="math display">\[
+P_j = \frac{1}{Nn} \sum_{i=1}^{N} n_{ij}
+\]</span> 이 공식에서 <span class="math inline">\(\sum_{i=1}^{N} n_{ij}\)</span>는 모든 평가 대상에서 특정 범주 <span class="math inline">\(j\)</span>가 선택된 총 횟수를 의미하며, 이를 전체 평가 횟수(<span class="math inline">\(N \times n\)</span>)로 나누어 특정 범주 <span class="math inline">\(j\)</span>가 선택될 확률을 구한다.</p>
+<p>무작위로 평가를 했다고 가정하면, 한 평가자가 특정 범주 <span class="math inline">\(j\)</span>를 선택할 확률은 <span class="math inline">\(P_j\)</span>이고, 또 다른 평가자도 동일한 범주를 선택할 확률 역시 <span class="math inline">\(P_j\)</span>이므로, 이 두 확률을 곱한 <span class="math inline">\(P_j^2\)</span>이 해당 범주에서 평가가 우연히 일치할 확률이 된다. 따라서 모든 범주 <span class="math inline">\(j=1\)</span>부터 <span class="math inline">\(k\)</span>까지에 대해 이러한 우연 일치 확률을 더하면, 전체적으로 평가자들이 무작위로 평가했을 때 기대되는 평균적인 일치 확률 <span class="math inline">\(\bar{P}_e\)</span>을 계산할 수 있다.</p>
+</section>
+</section>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">3.2 Example</h2>
+<p>다음 예시 데이터로 Fleiss’ Kappa의 개념을 살펴본다.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>범주1</th>
+<th>범주2</th>
+<th>범주3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>0</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>0</td>
+<td>1</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>평가 항목 수: <span class="math inline">\(N = 5\)</span></li>
+<li>평가자 수: <span class="math inline">\(n = 5\)</span> (각 항목마다 평가자가 5명)</li>
+<li>평가 범주 수: <span class="math inline">\(k = 3\)</span></li>
+</ul>
+<p><strong>R 코드로 구하는 방식:</strong></p>
+<pre><code># `irr` 패키지의 `kappam.fleiss()` 함수를 사용한다
+install.packages("irr")
+library(irr)
+
+# 데이터 행렬 생성
+ratings &lt;- matrix(c(
+  0, 0, 5,
+  0, 1, 4,
+  1, 0, 4,
+  0, 2, 3,
+  0, 1, 4), 
+  nrow = 5, byrow = TRUE)
+
+# Fleiss' Kappa 계산
+fleiss_kappa &lt;- kappam.fleiss(ratings)
+print(fleiss_kappa)</code></pre>
+<p><strong>출력:</strong></p>
+<pre><code> Fleiss' Kappa for m Raters
+
+ Subjects = 5 
+   Raters = 3 
+    Kappa = -0.25 
+
+        z = -1.83 
+  p-value = 0.067 </code></pre>
+<p>Cohen’s Kappa와 같이 Fleiss’ Kappa는 평가 값이 동일한 경우 1, 다르면 0으로 단순 비교한다. 순위형 변수로 Weight를 부여해야 할 경우, Generalized Fleiss’ Kappa를 사용하면 된다.</p>
+</section>
+</section>
+<section id="generalized-fleiss-kappa" class="level1">
+<h1>4. Generalized Fleiss’ Kappa</h1>
+<p><strong>Generalized Fleiss’ Kappa</strong>는 Fleiss’ Kappa를 일반화한 지표로, 여러 명의 평가자가 평가하는 경우 사용된다. 각 평가자가 평가하는 항목 수가 다르거나 평가 범주 간 순서가 중요한 경우에도 사용할 수 있는 지표다. 이는 평가 값 사이의 거리를 반영하여 평가자 간의 불일치 정도를 측정한다.</p>
+<p>기존 Fleiss’ Kappa와 달리 평가자가 모든 항목을 평가하지 않아도 되며, 항목마다 평가자 수가 달라도 적용할 수 있다. 또한 항목 간, 평가자 간의 부분적인 데이터 결측이 있더라도 신뢰도 높은 일치도를 구할 수 있다.</p>
+<section id="generalized-fleiss-kappa-공식" class="level2">
+<h2 class="anchored" data-anchor-id="generalized-fleiss-kappa-공식">4.1 Generalized Fleiss’ Kappa 공식</h2>
+<p>Generalized Fleiss’ Kappa (<span class="math inline">\(\kappa_G\)</span>)의 수식은 다음과 같다.</p>
+<p><span class="math display">\[
+\kappa_{G} = \frac{P_o - P_e}{1 - P_e}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(P_o\)</span>: 관찰된 가중 평균 일치율 (Observed weighted agreement)</li>
+<li><span class="math inline">\(P_e\)</span>: 우연히 기대되는 가중 평균 일치율 (Expected weighted agreement by chance)</li>
+</ul>
+<p>각 항목의 계산법은 아래와 같다.</p>
+<section id="observed-weighted-agreement-p_o" class="level4">
+<h4 class="anchored" data-anchor-id="observed-weighted-agreement-p_o">Observed weighted agreement <span class="math inline">\(P_o\)</span></h4>
+<p><span class="math display">\[
+P_o = \frac{1}{\sum_{i=1}^{N} n_i(n_i - 1)} \sum_{i=1}^{N}\sum_{j=1}^{k}\sum_{l=1}^{k} W_{jl} \cdot n_{ij}(n_{il}-\delta_{jl})
+\]</span> - <span class="math inline">\(N\)</span>: 평가된 항목(대상)의 총 개수 - <span class="math inline">\(k\)</span>: 평가 범주의 수 - <span class="math inline">\(n_i\)</span>: <span class="math inline">\(i\)</span>번째 항목을 평가한 평가자의 수 - <span class="math inline">\(n_{ij}\)</span>: <span class="math inline">\(i\)</span>번째 항목을 <span class="math inline">\(j\)</span>번째 범주로 평가한 평가자의 수 - <span class="math inline">\(W_{jl}\)</span>: 범주 간 가중치 - <span class="math inline">\(\delta_{jl}\)</span>: 범주가 같으면 1, 다르면 0인 값</p>
+<p>Generalized Fleiss’ Kappa에서 Observed Weighted Agreement <span class="math inline">\(P_o\)</span>는 평가자들이 실제로 얼마나 일치했는지를 측정하는 값이다. 기존 Fleiss’ Kappa가 단순한 평가 일치율을 계산하는 방식이라면, Generalized Fleiss’ Kappa는 평가 값 사이의 차이를 반영하여 가중치를 적용하는 방식으로 평가자 간의 일치도를 보다 정교하게 측정한다.</p>
+<p><span class="math inline">\(P_o\)</span>는 평가자들이 동일한 평가를 내린 정도를 가중(weighted) 방식으로 계산하며, 전체 평가 대상에서 발생한 모든 평가 쌍에 대한 가중 평균을 구하는 방식으로 정의된다. 먼저, 전체 평가자들이 내린 평가 쌍의 총 개수는 <span class="math inline">\(\sum_{i=1}^{N} n_i(n_i - 1)\)</span>로 계산된다. 여기서 <span class="math inline">\(N\)</span>은 평가 대상의 개수이며, <span class="math inline">\(n_i\)</span>는 특정 평가 대상에 대해 평가를 수행한 평가자 수이다. 평가 대상마다 평가자 수가 다를 수 있으므로 이를 반영하여 전체적인 합을 계산한다.</p>
+<p>식에서 그 외의 부분은 평가자 간의 일치도를 계산한다. <span class="math inline">\(W_{jl}\)</span>은 범주 <span class="math inline">\(j\)</span>와 범주 <span class="math inline">\(l\)</span> 사이의 가중치로, 두 평가 값이 얼마나 다른지를 수치적으로 반영하는 역할을 하는데, 앞서 설명한 linear 또는 quadratic 방식으로 설정된다. <span class="math inline">\(n_{ij}\)</span>는 평가 대상 <span class="math inline">\(i\)</span>에서 범주 <span class="math inline">\(j\)</span>를 선택한 평가자의 수를 의미하며, <span class="math inline">\(n_{il}\)</span>은 동일한 평가 대상에서 범주 <span class="math inline">\(l\)</span>을 선택한 평가자의 수를 나타낸다. 또한 <span class="math inline">\(\delta_{jl}\)</span>은 Kronecker Delta로, <span class="math inline">\(j\)</span>와 <span class="math inline">\(l\)</span>이 동일한 경우 1, 다르면 0을 반환하는 지표이다.</p>
+<p><span class="math inline">\(P_o = 1\)</span>이면 평가자들이 완벽하게 동일한 평가를 내린 경우이며, <span class="math inline">\(P_o = 0\)</span>이면 평가자 간 평가가 완전히 무작위로 이루어진 경우를 의미한다.</p>
+</section>
+<section id="expected-weighted-agreement-by-chance-p_e" class="level4">
+<h4 class="anchored" data-anchor-id="expected-weighted-agreement-by-chance-p_e">Expected weighted agreement by chance <span class="math inline">\(P_e\)</span></h4>
+<p><span class="math display">\[
+P_e = \frac{1}{\left(\sum_{i=1}^{N} n_i\right)^2 - \sum_{i=1}^{N} n_i} \sum_{j=1}^{k}\sum_{l=1}^{k} W_{jl}\left(\sum_{i=1}^{N}n_{ij}\right)\left(\sum_{i=1}^{N}n_{il}-\delta_{jl}\right)
+\]</span> <span class="math inline">\(P_e\)</span>**는 Fleiss’ Kappa에서 Expected agreement by chance (<span class="math inline">\(P_e\)</span>)를 확장한 개념으로, 평가 값들 사이의 거리를 고려하여 가중(weighted) 방식으로 측정한다.</p>
+<p><span class="math inline">\(\left(\sum_{i=1}^{N} n_i\right)^2 - \sum_{i=1}^{N} n_i\)</span>는 전체 평가 데이터에서 발생할 수 있는 모든 평가 쌍의 개수를 나타낸다. 여기서 <span class="math inline">\(\sum_{i=1}^{N} n_i\)</span>는 전체 평가자가 수행한 총 평가 개수이며, 이를 제곱한 값에서 자기 자신과의 비교를 제외하기 위해 <span class="math inline">\(\sum_{i=1}^{N} n_i\)</span>를 빼준다. 이는 평가자들이 임의로 범주를 선택했을 때 가능한 모든 평가 쌍의 개수를 정규화하는 역할을 한다.</p>
+<p><span class="math inline">\(\sum_{i=1}^{N} n_{ij}\)</span>와 <span class="math inline">\(\sum_{i=1}^{N} n_{il}\)</span>은 특정 범주 <span class="math inline">\(j\)</span>와 <span class="math inline">\(l\)</span>이 전체 평가에서 각각 몇 번 선택되었는지를 나타낸다. 이 값에 가중치 행렬 <span class="math inline">\(W_{jl}\)</span>을 곱하는데, <span class="math inline">\(W_{jl}\)</span>은 범주 <span class="math inline">\(j\)</span>와 범주 <span class="math inline">\(l\)</span> 사이의 거리를 반영하는 값으로, linear 또는 quadratic 가중치로 결정된다.마지막으로, <span class="math inline">\(\delta_{jl}\)</span>는 두 범주가 동일할 경우 1, 다를 경우 0을 갖는 함수이다.</p>
+<p>결과적으로 <span class="math inline">\(P_e\)</span>를 <span class="math inline">\(P_o\)</span>와 비교하여 Kappa 값이 계산되며, <span class="math inline">\(P_o\)</span>가 <span class="math inline">\(P_e\)</span>보다 클수록 평가자 간의 신뢰도가 높다는 것을 의미한다.</p>
+</section>
+</section>
+<section id="example-3" class="level2">
+<h2 class="anchored" data-anchor-id="example-3">4.2 Example</h2>
+<p>다음과 같은 예시 데이터를 통해 계산 방식을 간단히 이해해 본다. 평가 범주는 1~3으로 순서형이며, 일부 평가자는 특정 항목을 평가하지 않았다.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>평가자1</th>
+<th>평가자2</th>
+<th>평가자3</th>
+<th>평가자4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>Generalized Fleiss’ Kappa는 R의 <code>irrCAC</code> 패키지에 있는 <code>fleiss.kappa.raw</code> 함수를 사용하여 쉽게 계산할 수 있다.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(irrCAC)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 여러 평가자의 병변 평가 데이터</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ratings <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">rater1 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">rater2 =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">rater3 =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>, <span class="dv">1</span>),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">rater4 =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">2</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Linear Weighted Fleiss Generalized Kappa</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>kappa_linear <span class="ot">&lt;-</span> <span class="fu">fleiss.kappa.raw</span>(ratings, <span class="at">weights =</span> <span class="st">"linear"</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(kappa_linear)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Quadratic Weighted Fleiss Generalized Kappa</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>kappa_quadratic <span class="ot">&lt;-</span> <span class="fu">fleiss.kappa.raw</span>(ratings, <span class="at">weights =</span> <span class="st">"quadratic"</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(kappa_quadratic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="krippendorffs-alpha" class="level1">
+<h1>5. Krippendorff’s Alpha</h1>
+<p>Krippendorff’s Alpha는 여러 평가자가 동일한 항목을 평가할 때, 평가자 간의 신뢰도를 측정하는 지표이다. 가장 큰 특징은 범주형, 순서형, 연속형 데이터를 모두 처리할 수 있으며, 평가자 수에 제한이 없고, 불완전한 데이터(NA 값 포함)도 분석할 수 있다는 점이다. 이러한 특성 덕분에 결측값이 포함된 데이터에서도 안정적인 신뢰도 평가가 가능하고, Cohen’s Kappa나 Fleiss Kappa보다 범용성이 뛰어나다.</p>
+<p>범주형, 순서형, 연속형 데이터: - <strong>Nominal (명목형)</strong>: 범주 간 서열이 없는 경우 - <strong>Ordinal (순위형)</strong>: 서열이 있는 경우 (예: 경미, 중등, 심함) - <strong>Interval (구간형)</strong>: 연속형 데이터 (예: 온도, IQ 점수 등)</p>
+<section id="신뢰도-데이터" class="level2">
+<h2 class="anchored" data-anchor-id="신뢰도-데이터">5.1 신뢰도 데이터</h2>
+<p>먼저 Krippendorff’s Alpha를 계산하기 위해서는 평가자들이 동일한 단위(unit)에 대해 내린 평가 데이터를 분석해야 한다. 평가자들은 독립적으로 하나 이상의 값을 할당할 수 있으며, 이러한 데이터를 <strong>m × N 행렬</strong>로 표현할 수 있다. 여기서 m은 평가자의 수, N은 평가된 항목의 개수이다.</p>
+<p>평가자가 특정 단위 <span class="math inline">\(u_j\)</span>에 할당한 값 <span class="math inline">\(v_{ij}\)</span>를 포함하는 행렬을 다음과 같이 정의할 수 있다.</p>
+<p><span class="math display">\[
+\begin{array}{c|cccc}
+    &amp; u_1 &amp; u_2 &amp; u_3 &amp; \cdots &amp; u_N \\\hline
+c_1 &amp; v_{11} &amp; v_{12} &amp; v_{13} &amp; \cdots &amp; v_{1N} \\
+c_2 &amp; v_{21} &amp; v_{22} &amp; v_{23} &amp; \cdots &amp; v_{2N} \\
+c_3 &amp; v_{31} &amp; v_{32} &amp; v_{33} &amp; \cdots &amp; v_{3N} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+c_m &amp; v_{m1} &amp; v_{m2} &amp; v_{m3} &amp; \cdots &amp; v_{mN}
+\end{array}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(m\)</span>: 평가자의 수</li>
+<li><span class="math inline">\(N\)</span>: 평가된 항목(unit)의 개수</li>
+<li><span class="math inline">\(v_{ij}\)</span>: 평가자 <span class="math inline">\(c_i\)</span>가 특정 단위 <span class="math inline">\(u_j\)</span>에 대해 부여한 값</li>
+<li><span class="math inline">\(m_j\)</span>: 단위 <span class="math inline">\(u_j\)</span>에 대해 평가된 개수</li>
+</ul>
+<p>여기서 <span class="math inline">\(m_j\)</span>는 특정 단위 <span class="math inline">\(u_j\)</span>에 대해 평가된 개수이다. 일부 평가자가 특정 단위에 대한 평가를 하지 않을 수도 있기 때문에, <span class="math inline">\(m_j\)</span>는 평가자가 동일하지 않은 경우 <span class="math inline">\(m\)</span>보다 작을 수도 있다.</p>
+<p>Krippendorff’s Alpha를 계산하려면 평가된 값들이 <strong>서로 비교 가능(pairable)</strong> 해야 하므로, <span class="math inline">\(m_j \geq 2\)</span>의 조건이 필요하다. 즉, 특정 단위에서 최소 두 명 이상의 평가자가 값을 할당해야 한다. 전체 데이터에서 가능한 쌍의 개수는 다음과 같다.</p>
+<p><span class="math display">\[
+\sum_{j=1}^{N} m_j = n \leq mN
+\]</span></p>
+<p>이러한 행렬 표현은 Krippendorff’s Alpha에서 관찰된 불일치 <span class="math inline">\(D_o\)</span>와 기대되는 불일치 <span class="math inline">\(D_e\)</span>를 계산하는 기본적인 데이터 구조를 나타낸다.</p>
+</section>
+<section id="krippendorffs-alpha-공식" class="level2">
+<h2 class="anchored" data-anchor-id="krippendorffs-alpha-공식">5.1 Krippendorff’s Alpha 공식</h2>
+<p>Krippendorff’s Alpha는 평가자 간의 일치도를 분석하기 위해 관찰된 불일치(<span class="math inline">\(D_o\)</span>)와 우연히 예상된 불일치(<span class="math inline">\(D_e\)</span>)를 비교하여 계산된다. 평가자들이 응답할 수 있는 모든 가능한 값들의 집합을 <span class="math inline">\(R\)</span>이라고 하고, 평가자들이 특정 예제에 대해 내린 응답을 하나의 단위(unit)라고 할 때, Krippendorff’s Alpha는 다음과 같이 정의된다.</p>
+<p><span class="math display">\[
+\alpha = 1 - \frac{D_o}{D_e}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(D_o\)</span>: 실제로 관찰된 불일치 (Observed Disagreement)</li>
+<li><span class="math inline">\(D_e\)</span>: 우연히 예상된 불일치 (Expected Disagreement by chance)</li>
+</ul>
+<section id="observed-disagreement-d_o" class="level3">
+<h3 class="anchored" data-anchor-id="observed-disagreement-d_o">Observed Disagreement <span class="math inline">\(D_o\)</span></h3>
+<p><span class="math inline">\(D_o\)</span>는 다음과 같이 정의된다.</p>
+<p><span class="math display">\[
+D_o = \frac{1}{n} \sum_{c \in R} \sum_{k \in R} \delta(c, k) \sum_{u \in U} m_u \frac{n_{cku}}{P(m_u, 2)}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\delta(c, k)\)</span>: 두 개의 평가 값 <span class="math inline">\(c\)</span>와 <span class="math inline">\(k\)</span> 사이의 차이</li>
+<li><span class="math inline">\(n\)</span>: 총 가능한 쌍(pair)의 개수 - <span class="math inline">\(m_u\)</span>: 특정 단위 <span class="math inline">\(u\)</span>에 포함된 평가 수</li>
+<li><span class="math inline">\(n_{cku}\)</span>: 단위 <span class="math inline">\(u\)</span>에서 평가 값 <span class="math inline">\((c, k)\)</span> 쌍이 나타난 횟수</li>
+<li><span class="math inline">\(P\)</span>: 순열(permutation)</li>
+</ul>
+<p>이 식은 평가자들이 특정 단위에서 얼마나 불일치했는지를 개념적으로 가중 평균(weighted average)한 것으로 해석할 수 있다. 여기서 중요한 역할을 하는 <span class="math inline">\(\delta(c, k)\)</span>는 평가 값 <span class="math inline">\(c\)</span>와 평가 값 <span class="math inline">\(k\)</span> 사이의 차이를 의미하는데, 순위형 데이터의 경우 제곱을 취하여 거리의 크기를 강조하는 방식으로 계산한다. 즉, 두 평가 값이 동일하면 <span class="math inline">\(\delta(c, k) = 0\)</span>이 되고, 평가 값 간 차이가 크면 불일치도가 더 커지는 방식이다.</p>
+<ul>
+<li>Krippendorff’s Alpha는 데이터의 유형에 따라 다른 <span class="math inline">\(\delta(c, k)\)</span>의 정의를 사용한다. 이 값을 기반으로 평가자 간의 불일치를 측정하므로, 이 함수가 어떻게 정의가 되느냐에 따라 Alpha <span class="math inline">\(α\)</span>의 값이 달라진다.</li>
+</ul>
+<p>또한, <span class="math inline">\(P(m_u, 2)\)</span>는 특정 단위 <span class="math inline">\(u\)</span>에서 평가된 값들 중에서 2개의 값을 선택하여 순서를 고려한 쌍의 개수를 의미한다. 이는 순열 함수로 표현되며, Krippendorff’s Alpha에서 관찰된 불일치도를 계산할 때 중요한 역할을 한다. 공식은 다음과 같다.</p>
+<p><span class="math display">\[
+P(m_u, 2) = \frac{m_u (m_u - 1)}{2}
+\]</span></p>
+<p>이러한 계산이 필요한 이유는, Krippendorff’s Alpha에서 평가자 간의 불일치를 측정할 때 단순한 개별 평가 값을 비교하는 것이 아니라, 각 단위에서 이루어진 모든 평가 값들 간의 관계를 분석해야 하기 때문이다.</p>
+<p>이 식은 평가 값 자체의 범주를 기반으로 전체적인 불일치도를 직접적으로 계산하는 방식이라면, 단위별 불일치도를 먼저 계산한 후 전체 평균을 구하는 방식도 존재한다. <span class="math inline">\(D_o\)</span>에 대한 단위 중심의 접근법은 다음과 같다.</p>
+<p><span class="math display">\[
+D_o = \frac{1}{n} \sum_{j=1}^{N} m_j E(\delta_j)
+\]</span></p>
+<p>여기서 <span class="math inline">\(E(\delta_j)\)</span>는 모든 가능한 쌍에 대해 평균적인 거리이며, 아래와 같은 식으로 표현할 수 있다.</p>
+<p><span class="math display">\[
+E(\delta_j) = \frac{ \sum_{i&gt;i'} \delta(v_{ij}, v_{i'j}) }{\binom{m_j}{2}}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(v_{ij}\)</span>: 평가자 <span class="math inline">\(i\)</span>가 단위 <span class="math inline">\(j\)</span>에 대해 부여한 평가 값</li>
+<li><span class="math inline">\(\delta(v_{ij}, v_{i'j})\)</span>: 두 평가 값 <span class="math inline">\(v_{ij}\)</span>와 <span class="math inline">\(v_{i'j}\)</span> 간의 거리</li>
+<li><span class="math inline">\(\sum_{i&gt;i'}\)</span>: 단위 <span class="math inline">\(j\)</span>에서 모든 평가자 간의 가능한 쌍을 고려한 합 - <span class="math inline">\(\binom{m_j}{2}\)</span>: 단위 <span class="math inline">\(j\)</span>에서 가능한 모든 평가 쌍의 개수. <span class="math inline">\(\frac{m_j(m_j - 1)}{2}\)</span>로 계산된다.</li>
+</ul>
+<p>이 수식은 단위 <span class="math inline">\(j\)</span>에서 평가자들이 부여한 모든 값들을 비교하여 평균적인 불일치도를 구하는 과정이다. 평가자들이 같은 값을 부여했다면 <span class="math inline">\(\delta(v_{ij}, v_{i'j}) = 0\)</span>이 되어 <span class="math inline">\(E(\delta_j)\)</span> 값이 작아지고, 평가 값이 크게 차이 날수록 <span class="math inline">\(E(\delta_j)\)</span> 값이 증가한다.</p>
+<p>또한, 만약 모든 단위에서 평가자 수가 일정하다면, <span class="math inline">\(D_o\)</span>는 전체 평가 단위에서 가능한 모든 평가 쌍에 대한 평균적인 거리로 해석할 수 있다. 이는 일반적으로 평가 행렬에서 대각선에서의 평균적인 거리로 볼 수 있으며, 평가자들이 특정 경향을 가지고 평가했는지 또는 무작위로 평가했는지를 판단하는 중요한 지표가 된다.</p>
+</section>
+<section id="expected-disagreement-by-chance-d_e" class="level3">
+<h3 class="anchored" data-anchor-id="expected-disagreement-by-chance-d_e">Expected Disagreement by chance <span class="math inline">\(D_e\)</span></h3>
+<p>우연히 예상된 불일치 <span class="math inline">\(D_e\)</span>는 평가자들이 무작위로 응답했다고 가정할 때 예상되는 불일치도를 의미하는데, 모든 가능한 평가 값 쌍(c, k)의 발생 확률을 이용해 불일치를 추정한다. 이는 Krippendorff’s Alpha에서 평가자 간의 일치도를 측정할 때, 실제 관찰된 불일치도(<span class="math inline">\(D_o\)</span>)와 비교하는 기준이 된다.</p>
+<p><span class="math display">\[
+D_e = \frac{1}{P(n,2)} \sum_{c \in R} \sum_{k \in R} \delta(c,k) P_{ck}
+\]</span> - <span class="math inline">\(P(n,2)\)</span>: 전체 가능한 평가 쌍(pair)의 개수 - <span class="math inline">\(\delta(c,k)\)</span>: 두 개의 평가 값 <span class="math inline">\(c\)</span>와 <span class="math inline">\(k\)</span> 사이의 차이 - <span class="math inline">\(P_{ck}\)</span>: 특정 평가 값 <span class="math inline">\((c,k)\)</span> 쌍이 발생할 확률</p>
+<p><span class="math display">\[
+P_{ck} = \begin{cases}
+  n_c n_k &amp; \text{if } c \neq k \\
+  n_c (n_c - 1) &amp; \text{if } c = k
+\end{cases}
+\]</span></p>
+<p>이 식에서 <span class="math inline">\(n_c\)</span>와 <span class="math inline">\(n_k\)</span>는 각각 평가 값 <span class="math inline">\(c\)</span>와 <span class="math inline">\(k\)</span>가 전체 데이터에서 나타난 횟수이다. 만약 <span class="math inline">\(c \neq k\)</span>이면, 서로 다른 두 개의 평가 값이 선택될 확률은 <span class="math inline">\(n_c n_k\)</span>로 표현된다. 반면, <span class="math inline">\(c = k\)</span>이면 동일한 평가 값이 두 번 선택될 확률은 <span class="math inline">\(n_c (n_c - 1)\)</span>로 계산된다. 이러한 확률을 고려하여 평가 값들이 랜덤하게 분포되었을 때 기대되는 불일치도를 구할 수 있다.</p>
+<p>즉, <span class="math inline">\(D_e\)</span>는 평가자들이 일관된 기준 없이 평가한 경우 예상되는 불일치도의 평균적인 크기를 나타낸다.</p>
+<p>Krippendorff’s Alpha는 개념적으로 직관적이지만, 계산적으로는 다소 복잡할 수 있다. 그러나 이 지표는 다양한 데이터 유형에 적용할 수 있으며, 평가자의 수가 일정하지 않거나 결측값이 포함된 경우에도 안정적인 신뢰도 분석을 수행할 수 있는 장점이 있다.</p>
+</section>
+<section id="krippendorffs-alpha-값-해석" class="level3">
+<h3 class="anchored" data-anchor-id="krippendorffs-alpha-값-해석">Krippendorff’s Alpha 값 해석</h3>
+<p><span class="math inline">\(α\)</span>에 대한 해석은 다음과 같다.</p>
+<ul>
+<li><strong>α = 1</strong>: 완벽한 평가자 간 일치 (모든 평가자가 동일한 응답)</li>
+<li><strong>0.8 ≤ α ≤ 1</strong>: 높은 신뢰도를 의미하며 연구 결과로 활용 가능</li>
+<li><strong>0.67 ≤ α &lt; 0.8</strong>: 신뢰할 수 있는 수준이지만 엄격한 연구에서는 보완이 필요함</li>
+<li><strong>0 ≤ α &lt; 0.67</strong>: 신뢰도가 낮아 추가적인 평가 기준 수정 또는 평가자 교육이 필요함</li>
+<li><strong>α &lt; 0</strong>: 평가자 간 일치도가 우연보다도 낮음 (평가 기준이 모호하거나 데이터에 문제 가능성)</li>
+</ul>
+</section>
+</section>
+<section id="example-4" class="level2">
+<h2 class="anchored" data-anchor-id="example-4">5.2 Example</h2>
+<p>아래는 <code>irrCAC</code> 패키지를 사용하여 Krippendorff’s Alpha를 계산하는 R 코드 예제이다.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(irrCAC)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 여러 평가자의 병변 평가 데이터</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ratings <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">rater1 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="cn">NA</span>, <span class="dv">2</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">rater2 =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">rater3 =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>, <span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="cn">NA</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">rater4 =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">4</span>, <span class="cn">NA</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Krippendorff’s Alpha 계산 (순위형 데이터)</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>alpha_result <span class="ot">&lt;-</span> <span class="fu">krippen.alpha.raw</span>(ratings, <span class="at">weights =</span> <span class="st">"ordinal"</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(alpha_result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이 코드는 순위형 데이터를 기반으로 Krippendorff’s Alpha를 계산하는 방법을 보여준다. 평가자 간 일치도를 보다 유연하게 측정할 수 있으며, Fleiss Kappa나 Weighted Cohen’s Kappa보다 데이터 특성에 덜 제한을 받는다는 장점이 있다. 또한, 결측값이 포함된 데이터를 그대로 분석할 수 있다는 점에서 다른 신뢰도 측정법보다 강력한 활용성을 가진다.</p>
+<p>Krippendorff’s Alpha는 평가자가 많을수록, 그리고 평가 기준이 명확할수록 신뢰도가 높게 나타난다. 하지만 평가자 간 의견 차이가 크다면 신뢰도 값이 낮아질 수 있으며, 이런 경우 평가 기준을 조정하거나 추가적인 훈련이 필요할 수 있다.</p>
+</section>
+</section>
+<section id="마치며" class="level1">
+<h1>마치며</h1>
+<p>마지막으로 유의할 점은 Kappa가 두 평가자 사이에 평가 결과가 얼마나 비슷한지, 즉 평가자들이 서로 얼마나 일치하는지만 측정할 수 있다는 것이다. 이것을 ’신뢰도(Reliability)’라고 한다. 반면, 평가자들이 실제로 올바른 평가를 하고 있는지 여부, 즉 ’타당도(Validity)’에 대해서는 알려주지 못한다. 평가가 옳고 정확한지 판단하는 것은 타당도의 영역이며, Kappa는 오직 신뢰도를 측정할 때만 사용할 수 있다는 점을 기억하자.</p>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kang2025,
+  author = {Kang, YeJi},
+  title = {Kappa {분석} {이해하기}},
+  date = {2025-03-18},
+  url = {https://blog.zarathu.com/posts/2025-03-18-Kappa/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kang2025" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kang, YeJi. 2025. <span>“Kappa 분석 이해하기.”</span> March 18, 2025. <a href="https://blog.zarathu.com/posts/2025-03-18-Kappa/">https://blog.zarathu.com/posts/2025-03-18-Kappa/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
