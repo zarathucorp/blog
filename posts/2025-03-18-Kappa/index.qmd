@@ -6,7 +6,7 @@ author:
   name: YeJi Kang
   url: https://github.com/YejiKang63
 date: "03-18-2025"
-image: logo.png
+image: img/Kappa_uc_lc.svg.png
 format: 
   html: 
     toc-depth: 3
@@ -110,7 +110,7 @@ $$
 
 ## 1.2 Example 1
 
-첫 번째 예시에서는 두 평가자가 다섯 개 항목을 각각 평가한 뒤, Cohen's Kappa 통계량을 이용해 두 평가자 간의 일치도를 분석했다. R에서 Cohen's Kappa를 구하기 위해서는 irr 패키지를 사용한다 (Desc Tools, psych 등 다른 패키지도 존재).
+첫 번째 예시에서는 두 평가자가 다섯 개 항목을 각각 평가한 뒤, Cohen's Kappa 통계량을 이용해 두 평가자 간의 일치도를 분석했다. R에서 Cohen's Kappa를 구하기 위해서는 irr 패키지를 사용한다 (Desc Tools, psych 등 다른 패키지도 존재).  
 
 ```         
 library(irr)
@@ -427,11 +427,16 @@ $$
 
 각 항목의 계산법은 아래와 같다.
 
-#### Observed weighted agreement $P_o$
+### Observed weighted agreement $P_o$
 
 $$
 P_o = \frac{1}{\sum_{i=1}^{N} n_i(n_i - 1)} \sum_{i=1}^{N}\sum_{j=1}^{k}\sum_{l=1}^{k} W_{jl} \cdot n_{ij}(n_{il}-\delta_{jl})
-$$ - $N$: 평가된 항목(대상)의 총 개수 - $k$: 평가 범주의 수 - $n_i$: $i$번째 항목을 평가한 평가자의 수 - $n_{ij}$: $i$번째 항목을 $j$번째 범주로 평가한 평가자의 수 - $W_{jl}$: 범주 간 가중치 - $\delta_{jl}$: 범주가 같으면 1, 다르면 0인 값
+$$ 
+- $N$: 평가된 항목(대상)의 총 개수 
+- $k$: 평가 범주의 수 
+- $n_i$: $i$번째 항목을 평가한 평가자의 수 
+- $n_{ij}$: $i$번째 항목을 $j$번째 범주로 평가한 평가자의 수 
+- $W_{jl}$: 범주 간 가중치 - $\delta_{jl}$: 범주가 같으면 1, 다르면 0인 값
 
 Generalized Fleiss' Kappa에서 Observed Weighted Agreement $P_o$는 평가자들이 실제로 얼마나 일치했는지를 측정하는 값이다. 기존 Fleiss' Kappa가 단순한 평가 일치율을 계산하는 방식이라면, Generalized Fleiss' Kappa는 평가 값 사이의 차이를 반영하여 가중치를 적용하는 방식으로 평가자 간의 일치도를 보다 정교하게 측정한다.
 
@@ -441,15 +446,16 @@ $P_o$는 평가자들이 동일한 평가를 내린 정도를 가중(weighted) �
 
 $P_o = 1$이면 평가자들이 완벽하게 동일한 평가를 내린 경우이며, $P_o = 0$이면 평가자 간 평가가 완전히 무작위로 이루어진 경우를 의미한다.
 
-#### Expected weighted agreement by chance $P_e$
+### Expected weighted agreement by chance $P_e$
 
 $$
 P_e = \frac{1}{\left(\sum_{i=1}^{N} n_i\right)^2 - \sum_{i=1}^{N} n_i} \sum_{j=1}^{k}\sum_{l=1}^{k} W_{jl}\left(\sum_{i=1}^{N}n_{ij}\right)\left(\sum_{i=1}^{N}n_{il}-\delta_{jl}\right)
-$$ $P_e$\*\*는 Fleiss' Kappa에서 Expected agreement by chance ($P_e$)를 확장한 개념으로, 평가 값들 사이의 거리를 고려하여 가중(weighted) 방식으로 측정한다.
+$$ 
+$P_e$\*\*는 Fleiss' Kappa에서 Expected agreement by chance ($P_e$)를 확장한 개념으로, 평가 값들 사이의 거리를 고려하여 가중(weighted) 방식으로 측정한다.
 
 $\left(\sum_{i=1}^{N} n_i\right)^2 - \sum_{i=1}^{N} n_i$는 전체 평가 데이터에서 발생할 수 있는 모든 평가 쌍의 개수를 나타낸다. 여기서 $\sum_{i=1}^{N} n_i$는 전체 평가자가 수행한 총 평가 개수이며, 이를 제곱한 값에서 자기 자신과의 비교를 제외하기 위해 $\sum_{i=1}^{N} n_i$를 빼준다. 이는 평가자들이 임의로 범주를 선택했을 때 가능한 모든 평가 쌍의 개수를 정규화하는 역할을 한다.
 
-$\sum_{i=1}^{N} n_{ij}$와 $\sum_{i=1}^{N} n_{il}$은 특정 범주 $j$와 $l$이 전체 평가에서 각각 몇 번 선택되었는지를 나타낸다. 이 값에 가중치 행렬 $W_{jl}$을 곱하는데, $W_{jl}$은 범주 $j$와 범주 $l$ 사이의 거리를 반영하는 값으로, linear 또는 quadratic 가중치로 결정된다.마지막으로, $\delta_{jl}$는 두 범주가 동일할 경우 1, 다를 경우 0을 갖는 함수이다.
+$\sum_{i=1}^{N} n_{ij}$와 $\sum_{i=1}^{N} n_{il}$은 특정 범주 $j$와 $l$이 전체 평가에서 각각 몇 번 선택되었는지를 나타낸다. 이 값에 가중치 행렬 $W_{jl}$을 곱하는데, $W_{jl}$은 범주 $j$와 범주 $l$ 사이의 거리를 반영하는 값으로, linear 또는 quadratic 가중치로 결정된다.마지막으로, $\delta_{jl}$는 두 범주가 동일할 경우 1, 다를 경우 0을 갖는 함수다.
 
 결과적으로 $P_e$를 $P_o$와 비교하여 Kappa 값이 계산되며, $P_o$가 $P_e$보다 클수록 평가자 간의 신뢰도가 높다는 것을 의미한다.
 
@@ -490,7 +496,10 @@ print(kappa_quadratic)
 
 Krippendorff’s Alpha는 여러 평가자가 동일한 항목을 평가할 때, 평가자 간의 신뢰도를 측정하는 지표이다. 가장 큰 특징은 범주형, 순서형, 연속형 데이터를 모두 처리할 수 있으며, 평가자 수에 제한이 없고, 불완전한 데이터(NA 값 포함)도 분석할 수 있다는 점이다. 이러한 특성 덕분에 결측값이 포함된 데이터에서도 안정적인 신뢰도 평가가 가능하고, Cohen’s Kappa나 Fleiss Kappa보다 범용성이 뛰어나다.
 
-범주형, 순서형, 연속형 데이터: - **Nominal (명목형)**: 범주 간 서열이 없는 경우 - **Ordinal (순위형)**: 서열이 있는 경우 (예: 경미, 중등, 심함) - **Interval (구간형)**: 연속형 데이터 (예: 온도, IQ 점수 등)
+범주형, 순서형, 연속형 데이터: 
+- **Nominal (명목형)**: 범주 간 서열이 없는 경우 
+- **Ordinal (순위형)**: 서열이 있는 경우 (예: 경미, 중등, 심함) 
+- **Interval (구간형)**: 연속형 데이터 (예: 온도, IQ 점수 등)
 
 ## 5.1 신뢰도 데이터
 

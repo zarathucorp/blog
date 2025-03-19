@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Siyeol Jung">
+<meta name="dcterms.date" content="2022-01-20">
+<meta name="description" content="MySQL 기반 DockerContainer에서 GitHub-Repository로의 주기적인 DB 백업 구현">
+
+<title>인턴십 - DB 자동 백업을 위한 Docker 및 Github 활용 – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-0626ff4d7a71b55c8707dcae1d04a9b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-12f9b1590e9172db5cd2178fc043c68b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">Applications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R packages</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributors.html"> 
+<span class="menu-text">Contributors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Partners</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">    
+        <li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">인턴십 - DB 자동 백업을 위한 Docker 및 Github 활용</h1>
+                  <div>
+        <div class="description">
+          MySQL 기반 DockerContainer에서 GitHub-Repository로의 주기적인 DB 백업 구현
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">docker</div>
+                <div class="quarto-category">github</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/siyeoljung">Siyeol Jung</a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 20, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#목표" id="toc-목표" class="nav-link active" data-scroll-target="#목표"><strong>목표</strong></a></li>
+  <li><a href="#목차" id="toc-목차" class="nav-link" data-scroll-target="#목차"><strong>목차</strong></a>
+  <ul class="collapse">
+  <li><a href="#ssh-key-생성-및-github-등록" id="toc-ssh-key-생성-및-github-등록" class="nav-link" data-scroll-target="#ssh-key-생성-및-github-등록"><strong>SSH-Key 생성 및 GitHub 등록</strong></a></li>
+  <li><a href="#dockerfile-작성" id="toc-dockerfile-작성" class="nav-link" data-scroll-target="#dockerfile-작성"><strong>DockerFile 작성</strong></a></li>
+  <li><a href="#cronfile-및-shell-file작성" id="toc-cronfile-및-shell-file작성" class="nav-link" data-scroll-target="#cronfile-및-shell-file작성"><strong>CronFile 및 Shell File작성</strong></a></li>
+  <li><a href="#결론" id="toc-결론" class="nav-link" data-scroll-target="#결론"><strong>결론</strong></a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script>
+
+
+
+
+
+<p>숭실대학교 인턴십 프로그램을 통하여 참여한 차라투에서 인턴으로 활동하며 3주차 동안 학습한 내용에 대해 공유합니다.</p>
+<section id="목표" class="level3">
+<h3 class="anchored" data-anchor-id="목표"><strong>목표</strong></h3>
+<p>MySQL 기반 DockerContainer에서 GitHub-Repository로의 주기적인 DB 백업 구현</p>
+<p><br></p>
+</section>
+<section id="목차" class="level2">
+<h2 class="anchored" data-anchor-id="목차"><strong>목차</strong></h2>
+<ul>
+<li>SSH-key 생성 및 GitHub 등록</li>
+<li>Dockerfile 작성</li>
+<li>CronFile 및 Shell File 작성</li>
+</ul>
+<p><br></p>
+<section id="ssh-key-생성-및-github-등록" class="level3">
+<h3 class="anchored" data-anchor-id="ssh-key-생성-및-github-등록"><strong>SSH-Key 생성 및 GitHub 등록</strong></h3>
+<p>GitHub Repository에 SSH를 통한 접근 인증을 위해서는 SSH Public Key 생성 및 등록 과정을 걸쳐야 합니다.</p>
+<section id="ssh-key-생성" class="level4">
+<h4 class="anchored" data-anchor-id="ssh-key-생성"><strong>SSH-Key 생성</strong></h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh-keygen</span> <span class="at">-t</span> rsa </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p align="center">
+</p><p><img src="./ssh-keygen.png"></p>
+<p></p>
+<p>생성된 key는 인증키(private key)의 경우 ‘/.ssh/id_rsa’에 저장되어 있고 공개 키(public key)는’/.ssh/id_rsa.pub’로 저장되어 있습니다. 저희는 공개키를 사용하기에 공개키를 복사해주세요.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> ~/.ssh/id_rsa.pub</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>위 명령어를 실행하면 공개키가 출력되는 모습을 확인하실 수 있습니다. 이제 GitHub로 이동하겠습니다.</p>
+<p><br></p>
+</section>
+<section id="github-등록" class="level4">
+<h4 class="anchored" data-anchor-id="github-등록"><strong>GitHub 등록</strong></h4>
+<p align="center">
+</p><p><img src="./settings3.png"></p>
+<p></p>
+<p align="center">
+</p><p><img src="./settings4.png"></p>
+<p></p>
+<p><br></p>
+<p>
+본인 GitHub계정에 로그인한 이후 <strong><u>Settings → SSH and GPG keys → new SSH key</u></strong>에 복사한 SSH Key를 붙여주면 됩니다. Title은 임의로 정하셔도 상관없습니다. SSH-Key 등록 이후 본격적인 진행에 앞서 앞으로의 코드에 이해를 돕고자 현재 작업하고 있는 로컬 디렉토리의 계층도를 안내하겠습니다.
+</p>
+<p align="center">
+</p><p><img src="./layer.png" class="img-fluid" width="602"></p>
+<p></p>
+<p><br></p>
+</section>
+</section>
+<section id="dockerfile-작성" class="level3">
+<h3 class="anchored" data-anchor-id="dockerfile-작성"><strong>DockerFile 작성</strong></h3>
+<p>DockerContainer를 DockerFile을 통해 만들도록 하겠습니다. 코드의 전문은 아래와 같습니다.</p>
+<p align="center">
+</p><p><img src="./dockerfile.png"></p>
+<p></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">FROM</span> mysql:8.0.27</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>생성되는 컨테이너는 MYSQL:8.0.27 이미지를 바탕으로 한다는 내용의 코드입니다</p>
+<p><br></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">RUN</span> apt-get update</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">RUN</span> apt-get install cron <span class="at">-y</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">RUN</span> apt-get install git-all <span class="at">-y</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>생성되는 컨테이너에 주기적인 백업을 위한 Cron, Git 명령어 수행을 위한 Git을 설치하는 코드입니다.</p>
+<p><br></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">RUN</span> mkdir ~/.ssh </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> /rsa/id_rsa /root/.ssh/id_rsa</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> /rsa/id_rsa.pub /root/.ssh/id_rsa.pub</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>앞서 생성한 SSH-key를 컨테이너에서 활용 가능하도록 컨테이너 생성시 .ssh폴더를 생성한 뒤 해당 키 값들을 복사하여 생성하는 코드입니다.</p>
+<p><br></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> cron /etc/cron.d/cron</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> backup.sh /etc/cron.d/backup.sh </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> cronstart.sh /etc/cron.d/cronstart.sh </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>로컬에 있는 cron, backup.sh, cronstart.sh 파일들을 복사하여 컨테이너 생성시 해당 디렉토리에 넣는 코드입니다.해당 파일의 내용은 아래에서 살펴보도록 하겠습니다.</p>
+<p><br></p>
+</section>
+<section id="cronfile-및-shell-file작성" class="level3">
+<h3 class="anchored" data-anchor-id="cronfile-및-shell-file작성"><strong>CronFile 및 Shell File작성</strong></h3>
+<p><br></p>
+<section id="cronfile-작성" class="level4">
+<h4 class="anchored" data-anchor-id="cronfile-작성"><strong>CronFile 작성</strong></h4>
+<p align="center">
+</p><p><img src="./cronfile.png"></p>
+<p></p>
+<p>앞서 컨테이너의 /etc/cron.d/cron에 복사한 cron파일입니다.<br>
+Cron을 작동시키는 시간을 맞추기 위해서 <strong><u>TZ = Asia/Seoul</u></strong>를 설정하여 현재 서울의 시간대와 일치시켰습니다.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> <span class="pp">*</span> <span class="pp">*</span> <span class="pp">*</span> <span class="pp">*</span> /etc/cron.d/backup.sh <span class="op">&gt;&gt;</span> /var/log/cron.log <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>매분 마다 /etc/cron.d/backup.sh 파일을 작동시키고, 해당 파일의 작동 결과를 /var/log/cron.log 파일에 기록할 수 있도록 설정하였습니다. Backup.sh의 내용은 아래에서 살펴보겠습니다.<br>
+(Cron 설정에 관련해서는 임의로 설정하셔도 상관없습니다.)</p>
+<p><br></p>
+</section>
+<section id="shell-파일-작성" class="level4">
+<h4 class="anchored" data-anchor-id="shell-파일-작성"><strong>Shell 파일 작성</strong></h4>
+<p align="center">
+</p><p><img src="./shell.png"></p>
+<p></p>
+<p>앞서 Cron 설정으로 일정주기 마다 실행되는 Backup.sh 파일입니다. mysqldump를 활용해서 test db를 백업한 내용을 “$FileDir/$YmdH”.sql에 저장하고 이후 Git으로 Push를 진행해준다.</p>
+<p>여기까지cron을 활용하여 GitHub에 주기적으로 백업을 진행하는 내용의 코드는 완성되었습니다. 이에 더하여 컨테이너를 실행하면 cron이 자동으로 시작되는 기능을 추가하겠습니다.<br>
+앞선 DockerFile에서 다음과 같은 코드를 확인할 수 있습니다.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ENTRYPOINT</span> <span class="pp">[</span><span class="st">"/etc/cron.d/cronstart.sh"</span><span class="pp">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>ENTRYPOINT는 컨테이너가 시작되었을때 스크립트 혹은 명령을 실행합니다. 위 코드에서는 /etc/cron.d/cronstart.sh 파일을 실행하는 것입니다. /etc/cron.d/cronstart.sh 파일의 내용은 아래에서 확인하겠습니다.</p>
+<p><br></p>
+</section>
+<section id="cronstart.sh" class="level4">
+<h4 class="anchored" data-anchor-id="cronstart.sh"><strong>cronstart.sh</strong></h4>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">service</span> cron start </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> /usr/local/bin/docker-entrypoint.sh mysqld</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>컨테이너가 시작되면 service cron start로 cron을 시작합니다. 이후 bash /usr/local/bin/docker-entrypoint.sh 파일에 mysqld 인자를 넘기며 실행시켜 해당 컨테이너에 mysqld를 작동시킵니다.</p>
+<p><br></p>
+<p>dockerfile을 활용하여 컨테이너를 구축하고 실제로 작동이 잘되는지 확인해보도록 하겠습니다.</p>
+<pre class="docker"><code>docker build -t test .
+docker run -i --name test test </code></pre>
+<p align="left">
+</p><p><img src="./pushclear.png"></p>
+<p></p>
+<p>컨테이너 생성과 동시에 정상적으로 DB 백업이 이루어지는 것을 확인할 수 있습니다.<br>
+<br></p>
+</section>
+</section>
+<section id="결론" class="level3">
+<h3 class="anchored" data-anchor-id="결론"><strong>결론</strong></h3>
+<p>DB의 내용을 GitHub에 주기적으로 백업하는 방식에 대해 알아보았습니다. DB의 내용을 주기적으로 자동으로 백업이 가능하다는 유의미한 결과를 보이기는 하지만 코드상 DB의 암호가 노출된다는 점 등을 미루어 보았을 때 취약점이 존재하는것 같습니다. 개선된 방향으로의 학습이 필요할것 같습니다.</p>
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{jung2022,
+  author = {Jung, Siyeol},
+  title = {인턴십 - {DB} {자동} {백업을} {위한} {Docker} {및} {Github}
+    {활용}},
+  date = {2022-01-20},
+  url = {https://blog.zarathu.com/posts/2022-01-20-dbbackup/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-jung2022" class="csl-entry quarto-appendix-citeas" role="listitem">
+Jung, Siyeol. 2022. <span>“인턴십 - DB 자동 백업을 위한 Docker 및 Github
+활용.”</span> January 20, 2022. <a href="https://blog.zarathu.com/posts/2022-01-20-dbbackup/">https://blog.zarathu.com/posts/2022-01-20-dbbackup/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

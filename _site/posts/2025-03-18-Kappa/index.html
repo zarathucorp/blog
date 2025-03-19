@@ -343,7 +343,11 @@ window.Quarto = {
   </ul></li>
   <li><a href="#generalized-fleiss-kappa" id="toc-generalized-fleiss-kappa" class="nav-link" data-scroll-target="#generalized-fleiss-kappa">4. Generalized Fleiss’ Kappa</a>
   <ul class="collapse">
-  <li><a href="#generalized-fleiss-kappa-공식" id="toc-generalized-fleiss-kappa-공식" class="nav-link" data-scroll-target="#generalized-fleiss-kappa-공식">4.1 Generalized Fleiss’ Kappa 공식</a></li>
+  <li><a href="#generalized-fleiss-kappa-공식" id="toc-generalized-fleiss-kappa-공식" class="nav-link" data-scroll-target="#generalized-fleiss-kappa-공식">4.1 Generalized Fleiss’ Kappa 공식</a>
+  <ul class="collapse">
+  <li><a href="#observed-weighted-agreement-p_o" id="toc-observed-weighted-agreement-p_o" class="nav-link" data-scroll-target="#observed-weighted-agreement-p_o">Observed weighted agreement <span class="math inline">\(P_o\)</span></a></li>
+  <li><a href="#expected-weighted-agreement-by-chance-p_e" id="toc-expected-weighted-agreement-by-chance-p_e" class="nav-link" data-scroll-target="#expected-weighted-agreement-by-chance-p_e">Expected weighted agreement by chance <span class="math inline">\(P_e\)</span></a></li>
+  </ul></li>
   <li><a href="#example-3" id="toc-example-3" class="nav-link" data-scroll-target="#example-3">4.2 Example</a></li>
   </ul></li>
   <li><a href="#krippendorffs-alpha" id="toc-krippendorffs-alpha" class="nav-link" data-scroll-target="#krippendorffs-alpha">5. Krippendorff’s Alpha</a>
@@ -770,8 +774,8 @@ print(fleiss_kappa)</code></pre>
 <li><span class="math inline">\(P_e\)</span>: 우연히 기대되는 가중 평균 일치율 (Expected weighted agreement by chance)</li>
 </ul>
 <p>각 항목의 계산법은 아래와 같다.</p>
-<section id="observed-weighted-agreement-p_o" class="level4">
-<h4 class="anchored" data-anchor-id="observed-weighted-agreement-p_o">Observed weighted agreement <span class="math inline">\(P_o\)</span></h4>
+<section id="observed-weighted-agreement-p_o" class="level3">
+<h3 class="anchored" data-anchor-id="observed-weighted-agreement-p_o">Observed weighted agreement <span class="math inline">\(P_o\)</span></h3>
 <p><span class="math display">\[
 P_o = \frac{1}{\sum_{i=1}^{N} n_i(n_i - 1)} \sum_{i=1}^{N}\sum_{j=1}^{k}\sum_{l=1}^{k} W_{jl} \cdot n_{ij}(n_{il}-\delta_{jl})
 \]</span> - <span class="math inline">\(N\)</span>: 평가된 항목(대상)의 총 개수 - <span class="math inline">\(k\)</span>: 평가 범주의 수 - <span class="math inline">\(n_i\)</span>: <span class="math inline">\(i\)</span>번째 항목을 평가한 평가자의 수 - <span class="math inline">\(n_{ij}\)</span>: <span class="math inline">\(i\)</span>번째 항목을 <span class="math inline">\(j\)</span>번째 범주로 평가한 평가자의 수 - <span class="math inline">\(W_{jl}\)</span>: 범주 간 가중치 - <span class="math inline">\(\delta_{jl}\)</span>: 범주가 같으면 1, 다르면 0인 값</p>
@@ -780,13 +784,13 @@ P_o = \frac{1}{\sum_{i=1}^{N} n_i(n_i - 1)} \sum_{i=1}^{N}\sum_{j=1}^{k}\sum_{l=
 <p>식에서 그 외의 부분은 평가자 간의 일치도를 계산한다. <span class="math inline">\(W_{jl}\)</span>은 범주 <span class="math inline">\(j\)</span>와 범주 <span class="math inline">\(l\)</span> 사이의 가중치로, 두 평가 값이 얼마나 다른지를 수치적으로 반영하는 역할을 하는데, 앞서 설명한 linear 또는 quadratic 방식으로 설정된다. <span class="math inline">\(n_{ij}\)</span>는 평가 대상 <span class="math inline">\(i\)</span>에서 범주 <span class="math inline">\(j\)</span>를 선택한 평가자의 수를 의미하며, <span class="math inline">\(n_{il}\)</span>은 동일한 평가 대상에서 범주 <span class="math inline">\(l\)</span>을 선택한 평가자의 수를 나타낸다. 또한 <span class="math inline">\(\delta_{jl}\)</span>은 Kronecker Delta로, <span class="math inline">\(j\)</span>와 <span class="math inline">\(l\)</span>이 동일한 경우 1, 다르면 0을 반환하는 지표이다.</p>
 <p><span class="math inline">\(P_o = 1\)</span>이면 평가자들이 완벽하게 동일한 평가를 내린 경우이며, <span class="math inline">\(P_o = 0\)</span>이면 평가자 간 평가가 완전히 무작위로 이루어진 경우를 의미한다.</p>
 </section>
-<section id="expected-weighted-agreement-by-chance-p_e" class="level4">
-<h4 class="anchored" data-anchor-id="expected-weighted-agreement-by-chance-p_e">Expected weighted agreement by chance <span class="math inline">\(P_e\)</span></h4>
+<section id="expected-weighted-agreement-by-chance-p_e" class="level3">
+<h3 class="anchored" data-anchor-id="expected-weighted-agreement-by-chance-p_e">Expected weighted agreement by chance <span class="math inline">\(P_e\)</span></h3>
 <p><span class="math display">\[
 P_e = \frac{1}{\left(\sum_{i=1}^{N} n_i\right)^2 - \sum_{i=1}^{N} n_i} \sum_{j=1}^{k}\sum_{l=1}^{k} W_{jl}\left(\sum_{i=1}^{N}n_{ij}\right)\left(\sum_{i=1}^{N}n_{il}-\delta_{jl}\right)
 \]</span> <span class="math inline">\(P_e\)</span>**는 Fleiss’ Kappa에서 Expected agreement by chance (<span class="math inline">\(P_e\)</span>)를 확장한 개념으로, 평가 값들 사이의 거리를 고려하여 가중(weighted) 방식으로 측정한다.</p>
 <p><span class="math inline">\(\left(\sum_{i=1}^{N} n_i\right)^2 - \sum_{i=1}^{N} n_i\)</span>는 전체 평가 데이터에서 발생할 수 있는 모든 평가 쌍의 개수를 나타낸다. 여기서 <span class="math inline">\(\sum_{i=1}^{N} n_i\)</span>는 전체 평가자가 수행한 총 평가 개수이며, 이를 제곱한 값에서 자기 자신과의 비교를 제외하기 위해 <span class="math inline">\(\sum_{i=1}^{N} n_i\)</span>를 빼준다. 이는 평가자들이 임의로 범주를 선택했을 때 가능한 모든 평가 쌍의 개수를 정규화하는 역할을 한다.</p>
-<p><span class="math inline">\(\sum_{i=1}^{N} n_{ij}\)</span>와 <span class="math inline">\(\sum_{i=1}^{N} n_{il}\)</span>은 특정 범주 <span class="math inline">\(j\)</span>와 <span class="math inline">\(l\)</span>이 전체 평가에서 각각 몇 번 선택되었는지를 나타낸다. 이 값에 가중치 행렬 <span class="math inline">\(W_{jl}\)</span>을 곱하는데, <span class="math inline">\(W_{jl}\)</span>은 범주 <span class="math inline">\(j\)</span>와 범주 <span class="math inline">\(l\)</span> 사이의 거리를 반영하는 값으로, linear 또는 quadratic 가중치로 결정된다.마지막으로, <span class="math inline">\(\delta_{jl}\)</span>는 두 범주가 동일할 경우 1, 다를 경우 0을 갖는 함수이다.</p>
+<p><span class="math inline">\(\sum_{i=1}^{N} n_{ij}\)</span>와 <span class="math inline">\(\sum_{i=1}^{N} n_{il}\)</span>은 특정 범주 <span class="math inline">\(j\)</span>와 <span class="math inline">\(l\)</span>이 전체 평가에서 각각 몇 번 선택되었는지를 나타낸다. 이 값에 가중치 행렬 <span class="math inline">\(W_{jl}\)</span>을 곱하는데, <span class="math inline">\(W_{jl}\)</span>은 범주 <span class="math inline">\(j\)</span>와 범주 <span class="math inline">\(l\)</span> 사이의 거리를 반영하는 값으로, linear 또는 quadratic 가중치로 결정된다.마지막으로, <span class="math inline">\(\delta_{jl}\)</span>는 두 범주가 동일할 경우 1, 다를 경우 0을 갖는 함수다.</p>
 <p>결과적으로 <span class="math inline">\(P_e\)</span>를 <span class="math inline">\(P_o\)</span>와 비교하여 Kappa 값이 계산되며, <span class="math inline">\(P_o\)</span>가 <span class="math inline">\(P_e\)</span>보다 클수록 평가자 간의 신뢰도가 높다는 것을 의미한다.</p>
 </section>
 </section>
