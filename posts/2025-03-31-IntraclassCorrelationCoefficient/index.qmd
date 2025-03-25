@@ -460,58 +460,38 @@ bootstrap은 데이터를 반복적으로 다시 샘플링해서, 어떤 통계�
 ```r
 library(lme4)
 library(performance)
-library(boot)
+
+set.seed(123)
+
+n_subjects <- 30
+n_raters <- 6
+ratings_per_subject <- 3
+
+subjects <- 1:n_subjects
+raters <- 1:n_raters
+
+# 데이터프레임 생성
+df <- do.call(rbind, lapply(subjects, function(s) {
+  r <- sample(raters, ratings_per_subject)
+  mu <- rnorm(1, mean = 75, sd = 5)  # subject 고유의 평균 실력
+  data.frame(
+    subject = factor(s),
+    rater = factor(r),
+    score = rnorm(ratings_per_subject, mean = mu, sd = 2)
+  )
+}))
 
 
-set.seed(20250324)  
+model <- lmer(score ~ 1 + (1 | subject) + (1 | rater), data = df, REML = TRUE)
 
-
-n_subjects <- 10
-n_raters <- 4
-
-df <- expand.grid(subject = factor(1:n_subjects),
-                  rater = factor(1:n_raters))
-
-subject_effect <- rnorm(n_subjects, mean = 0, sd = 5)
-rater_effect <- rnorm(n_raters, mean = 0, sd = 2)
-residual <- rnorm(n_subjects * n_raters, mean = 0, sd = 3)
-
-df$score <- 70 +
-  subject_effect[as.numeric(df$subject)] +
-  rater_effect[as.numeric(df$rater)] +
-  residual
-
-model <- lmer(score ~ 1 + (1 | subject) + (1 | rater), data = df)
-icc(model)
-
-icc_boot <- function(data, indices) {
-  d <- data[indices, ]
-  tryCatch({
-    m <- lmer(score ~ 1 + (1 | subject) + (1 | rater), data = d)
-    icc_val <- performance::icc(m)
-    if (is.list(icc_val)) {
-      return(icc_val$ICC_adjusted)
-    } else {
-      return(NA)
-    }
-  }, error = function(e) return(NA))
-}
-
-set.seed(20250324)
-results <- boot(data = df, statistic = icc_boot, R = 1000)
-boot.ci(results, type = "perc")
+performance::icc(model, ci =TRUE, iterations = 1000)
 ```
 
 **출력**
+
 ```r
-BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
-Based on 999 bootstrap replicates
+# Intraclass Correlation Coefficient
 
-CALL : 
-boot.ci(boot.out = results, type = "perc")
-
-Intervals : 
-Level     Percentile     
-95%   ( 0.7041,  0.9396 )  
-Calculations and Intervals on Original Scale
+    Adjusted ICC: 0.794 [0.472, 0.934]
+  Unadjusted ICC: 0.794 [0.472, 0.934]
 ```
