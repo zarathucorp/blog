@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="YeJi Kang">
+<meta name="dcterms.date" content="2025-03-26">
+<meta name="description" content="R로 생성한 Sankey plot에 JavaScript를 활용해 텍스트를 추가하는 방법을 알아보았습니다.">
+<title>Sankey Diagram 텍스트 삽입 – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-0626ff4d7a71b55c8707dcae1d04a9b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-12f9b1590e9172db5cd2178fc043c68b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script><style>html{ scroll-behavior: smooth; }</style>
+<link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">Applications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R packages</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
+<li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributors.html"> 
+<span class="menu-text">Contributors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Partners</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
+<li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">
+<li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+</li>
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Sankey Diagram 텍스트 삽입</h1>
+                  <div>
+        <div class="description">
+          <p>R로 생성한 Sankey plot에 JavaScript를 활용해 텍스트를 추가하는 방법을 알아보았습니다.</p>
+        </div>
+      </div>
+                </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/YejiKang63">YeJi Kang</a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 26, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99"><h2 id="toc-title">Customizing the Sankey Plot</h2>
+   
+  <ul>
+<li>
+<a href="#i.-sankey-plot%EC%9D%B4%EB%9E%80" id="toc-i.-sankey-plot이란" class="nav-link active" data-scroll-target="#i.-sankey-plot%EC%9D%B4%EB%9E%80">I. Sankey Plot이란?</a>
+  <ul class="collapse">
+<li><a href="#%ED%85%8D%EC%8A%A4%ED%8A%B8%EB%A5%BC-%EC%B6%94%EA%B0%80%ED%95%98%EB%A0%A4%EA%B3%A0-%ED%96%88%EB%8D%94%EB%8B%88" id="toc-텍스트를-추가하려고-했더니" class="nav-link" data-scroll-target="#%ED%85%8D%EC%8A%A4%ED%8A%B8%EB%A5%BC-%EC%B6%94%EA%B0%80%ED%95%98%EB%A0%A4%EA%B3%A0-%ED%96%88%EB%8D%94%EB%8B%88">텍스트를 추가하려고 했더니…</a></li>
+  </ul>
+</li>
+  <li><a href="#ii.-onrender-%EC%86%8C%EA%B0%9C" id="toc-ii.-onrender-소개" class="nav-link" data-scroll-target="#ii.-onrender-%EC%86%8C%EA%B0%9C">II. <code>onRender()</code> 소개</a></li>
+  <li><a href="#iii.-%EA%B8%B0%EB%B3%B8-sankey-diagram-%EB%A7%8C%EB%93%A4%EA%B8%B0" id="toc-iii.-기본-sankey-diagram-만들기" class="nav-link" data-scroll-target="#iii.-%EA%B8%B0%EB%B3%B8-sankey-diagram-%EB%A7%8C%EB%93%A4%EA%B8%B0">III. 기본 Sankey Diagram 만들기</a></li>
+  <li>
+<a href="#iv.-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0" id="toc-iv.-텍스트-추가하기" class="nav-link" data-scroll-target="#iv.-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0">IV. 텍스트 추가하기</a>
+  <ul class="collapse">
+<li><a href="#%EA%B0%81-node-%EC%98%86%EC%97%90-%EB%B9%84%EC%9C%A8-%EB%B0%8F-%EA%B0%9C%EC%88%98-%ED%91%9C%EC%8B%9C" id="toc-각-node-옆에-비율-및-개수-표시" class="nav-link" data-scroll-target="#%EA%B0%81-node-%EC%98%86%EC%97%90-%EB%B9%84%EC%9C%A8-%EB%B0%8F-%EA%B0%9C%EC%88%98-%ED%91%9C%EC%8B%9C">각 node 옆에 비율 및 개수 표시</a></li>
+  <li><a href="#%EA%B0%81-flow%EC%9D%98-%ED%99%95%EB%A5%A0-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%B6%94%EA%B0%80" id="toc-각-flow의-확률-텍스트-추가" class="nav-link" data-scroll-target="#%EA%B0%81-flow%EC%9D%98-%ED%99%95%EB%A5%A0-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%B6%94%EA%B0%80">각 flow의 확률 텍스트 추가</a></li>
+  </ul>
+</li>
+  <li><a href="#v.-%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-v.-마치며" class="nav-link" data-scroll-target="#v.-%EB%A7%88%EC%B9%98%EB%A9%B0">V. 마치며</a></li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="i.-sankey-plot이란" class="level1"><h1>I. Sankey Plot이란?</h1>
+<p>Sankey Plot은 데이터의 흐름이나 분포를 시각적으로 표현하는 그래프다.</p>
+<p>선(링크)의 굵기로 양 또는 비율을 보여주며, 한 집단에서 다른 집단으로 얼마나 이동했는지를 한눈에 확인할 수 있게 도와 전체적인 구조와 흐름을 직관적으로 이해할 수 있도록 한다.</p>
+<section id="텍스트를-추가하려고-했더니" class="level2"><h2 class="anchored" data-anchor-id="텍스트를-추가하려고-했더니">텍스트를 추가하려고 했더니…</h2>
+<p>R에는 <code><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork()</a></code> 함수로 Sankey Plot을 생성할 수 있는 기능이 존재한다. 이 함수는 <code>networkD3</code> 패키지에서 제공되며, 비교적 간단한 코드로 노드와 링크 데이터를 연결해 Sankey Plot을 만들 수 있다는 장점이 있다 (특히 마우스 오버 시 강조되거나, 노드를 드래그할 수 있는 등의 동작은 시각적으로 유용하다).</p>
+<p>하지만 이 함수만으로는 각 링크 위에 텍스트를 추가하거나, 노드 옆에 퍼센트 또는 샘플 수(n=) 같은 세부 정보를 표시하는 것이 어렵다. 그 이유는 Sankey Plot 내부 요소들의 위치(x, y 좌표)가 JavaScript에서 실시간으로 계산되기 때문이다. 따라서 R에서는 그 위치 정보를 직접 참조하거나 조작할 수가 없어 <code><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork()</a></code>를 이용한 기본적인 시각화 요소 외에는 커스터마이징 옵션이 제한적이다.</p>
+<p>따라서 Sankey Plot의 시각적 완성도를 높이기 위해서는 결국 R 코드와 JavaScript를 함께 사용하는 접근이 요구된다.</p>
+</section></section><section id="ii.-onrender-소개" class="level1"><h1>II. <code>onRender()</code> 소개</h1>
+<p>본 글에서 활용할 <code>onRender()</code>는 R에서 만든 시각화 객체에 JavaScript 코드를 직접 삽입할 수 있도록 도와주는 함수이다. 이 함수는 <code>htmlwidgets</code> 패키지에서 제공되며, <code>networkD3</code>, <code>plotly</code>, <code>leaflet</code> 등 다양한 시각화 패키지와 함께 사용된다.</p>
+<p><code>onRender()</code>를 통해 JavaScript를 삽입하면 그래프 내부의 구성 요소들을 세부적으로 수정할 수 있다. 이 함수는 Sankey 그래프가 완성된 이후 실행되기 때문에, 그래프가 브라우저에 나타난 상태에서 DOM 요소를 선택해 조작하는 것을 가능하게 한다. 즉, <code>onRender()</code>는 R에서 만든 시각화 객체를 JavaScript 수준에서 마무리 커스터마이징 할 수 있게 해주는 도구이며, 시각화 결과를 한층 더 직관적이고 풍부하게 만들어주는 역할을 한다.</p>
+</section><section id="iii.-기본-sankey-diagram-만들기" class="level1"><h1>III. 기본 Sankey Diagram 만들기</h1>
+<p>아래의 ‘sankeyNetwork()’ 함수의 정의를 참고한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://CRAN.R-project.org/package=networkD3">networkD3</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork</a></span><span class="op">(</span><span class="va">Links</span>, <span class="va">Nodes</span>, <span class="va">Source</span>, <span class="va">Target</span>, <span class="va">Value</span>, <span class="va">NodeID</span>, NodeGroup <span class="op">=</span> <span class="va">NodeID</span>,</span>
+<span>  LinkGroup <span class="op">=</span> <span class="cn">NULL</span>, units <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  colourScale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/networkD3/man/JS.html">JS</a></span><span class="op">(</span><span class="st">"d3.scaleOrdinal(d3.schemeCategory20);"</span><span class="op">)</span>, fontSize <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  fontFamily <span class="op">=</span> <span class="cn">NULL</span>, nodeWidth <span class="op">=</span> <span class="fl">15</span>, nodePadding <span class="op">=</span> <span class="fl">10</span>, margin <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  height <span class="op">=</span> <span class="cn">NULL</span>, width <span class="op">=</span> <span class="cn">NULL</span>, iterations <span class="op">=</span> <span class="fl">32</span>, sinksRight <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Arguments</p>
+<p><img src="img/Sankey_arguments.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<p>예시로 사용할 sankeydata.csv는 치료 방식 A,B,C에 대한 다양한 Response Type을 정리한 테이블이다.</p>
+<p>이 가상 데이터를 기반으로 Sankey Plot을 생성한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">"sankeydata.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 출발과 도착 노드의 고유값 추출</span></span>
+<span><span class="va">nodes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">mydata</span><span class="op">$</span><span class="va">Treatment_Group</span>, <span class="va">mydata</span><span class="op">$</span><span class="va">Response_Type</span><span class="op">)</span><span class="op">)</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 링크 색상에 사용할 색상 팔레트</span></span>
+<span><span class="va">colourScale</span> <span class="op">&lt;-</span> <span class="st">'</span></span>
+<span><span class="st">  d3.scaleOrdinal()</span></span>
+<span><span class="st">    .domain(["linkgrp"])</span></span>
+<span><span class="st">    .range(["gainsboro"].concat(d3.schemeCategory20))</span></span>
+<span><span class="st">'</span></span>
+<span></span>
+<span><span class="co"># Sankey Plot 생성</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://CRAN.R-project.org/package=networkD3">networkD3</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork</a></span><span class="op">(</span>Links <span class="op">=</span> <span class="va">mydata</span>, Nodes <span class="op">=</span> <span class="va">nodes</span>, Source <span class="op">=</span> <span class="st">'IDsource'</span>,</span>
+<span>                   Target <span class="op">=</span> <span class="st">'IDtarget'</span>, Value <span class="op">=</span> <span class="st">'N'</span>, NodeID <span class="op">=</span> <span class="st">'id'</span>,</span>
+<span>                   fontSize <span class="op">=</span> <span class="fl">15</span>, nodeWidth <span class="op">=</span> <span class="fl">40</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>left <span class="op">=</span> <span class="fl">200</span>, right <span class="op">=</span> <span class="fl">250</span><span class="op">)</span>, colourScale <span class="op">=</span> <span class="va">colourScale</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이를 실행하면 다음과 같은 Sankey Plot을 출력할 수 있다. <img src="img/sankeyplot1.png" class="img-fluid" alt="sankeyplot1"></p>
+<p>하지만 우리가 원하는 것은 각 node와 flow가 총 값에서 어느정도의 비율을 차지하는지, 그리고 각 node 샘플의 값이다. 이제 JavaScript를 빌려 이 Sankey plot에 필요한 텍스트를 추가해보겠다.</p>
+</section><section id="iv.-텍스트-추가하기" class="level1"><h1>IV. 텍스트 추가하기</h1>
+<p><code>htmlwidgets</code> 패키지의 <code>onRender()</code>를 사용해 Sankey plot을 수정한다.</p>
+<section id="각-node-옆에-비율-및-개수-표시" class="level2"><h2 class="anchored" data-anchor-id="각-node-옆에-비율-및-개수-표시">각 node 옆에 비율 및 개수 표시</h2>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">htmlwidgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/htmlwidgets/man/onRender.html">onRender</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">'</span></span>
+<span><span class="st">  function(el, x) {</span></span>
+<span><span class="st">    var sankey = this.sankey;</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">    d3.select(el).selectAll(".node text")</span></span>
+<span><span class="st">      .text(function(d) {</span></span>
+<span><span class="st">        var perc = (d.value / 120) * 100;  // 총 샘플 수: 120</span></span>
+<span><span class="st">        return d.name + " " + perc.toFixed(1) + "% (n=" + d.value + ")";</span></span>
+<span><span class="st">      })</span></span>
+<span><span class="st">      .attr("x", function(d) {</span></span>
+<span><span class="st">        return (d.x === 0) ? -10 : x.options.nodeWidth + 10;</span></span>
+<span><span class="st">      })</span></span>
+<span><span class="st">      .attr("text-anchor", function(d) {</span></span>
+<span><span class="st">        return (d.x === 0) ? "end" : "start";</span></span>
+<span><span class="st">      });</span></span>
+<span><span class="st">  }</span></span>
+<span><span class="st">'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>htmlwidgets::onRender(p, '...')</code>는 p라는 Sankey 플롯 객체에 JavaScript 코드를 추가해주는 함수다. 이 코드는 Sankey plot이 브라우저에 렌더링된 이후 실행된다.</p>
+<p>위 코드는 먼저 <code>var sankey = this.sankey</code>로 Sankey Plot의 내부 구조를 가져온 뒤, <code>.selectALL (".node text")</code>로 Sankey의 모든 노드 텍스트를 선택한다.</p>
+<p>이어서 <code>function(el, x) { ... }</code>의 el은 Sankey 그래프가 들어있는 HTML의 요소이고, x는 sankeyNetwork 함수에서 설정된 옵션들(fontSize, nodeWidth 등)을 담고 있다. 텍스트를 추가하기 위해서 이 function 안에 있는 <code>.text</code> 함수를 가장 중심적으로 사용한다:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.text</span>(<span class="cf">function</span>(d) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        var perc <span class="ot">=</span> (d.value <span class="sc">/</span> <span class="dv">87</span>) <span class="sc">*</span> <span class="dv">100</span>;  <span class="sc">/</span><span class="er">/</span> 총 샘플 수<span class="sc">:</span> <span class="dv">87</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        return d.name <span class="sc">+</span> <span class="st">" "</span> <span class="sc">+</span> <span class="fu">perc.toFixed</span>(<span class="dv">1</span>) <span class="sc">+</span> <span class="st">"% (n="</span> <span class="sc">+</span> d.value <span class="sc">+</span> <span class="st">")"</span>;</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이 부분은 d.name(각 노드의 이름)에 전체 값 대비 해당 노드가 차지하는 비율(%)과 개수(n=)를 텍스트로 함께 붙이는 역할을 한다. 여기서 120이라는 숫자는 전체 합계(sum of N)를 의미하기 때문에, 사용하는 데이터의 전체 값에 따라 이 숫자는 다르게 삽입한다. 혹은, R에서 전체 합을 미리 계산해서 <code>onRender()</code>에 넘겨주는 방식을 사용해도 된다.</p>
+<p>그 밑에 있는 <code>.attr("x", function(d) {...})</code>와 <code>.attr("text-anchor", function(d) {...})</code>는 위치 설정에 관련된 코드다. 노드가 왼쪽에 있을 경우(d.x === 0)에는 텍스트를 왼쪽 바깥에 정렬하고, 그렇지 않으면 오른쪽 바깥에 정렬하도록 설정한다. 텍스트가 노드와 겹치거나 너무 떨어져 보일 경우, -10 또는 <code>x.options.nodeWidth + 10</code> 값을 조정해서 위치를 맞춰주면 된다.</p>
+</section><section id="각-flow의-확률-텍스트-추가" class="level2"><h2 class="anchored" data-anchor-id="각-flow의-확률-텍스트-추가">각 flow의 확률 텍스트 추가</h2>
+<p>아래 코드는 Sankey plot의 각 링크 위에 해당 링크가 출발 노드 전체에서 차지하는 비율(%)을 텍스트로 표시해주는 역할을 한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">htmlwidgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/htmlwidgets/man/onRender.html">onRender</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">'</span></span>
+<span><span class="st">  function(el) {</span></span>
+<span><span class="st">    var sankey = this.sankey;</span></span>
+<span><span class="st">    var nodeWidth = sankey.nodeWidth();</span></span>
+<span><span class="st">    var links = sankey.links();</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">    // 각 링크에 대해 비율 계산 및 텍스트 추가</span></span>
+<span><span class="st">    links.forEach(function(d) {</span></span>
+<span><span class="st">      var outflow = d3.sum(d.source.sourceLinks, function(l) {</span></span>
+<span><span class="st">        return l.value;</span></span>
+<span><span class="st">      });</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">      var ratio = (d.value / outflow) * 100;</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">      // 텍스트 위치 계산 (링크 중간)</span></span>
+<span><span class="st">      var startX = d.source.x + nodeWidth;</span></span>
+<span><span class="st">      var startY = d.source.y + d.sy + (d.dy / 2);</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">      // 텍스트 추가</span></span>
+<span><span class="st">      d3.select(el).select("svg g")</span></span>
+<span><span class="st">        .append("text")</span></span>
+<span><span class="st">        .attr("text-anchor", "middle")</span></span>
+<span><span class="st">        .attr("alignment-baseline", "middle")</span></span>
+<span><span class="st">        .attr("x", startX + 25)</span></span>
+<span><span class="st">        .attr("y", startY)</span></span>
+<span><span class="st">        .text(ratio.toFixed(1) + "%");</span></span>
+<span><span class="st">    });</span></span>
+<span><span class="st">  }</span></span>
+<span><span class="st">'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>var sankey = this.sankey</code>는 sankey 객체를 가져오는 부분이며, nodeWidth는 노드의 너비, links는 그래프에 존재하는 모든 링크를 가져온다.</p>
+<p>이 코드의 핵심은 <code>links.forEach(function(d) {...})</code> 반복문이다. 각 링크에 대해 다음과 같은 작업이 이루어진다:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>var outflow <span class="ot">=</span> <span class="fu">d3.sum</span>(d.source.sourceLinks, <span class="cf">function</span>(l) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  return l.value;</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이 부분은 d.source(해당 링크가 출발하는 노드)에서 outflow(나가는 전체 흐름의 합)을 계산한다.</p>
+<p>이어서 그 링크가 차지하는 비율을 아래와 같이 계산한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>var ratio <span class="ot">=</span> (d.value <span class="sc">/</span> outflow) <span class="sc">*</span> <span class="dv">100</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>예를 들어 10명이 이 링크를 통해 이동했고, 전체 outflow가 40이면, 비율은 25%가 된다.</p>
+<p>텍스트를 표시할 위치도 직접 계산된다:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>var startX <span class="ot">=</span> d.source.x <span class="sc">+</span> nodeWidth;</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>var startY <span class="ot">=</span> d.source.y <span class="sc">+</span> d.sy <span class="sc">+</span> (d.dy <span class="sc">/</span> <span class="dv">2</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>startX은 출발 노드의 x좌표와 노드 너비의 합으로, 텍스트의 x 좌표 위치는 노드의 오른쪽 바깥이 된다. 비슷하게 startY은 출발 노드의 y좌표, 링크가 시작되는 위치, 그리고 링크 높이의 절반의 합이다. 따라서 텍스트의 위치는 링크 중간의 y좌표가 된다. 이 계산 과정으로 텍스트는 선의 중간쯤 되는 위치에 뜨게 된다.</p>
+<p>마지막으로 텍스트를 실제로 추가한다:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">d3.select</span>(el)<span class="fu">.select</span>(<span class="st">"svg g"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">.append</span>(<span class="st">"text"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">.attr</span>(<span class="st">"text-anchor"</span>, <span class="st">"middle"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">.attr</span>(<span class="st">"alignment-baseline"</span>, <span class="st">"middle"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">.attr</span>(<span class="st">"x"</span>, startX <span class="sc">+</span> <span class="dv">25</span>)      </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">.attr</span>(<span class="st">"y"</span>, startY)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">.text</span>(<span class="fu">ratio.toFixed</span>(<span class="dv">1</span>) <span class="sc">+</span> <span class="st">"%"</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이 부분에서 숫자 포맷, 텍스트 위치(x, y), 텍스트 내용을 자유롭게 커스터마이징할 수 있다. <code>d3.select(el).select("svg g").append("text")</code>로 텍스트 요소를 생성하고, <code>.attr("text-anchor", "middle")</code>과 <code>.attr("alignment-baseline", "middle")</code>을 통해 텍스트가 x와 y좌표의 가운데 정렬로 위치하도록 설정한다. x 좌표는 앞서 계산한 startX에 25를 더해 노드에서 약간 떨어진 위치에 텍스트가 뜨게 하고, y 좌표는 startY로 그대로 둔다. 마지막으로 <code>.text(ratio.toFixed(1) + "%")</code>를 통해 소수점 첫째자리까지 계산된 비율을 문자열로 표시한다. 소수점 없이 정수로만 표시하고 싶다면 <code>ratio.toFixed(0)</code>으로 바꿀 수 있고, 텍스트에 단어를 붙이고 싶다면 “비율:” + ratio.toFixed(1) + “%”처럼 바꿀 수도 있다.</p>
+<p>이와 같이 추가적으로 코드를 작성한 것을 실행하면 처음 만들었던 Sankey plot에 원하는 텍스트가 추가된 것을 확인할 수 있다: <img src="img/sankeyplot2.png" class="img-fluid" alt="sankeyplot1"></p>
+</section></section><section id="v.-마치며" class="level1"><h1>V. 마치며</h1>
+<p>이번 포스트에서는 <code><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork()</a></code>로 생성한 Sankey Plot에 JavaScript를 활용해 링크마다 비율을 표시하고, 노드 옆에 샘플 수와 비율을 함께 표시하는 방법을 살펴보았다. 기본적으로 R에서는 sankeyNetwork로 그래프를 쉽게 만들 수는 있지만, 텍스트나 위치와 같은 디테일한 조정은 제공되지 않는다. 그래서 <code><a href="https://rdrr.io/pkg/htmlwidgets/man/onRender.html">htmlwidgets::onRender()</a></code>를 활용해 JavaScript 코드를 직접 삽입하는 방식이 필요했고, 이를 통해 시각적으로 훨씬 더 풍부한 Sankey Plot을 만들 수 있다.</p>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kang2025,
+  author = {Kang, YeJi},
+  title = {Sankey {Diagram} {텍스트} {삽입}},
+  date = {2025-03-26},
+  url = {https://blog.zarathu.com/posts/2025-03-27-Sankey/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kang2025" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kang, YeJi. 2025. <span>“Sankey Diagram 텍스트 삽입.”</span> March 26,
+2025. <a href="https://blog.zarathu.com/posts/2025-03-27-Sankey/">https://blog.zarathu.com/posts/2025-03-27-Sankey/</a>.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
