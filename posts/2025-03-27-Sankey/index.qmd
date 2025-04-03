@@ -90,7 +90,7 @@ p <- sankeyNetwork(Links = mydata, Nodes = nodes, Source = 'IDsource',
                    fontSize = 15, nodeWidth = 40, margin = list(left = 200, right = 250), colourScale = colourScale)
 ```
 
-이를 실행하면 다음과 같은 Sankey Plot을 출력할 수 있다. ![sankeyplot1](img/sankeyplot1.png) 
+이를 실행하면 다음과 같은 Sankey Plot을 출력할 수 있다. ![sankeyplot1](img/sankeyplot1.png)
 
 하지만 우리가 원하는 것은 각 node와 flow가 총 값에서 어느정도의 비율을 차지하는지, 그리고 각 node 샘플의 값이다. 이제 JavaScript를 빌려 이 Sankey plot에 필요한 텍스트를 추가해보겠다.
 
@@ -214,24 +214,24 @@ d3.select(el).select("svg g")
   .text(ratio.toFixed(1) + "%");
 ```
 
-이 부분에서 숫자 포맷, 텍스트 위치(x, y), 텍스트 내용을 자유롭게 커스터마이징할 수 있다. `d3.select(el).select("svg g").append("text")`로 텍스트 요소를 생성하고, `.attr("text-anchor", "middle")`과 `.attr("alignment-baseline", "middle")`을 통해 텍스트가 x와 y좌표의 가운데 정렬로 위치하도록 설정한다. x 좌표는 앞서 계산한 startX에 25를 더해 노드에서 약간 떨어진 위치에 텍스트가 뜨게 하고, y 좌표는 startY로 그대로 둔다. 
+이 부분에서 숫자 포맷, 텍스트 위치(x, y), 텍스트 내용을 자유롭게 커스터마이징할 수 있다. `d3.select(el).select("svg g").append("text")`로 텍스트 요소를 생성하고, `.attr("text-anchor", "middle")`과 `.attr("alignment-baseline", "middle")`을 통해 텍스트가 x와 y좌표의 가운데 정렬로 위치하도록 설정한다. x 좌표는 앞서 계산한 startX에 25를 더해 노드에서 약간 떨어진 위치에 텍스트가 뜨게 하고, y 좌표는 startY로 그대로 둔다.
 
 마지막으로 `.text(ratio.toFixed(1) + "%")`를 통해 소수점 첫째자리까지 계산된 비율을 문자열로 표시한다. 소수점 없이 정수로만 표시하고 싶다면 `ratio.toFixed(0)`으로 바꿀 수 있고, 텍스트에 단어를 붙이고 싶다면 "비율: " + ratio.toFixed(1) + "%"처럼 바꿀 수도 있다.
 
 이와 같이 추가적으로 코드를 작성한 것을 실행하면 처음 만들었던 Sankey plot에 원하는 텍스트가 추가된 것을 확인할 수 있다: 
-![sankeyplot1](img/sankeyplot2.png)
+![sankeyplot1](img/sankeyplot2.png) 
+
 # V. Shiny App 소개
 
 이제 다소 복잡한 이 모든 과정을 자동화한 Shiny App을 소개한다. 이 앱은 웹 기반 인터페이스를 통해 데이터 입력부터 시각화, 색상 커스터마이징, 다운로드까지 전 과정을 하나의 환경에서 처리할 수 있도록 설계되어 있다. 앱을 실행하면 아래와 같은 기본 웹페이지가 나타난다:
 
-![sankeyeditor](img/sankey_editor.png)
-`Edit Sankey Data`에서 사용자는 플롯의 source와 target, value 값을 테이블 형태로 입력하거나 수정할 수 있고, `Color Options`에서 연결된 노드나 흐름을 선택하여 원하는 색상을 지정할 수 있다. 또한 전체 값에 대한 상대적인 비중을 백분율로 시각화할 수 있는 퍼센트 표시 기능이 포함되어 있으며 이 기능은 하나의 단계로 구성된 경우에만 활성화된다. 
+![sankeyeditor](img/sankey_editor.png) 
+`Edit Sankey Data`에서 사용자는 플롯의 source와 target, value 값을 테이블 형태로 입력하거나 수정할 수 있고, `Color Options`에서 연결된 노드나 흐름을 선택하여 원하는 색상을 지정할 수 있다. 또한 전체 값에 대한 상대적인 비중을 백분율로 시각화할 수 있는 퍼센트 표시 기능이 포함되어 있으며 이 기능은 하나의 단계로 구성된 경우에만 활성화된다.
 
 단계는 필요에 따라 `Add Stage` 버튼으로 추가하거나 삭제할 수 있어 다양한 구조의 데이터를 유연하게 구성할 수 있다. 완성된 시각화 결과는 HTML 파일로 저장 가능하며 데이터 자체는 CSV 또는 XLSX 파일로도 다운로드할 수 있다.
 
-이 기능들을 실행시켜 생성한 Sankey Diagram의 예시다:
-![sankeyeditor](img/sankey_editor2.png)
-이와 같이 Saneky Diagram Editor App은 Sankey Plot 제작 과정을 더 간단하고 효율적으로 만들기 위한 도구로, 기능성과 편의성을 갖추고 있다.
+이 기능들을 실행시켜 생성한 Sankey Diagram의 예시다: 
+![sankeyeditor](img/sankey_editor2.png) 이와 같이 Saneky Diagram Editor App은 Sankey Plot 제작 과정을 더 간단하고 효율적으로 만들기 위한 도구로, 기능성과 편의성을 갖추고 있다.
 
 # VI. 마치며
 
