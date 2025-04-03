@@ -1,0 +1,180 @@
+---
+title: "Comparison of Models for Competing Risk Analysis"
+description: | 
+  Competing risk model의 C-index, AUC, Brier score를 계산하고 비교하는 R 코드 소개
+author:
+  name: "Suhyun Han"
+  email: amyhan258@naver.com
+  url: https://github.com/amyhan258
+date: 2025-04-03
+format: html
+---
+
+## 1. Data preprocess and prepare
+
+status: 1=melanoma 사망, 2=생존, 3=melanoma 외 사망\
+status_competing: 0=생존, 1=melanoma 사망, 2=melanoma 외 사망
+
+```{r echo=TRUE, eval=F}
+library(data.table);library(survival);library(boot);library(magrittr);library(riskRegression);library(prodlim);library(pec)
+
+melanoma_dt <- as.data.table(melanoma) %>% .[,c("sex","ulcer"):=lapply(.SD,as.factor),.SDcols=c("sex","ulcer")] %>% 
+  .[,status_competing:=factor(ifelse(status==1,1,ifelse(status==2,0,2)), levels=0:2)] %>% 
+  .[,time_Y:=time/365.25] %>% .[,-c("year","status","time")]
+
+model_var_list <- list(c("sex","age"), c("sex","age","thickness"), c("sex","age","ulcer"), c("sex","age","thickness","ulcer"))
+
+Hist_formula_list <- list( Hist(time_Y, status_competing) ~ sex+age,
+                           Hist(time_Y, status_competing) ~ sex+age+thickness,
+                           Hist(time_Y, status_competing) ~ sex+age+ulcer,
+                           Hist(time_Y, status_competing) ~ sex+age+thickness+ulcer ) 
+```
+
+## 2. Each model
+
+```{r echo=TRUE, eval=F}
+table_1 <- lapply (1:length(model_var_list), function(i) { 
+  # Harrell_C_index_info
+  fgr_data_for_Harrell_C_index <- survival::finegray(as.formula(paste0("Surv(time_Y, status_competing) ~ ",paste(model_var_list[[i]],collapse="+"))), data=melanoma_dt, etype=1)
+  fgr_model_for_Harrell_C_index <- coxph(as.formula(paste0("Surv(fgstart, fgstop, fgstatus) ~ ",paste(model_var_list[[i]],collapse="+"))), data=fgr_data_for_Harrell_C_index)
+  Harrell_C_index_info <- survival::concordance(fgr_model_for_Harrell_C_index)
+  
+  # Wolbers_C_index_info
+  fgr_model_for_Wolbers_C_index <- riskRegression::FGR(Hist_formula_list[[i]], data=melanoma_dt, cause=1)
+  Wolbers_C_index_info <- pec::cindex(object=fgr_model_for_Wolbers_C_index, formula=Hist_formula_list[[i]], data=melanoma_dt, cause=1, confInt=T, verbose=F)
+  
+  cindex_values <- numeric()
+  for(b in 1:20){
+    indices <- sample(seq_len(nrow(melanoma_dt)), size=nrow(melanoma_dt), replace=T)
+    boot_data <- melanoma_dt[indices]
+    fgr_model_for_Wolbers_C_index_boot <- riskRegression::FGR(Hist_formula_list[[i]], data=boot_data, cause=1)
+    Wolbers_C_index_info_boot <- pec::cindex(object=fgr_model_for_Wolbers_C_index_boot, formula=Hist_formula_list[[i]], data=boot_data, cause=1, verbose=F)
+    cindex_values[[b]] <- Wolbers_C_index_info_boot$AppCindex$FGR
+  }
+  Wolbers_C_index_lower <- quantile(cindex_values, probs=0.05/2)
+  Wolbers_C_index_upper <- quantile(cindex_values, probs=(1-(0.05/2)))
+
+  # AUC_and_Brier_info
+  fgr_model_for_AUC_and_Brier <- riskRegression::FGR(Hist_formula_list[[i]], data=melanoma_dt, cause=1)
+  AUC_and_Brier_info <- riskRegression::Score(list(fgr_model_for_AUC_and_Brier), formula=Hist_formula_list[[i]] , data=melanoma_dt, times=c(5,10), null.model=F)
+
+  # return
+  data.table( "Model"=LETTERS[i],
+              "Harrell_C_index"=paste0(sprintf("%.04f",Harrell_C_index_info$concordance),"(",
+                                       sprintf("%.04f",Harrell_C_index_info$concordance-qnorm(0.975)*sqrt(Harrell_C_index_info$var)),"-",
+                                       sprintf("%.04f",Harrell_C_index_info$concordance+qnorm(0.975)*sqrt(Harrell_C_index_info$var)),")"),
+              "Wolbers_C_index"= paste0(sprintf("%.04f",Wolbers_C_index_info$AppCindex$FGR),"(",
+                                        sprintf("%.04f",Wolbers_C_index_lower),"-",
+                                        sprintf("%.04f",Wolbers_C_index_upper),")"),
+              "AUC_t=5"=paste0(sprintf("%.04f",AUC_and_Brier_info$AUC$score[1]$AUC)," (",
+                               sprintf("%.04f",AUC_and_Brier_info$AUC$score[1]$lower),"-",
+                               sprintf("%.04f",AUC_and_Brier_info$AUC$score[1]$upper),")"),
+              "AUC_t=10"=paste0(sprintf("%.04f",AUC_and_Brier_info$AUC$score[2]$AUC)," (",
+                               sprintf("%.04f",AUC_and_Brier_info$AUC$score[2]$lower),"-",
+                               sprintf("%.04f",AUC_and_Brier_info$AUC$score[2]$upper),")"),
+              "Brier_t=5"=paste0(sprintf("%.04f",AUC_and_Brier_info$Brier$score[1]$Brier)," (",
+                               sprintf("%.04f",AUC_and_Brier_info$Brier$score[1]$lower),"-",
+                               sprintf("%.04f",AUC_and_Brier_info$Brier$score[1]$upper),")"),
+              "Brier_t=10"=paste0(sprintf("%.04f",AUC_and_Brier_info$Brier$score[2]$Brier)," (",
+                               sprintf("%.04f",AUC_and_Brier_info$Brier$score[2]$lower),"-",
+                               sprintf("%.04f",AUC_and_Brier_info$Brier$score[2]$upper),")")
+  )
+}) %>% do.call(rbind,.)
+```
+
+## 3. Compare two model
+
+Compare Harrell_C_index
+
+```{r echo=TRUE, eval=F}
+table_2_Harrell_C_index <- lapply(1:length(model_var_list), function(i) {
+  fgr_data_for_Harrell_C_index <- survival::finegray(as.formula(paste0("Surv(time_Y, status_competing) ~ ",paste(model_var_list[[i]],collapse="+"))), data=melanoma_dt, etype=1)
+  fgr_model_for_Harrell_C_index <- coxph(as.formula(paste0("Surv(fgstart, fgstop, fgstatus) ~ ",paste(model_var_list[[i]],collapse="+"))), data=fgr_data_for_Harrell_C_index)
+ 
+  lapply(1:length(model_var_list), function(j) {
+    fgr_data_for_Harrell_C_index_new <- finegray(as.formula(paste0("Surv(time_Y, status_competing) ~ ",paste(model_var_list[[j]],collapse="+"))), data=melanoma_dt, etype=1)
+    fgr_model_for_Harrell_C_index_new <- coxph(as.formula(paste0("Surv(fgstart, fgstop, fgstatus) ~ ",paste(model_var_list[[j]],collapse="+"))), data=fgr_data_for_Harrell_C_index_new)
+  
+    ctest <- concordance(fgr_model_for_Harrell_C_index, fgr_model_for_Harrell_C_index_new)
+    contr <- c(-1, 1)
+    dtest <- contr %*% coef(ctest)
+    dvar <- contr %*% vcov(ctest) %*% contr
+    z <- dtest/sqrt(dvar)
+    p_value_temp <- 2 * (1 - pnorm(abs(z))) 
+    p_value <- ifelse(p_value_temp<0.001,"<0.001",sprintf("%.03f",p_value_temp))
+    return(p_value)
+  }) %>% unlist()
+}) %>% do.call(rbind,.) %>% as.data.table() %>% setnames(c("A","B","C","D")) %>% cbind(Harrell_C_index=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+```
+
+Compare Wolbers_C_index, bootstraping이므로 하나의 pair(model1, model2)에 대해 1번만 코드 실행
+
+```{r echo=TRUE, eval=F}
+set.seed(10)
+table_2_Wolbers_C_index <- lapply(1:(length(model_var_list)-1), function(i) {
+  cindex_values <- numeric()
+  for(b in 1:20){
+    indices <- sample(seq_len(nrow(melanoma_dt)), size=nrow(melanoma_dt), replace=T)
+    boot_data <- melanoma_dt[indices]
+    fgr_model_for_Wolbers_C_index_boot <- riskRegression::FGR(Hist_formula_list[[i]], data=boot_data, cause=1)
+    Wolbers_C_index_info_boot <- pec::cindex(object=fgr_model_for_Wolbers_C_index_boot, formula=Hist_formula_list[[i]], data=boot_data, cause=1, verbose=F)
+    cindex_values[[b]] <- Wolbers_C_index_info_boot$AppCindex$FGR
+  }
+
+  lapply ((i+1):length(model_var_list), function(j) { # A와 B,C,D 비교, B와 C,D 비교, C와 D 비교 
+    cindex_values_new <- numeric()
+    for(b in 1:20){
+      indices_new <- sample(seq_len(nrow(melanoma_dt)), size=nrow(melanoma_dt), replace=T)
+      boot_data_new <- melanoma_dt[indices_new]
+      fgr_model_for_Wolbers_C_index_boot_new <- riskRegression::FGR(Hist_formula_list[[j]], data=boot_data_new, cause=1)
+      Wolbers_C_index_info_boot_new <- pec::cindex(object=fgr_model_for_Wolbers_C_index_boot_new, formula=Hist_formula_list[[j]], data=boot_data_new, cause=1, verbose=F)
+      cindex_values_new[[b]] <- Wolbers_C_index_info_boot_new$AppCindex$FGR
+    }
+      
+    p_value_temp <- t.test(cindex_values-cindex_values_new, mu=0)$p.value
+    return( ifelse(p_value_temp<0.001,"<0.001",sprintf("%.03f",p_value_temp)) )
+  }) %>% unlist() %>% c(rep("-",(i-1)),.)
+}) %>% do.call(rbind,.) %>% as.data.table() %>% setnames(c("B","C","D")) %>% 
+  cbind("A"=rep("-",3),.) %>% rbind("D"=data.table("-","-","-","-"), use.names=F) %>% cbind(Wolbers_C_index=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+```
+
+Compare AUC_and_Brier
+
+```{r echo=TRUE, eval=F}
+table_2_AUC_and_Brier <- lapply(1:length(model_var_list), function(i) {
+  fgr_model_AUC_and_Brier <- riskRegression::FGR(Hist_formula_list[[i]], data=melanoma_dt, cause=1)
+  
+  lapply (1:length(model_var_list), function(j) {
+    fgr_model_AUC_and_Brier_new <- riskRegression::FGR(Hist_formula_list[[j]], data=melanoma_dt, cause=1)
+    
+    AUC_and_Brier <- riskRegression::Score(list(fgr_model_AUC_and_Brier,fgr_model_AUC_and_Brier_new),
+                                           formula=Hist(time_Y, status_competing) ~ 1, data=melanoma_dt, times=c(5,10), null.model=F)
+    
+    data.table("V1"=c(sprintf("%.03f",AUC_and_Brier$AUC$contrasts$p), sprintf("%.03f",AUC_and_Brier$Brier$contrasts$p))) %>% setnames(as.character(j))
+  }) %>% do.call(cbind,.)
+})
+```
+
+```{r echo=TRUE, eval=F}
+table_2_AUC_t_5 <- lapply(1:length(model_var_list), function(k){
+  table_2_AUC_and_Brier[[k]][1]
+}) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(AUC_t_5=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+```
+
+```{r echo=TRUE, eval=F}
+table_2_AUC_t_10 <- lapply(1:length(model_var_list), function(k){
+  table_2_AUC_and_Brier[[k]][2]
+}) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(AUC_t_10=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+```
+
+```{r echo=TRUE, eval=F}
+table_2_Brier_t_5 <- lapply(1:length(model_var_list), function(k){
+  table_2_AUC_and_Brier[[k]][3]
+}) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(Brier_t_5=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+```
+
+```{r echo=TRUE, eval=F}
+table_2_Brier_t_10 <- lapply(1:length(model_var_list), function(k){
+  table_2_AUC_and_Brier[[k]][4]
+}) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(Brier_t_10=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+```
