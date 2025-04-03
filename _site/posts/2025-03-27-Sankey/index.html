@@ -554,10 +554,13 @@ dbl (3): N, IDsource, IDtarget
 <p>마지막으로 <code>.text(ratio.toFixed(1) + "%")</code>를 통해 소수점 첫째자리까지 계산된 비율을 문자열로 표시한다. 소수점 없이 정수로만 표시하고 싶다면 <code>ratio.toFixed(0)</code>으로 바꿀 수 있고, 텍스트에 단어를 붙이고 싶다면 “비율:” + ratio.toFixed(1) + “%”처럼 바꿀 수도 있다.</p>
 <p>이와 같이 추가적으로 코드를 작성한 것을 실행하면 처음 만들었던 Sankey plot에 원하는 텍스트가 추가된 것을 확인할 수 있다: <img src="img/sankeyplot2.png" class="img-fluid" alt="sankeyplot1"></p>
 </section></section><section id="v.-shiny-app-소개" class="level1"><h1>V. Shiny App 소개</h1>
-<p>이제 다소 복잡한 이 모든 과정을 자동화한 Shiny App을 소개한다. 이 앱은 웹 기반 인터페이스를 통해 데이터 입력부터 시각화, 색상 커스터마이징, 다운로드까지 전 과정을 하나의 환경에서 처리할 수 있도록 설계되어 있다. 앱을 실행하면 아래와 같은 기본 웹페이지가 나타난다:</p>
-<p><img src="img/sankey_editor.png" class="img-fluid" alt="sankeyeditor"><code>Edit Sankey Data</code>에서 사용자는 플롯의 source와 target, value 값을 테이블 형태로 입력하거나 수정할 수 있고, <code>Color Options</code>에서 연결된 노드나 흐름을 선택하여 원하는 색상을 지정할 수 있다. 또한 전체 값에 대한 상대적인 비중을 백분율로 시각화할 수 있는 퍼센트 표시 기능이 포함되어 있으며 이 기능은 하나의 단계로 구성된 경우에만 활성화된다.</p>
+<p>이제 다소 복잡한 이 모든 과정을 자동화한 Shiny App을 소개한다. 이 앱은 웹 기반 인터페이스를 통해 데이터 입력부터 시각화, 색상 커스터마이징, 다운로드까지 전 과정을 하나의 환경에서 처리할 수 있도록 설계되어 있다.</p>
+<iframe src="https://6zgo1c-yejikang63.shinyapps.io/Sankey/" width="100%" height="400px" frameborder="0">
+</iframe>
+<p><code>Edit Sankey Data</code>에서 사용자는 플롯의 source와 target, value 값을 테이블 형태로 입력하거나 수정할 수 있고, <code>Color Options</code>에서 연결된 노드나 흐름을 선택하여 원하는 색상을 지정할 수 있다. 또한 전체 값에 대한 상대적인 비중을 백분율로 시각화할 수 있는 퍼센트 표시 기능이 포함되어 있으며 이 기능은 하나의 단계로 구성된 경우에만 활성화된다.</p>
 <p>단계는 필요에 따라 <code>Add Stage</code> 버튼으로 추가하거나 삭제할 수 있어 다양한 구조의 데이터를 유연하게 구성할 수 있다. 완성된 시각화 결과는 HTML 파일로 저장 가능하며 데이터 자체는 CSV 또는 XLSX 파일로도 다운로드할 수 있다.</p>
-<p>이 기능들을 실행시켜 생성한 Sankey Diagram의 예시다: <img src="img/sankey_editor2.png" class="img-fluid" alt="sankeyeditor"> 이와 같이 Saneky Diagram Editor App은 Sankey Plot 제작 과정을 더 간단하고 효율적으로 만들기 위한 도구로, 기능성과 편의성을 갖추고 있다.</p>
+<p>이 기능들을 실행시켜 생성한 Sankey Diagram의 예시다:</p>
+<p><img src="img/sankey_editor2.png" class="img-fluid" alt="sankeyeditor"> 이와 같이 Saneky Diagram Editor App은 Sankey Plot 제작 과정을 더 간단하고 효율적으로 만들기 위한 도구로, 기능성과 편의성을 갖추고 있다.</p>
 </section><section id="vi.-마치며" class="level1"><h1>VI. 마치며</h1>
 <p>이번 포스트에서는 <code><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork()</a></code>로 생성한 Sankey Plot에 JavaScript를 활용해 링크마다 비율을 표시하고, 노드 옆에 샘플 수와 비율을 함께 표시하는 방법을 살펴보았다. 기본적으로 R에서는 sankeyNetwork로 그래프를 쉽게 만들 수는 있지만, 텍스트나 위치와 같은 디테일한 조정은 제공되지 않는다. 그래서 <code><a href="https://rdrr.io/pkg/htmlwidgets/man/onRender.html">htmlwidgets::onRender()</a></code>를 활용해 JavaScript 코드를 직접 삽입하는 방식이 필요했고, 이를 통해 시각적으로 훨씬 더 풍부한 Sankey Plot을 만들 수 있다.</p>
 <p>앞서 소개한 Shiny App은 이 과정을 생략할 수 있는 도구로, 빠르게 커스터마이징 된 Sankey Plot을 편집하고 저장할 수 있기 때문에 편의성을 재공한다.</p>
