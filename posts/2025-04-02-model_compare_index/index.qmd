@@ -16,7 +16,7 @@ status: 1=melanoma 사망, 2=생존, 3=melanoma 외 사망\
 status_competing: 0=생존, 1=melanoma 사망, 2=melanoma 외 사망
 
 ```{r echo=TRUE, results='hide'}
-library(data.table);library(survival);library(boot);library(magrittr);library(riskRegression);library(prodlim);library(pec)
+library(data.table);library(survival);library(boot);library(magrittr);library(riskRegression);library(prodlim);library(pec);library(rmarkdown)
 
 melanoma_dt <- as.data.table(melanoma) %>% .[,c("sex","ulcer"):=lapply(.SD,as.factor),.SDcols=c("sex","ulcer")] %>% 
   .[,status_competing:=factor(ifelse(status==1,1,ifelse(status==2,0,2)), levels=0:2)] %>% 
@@ -107,7 +107,7 @@ table_2_Harrell_C_index <- lapply(1:length(model_var_list), function(i) {
     return(p_value)
   }) %>% unlist()
 }) %>% do.call(rbind,.) %>% as.data.table() %>% setnames(c("A","B","C","D")) %>% cbind(Harrell_C_index=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
-print(table_2_Harrell_C_index)
+rmarkdown::paged_table(table_2_Harrell_C_index)
 ```
 
 Compare Wolbers_C_index\
@@ -142,7 +142,7 @@ invisible(capture.output({
 }) %>% do.call(rbind,.) %>% as.data.table() %>% setnames(c("B","C","D")) %>% 
   cbind("A"=rep("-",3),.) %>% rbind("D"=data.table("-","-","-","-"), use.names=F) %>% cbind(Wolbers_C_index=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
 }))
-print(table_2_Wolbers_C_index)
+rmarkdown::paged_table(table_2_Wolbers_C_index)
 ```
 
 Compare AUC_and_Brier
@@ -171,7 +171,7 @@ table_2_AUC_t_5 <- lapply(1:length(model_var_list), function(k){
 for (i in seq(length(model_var_list))) {
   table_2_AUC_t_5[i,(i+1):="-"]
 }
-print(table_2_AUC_t_5)
+rmarkdown::paged_table(table_2_AUC_t_5)
 ```
 
 ```{r echo=TRUE, eval=F}
@@ -181,7 +181,7 @@ table_2_AUC_t_10 <- lapply(1:length(model_var_list), function(k){
 for (i in seq(length(model_var_list))) {
   table_2_AUC_t_10[i,(i+1):="-"]
 }
-print(table_2_AUC_t_10)
+rmarkdown::paged_table(table_2_AUC_t_10)
 ```
 
 ```{r echo=TRUE, eval=F}
@@ -191,7 +191,7 @@ table_2_Brier_t_5 <- lapply(1:length(model_var_list), function(k){
 for (i in seq(length(model_var_list))) {
   table_2_Brier_t_5[i,(i+1):="-"]
 }
-print(table_2_Brier_t_5)
+rmarkdown::paged_table(table_2_Brier_t_5)
 ```
 
 ```{r echo=TRUE, eval=F}
@@ -201,5 +201,5 @@ table_2_Brier_t_10 <- lapply(1:length(model_var_list), function(k){
 for (i in seq(length(model_var_list))) {
   table_2_Brier_t_10[i,(i+1):="-"]
 }
-print(table_2_Brier_t_10)
+rmarkdown::paged_table(table_2_Brier_t_10)
 ```
