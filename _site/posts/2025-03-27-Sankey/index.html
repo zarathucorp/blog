@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="YeJi Kang">
 <meta name="dcterms.date" content="2025-03-26">
-<meta name="description" content="R로 생성한 Sankey plot에 JavaScript를 활용해 텍스트를 추가하는 방법을 알아보았습니다.">
+<meta name="description" content="R로 생성한 Sankey plot에 JavaScript를 활용해 텍스트를 추가하는 방법을 알아보고, 이를 자동화한 Shiny App을 소개합니다.">
 <title>Sankey Diagram 텍스트 삽입 – 차라투 블로그</title>
 <style>
 code{white-space: pre-wrap;}
@@ -221,7 +221,7 @@ ga('send', {
       <h1 class="title">Sankey Diagram 텍스트 삽입</h1>
                   <div>
         <div class="description">
-          <p>R로 생성한 Sankey plot에 JavaScript를 활용해 텍스트를 추가하는 방법을 알아보았습니다.</p>
+          <p>R로 생성한 Sankey plot에 JavaScript를 활용해 텍스트를 추가하는 방법을 알아보고, 이를 자동화한 Shiny App을 소개합니다.</p>
         </div>
       </div>
                 </div>
@@ -268,7 +268,8 @@ ga('send', {
   <li><a href="#%EA%B0%81-flow%EC%9D%98-%ED%99%95%EB%A5%A0-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%B6%94%EA%B0%80" id="toc-각-flow의-확률-텍스트-추가" class="nav-link" data-scroll-target="#%EA%B0%81-flow%EC%9D%98-%ED%99%95%EB%A5%A0-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%B6%94%EA%B0%80">각 flow의 확률 텍스트 추가</a></li>
   </ul>
 </li>
-  <li><a href="#v.-%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-v.-마치며" class="nav-link" data-scroll-target="#v.-%EB%A7%88%EC%B9%98%EB%A9%B0">V. 마치며</a></li>
+  <li><a href="#v.-shiny-app-%EC%86%8C%EA%B0%9C" id="toc-v.-shiny-app-소개" class="nav-link" data-scroll-target="#v.-shiny-app-%EC%86%8C%EA%B0%9C">V. Shiny App 소개</a></li>
+  <li><a href="#vi.-%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-vi.-마치며" class="nav-link" data-scroll-target="#vi.-%EB%A7%88%EC%B9%98%EB%A9%B0">VI. 마치며</a></li>
   </ul></nav>
 </nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
@@ -289,7 +290,7 @@ ga('send', {
 <p>하지만 이 함수만으로는 각 링크 위에 텍스트를 추가하거나, 노드 옆에 퍼센트 또는 샘플 수(n=) 같은 세부 정보를 표시하는 것이 어렵다. 그 이유는 Sankey Plot 내부 요소들의 위치(x, y 좌표)가 JavaScript에서 실시간으로 계산되기 때문이다. 따라서 R에서는 그 위치 정보를 직접 참조하거나 조작할 수가 없어 <code><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork()</a></code>를 이용한 기본적인 시각화 요소 외에는 커스터마이징 옵션이 제한적이다.</p>
 <p>따라서 Sankey Plot의 시각적 완성도를 높이기 위해서는 결국 R 코드와 JavaScript를 함께 사용하는 접근이 요구된다.</p>
 </section></section><section id="ii.-onrender-소개" class="level1"><h1>II. <code>onRender()</code> 소개</h1>
-<p>본 글에서 활용할 <code>onRender()</code>는 R에서 만든 시각화 객체에 JavaScript 코드를 직접 삽입할 수 있도록 도와주는 함수이다. 이 함수는 <code>htmlwidgets</code> 패키지에서 제공되며, <code>networkD3</code>, <code>plotly</code>, <code>leaflet</code> 등 다양한 시각화 패키지와 함께 사용된다.</p>
+<p><code>onRender()</code>는 R에서 만든 시각화 객체에 JavaScript 코드를 직접 삽입할 수 있도록 도와주는 함수이다. 이 함수는 <code>htmlwidgets</code> 패키지에서 제공되며, <code>networkD3</code>, <code>plotly</code>, <code>leaflet</code> 등 다양한 시각화 패키지와 함께 사용된다.</p>
 <p><code>onRender()</code>를 통해 JavaScript를 삽입하면 그래프 내부의 구성 요소들을 세부적으로 수정할 수 있다. 이 함수는 Sankey 그래프가 완성된 이후 실행되기 때문에, 그래프가 브라우저에 나타난 상태에서 DOM 요소를 선택해 조작하는 것을 가능하게 한다. 즉, <code>onRender()</code>는 R에서 만든 시각화 객체를 JavaScript 수준에서 마무리 커스터마이징 할 수 있게 해주는 도구이며, 시각화 결과를 한층 더 직관적이고 풍부하게 만들어주는 역할을 한다.</p>
 </section><section id="iii.-기본-sankey-diagram-만들기" class="level1"><h1>III. 기본 Sankey Diagram 만들기</h1>
 <p>아래의 ‘sankeyNetwork()’ 함수의 정의를 참고한다.</p>
@@ -521,7 +522,7 @@ dbl (3): N, IDsource, IDtarget
 <span><span class="st">'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>var sankey = this.sankey</code>는 sankey 객체를 가져오는 부분이며, nodeWidth는 노드의 너비, links는 그래프에 존재하는 모든 링크를 가져온다.</p>
-<p>이 코드의 핵심은 <code>links.forEach(function(d) {...})</code> 반복문이다. 각 링크에 대해 다음과 같은 작업이 이루어진다:</p>
+<p>위 코드의 핵심은 <code>links.forEach(function(d) {...})</code> 반복문이다. 각 링크에 대해 다음과 같은 작업이 이루어진다:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>var outflow <span class="ot">=</span> <span class="fu">d3.sum</span>(d.source.sourceLinks, <span class="cf">function</span>(l) {</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  return l.value;</span>
@@ -549,10 +550,20 @@ dbl (3): N, IDsource, IDtarget
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">.attr</span>(<span class="st">"y"</span>, startY)</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">.text</span>(<span class="fu">ratio.toFixed</span>(<span class="dv">1</span>) <span class="sc">+</span> <span class="st">"%"</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>이 부분에서 숫자 포맷, 텍스트 위치(x, y), 텍스트 내용을 자유롭게 커스터마이징할 수 있다. <code>d3.select(el).select("svg g").append("text")</code>로 텍스트 요소를 생성하고, <code>.attr("text-anchor", "middle")</code>과 <code>.attr("alignment-baseline", "middle")</code>을 통해 텍스트가 x와 y좌표의 가운데 정렬로 위치하도록 설정한다. x 좌표는 앞서 계산한 startX에 25를 더해 노드에서 약간 떨어진 위치에 텍스트가 뜨게 하고, y 좌표는 startY로 그대로 둔다. 마지막으로 <code>.text(ratio.toFixed(1) + "%")</code>를 통해 소수점 첫째자리까지 계산된 비율을 문자열로 표시한다. 소수점 없이 정수로만 표시하고 싶다면 <code>ratio.toFixed(0)</code>으로 바꿀 수 있고, 텍스트에 단어를 붙이고 싶다면 “비율:” + ratio.toFixed(1) + “%”처럼 바꿀 수도 있다.</p>
+<p>이 부분에서 숫자 포맷, 텍스트 위치(x, y), 텍스트 내용을 자유롭게 커스터마이징할 수 있다. <code>d3.select(el).select("svg g").append("text")</code>로 텍스트 요소를 생성하고, <code>.attr("text-anchor", "middle")</code>과 <code>.attr("alignment-baseline", "middle")</code>을 통해 텍스트가 x와 y좌표의 가운데 정렬로 위치하도록 설정한다. x 좌표는 앞서 계산한 startX에 25를 더해 노드에서 약간 떨어진 위치에 텍스트가 뜨게 하고, y 좌표는 startY로 그대로 둔다.</p>
+<p>마지막으로 <code>.text(ratio.toFixed(1) + "%")</code>를 통해 소수점 첫째자리까지 계산된 비율을 문자열로 표시한다. 소수점 없이 정수로만 표시하고 싶다면 <code>ratio.toFixed(0)</code>으로 바꿀 수 있고, 텍스트에 단어를 붙이고 싶다면 “비율:” + ratio.toFixed(1) + “%”처럼 바꿀 수도 있다.</p>
 <p>이와 같이 추가적으로 코드를 작성한 것을 실행하면 처음 만들었던 Sankey plot에 원하는 텍스트가 추가된 것을 확인할 수 있다: <img src="img/sankeyplot2.png" class="img-fluid" alt="sankeyplot1"></p>
-</section></section><section id="v.-마치며" class="level1"><h1>V. 마치며</h1>
+</section></section><section id="v.-shiny-app-소개" class="level1"><h1>V. Shiny App 소개</h1>
+<p>이제 다소 복잡한 이 모든 과정을 자동화한 Shiny App을 소개한다. 이 앱은 웹 기반 인터페이스를 통해 데이터 입력부터 시각화, 색상 커스터마이징, 다운로드까지 전 과정을 하나의 환경에서 처리할 수 있도록 설계되어 있다.</p>
+<iframe src="https://6zgo1c-yejikang63.shinyapps.io/Sankey/" width="100%" height="400px" frameborder="0">
+</iframe>
+<p><code>Edit Sankey Data</code>에서 사용자는 플롯의 source와 target, value 값을 테이블 형태로 입력하거나 수정할 수 있고, <code>Color Options</code>에서 연결된 노드나 흐름을 선택하여 원하는 색상을 지정할 수 있다. 또한 전체 값에 대한 상대적인 비중을 백분율로 시각화할 수 있는 퍼센트 표시 기능이 포함되어 있으며 이 기능은 하나의 단계로 구성된 경우에만 활성화된다.</p>
+<p>단계는 필요에 따라 <code>Add Stage</code> 버튼으로 추가하거나 삭제할 수 있어 다양한 구조의 데이터를 유연하게 구성할 수 있다. 완성된 시각화 결과는 HTML 파일로 저장 가능하며 데이터 자체는 CSV 또는 XLSX 파일로도 다운로드할 수 있다.</p>
+<p>이 기능들을 실행시켜 생성한 Sankey Diagram의 예시다:</p>
+<p><img src="img/sankey_editor2.png" class="img-fluid" alt="sankeyeditor"> 이와 같이 Saneky Diagram Editor App은 Sankey Plot 제작 과정을 더 간단하고 효율적으로 만들기 위한 도구로, 기능성과 편의성을 갖추고 있다.</p>
+</section><section id="vi.-마치며" class="level1"><h1>VI. 마치며</h1>
 <p>이번 포스트에서는 <code><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork()</a></code>로 생성한 Sankey Plot에 JavaScript를 활용해 링크마다 비율을 표시하고, 노드 옆에 샘플 수와 비율을 함께 표시하는 방법을 살펴보았다. 기본적으로 R에서는 sankeyNetwork로 그래프를 쉽게 만들 수는 있지만, 텍스트나 위치와 같은 디테일한 조정은 제공되지 않는다. 그래서 <code><a href="https://rdrr.io/pkg/htmlwidgets/man/onRender.html">htmlwidgets::onRender()</a></code>를 활용해 JavaScript 코드를 직접 삽입하는 방식이 필요했고, 이를 통해 시각적으로 훨씬 더 풍부한 Sankey Plot을 만들 수 있다.</p>
+<p>앞서 소개한 Shiny App은 이 과정을 생략할 수 있는 도구로, 빠르게 커스터마이징 된 Sankey Plot을 편집하고 저장할 수 있기 때문에 편의성을 재공한다.</p>
 
 
 </section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kang2025,
