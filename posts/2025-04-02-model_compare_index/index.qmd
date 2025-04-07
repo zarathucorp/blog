@@ -6,17 +6,63 @@ author:
   name: "Suhyun Han"
   email: amyhan258@naver.com
   url: https://github.com/amyhan258
-date: 2025-04-03
+date: 2025-04-07
 format: html
 ---
 
-## 1. Data preprocess and prepare
+# \[Theoretical background\]
 
-status: 1=melanoma 사망, 2=생존, 3=melanoma 외 사망\
-status_competing: 0=생존, 1=melanoma 사망, 2=melanoma 외 사망
+Competing Risk 분석에서 모델의 예측 성능을 평가하기 위해 일반적으로 사용되는 지표는 다음과 같다.
 
-```{r echo=TRUE, results='hide'}
-library(data.table);library(survival);library(boot);library(magrittr);library(riskRegression);library(prodlim);library(pec);library(rmarkdown)
+### 1. Harrell's C-index
+
+**개념**:\
+관찰된 사건 발생 순서와 모델의 예측 위험 순서가 얼마나 잘 일치하는지를 나타낸다.\
+범위는 0부터 1이고, 0.5는 무작위 예측과 동일한 성능이며 1에 가까울수록 예측 성능이 좋다.
+
+**계산 방법**:\
+Fine-Gray 모델을 이용하여 Competing Risk 데이터를 일반적인 생존 분석 형태로 변환한 후\
+Cox 비례위험 모델로 분석한 결과를 바탕으로 계산한다.\
+R에서는 `survival::finegray()`로 데이터를 변환하고, `survival::coxph()`와 `survival::concordance()`로 C-index를 구한다.
+
+### 2. Wolbers' C-index
+
+**개념**:\
+Harrell's C-index 개념을 확장하여 Competing Risk 상황에서 특정 원인의 사건 발생을 예측할 때 사용한다.
+
+**계산 방법**:\
+Fine-Gray 모델(FGR)을 직접 적용하여 사건 특화된 C-index를 구한다.\
+Bootstrapping을 이용하여 반복 표본추출로 신뢰구간을 얻는다.\
+R에서는 `riskRegression::FGR()`과 `pec::cindex()`를 사용한다.
+
+### 3. AUC (Area Under Curve)
+
+**개념**:\
+특정 시점에서 사건 발생 여부를 이진 분류로 간주하고, 예측의 민감도와 특이도를 종합적으로 평가한다.\
+1에 가까울수록 예측 성능이 뛰어나고, 0.5에 가까울수록 무작위와 유사하다.
+
+**계산 방법**:\
+`riskRegression::Score()` 함수를 이용해 특정 시점(예: 5년, 10년)의 AUC와 신뢰구간을 계산한다.
+
+### 4. Brier Score
+
+**개념**:\
+예측 확률과 실제 관찰된 사건의 발생 여부 간의 차이를 측정하는 지표이다.\
+낮을수록 성능이 우수하고, 0에 가까울수록 완벽한 예측이다.
+
+**계산 방법**:\
+AUC와 같은 방식으로 `riskRegression::Score()` 함수로 특정 시점의 Brier Score와 신뢰구간을 구한다.
+
+# \[Preprocess\]
+
+melanoma 데이터에서 필요한 변수(sex, age, thickness, ulcer)를 추출하고, status 변수는 censor=0인 Competing Risk 형태로 재구성한다. 시간을 연 단위로 변환하여 분석을 위한 데이터(melanoma_dt)를 준비한다.\
+**status**: 1=melanoma 사망, 2=생존, 3=melanoma 외 사망\
+**status_competing**: 0=생존, 1=melanoma 사망, 2=melanoma 외 사망\
+
+```{r echo=T, message=F, results='hide'}
+suppressPackageStartupMessages({
+  library(data.table);library(survival);library(boot);library(magrittr);library(riskRegression);library(prodlim);library(pec);library(rmarkdown)
+})
 
 melanoma_dt <- as.data.table(melanoma) %>% .[,c("sex","ulcer"):=lapply(.SD,as.factor),.SDcols=c("sex","ulcer")] %>% 
   .[,status_competing:=factor(ifelse(status==1,1,ifelse(status==2,0,2)), levels=0:2)] %>% 
@@ -27,12 +73,14 @@ model_var_list <- list(c("sex","age"), c("sex","age","thickness"), c("sex","age"
 Hist_formula_list <- list( Hist(time_Y, status_competing) ~ sex+age,
                            Hist(time_Y, status_competing) ~ sex+age+thickness,
                            Hist(time_Y, status_competing) ~ sex+age+ulcer,
-                           Hist(time_Y, status_competing) ~ sex+age+thickness+ulcer ) 
+                           Hist(time_Y, status_competing) ~ sex+age+thickness+ulcer )
 ```
 
-## 2. Each model
+# \[Each model\]
 
-```{r echo=TRUE}
+4가지 변수 조합의 모델을 설정하고 각각의 Harrell C-index, Wolbers C-index, AUC, Brier score를 계산한다. Wolbers' C-index의 신뢰구간은 bootstrap 방법을 이용해 반복 표본추출로 계산한다.
+
+```{r echo=T, eval=T}
 invisible(capture.output({
   table_1 <- lapply (1:length(model_var_list), function(i) { 
   # Harrell_C_index_info
@@ -84,11 +132,13 @@ invisible(capture.output({
 }))
 ```
 
-## 3. Compare two model
+# \[Compare two model\]
 
-Compare Harrell_C_index
+### 1. Compare Harrell_C_index
 
-```{r echo=TRUE, eval=F}
+Harrell's C-index는 각 모델 간의 concordance 함수를 통해 비교하며, 차이의 유의성을 Z 검정으로 평가한다
+
+```{r echo=T, eval=T}
 table_2_Harrell_C_index <- lapply(1:length(model_var_list), function(i) {
   fgr_data_for_Harrell_C_index <- survival::finegray(as.formula(paste0("Surv(time_Y, status_competing) ~ ",paste(model_var_list[[i]],collapse="+"))), data=melanoma_dt, etype=1)
   fgr_model_for_Harrell_C_index <- coxph(as.formula(paste0("Surv(fgstart, fgstop, fgstatus) ~ ",paste(model_var_list[[i]],collapse="+"))), data=fgr_data_for_Harrell_C_index)
@@ -110,10 +160,11 @@ table_2_Harrell_C_index <- lapply(1:length(model_var_list), function(i) {
 rmarkdown::paged_table(table_2_Harrell_C_index)
 ```
 
-Compare Wolbers_C_index\
-bootstraping이므로 하나의 pair(model1, model2)에 대해 1번만 코드 실행
+### 2. Compare Wolbers_C_index
 
-```{r echo=TRUE, eval=F}
+Wolbers' C-index는 bootstrap을 이용한 paired-sample t-test로 두 모델 간 차이를 평가한다. bootstrapping이므로 pair(model1, model2)에 대해 1번만 코드 실행한다.
+
+```{r echo=T, eval=T}
 set.seed(10)
 invisible(capture.output({
    table_2_Wolbers_C_index <- lapply(1:(length(model_var_list)-1), function(i) {
@@ -145,9 +196,11 @@ invisible(capture.output({
 rmarkdown::paged_table(table_2_Wolbers_C_index)
 ```
 
-Compare AUC_and_Brier
+### 3. Compare AUC_and_Brier
 
-```{r echo=TRUE, eval=F}
+AUC와 Brier Score는 riskRegression::Score 함수를 이용하여 각 모델 간의 성능 차이를 비교한다.
+
+```{r echo=T, eval=T}
 invisible(capture.output({
   table_2_AUC_and_Brier <- lapply(1:length(model_var_list), function(i) {
   fgr_model_AUC_and_Brier <- riskRegression::FGR(Hist_formula_list[[i]], data=melanoma_dt, cause=1)
@@ -164,7 +217,7 @@ invisible(capture.output({
 }))
 ```
 
-```{r echo=TRUE, eval=F}
+```{r echo=T, eval=T}
 table_2_AUC_t_5 <- lapply(1:length(model_var_list), function(k){
   table_2_AUC_and_Brier[[k]][1]
 }) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(AUC_t_5=c("A","B","C","D"),.)
@@ -174,7 +227,7 @@ for (i in seq(length(model_var_list))) {
 rmarkdown::paged_table(table_2_AUC_t_5)
 ```
 
-```{r echo=TRUE, eval=F}
+```{r echo=T, eval=T}
 table_2_AUC_t_10 <- lapply(1:length(model_var_list), function(k){
   table_2_AUC_and_Brier[[k]][2]
 }) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(AUC_t_10=c("A","B","C","D"),.)
@@ -184,7 +237,7 @@ for (i in seq(length(model_var_list))) {
 rmarkdown::paged_table(table_2_AUC_t_10)
 ```
 
-```{r echo=TRUE, eval=F}
+```{r echo=T, eval=T}
 table_2_Brier_t_5 <- lapply(1:length(model_var_list), function(k){
   table_2_AUC_and_Brier[[k]][3]
 }) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(Brier_t_5=c("A","B","C","D"),.)
@@ -194,7 +247,7 @@ for (i in seq(length(model_var_list))) {
 rmarkdown::paged_table(table_2_Brier_t_5)
 ```
 
-```{r echo=TRUE, eval=F}
+```{r echo=T, eval=T}
 table_2_Brier_t_10 <- lapply(1:length(model_var_list), function(k){
   table_2_AUC_and_Brier[[k]][4]
 }) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(Brier_t_10=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
@@ -203,3 +256,7 @@ for (i in seq(length(model_var_list))) {
 }
 rmarkdown::paged_table(table_2_Brier_t_10)
 ```
+
+각 지표는 성능이 좋을수록 C-index와 AUC는 높게, Brier Score는 낮게 나타난다.\
+모델 간 비교 시 p-value가 작을수록 두 모델 간 성능의 유의한 차이가 있음을 의미한다.p-value가 0.05 미만이면 통계적으로 유의하게 두 모델의 성능이 다름을 나타낸다.\
+이러한 과정을 통해 Competing Risk 모델의 성능을 객관적으로 평가하고 비교할 수 있으며, 실무적 활용도가 높은 모델을 선택하는 데 중요한 기준을 제공한다.
