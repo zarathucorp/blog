@@ -15,8 +15,8 @@ format: html
 status: 1=melanoma 사망, 2=생존, 3=melanoma 외 사망\
 status_competing: 0=생존, 1=melanoma 사망, 2=melanoma 외 사망
 
-```{r echo=TRUE, eval=F}
-library(data.table);library(survival);library(boot);library(magrittr);library(riskRegression);library(prodlim);library(pec)
+```{r echo=TRUE, results='hide'}
+library(data.table);library(survival);library(boot);library(magrittr);library(riskRegression);library(prodlim);library(pec);library(rmarkdown)
 
 melanoma_dt <- as.data.table(melanoma) %>% .[,c("sex","ulcer"):=lapply(.SD,as.factor),.SDcols=c("sex","ulcer")] %>% 
   .[,status_competing:=factor(ifelse(status==1,1,ifelse(status==2,0,2)), levels=0:2)] %>% 
@@ -32,8 +32,9 @@ Hist_formula_list <- list( Hist(time_Y, status_competing) ~ sex+age,
 
 ## 2. Each model
 
-```{r echo=TRUE, eval=F}
-table_1 <- lapply (1:length(model_var_list), function(i) { 
+```{r echo=TRUE}
+invisible(capture.output({
+  table_1 <- lapply (1:length(model_var_list), function(i) { 
   # Harrell_C_index_info
   fgr_data_for_Harrell_C_index <- survival::finegray(as.formula(paste0("Surv(time_Y, status_competing) ~ ",paste(model_var_list[[i]],collapse="+"))), data=melanoma_dt, etype=1)
   fgr_model_for_Harrell_C_index <- coxph(as.formula(paste0("Surv(fgstart, fgstop, fgstatus) ~ ",paste(model_var_list[[i]],collapse="+"))), data=fgr_data_for_Harrell_C_index)
@@ -78,8 +79,9 @@ table_1 <- lapply (1:length(model_var_list), function(i) {
               "Brier_t=10"=paste0(sprintf("%.04f",AUC_and_Brier_info$Brier$score[2]$Brier)," (",
                                sprintf("%.04f",AUC_and_Brier_info$Brier$score[2]$lower),"-",
                                sprintf("%.04f",AUC_and_Brier_info$Brier$score[2]$upper),")")
-  )
-}) %>% do.call(rbind,.)
+  ) }) %>% 
+    do.call(rbind,.)
+}))
 ```
 
 ## 3. Compare two model
@@ -105,13 +107,16 @@ table_2_Harrell_C_index <- lapply(1:length(model_var_list), function(i) {
     return(p_value)
   }) %>% unlist()
 }) %>% do.call(rbind,.) %>% as.data.table() %>% setnames(c("A","B","C","D")) %>% cbind(Harrell_C_index=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+rmarkdown::paged_table(table_2_Harrell_C_index)
 ```
 
-Compare Wolbers_C_index, bootstraping이므로 하나의 pair(model1, model2)에 대해 1번만 코드 실행
+Compare Wolbers_C_index\
+bootstraping이므로 하나의 pair(model1, model2)에 대해 1번만 코드 실행
 
 ```{r echo=TRUE, eval=F}
 set.seed(10)
-table_2_Wolbers_C_index <- lapply(1:(length(model_var_list)-1), function(i) {
+invisible(capture.output({
+   table_2_Wolbers_C_index <- lapply(1:(length(model_var_list)-1), function(i) {
   cindex_values <- numeric()
   for(b in 1:20){
     indices <- sample(seq_len(nrow(melanoma_dt)), size=nrow(melanoma_dt), replace=T)
@@ -136,12 +141,15 @@ table_2_Wolbers_C_index <- lapply(1:(length(model_var_list)-1), function(i) {
   }) %>% unlist() %>% c(rep("-",(i-1)),.)
 }) %>% do.call(rbind,.) %>% as.data.table() %>% setnames(c("B","C","D")) %>% 
   cbind("A"=rep("-",3),.) %>% rbind("D"=data.table("-","-","-","-"), use.names=F) %>% cbind(Wolbers_C_index=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+}))
+rmarkdown::paged_table(table_2_Wolbers_C_index)
 ```
 
 Compare AUC_and_Brier
 
 ```{r echo=TRUE, eval=F}
-table_2_AUC_and_Brier <- lapply(1:length(model_var_list), function(i) {
+invisible(capture.output({
+  table_2_AUC_and_Brier <- lapply(1:length(model_var_list), function(i) {
   fgr_model_AUC_and_Brier <- riskRegression::FGR(Hist_formula_list[[i]], data=melanoma_dt, cause=1)
   
   lapply (1:length(model_var_list), function(j) {
@@ -152,29 +160,46 @@ table_2_AUC_and_Brier <- lapply(1:length(model_var_list), function(i) {
     
     data.table("V1"=c(sprintf("%.03f",AUC_and_Brier$AUC$contrasts$p), sprintf("%.03f",AUC_and_Brier$Brier$contrasts$p))) %>% setnames(as.character(j))
   }) %>% do.call(cbind,.)
-})
+  })
+}))
 ```
 
 ```{r echo=TRUE, eval=F}
 table_2_AUC_t_5 <- lapply(1:length(model_var_list), function(k){
   table_2_AUC_and_Brier[[k]][1]
-}) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(AUC_t_5=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+}) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(AUC_t_5=c("A","B","C","D"),.)
+for (i in seq(length(model_var_list))) {
+  table_2_AUC_t_5[i,(i+1):="-"]
+}
+rmarkdown::paged_table(table_2_AUC_t_5)
 ```
 
 ```{r echo=TRUE, eval=F}
 table_2_AUC_t_10 <- lapply(1:length(model_var_list), function(k){
   table_2_AUC_and_Brier[[k]][2]
-}) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(AUC_t_10=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+}) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(AUC_t_10=c("A","B","C","D"),.)
+for (i in seq(length(model_var_list))) {
+  table_2_AUC_t_10[i,(i+1):="-"]
+}
+rmarkdown::paged_table(table_2_AUC_t_10)
 ```
 
 ```{r echo=TRUE, eval=F}
 table_2_Brier_t_5 <- lapply(1:length(model_var_list), function(k){
   table_2_AUC_and_Brier[[k]][3]
-}) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(Brier_t_5=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+}) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(Brier_t_5=c("A","B","C","D"),.)
+for (i in seq(length(model_var_list))) {
+  table_2_Brier_t_5[i,(i+1):="-"]
+}
+rmarkdown::paged_table(table_2_Brier_t_5)
 ```
 
 ```{r echo=TRUE, eval=F}
 table_2_Brier_t_10 <- lapply(1:length(model_var_list), function(k){
   table_2_AUC_and_Brier[[k]][4]
 }) %>% do.call(rbind,.) %>% setnames(c("A","B","C","D")) %>% cbind(Brier_t_10=c("A","B","C","D"),.) %>% replace(is.na(.),"-")
+for (i in seq(length(model_var_list))) {
+  table_2_Brier_t_10[i,(i+1):="-"]
+}
+rmarkdown::paged_table(table_2_Brier_t_10)
 ```
