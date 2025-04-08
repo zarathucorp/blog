@@ -1,0 +1,1347 @@
+---
+title: "ADaM Compliant ADSL Dataset Generation"
+description: |
+   Step-by-step guide for creating CDISC ADaM-compliant ADSL datasets using R.
+author: 
+  name: "Hojun LEE"
+  url: https://github.com/21-HJ
+date: "04-08-2025"
+image: img/logo.png
+format: 
+  html: 
+    self-contained: true
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+
+# OBJECTIVES
+-   CDISC: SDTM과 ADaM이 무엇인지 알아보자.
+-   직접 SDTM을 ADaM으로 변환해보자.
+-   ADaM을 이용, TLG(table, list, graphics)를 빠르게 만들어보자.
+-   Shiny module을 이용, ADaM dataset에서 복잡한 분석을 빠르게 수행해보자.
+
+# 시작하기 전에
+
+이전에 CDISC와 CDISC 中 ADaM, ADSL에 간단히 다룬 적이 있다. <br>
+[`zarathu_CDISC`](https://blog.zarathu.com/posts/2023-04-28-tidycdisc/) <br>
+본문을 읽기 전, 먼저 위 문서를 읽고 오는 것을 추천한다. 
+
+
+# CDISC: SDTM and ADaM
+
+**1. CDISC 표준 개요**
+ 
+- **목적**: 임상시험 데이터의 **표준화** 및 **재현성** 확보
+- **주요 구성**:
+  - `SDTM` (원시 데이터)
+  - `ADaM` (분석용 데이터)
+  - `Define-XML` (메타데이터)
+
+**2. SDTM (Study Data Tabulation Model)**
+
+- **역할**: 원시 데이터 수집 표준
+- **특징**:
+  - 관측 중심 구조 (1행 = 1관측치)
+  - 도메인 별 분류 (DM, VS, LB 등)
+  - 예시: `VS`(Vital Signs), `LB`(Lab Data)
+
+**3. ADaM (Analysis Data Model)**
+
+- **등장 이유**: SDTM의 분석 한계 보완
+  - 분석용 파생변수 부재
+  - 치료군 비교 어려움
+  - 재현성 문제
+
+- **핵심 특징**:
+  - 분석 친화적 구조
+  - 파생변수 명시적 정의
+  - 데이터 트레일(traceability) 강화
+
+**4. 주요 ADaM 데이터셋**
+ 
+ 
+| 데이터셋 | 용도 | 예시 변수 |
+|---------|------|----------|
+| **ADSL** | 기본 분석 | `TRT01P`, `ITTFL` |
+| **ADAE** | 이상반응 | `TRTEMFL`, `AOCCFL` |
+| **ADPC** | 약동학 | `DV`, `LLOQ` |
+| **ADTTE** | 생존분석 | `AVAL`, `CNSR` |
+| **ADLB** | 검사실 | `ANRIND`, `BASE` |
+
+
+**5. 표준 적용 흐름**
+
+```{mermaid}
+flowchart LR
+    원시데이터["원시 데이터"] -->|SDTM 변환| DM[DM domain]
+    DM -->|ADaM 처리| ADSL[ADSL dataset]
+    ADSL -->|통계 분석| 리포트["통계 보고서"]
+```
+
+## SDTM vs ADaM 변수 비교
+
+**1. SDTM 주요 변수 구조**
+
+
+| 도메인 | 핵심 변수 | 설명 |
+|--------|-----------|------|
+| **DM** | `USUBJID`, `AGE`, `SEX`, `RACE`, `ARM` | 인구통계학 및 치료군 정보 |
+| **AE** | `AETERM`, `AESTDTC`, `AEENDTC`, `AESEV` | 이상반응 데이터 |
+| **VS** | `VSTEST`, `VSORRES`, `VSSTRESN` | 생체징후 데이터 |
+| **LB** | `LBTEST`, `LBORRES`, `LBSTRESN` | 검사실 데이터 |
+| **EX** | `EXTRT`, `EXDOSE`, `EXSTDTC` | 투여 정보 |
+
+**2. ADaM으로 전환 시 주요 변경 사항**
+
+
+| SDTM 변수 | ADaM 변환 | 변경 이유 |
+|-----------|-----------|-----------|
+| `AESTDTC`(문자형) | `ASTDT`(숫자형 날짜) | 분석용 날짜 포맷 |
+| `AGE` | `AGEGR1`(연령그룹) | 카테고리 분석 |
+| `ARM` | `TRT01P`(계획 치료군) | 프로토콜 위반 처리 |
+| - | `TRTEMFL`(치료기간 발생 여부) | 안전성 분석 필터링 |
+
+**ADaM 전용 파생 변수** 
+
+
+1. **기본 변수**:
+   - `AVAL`: 분석용 수치값 (예: LB도메인의 `VSSTRESN` → `AVAL`)
+   - `CHG`: 기준값 대비 변화량
+   - `PCHG`: 백분율 변화량
+
+2. **플래그 변수**:
+   - `SAFFL`: 안전성 평가 집단 플래그
+   - `ITTFL`: Intent-to-Treat 플래그
+   - `ANL01FL`: 주요 분석 플래그
+
+3. **날짜 변수**:
+   - `ADT`: 분석용 숫자형 날짜
+   - `ADY`: 기준일(DAY 1) 대비 일수
+
+```{mermaid}
+flowchart TB
+    SDTM["SDTM Domain: LB"] -->|Transform| ADAM["ADaM ADLB Dataset"]
+    
+    SDTM --> LB1[("LBTEST(Test Name)")]
+    SDTM --> LB2[("LBORRES(Result)")]
+    SDTM --> LB3[("LBDTC(Date)")]
+    
+    ADAM --> AD1[("PARAMCD(Standard Code)")]
+    ADAM --> AD2[("AVAL(Numeric Value)")]
+    ADAM --> AD3[("ADT(Analysis Date)")]
+    ADAM --> AD4[("ANRIND(Reference Range)")]
+    
+    ADAM --> Analysis[["Statistical Analysis"]]
+```
+
+
+# SDTM to ADaM
+
+SDTM에서 ADaM으로 바뀌는 과정을 돕기 위해 `pharmaverse`에서 패키지를 만들었다. 이를 이용하여 직접 변환을 해보자.
+
+오늘 다룰 대표적인 ADaM은 아래와 같다.
+
+-   ADSL(Analysis Dataset, subject-level)
+-   ADAE(Analysis Dataset, Adverse Effect)
+
+위 ADaM들을 pharmaverse packages를 이용해 다뤄보자.
+
+## ADSL
+ADSL은 임상 시험에서 환자별 기초 정보를 담는 핵심 데이터셋으로, 주요 변수와 분석에 활용된다.
+
+**목적**:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 임상 시험 대상자(Subject)의 인구통계학적 정보, 치료 그룹, 기초 값 등 개인 수준 데이터를 제공. <br>
+**구조**:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 한 행에 한 환자의 정보가 포함되며, `USUBJID` (고유 환자 식별자)로 구분. <br>
+**활용**:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 효능/안전성 분석의 기초 데이터로 사용. <br>
+
+**주요 변수 (Columns)**
+
+
+| Category          | Variables               | Description                          |
+|-------------------|-------------------------|--------------------------------------|
+| **Identifiers**   | • `USUBJID`<br>• `SUBJID`<br>• `SITEID` | • 고유 환자 ID<br>• 대상자 ID<br>• 연구기관 ID |
+| **Demographics**  | • `AGE`<br>• `SEX`<br>• `RACE`<br>• `COUNTRY` | • 연령<br>• 성별<br>• 인종<br>• 국가 |
+| **Treatment**     | • `TRT01P`<br>• `TRT01A`<br>• `TRTGRPn` | • 계획 치료<br>• 실제 치료<br>• 치료그룹 |
+| **Trial**         | • `ARM`<br>• `ACTARM`<br>• `RFSTDTC`<br>• `RFENDTC` | • 할당 치료군<br>• 실제 치료군<br>• 첫 투여일<br>• 마지막 방문일 |
+| **Flags**         | • `SAFFL`<br>• `ITTFL`<br>• `COMPLFL` | • 안전성 평가 대상<br>• ITT 대상<br>• 연구 완료 여부 |
+| **CDISC**         | All variables           | CDISC ADaM 표준 준수                |
+
+<br>
+
+### ADSL_example
+예제는 아래와 같은 순서로 진행한다.
+
+- data/Packages loading
+- Derivation Building
+- Variables Grouping
+- Derive exposure variables
+- Derive Treatment Variables
+- Derive Disposition Variables
+- Derive Cause of Death
+- Derive Other Grouping Variables
+- Applying metadate
+
+```{r}
+#| echo: true
+#| message: false
+#| results: 'hide'
+
+#load packages
+
+library(metacore)
+library(metatools)
+library(pharmaversesdtm)
+library(admiral)
+library(xportr)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(stringr)
+library(DT)
+
+# Read in input SDTM data
+dm <- pharmaversesdtm::dm
+ds <- pharmaversesdtm::ds
+ex <- pharmaversesdtm::ex
+ae <- pharmaversesdtm::ae
+vs <- pharmaversesdtm::vs
+suppdm <- pharmaversesdtm::suppdm
+
+#in case; importing SAS datasets using haven::read_sas()
+# NA가 아닌 ""로 읽히기 때문에, NA처리를 따로 해줘야한다.
+dm <- convert_blanks_to_na(dm)
+ds <- convert_blanks_to_na(ds)
+ex <- convert_blanks_to_na(ex)
+ae <- convert_blanks_to_na(ae)
+vs <- convert_blanks_to_na(vs)
+suppdm <- convert_blanks_to_na(suppdm)
+```
+
+이후 편의를 위해 dm과 suppdm을 아래와 같이 합칠 수 있다.
+
+```{r}
+#| echo: true
+#| message: false
+#| results: 'hide'
+
+names(dm)
+#  [1] "STUDYID"  "DOMAIN"   "USUBJID"  "SUBJID"   "RFSTDTC"  "RFENDTC"  "RFXSTDTC" "RFXENDTC" "RFICDTC"  "RFPENDTC" "DTHDTC"   "DTHFL"    "SITEID"  
+# [14] "AGE"      "AGEU"     "SEX"      "RACE"     "ETHNIC"   "ARMCD"    "ARM"      "ACTARMCD" "ACTARM"   "COUNTRY"  "DMDTC"    "DMDY"    
+names(suppdm)
+# [1] "STUDYID"  "RDOMAIN"  "USUBJID"  "IDVAR"    "IDVARVAL" "QNAM"     "QLABEL"   "QVAL"     "QORIG"    "QEVAL"   
+
+# merge 대신 suppdm을 통해 간편하게 확인할 수 있다.
+dm_suppdm <- combine_supp(dm, suppdm)
+
+names(dm_suppdm)
+#  [1] "STUDYID"  "DOMAIN"   "USUBJID"  "SUBJID"   "RFSTDTC"  "RFENDTC"  "RFXSTDTC" "RFXENDTC" "RFICDTC"  "RFPENDTC" "DTHDTC"   "DTHFL"    "SITEID"  
+# [14] "AGE"      "AGEU"     "SEX"      "RACE"     "ETHNIC"   "ARMCD"    "ARM"      "ACTARMCD" "ACTARM"   "COUNTRY"  "DMDTC"    "DMDY"     "IDVARVAL"
+# [27] "COMPLT16" "COMPLT24" "COMPLT8"  "EFFICACY" "ITT"      "SAFETY"
+
+```
+
+
+그 이후 specification file을 metacore object로 합친다. <br>
+`metacore::spec_to_metacore()` <br>
+
+```{r}
+#| echo: true
+#| message: true
+#| warning: false
+# Read in metacore object
+metacore <- spec_to_metacore(
+  path = "./safety_specs.xlsx",
+  # All datasets are described in the same sheet
+  where_sep_sheet = FALSE
+) %>%
+  select_dataset("ADSL")
+```
+**Derivation Building**
+
+이제 SDTM dataset(DM, SUPPDM)에서 필요한 변수들을 추출하여 ADaM(ADSL)을 생성하는 과정이 시작된다.
+`metatools:build_from_derived()`
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| output: html
+
+adsl_preds <- build_from_derived(metacore,
+  ds_list = list("dm" = dm_suppdm, "suppdm" = dm_suppdm),
+  predecessor_only = FALSE, keep = FALSE
+)
+
+head(adsl_preds, 5) %>% datatable()
+```
+<br>
+
+**Variable Grouping**
+
+이제 subgroup을 만들어보자. <br>
+`admiral::derive_vars_cat()`
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+agegr1_lookup <- exprs(
+  ~condition,            ~AGEGR1, ~AGEGR1N,
+  is.na(AGE),          "Missing",        4,
+  AGE < 18,                "<18",        1,
+  between(AGE, 18, 64),  "18-64",        2,
+  !is.na(AGE),             ">64",        3
+)
+
+adsl_cat <- derive_vars_cat(
+  dataset = adsl_preds,
+  definition = agegr1_lookup
+)
+
+head(adsl_cat %>% select(contains(c("ID","AGE")))) %>% datatable()
+```
+<br>
+만일 metacore data(.xlsx)가 terminology definition을 갖고있다면,  <br>
+`get_control_term()`을 이용해 정의를 불러올 수 있다.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+get_control_term(metacore, variable = AGEGR1)
+
+adsl_ct <- adsl_preds %>%
+  create_cat_var(metacore,
+    ref_var = AGE,
+    grp_var = AGEGR1, num_grp_var = AGEGR1N
+  )
+
+head(adsl_ct %>% select(contains(c("ID","AGE")))) %>% datatable()
+```
+<br>
+기존의 방식을 이용해서 진행해도 무방하다.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+format_agegr1 <- function(age) {
+  case_when(
+    age < 18 ~ "<18",
+    between(age, 18, 64) ~ "18-64",
+    age > 64 ~ ">64",
+    TRUE ~ "Missing"
+  )
+}
+
+format_agegr1n <- function(age) {
+  case_when(
+    age < 18 ~ 1,
+    between(age, 18, 64) ~ 2,
+    age > 64 ~ 3,
+    TRUE ~ 4
+  )
+}
+
+adsl_cat3 <- adsl_preds %>%
+  mutate(
+    AGEGR1 = format_agegr1(AGE),
+    AGEGR1N = format_agegr1n(AGE)
+  )
+head(adsl_cat3 %>% select(contains(c("ID","AGE")))) %>% datatable()
+
+```
+<br>
+인종, 성별 등 고정되어 있는 code는 codelist를 참조, 아래와 같이 변경할 수 있다. 다만, codelist에 정의되어 있어야한다. 
+
+`metatools::create_var_from_codelist()`
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+adsl_ct <- adsl_ct %>%
+  create_var_from_codelist(
+    metacore = metacore,
+    input_var = RACE,
+    out_var = RACEN
+  )
+
+head(adsl_ct %>% select(contains(c("ID","AGEGR","RACE")))) %>% datatable()
+```
+
+- `create_var_from_codelist` 사용: <br>
+  그룹이 이미 문자형으로 존재하고, 숫자 코드만 필요할 때 <br>
+  (예: `RACE` → `RACEN` 변환/ 인종, 성별 등 factor variable)
+
+- `create_cat_var` 사용: <br>
+  연속형 데이터를 처음부터 그룹핑해야 할 때 <br>
+  (예: `AGE`(숫자) → `AGEGR1`(문자) + `AGEGR1N`(숫자) 생성/ `AGE`, `BMI` 등 continuous variable)
+
+
+**Exposure Derivations**
+
+
+기존 변수들을 바탕으로 새로운 변수들을 생성해보자. 관련 변수들의 예시는 <br>
+[`admiral`](https://pharmaverse.github.io/admiral/articles/adsl.html)에서 더 자세한 정보를 확인 가능하다.
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+# DTC > DTM: `derive_vars_dtm`
+ex_ext <- ex %>%
+  derive_vars_dtm(
+    dtc = EXSTDTC,   # 시작 일시
+    new_vars_prefix = "EXST"   # EXSTDTM
+  ) %>%
+  derive_vars_dtm(
+    dtc = EXENDTC,   # 종료 일시 
+    new_vars_prefix = "EXEN",  # EXENDTM
+    time_imputation = "last"   #종료 시간 결측 시 "23:59"로 대체.
+  )
+    # 다음과 같은 변수 생성: EXEN, EXSTTMF, EXENDTM, EXENTMF
+    
+
+# ADSL에 병합
+adsl_raw <- adsl_ct %>%
+  # Treatment Start Datetime
+  derive_vars_merged(
+    dataset_add = ex_ext,
+    filter_add = (EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO"))) & !is.na(EXSTDTM),
+    new_vars = exprs(TRTSDTM = EXSTDTM, TRTSTMF = EXSTTMF),
+    order = exprs(EXSTDTM, EXSEQ),   # 가장 빠른 시작 일시 + 낮은 EXSEQ
+    mode = "first",                  # 첫번째 기록 선택
+    by_vars = exprs(STUDYID, USUBJID)
+  ) %>%
+  
+  # Treatment End Datetime
+  derive_vars_merged(
+    dataset_add = ex_ext,
+    filter_add = (EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO"))) & !is.na(EXENDTM),
+    new_vars = exprs(TRTEDTM = EXENDTM, TRTETMF = EXENTMF),
+    order = exprs(EXENDTM, EXSEQ),   # 가장 늦은 종료 일시 + 높은 EXSEQ
+    mode = "last",                   # 마지막 기록 선택
+    by_vars = exprs(STUDYID, USUBJID)
+  ) %>%
+  
+  # Treatment Start and End Date (TRTSDT, TRTEDT 생성.)
+  derive_vars_dtm_to_dt(source_vars = exprs(TRTSDTM, TRTEDTM)) %>% # Convert Datetime variables to date
+      
+  # Treatment Start Time (TRTSM)
+  derive_vars_dtm_to_tm(source_vars = exprs(TRTSDTM)) %>%
+  
+  # Treatment Duration ( TRTDURD = TRTEDT - TRTSDT + 1 )
+  derive_var_trtdurd() %>%
+  
+  # Safety Population Flag (SAFFL: "Y" or `NA`)
+  derive_var_merged_exist_flag(
+    dataset_add = ex,
+    by_vars = exprs(STUDYID, USUBJID),
+    new_var = SAFFL,
+    condition = (EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO")))
+  )
+
+# adsl_raw = adsl_ct + 치료(exposure)관련 변수 및 SAFFL.
+
+head(adsl_raw %>% select((c("STUDYID","TRTSDTM","TRTSTM","TRTSTMF","TRTSDT","TRTEDTM","TRTETMF","TRTEDT","TRTDURD","SAFFL")))) %>% datatable()
+```
+
+<br>
+**Derive Treatment Variables**
+
+ADSL data에 치료 그룹 변수(`TRT01P`, `TRT01A`)와 숫자형 코드 변수(`TRT01PN`, `TRT01AN`)를 추가하자.
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+
+adsl <- adsl_raw %>%
+  mutate(
+    TRT01P = if_else(ARM %in% c("Screen Failure", "Not Assigned", "Not Treated"), "No Treatment", ARM),
+    TRT01A = if_else(ACTARM %in% c("Screen Failure", "Not Assigned", "Not Treated"), "No Treatment", ACTARM)
+  ) %>%
+  create_var_from_codelist(metacore, input_var = TRT01P, out_var = TRT01PN) %>%
+  create_var_from_codelist(metacore, input_var = TRT01A, out_var = TRT01AN)
+
+```
+
+`TRT01P`: 계획된 치료 그룹 (Planned Treatment) <br>
+`TRT01A`: 실제 치료 그룹 (Actual Treatment)
+
+```
+code mapping (example)
+- "Placebo"     → 1
+- "High Dose"   → 2
+- "Low Dose"    → 3
+- "No Treatment"→ NA
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+head(adsl %>% select((c("STUDYID", "USUBJID","TRT01P", "TRT01PN", "TRT01A", "TRT01AN" )))) %>% datatable()
+```
+
+<br>
+**Derive Disposition Variables**
+
+ADSL data에 연구 종료 변수(`EOSDT`, `EOSSTT`) 및 날짜 변수(`RANDDT`, `SCRFDT` 등)들을 추가하자.
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+# 1. 연구 종료 일자(EOSDT)
+  # DS 데이터에서 문자형 날짜(DTC) → 숫자형 날짜(DT) 변환
+  ds_ext <- derive_vars_dt(
+    ds,
+    dtc = DSSTDTC,           # 문자형 일자 (예: "2014-07-02")
+    new_vars_prefix = "DSST" # 생성 변수: DSSTDT, DSSTDTF
+  )
+  
+  #. ADSL에 연구 종료 일자 병합 (EOSDT, ex: 2014-07-02)
+  adsl <- adsl %>%
+    derive_vars_merged(
+      dataset_add = ds_ext,
+      by_vars = exprs(STUDYID, USUBJID),
+      new_vars = exprs(EOSDT = DSSTDT),
+      filter_add = DSCAT == "DISPOSITION EVENT" & DSDECOD != "SCREEN FAILURE"
+    )
+
+# 2. 연구 종료 상태(EOSSTT)
+  # 사용자 정의 매핑 함수
+  format_eosstt <- function(x) {
+    case_when(
+      x == "COMPLETED" ~ "COMPLETED",
+      x == "SCREEN FAILURE" ~ NA_character_,
+      TRUE ~ "DISCONTINUED"
+    )
+  }
+  
+  # ADSL에 상태 변수 병합
+  adsl <- adsl %>%
+    derive_vars_merged(
+      dataset_add = ds,
+      by_vars = exprs(STUDYID, USUBJID),
+      filter_add = DSCAT == "DISPOSITION EVENT",
+      new_vars = exprs(EOSSTT = format_eosstt(DSDECOD)),
+      missing_values = exprs(EOSSTT = "ONGOING")  # 결측 시 "ONGOING" 할당
+    )
+  
+  head(adsl %>% select((c("STUDYID", "USUBJID", "EOSDT", "EOSSTT"))))  %>% datatable()
+
+```
+
+```
+    매핑 규칙:
+    DSDECOD	            EOSSTT
+    "COMPLETED"	        "COMPLETED"
+    "SCREEN FAILURE"    NA
+    기타                "DISCONTINUED"
+    
+    특이 사항: 처분 데이터가 없는 대상자는 "ONGOING"으로 표시
+```
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+# 3. 사망일자(DTHDT)
+  adsl <- adsl %>%
+    derive_vars_dt(
+      new_vars_prefix = "DTH",      # 생성 변수: DTHDT, DTHDTF
+      dtc = DTHDTC,                 # 사망 일자 (DTC)
+      highest_imputation = "M",     # 월까지만 있는 경우 "01"일로 대체
+      date_imputation = "first"     # 일 결측 시 월의 첫째 날 대체
+    )
+  # 대체 규칙 (예시):
+    # "2014-07" → 2014-07-01
+    # "2014"    → 2014-01-01
+  
+# 4. 추가 날짜 변수  
+  adsl <- adsl %>%
+  # 무작위 배정 일자(RANDDT)
+  derive_vars_merged(
+    dataset_add = ds_ext,
+    by_vars = exprs(STUDYID, USUBJID),
+    new_vars = exprs(RANDDT = DSSTDT),
+    filter_add = DSDECOD == "RANDOMIZED"
+  ) %>%
+  # 스크린 실패 일자(SCRFDT)
+  derive_vars_merged(
+    dataset_add = ds_ext,
+    by_vars = exprs(STUDYID, USUBJID),
+    new_vars = exprs(SCRFDT = DSSTDT),
+    filter_add = DSDECOD == "SCREEN FAILURE"
+  ) %>%
+  # 최종 방문 일자(FRVDT)
+  derive_vars_merged(
+    dataset_add = ds_ext,
+    by_vars = exprs(STUDYID, USUBJID),
+    new_vars = exprs(FRVDT = DSSTDT),
+    filter_add = DSDECOD == "FINAL RETRIEVAL VISIT"
+  )
+  
+head(adsl %>% select((c("STUDYID", "USUBJID", "RANDDT", "SCRFDT", "FRVDT")))) %>% datatable()
+  
+```
+
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+# 5. 사망 관련 기간 변수
+adsl <- adsl %>%
+  # 사망 상대일(DTHADY): 치료 시작일(TRTSDT) 기준
+  derive_vars_duration(
+    new_var = DTHADY,
+    start_date = TRTSDT,
+    end_date = DTHDT,
+    add_one = TRUE  # 시작일 포함 (+1일)
+  ) %>%
+  
+  # 최종 투여-사망 간격(LDDTHELD): 치료 종료일(TRTEDT) 기준
+  derive_vars_duration(
+    new_var = LDDTHELD,
+    start_date = TRTEDT,
+    end_date = DTHDT,
+    add_one = FALSE  # 시작일 미포함
+  )
+
+# DTHADY    = DTHDT - TRTSDT + 1
+# LDDTHELD  = DTHDT - TRTEDT
+
+# 사용자 정의 함수
+assign_randfl <- function(x) {
+  if_else(!is.na(x), "Y", NA_character_)
+}
+
+# 플래그 할당
+adsl <- adsl %>%
+  mutate(RANDFL = assign_randfl(RANDDT))
+
+head(adsl %>% select((c("STUDYID", "USUBJID", "TRTSDT", "TRTEDT", "DTHADY", "LDDTHELD",  "RANDDT", "RANDFL")))) %>% datatable()
+
+```
+<br>
+**Derive Cause of Death**
+
+`admiral::derive_vars_extreme_event()`를 이용, <br>
+dm/suppdm이 아닌 다른 위치(AE/DS 등)의 사망 원인 정보를 통합, ADSL에 추가할 수 있다.
+
+- `DTHDT  ` : death date
+- `DTHCAUS` : death cause
+- `DTHDOM ` : death domain (ex: "AE"/"DS")
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+adsl <- adsl %>%
+  derive_vars_extreme_event(
+    # 그룹화 변수
+    by_vars = exprs(STUDYID, USUBJID),
+
+    # 사망 원인 이벤트 정의
+    events = list(
+      # 1. AE 도메인에서 사망 원인 추출
+      event(
+        dataset_name = "ae",
+        condition = AEOUT == "FATAL",  # 치명적 부작용 필터
+        set_values_to = exprs(
+          DTHCAUS = AEDECOD,  # 부작용 용어 사용
+          DTHDOM = "AE"       # 출처 도메인 표시
+        )
+      ),
+      # 2. DS 도메인에서 사망 원인 추출
+      event(
+        dataset_name = "ds",
+        condition = DSDECOD == "DEATH" & grepl("DEATH DUE TO", DSTERM),
+        set_values_to = exprs(
+          DTHCAUS = DSTERM,   # 처분 용어 사용
+          DTHDOM = "DS"       # 출처 도메인 표시
+        )
+      )
+    ),
+
+    # 소스 데이터셋 지정
+    source_datasets = list(ae = ae, ds = ds),
+
+    # 기술적 옵션
+    tmp_event_nr_var = event_nr,  # 임시 이벤트 번호 변수
+    order = exprs(event_nr),      # 정렬 기준 (첫 번째 이벤트 선택)
+    mode = "first",               # 최초 발생 이벤트 우선
+
+    # 출력 변수
+    new_vars = exprs(DTHCAUS, DTHDOM)
+  )
+
+adsl %>% filter(!is.na(DTHDT) )  %>% select((c("STUDYID", "USUBJID", "DTHDT", "DTHCAUS", "DTHDOM"))) %>% datatable()
+
+```
+<br>
+**Derive Other Grouping Variables**
+
+- 지역, 인종, 사망 범주 등 다양한 grouping variable들을 추가할 수 있다. 
+- `derive_vars_cat()`을 이용, factor와 numeric variable 추가을 추가할 수 있다.
+
+```
+주요 변수
+변수명    설명	                생성 규칙 예시
+REGION1   지역 그룹 (문자형)	북미 vs. 기타 국가
+REGION1N  지역 코드 (숫자형)	1=North America, 2=Rest of the World
+RACEGR1   인종 그룹 (문자형)	White vs. Non-white
+RACEGR1N  인종 코드 (숫자형)	1=White, 2=Non-white
+DTHCGR1   사망 원인 그룹	     Adverse Event vs. Progressive Disease
+DTHCGR1N  사망 원인 코드	     1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+# REGION1
+region1_lookup <- exprs(
+  ~condition,                     ~REGION1,          ~REGION1N,
+  COUNTRY %in% c("CAN", "USA"),   "North America",     1,
+  !is.na(COUNTRY),                "Rest of the World", 2,
+  is.na(COUNTRY),                 "Missing",           3
+)
+
+# RACEGR1
+racegr1_lookup <- exprs(
+  ~condition,        ~RACEGR1,    ~RACEGR1N,
+  RACE == "WHITE",   "White",     1,
+  RACE != "WHITE",   "Non-white", 2,
+  is.na(RACE),       "Missing",   3
+)
+
+#DTHCG1
+dthcgr1_lookup <- exprs(
+  ~condition,                                                   ~DTHCGR1,              ~DTHCGR1N,
+  DTHDOM == "AE",                                               "ADVERSE EVENT",       1,
+  str_detect(DTHCAUS, "(PROGRESSIVE DISEASE|DISEASE RELAPSE)"), "PROGRESSIVE DISEASE", 2,
+  !is.na(DTHCAUS),                                              "OTHER",               3,
+  is.na(DTHDOM),                                                NA_character_,         NA
+)
+
+# 변수 생성
+adsl <- adsl %>%
+  derive_vars_cat(definition = region1_lookup) %>%
+  derive_vars_cat(definition = racegr1_lookup) %>%
+  derive_vars_cat(definition = dthcgr1_lookup)
+
+adsl %>% head %>% select((c("STUDYID", "USUBJID", "COUNTRY", "REGION1", "REGION1N", "RACE", "RACEGR1", "RACEGR1N")))%>% datatable()
+
+adsl %>% filter(!is.na(DTHDT) )  %>% select((c("STUDYID", "USUBJID", "DTHDOM", "DTHCAUS", "DTHCGR1", "DTHCGR1N"))) %>% datatable()
+
+
+```
+<br>
+**Data check, create eSub XPT**
+
+ADSL data에 metadata를 적용, 검토해보자. 검토와 동시에 최종 결과를 확인할 수 있다. <br>
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+dir <- tempdir()
+
+adsl %>%
+  # 1. 변수 존재 여부 검증
+  check_variables(metacore) %>%  # 메타데이터에 정의된 변수 모두 존재하는지 확인
+  
+  # 2. 코드리스트(Controlled Terminology) 검증
+  check_ct_data(metacore, na_acceptable = TRUE) %>%  # 허용된 값만 포함하는지 확인 (NA 허용)
+  
+  # 3. 컬럼 순서 정렬
+  order_cols(metacore) %>%  # 메타데이터 스펙에 정의된 순서로 재배열
+  
+  # 4. 키 기준 행 정렬
+  sort_by_key(metacore) %>%  # 메타데이터의 sort_key 변수(예: USUBJID) 기준 정렬
+  
+  # 5. eSub XPT로 저장
+  xportr_type(metacore, domain = "ADSL") %>%  # 변수 타입 강제 변환 (예: 문자 → 숫자)
+  xportr_length(metacore) %>%                 # SAS 길이 지정 (예: 문자열 200자)
+  xportr_label(metacore) %>%                  # 변수 라벨 할당 (예: "Age at Baseline")
+  xportr_df_label(metacore) %>%               # 데이터셋 라벨 할당 (예: "Adverse Events Analysis Dataset")
+  xportr_write(file.path(dir, "adsl.xpt"), metadata = metacore, domain = "ADSL") %>% 
+  datatable()
+```
+
+
+
+## ADAE
+
+ 임상시험에서의 이상반응(**Adverse Events, AE**) 데이터를 분석하기 위한 ADAE 데이터셋 생성 과정 <br>
+  `ADSL` + `AE` = `ADAE`라 생각하자.
+  
+**1. 개요**  
+   ∙ 목적: 이상반응 데이터의 표준화된 분석을 위한 데이터셋 생성  <br><br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;안전성 평가(Safety Analysis)의 핵심 데이터셋으로, 다음 목적에 사용:  
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∘ 이상반응 발생률 계산  
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∘ 치료군 간 AE 비교  
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∘ 중대한 이상반응(SAE) 추적  
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∘ 규제 기관(FDA, PMDA 등) 제출용  <br><br>
+   ∙ 입력 데이터:  
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∘ AE (기본 이상반응 데이터)  
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∘ ADSL (환자 기본 정보)   <br><br>
+   ∙ 출력 데이터:  
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∘ ADAE (Analysis Dataset for Adverse Events)
+        
+**2. 주요변수**
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| results: "hide"
+
+library(kableExtra)
+
+# 표 1: 식별자 변수
+tbl1 <- data.frame(
+  "변수명" = c("STUDYID", "USUBJID", "AESEQ"),
+  "설명" = c("연구 식별자", "환자 고유 ID", "AE 시퀀스 번호"),
+  "예시" = c('"CDISCPILOT01"', '"01-701-1015"', "1, 2, 3..."),
+  "필수여부" = c("Required", "Required", "Required")
+)
+
+# 표 2: 시간 관련 변수
+tbl2 <- data.frame(
+  "변수명" = c("AESTDT", "AEENDT", "AEDUR"),
+  "설명" = c("AE 시작일", "AE 종료일", "AE 지속일수 (파생 변수)"),
+  "예시" = c("2023-05-20", "2023-05-25", "6")
+)
+
+# 표 3: 이상반응 특성
+tbl3 <- data.frame(
+  "변수명" = c("AETERM", "AEDECOD", "AEBODSYS", "AESEV"),
+  "설명" = c("보고된 AE 명칭", "표준화된 AE 용어 (PT)", "신체계 (SOC)", "중증도"),
+  "예시 값" = c('"Headache"', '"HEADACHE"', '"NERVOUS SYSTEM"', '"MILD", "SEVERE"')
+)
+
+# 표 4: 평가 변수
+tbl4 <- data.frame(
+  "변수명" = c("AEREL", "AESER", "AEOUT"),
+  "설명" = c("약물 관련성", "중대한 AE 여부", "결과"),
+  "값 범위" = c('"Y"/"N"/NA', '"Y"/"N"', '"RECOVERED"')
+)
+
+# 표 5: 파생 플래그
+tbl5 <- data.frame(
+  "변수명" = c("TRTEMFL", "AESERFL", "AERELFL"),
+  "설명" = c("치료 기간 중 발생 여부", "중대한 AE 플래그", "관련성 플래그"),
+  "생성 로직" = c("AESTDT ≤ TRTEDT", "AESER == 'Y'", "AEREL == 'Y'")
+)
+
+# 표 6: 치료 정보
+tbl6 <- data.frame(
+  "변수명" = c("TRT01A", "TRTSDT"),
+  "설명" = c("실제 치료군", "치료 시작일"),
+  "출처" = c("ADSL", "ADSL")
+)
+
+# 표 스타일링 함수
+format_table <- function(tbl, caption) {
+  tbl %>%
+    kbl(caption = caption, align = c("l", "l", "l", "l")) %>%
+    kable_styling(
+      bootstrap_options = c("striped", "hover", "condensed"),
+      full_width = FALSE,
+      font_size = 10
+    ) %>%
+    row_spec(0, bold = TRUE, background = "#f8f9fa")
+}
+
+```
+
+
+```{r}
+#| echo: false
+format_table(tbl1, " 식별자 변수")
+#| echo: false
+format_table(tbl2, " 시간 관련 변수")
+#| echo: false
+format_table(tbl3, " 이상반응 특성")
+#| echo: false
+format_table(tbl4, " 평가 변수")
+#| echo: false
+format_table(tbl5, " 파생 플래그")
+#| echo: false
+format_table(tbl6, " 치료 정보")
+```
+
+
+### ADAE_example
+예제는 아래와 같은 순서로 진행한다.
+
+- data/Packages loading
+- metacore specification loading
+- ADSL variable selection
+- Derivation Building
+- Derive Analysis Dates
+- Derive Duration/Date of last dose
+- Derive Analysis/Occurence Flags
+- Derive Query Variables
+- Add ADSL variables
+- Applying metadate
+
+**Data/Packages loading**
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+library(metacore)
+library(metatools)
+library(pharmaversesdtm)
+library(pharmaverseadam)
+library(admiral)
+library(xportr)
+library(dplyr)
+library(lubridate)
+library(stringr)
+library(reactable)
+
+# Read in input data
+adsl <- pharmaverseadam::adsl
+ae <- pharmaversesdtm::ae
+ex <- pharmaversesdtm::ex
+
+# When SAS datasets are imported into R using haven::read_sas(), missing
+ae <- convert_blanks_to_na(ae)
+ex <- convert_blanks_to_na(ex)
+```
+
+**Metacore specification loading**
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+# 메타데이터 Excel 파일에서 사양 추출
+metacore <- spec_to_metacore(
+  path = "./safety_specs.xlsx",  # 메타데이터 파일 경로
+  where_sep_sheet = FALSE  # 모든 데이터셋이 한 시트에 있는 경우
+) %>%
+  select_dataset("ADAE")  # ADAE 데이터셋 선택
+```
+
+**ADSL variable selection**
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+# ADSL에서 필요한 변수 선택
+adsl_vars <- exprs(TRTSDT, TRTEDT, DTHDT)  # 치료 시작/종료일, 사망일
+
+# AE 데이터에 ADSL 변수 병합
+adae <- ae %>%
+  derive_vars_merged(
+    dataset_add = adsl,          # ADSL 데이터
+    new_vars = adsl_vars,        # 추가할 변수
+    by_vars = exprs(STUDYID, USUBJID)  # 병합 키
+  )
+
+```
+
+**Derive Analysis Dates** <br>
+<br>
+**1. Analysis Date/Relative Analysis Day** <br>
+`admiral::derive_vars_dt()` and `admiral::derive_vars_dy()` <br>
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+  # AE 종료일(AENDT) 파생 (부분일자 대체)
+  adae <- adae %>%
+    derive_vars_dt(
+      new_vars_prefix = "AEN",           # 생성 변수: AENDT, AENDTF
+      dtc = AEENDTC,                     # 원본 AE 종료일 문자형
+      date_imputation = "last",          # 결측일은 월의 마지막 날로 대체 ("2023-02" → 2023-02-28)
+      highest_imputation = "M",          # 월까지만 있는 경우 대체 수행
+      flag_imputation = "auto"           # 대체 여부 플래그 자동 생성 (AENDTF)
+    ) %>%
+    
+    # AE 시작일(ASTDT) 파생 (추가 제약조건 적용)
+    derive_vars_dt(
+      new_vars_prefix = "AST",           # 생성 변수: ASTDT, ASTDTF
+      dtc = AESTDTC,
+      highest_imputation = "M",
+      flag_imputation = "auto",
+      min_dates = exprs(TRTSDT),         # 치료시작일보다 이전일 수 없음
+      max_dates = exprs(AENDT)           # AE 종료일보다 이후일 수 없음
+    ) %>%
+    
+    # 치료 시작일 기준 상대일자 파생
+    derive_vars_dy(
+      reference_date = TRTSDT,           # 기준일자
+      source_vars = exprs(ASTDT, AENDT)  # 계산 대상
+    )                                    # 생성 변수: ASTDY, AENDY
+
+head(adae) %>% select(c("USUBJID", "AESTDTC","ASTDT","ASTDTF","ASTDY","AEENDTC","AENDT","AENDTF","AENDY")) %>% datatable()
+```
+
+**2. AE duration**  <br>
+`admiral::derive_vars_duration()`  <br>
+`admiral::derive_vars_joined()` : 다른 data(예: ex)로 부터 join할 수 있다. <br>
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+
+adae <- adae %>%
+  derive_vars_duration(
+    new_var = ADURN,        # 지속일수 변수명
+    new_var_unit = ADURU,   # 단위 변수명 (기본값 "DAYS")
+    start_date = ASTDT,     # 시작일
+    end_date = AENDT,       # 종료일
+    add_one = TRUE          # 시작일 포함 계산 (기본값 TRUE)
+  )
+
+# EX 데이터 전처리
+# > last dose date을 위해 ex에서 exposure information을 불러오자.
+ex <- ex %>%
+  derive_vars_dt(
+    dtc = EXENDTC,
+    new_vars_prefix = "EXEN"  # EXENDT 생성
+  )
+
+# ADAE에 최종 투여일 병합
+adae <- adae %>%
+  derive_vars_joined(
+    dataset_add = ex,
+    by_vars = exprs(STUDYID, USUBJID),  # 기본 조인 키
+    order = exprs(EXENDT),              # EXENDT 기준 정렬
+    new_vars = exprs(LDOSEDT = EXENDT), # 생성 변수
+    join_vars = exprs(EXENDT),          # 조인 조건에 사용할 변수
+    join_type = "all",
+    filter_add = (EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO"))) & !is.na(EXENDT),
+    filter_join = EXENDT <= ASTDT,      # AE 시작일 이전의 투여기록만
+    mode = "last"                       # 가장 가까운 기록 선택
+  )
+
+
+head(ex) %>% select(c("USUBJID", "EXTRT","EXDOSE","EXENDT")) %>% datatable
+head(adae) %>% select(c("USUBJID", "ASTDT","AENDT","ADURN","ADURU","LDOSEDT")) %>% datatable()
+```
+
+**Derive Flags**
+
+`admiral::derive_var_trtemfl()` : Treatment Emergent Flag (`TRTEMFL`) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;    # TRTSDT < ASTDT, &nbsp;&nbsp; TRTEMFL: Y <br>
+`admiral::derive_var_ontrtfl()` : On-Treatment Flag (`ONTRTFL`) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;    # TRTSDT < ASTDT < TRTEDT +30day, &nbsp;&nbsp; ONTRTFL: Y <br>
+`admiral::derive_var_extreme_flag()` : AE occurance initial Flag  (`AOCCIFL`) <br>
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+# Derive TRTEMFL and ONTRTFL
+adae <- adae %>%
+  derive_var_trtemfl(
+    start_date = ASTDT,       # AE 시작일
+    end_date = AENDT,         # AE 종료일
+    trt_start_date = TRTSDT,  # 치료 시작일
+    trt_end_date = TRTEDT     # 치료 종료일
+  ) %>%
+  derive_var_ontrtfl(
+    start_date = ASTDT,        # AE 시작일
+    ref_start_date = TRTSDT,   # 치료 시작일
+    ref_end_date = TRTEDT,     # 치료 종료일
+    ref_end_window = 30        # 치료 종료 후 추가 기간 (일)
+  )
+head(adae) %>% select(c("USUBJID", "ASTDT", "AENDT","TRTSDT","TRTEDT","TRTEMFL","ONTRTFL")) %>% datatable()
+
+
+#Derive AOCCIFL
+
+adae <- adae %>%
+  # create temporary numeric ASEVN for sorting purpose
+  mutate(TEMP_AESEVN = as.integer(factor(AESEV, levels = c("SEVERE", "MODERATE", "MILD")))) %>%
+  derive_var_extreme_flag(
+    new_var = AOCCIFL,                  # 새 플래그 변수명
+    by_vars = exprs(STUDYID, USUBJID),  # 그룹화 기준 (환자별)
+    order = exprs(TEMP_AESEVN, ASTDT, AESEQ),  # 정렬 순서
+    mode = "first"                      # 첫 번째 레코드 선택
+)
+head(adae) %>% select(c("USUBJID", "ASTDT", "AESEQ","AESEV","AOCCIFL")) %>% datatable()
+
+
+```
+<br>
+**Derive Query Variables**
+
+**Query dataset**: AE 관련 용어들을 정리해놓은 basket으로 mapping 규칙을 정의. ex) SMQs, CQs. <br>
+[`{admiral}`Queries Dataset Vignette](https://pharmaverse.github.io/admiral/articles/queries_dataset.html/) 참고.  <br>
+<br>
+`admiral::derive_vars_query()`을 이용한다. <br>
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+queries <- admiral::queries %>%
+  filter(PREFIX %in% c("CQ01", "SMQ02"))  # CQ01(커스텀)과 SMQ02(표준)만 필터링
+
+queries %>% head %>% datatable
+
+# query변수 생성
+adae <- adae %>%
+  derive_vars_query(dataset_queries = queries)
+
+head(adae) %>% select(c("USUBJID", "AEDECOD", "CQ01NAM","SMQ02NAM")) %>% datatable()
+
+
+```
+
+**Add ADSL variables**
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+adae <- adae %>%
+  derive_vars_merged(
+    dataset_add = select(adsl, !!!negate_vars(adsl_vars)),  # adsl_vars에 없는 변수만 선택
+    by_vars = exprs(STUDYID, USUBJID)  # 키 변수
+  )
+
+```
+
+**Associated check perform, Create eSub XPT**
+ <br>
+-   `{metatools}` & `{xportr}` package 이용.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+dir <- tempdir()  # 임시 디렉토리 지정
+
+adae %>%
+  drop_unspec_vars(metacore) %>%  # 사양서(metacore)에 없는 변수 제거
+  check_variables(metacore) %>%   # 필수 변수 존재 여부 검증
+  check_ct_data(metacore, na_acceptable = TRUE) %>%  # CT(Controlled Terminology) 준수 확인
+  order_cols(metacore) %>%        # 컬럼 순서 사양서에 맞춤
+  sort_by_key(metacore) %>%       # 키 변수(SORT KEYS)로 정렬
+  xportr_type(metacore, domain = "ADAE") %>%  # 변수 타입 강제 변환 (예: 문자 → 숫자)
+  xportr_length(metacore) %>%     # SAS 길이 지정 (예: 문자열 200자)
+  xportr_label(metacore) %>%      # 변수 라벨 할당 (예: "Age at Baseline")
+  xportr_df_label(metacore) %>%   # 데이터셋 라벨 할당 (예: "Adverse Events Analysis Dataset")
+  xportr_write(file.path(dir, "adae.xpt"), metadata = metacore, domain = "ADAE") %>%  # XPT 파일 저장
+  datatable()
+```
+
+
+
+## ADPC
+약물동력학(PK) 데이터를 분석하기 위한 핵심 데이터셋으로, 시간에 따른 혈중 약물 농도를 기록한다.
+
+목적: <br>
+-   시간에 따른 약물 농도(PK 데이터)를 분석하여 약물 흡수, 분포, 대사, 배설(ADME) 평가. <br><br>
+구조: <br>
+-   각 행은 특정 시간점(NTIM)에서의 환자별 농도(DV)를 기록하며, USUBJID와 시간점으로 구분. <br><br>
+주요 활용: <br>
+-   PK 파라미터(예: AUC, Cmax, Tmax) 계산 및 모델링. <br>
+
+**주요 변수 (Columns)**
+
+| Category          | Variables               | Description                          |
+|-------------------|-------------------------|--------------------------------------|
+| **Identifiers**   | • `USUBJID`<br>• `SUBJID`<br>• `VISIT`<br>• `VISITNUM` | • 고유 환자 ID<br>• 대상자 ID<br>• 방문 이름<br>• 방문 번호 |
+| **Time Info**     | • `NTIM`<br>• `TIME`<br>• `NOM_*` | • 실제 시간(hr)<br>• 계획 시간<br>• 명목 시간(일/주 단위) |
+| **Concentration** | • `DV`<br>• `LLOQ`<br>• `BLQ` | • 관측 농도(ng/mL)<br>• 정량 한계<br>• 한계 미만 여부(Y/N) |
+| **Dose Info**     | • `DOSE`<br>• `DOSEUNIT`<br>• `ROUTE` | • 투여 용량<br>• 단위(mg/kg)<br>• 투여 경로(IV/PO) |
+| **PK Parameters** | • `AUC`<br>• `CMAX`<br>• `TMAX` | • 농도-시간 곡선 아래 면적<br>• 최대 농도<br>• 최대 농도 도달 시간 |
+| **Standards**     | All variables           | CDISC ADaM 표준 준수                |
+
+## ADPPK
+DPPK는 약물동력학(PK) 파라미터(예: AUC, Cmax, Tmax)를 분석하기 위한 데이터셋으로, ADPC에서 계산된 PK 파라미터를 주로 다룬다.
+
+목적: <br>
+-   PK 파라미터를 조직화하여 약물 노출량, 반감기, 청소율 등을 분석. <br><br>
+구조: <br>
+-   각 행은 환자별 PK 파라미터를 포함하며, USUBJID와 **파라미터 종류(PARAM/PARAMCD)**로 구분. <br><br>
+차이점: <br>
+-   `ADPC`: 시간별 농도 데이터 (Raw PK 데이터). <br>
+-   `ADPPK`: 파생된 PK 파라미터 (예: AUCINF, CL). <br>
+
+**주요 변수 (Columns) **
+
+| Category          | Variables               | Description                          |
+|-------------------|-------------------------|--------------------------------------|
+| **Identifiers**   | • `USUBJID`<br>• `SUBJID`<br>• `STUDYID` | • 고유 환자 ID<br>• 대상자 ID<br>• 연구 ID |
+| **PK Parameters** | • `PARAM`/`PARAMCD`<br>• `AVAL`<br>• `AVALU` | • 파라미터 이름/코드<br>• 실제 값<br>• 단위 |
+| **Dose Info**     | • `DOSE`<br>• `DOSU`    | • 투여 용량<br>• 용량 단위          |
+| **Analysis**      | • `ANALYZT`<br>• `METHOD` | • 분석 방법<br>• 계산 알고리즘      |
+| **Standards**     | All variables           | CDISC ADaM 표준 준수                |
+
+
+
+
+
+
+
+# TLG
+- talbes, listings, Graphs
+-   **demographic table & adverse event table**
+
+## demopragphic table
+-   `ADSL` 데이터를 이용하여 작성한다. 
+-   `{tern}`: 임상시험 보고용 테이블 및 그래프 생성을 위한 패키지
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+
+library(tern)   
+
+# 1. 결측값 명시적 처리
+adsl2 <- adsl  %>%  df_explicit_na()
+
+# 2. 테이블 레이아웃 정의
+lyt <- basic_table(show_colcounts = TRUE)  %>%  
+  split_cols_by(var = "ACTARM")  %>%   # 치료군별 컬럼 분할
+  add_overall_col("All Patients") %>%   # 전체 집단 컬럼 추가
+  analyze_vars(
+    vars = c("AGE", "AGEGR1", "SEX", "RACE"),
+    var_labels = c("Age (yr)", "Age group", "Sex", "Race")
+  )
+
+# 3. 테이블 빌드
+result <- build_table(lyt, adsl2) %>% print
+```
+
+## adverse event table
+-   `ADSL`, `ADAE` 데이터를 이용하여 작성한다.
+
+입력 데이터: <br>
+&nbsp;&nbsp;  `adsl` (기본 환자 정보) <br>
+&nbsp;&nbsp;  `adae` (이상반응 데이터) <br><br>
+출력:  <br>
+&nbsp;&nbsp;  치료군별/신체계별 AE 발생 현황을 보여주는 분석용 테이블 <br>
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+library(pharmaverseadam);library(tern)
+
+# 데이터 전처리
+  # 결측값 처리
+  adsl <- adsl %>% df_explicit_na()
+  adae <- adae %>% df_explicit_na()
+  
+  # 라벨 추가 및 필터링
+  adae <- adae %>%
+    var_relabel(
+      AEBODSYS = "MedDRA System Organ Class",  # 신체계 라벨
+      AEDECOD = "MedDRA Preferred Term"        # PT 라벨
+    ) %>%
+    filter(SAFFL == "Y")  # 안전성 평가 대상만 선택
+        # 분할 함수 정의
+          split_fun <- drop_split_levels
+
+# 테이블 레이아웃 정의.
+  # 테이블 구조 설계
+  lyt <- basic_table(show_colcounts = TRUE) %>%
+    
+    # 1. 컬럼 분할 (치료군 기준)
+    split_cols_by(var = "ACTARM") %>%  
+    add_overall_col(label = "All Patients") %>%
+    
+    # 2. 전체 환자/이벤트 수 요약
+    analyze_num_patients(
+      vars = "USUBJID",
+      .stats = c("unique", "nonunique"),
+      .labels = c(
+        unique = "Total number of patients with at least one adverse event",
+        nonunique = "Overall total number of events"
+      )
+    ) %>%
+    
+    # 3. 행 분할 (신체계 기준)
+    split_rows_by(
+      "AEBODSYS",
+      child_labels = "visible",
+      nested = FALSE,
+      split_fun = split_fun,
+      label_pos = "topleft",
+      split_label = obj_label(adae$AEBODSYS)
+    ) %>%
+    
+    # 4. 환자/이벤트 수 요약
+    summarize_num_patients(
+      var = "USUBJID",
+      .stats = c("unique", "nonunique"),
+      .labels = c(
+        unique = "Total number of patients with at least one adverse event",
+        nonunique = "Total number of events"
+      )
+    ) %>%
+    
+    # 5. 특정 반응(PT) 발생 횟수 계산
+    count_occurrences(
+      vars = "AEDECOD",
+      .indent_mods = -1L
+    ) %>%
+    
+    # 6. 라벨 추가
+    append_varlabels(adae, "AEDECOD", indent = 1L)
+
+result <- build_table(lyt, df = adae, alt_counts_df = adsl); result
+```
+
+# Shiny module
+ADaM dataset이 있는 경우, 이를 빠르게 분석할 수 있는 shiny module [`teal`](https://insightsengineering.github.io/teal/latest-tag/)을 소개한다. <br>
+teal을 이용, 직접 module을 수정/생성하여 분석을 진행할 수 있다.
+
+아래는 [`pharmaverse`](https://pharmaverse.github.io/)에서 제공하는 `teal` 기반 Shiny App이다.  
+Web 환경에서 직접 클릭하고, 필터링하고, 그래프를 확인해볼 수 있다:
+ [앱 바로 가기](https://78vmhx-0-0.shinyapps.io/adam/) 
+---
+
+이 앱은 `ADSL`, `ADTTE` 등의 ADaM 데이터를 활용해 
+**Demographic Table**, **Kaplan-Meier plot**, **Time to Event Table** 등의 시각화를 제공한다.
+
+
