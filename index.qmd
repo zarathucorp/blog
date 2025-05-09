@@ -1,5 +1,6 @@
 ---
-title: "차라투 블로그"
+toc: false
+format: html
 listing:
   type: default
   contents: posts
@@ -24,3 +25,92 @@ citation-location: document
 citation: false
 title-block-banner: false
 ---
+
+<script>
+window.addEventListener("load", function () {
+  const hero = document.querySelector('.hero-section');
+
+  // Preload the background image
+  const img = new Image();
+  img.src = "img/bgimage.jpeg";
+  img.onload = function () {
+    hero.classList.add("fade-in");
+  };
+});
+</script>
+
+::: {.hero-section}
+<h2 id="typing-title" class="typing"></h2>
+<p id="typing-subtitle" class="typing"></p>
+:::
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const titleText = "R과 통계의 이야기들.";
+  const subtitleText = "By Zarathu";
+
+  const titleEl = document.getElementById("typing-title");
+  const subtitleEl = document.getElementById("typing-subtitle");
+
+  let i = 0;
+  function typeTitle() {
+    if (i < titleText.length) {
+      titleEl.textContent += titleText.charAt(i);
+      i++;
+      setTimeout(typeTitle, 200);
+    } else {
+      titleEl.classList.remove("typing");
+      let j = 0;
+      function typeSubtitle() {
+        if (j < subtitleText.length) {
+          subtitleEl.textContent += subtitleText.charAt(j);
+          j++;
+          setTimeout(typeSubtitle, 150);
+        } else {
+          subtitleEl.classList.remove("typing");
+        }
+      }
+      typeSubtitle();
+    }
+  }
+
+  typeTitle();
+});
+</script>
+
+<div class="section-title">
+## Latest Insights
+</div>
+
+```{=html}
+<div class="slideshow-wrapper">
+  <div class="slideshow-container simple-slideshow" id="slideshow">Loading slideshow...</div>
+
+  <button class="slide-arrow left-arrow" onclick="changeSlide(-1)">&#10094;</button>
+  <button class="slide-arrow right-arrow" onclick="changeSlide(1)">&#10095;</button>
+</div>
+```
+<script src="slideshow.js"></script>
+
+<style>
+#title-block-header {
+  padding-top: 20px;
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto !important;
+  background-color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  padding: 0 !important;
+}
+
+body p {
+  font-size: 0.9rem !important;
+}
+
+main p{
+  font-size: 0.9rem !important;
+}
+</style>
