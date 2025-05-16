@@ -104,7 +104,7 @@
         "\n",
         "이제 실제로 코드를 만들어 보겠습니다. src/app,py를 생성합니다.\n"
       ],
-      "id": "94f65219"
+      "id": "f1e88929"
     },
     {
       "cell_type": "code",
@@ -119,7 +119,7 @@
         "SLACK_BOT_TOKEN = os.getenv('SLACK_BOT_TOKEN')\n",
         "CHANNEL_NAME=os.getenv(\"CHANNEL_NAME\")"
       ],
-      "id": "680163e6",
+      "id": "ab8fe8e0",
       "execution_count": null,
       "outputs": []
     },
@@ -131,7 +131,7 @@
         "\n",
         "다음으로,\n"
       ],
-      "id": "a5193be2"
+      "id": "7b1b7145"
     },
     {
       "cell_type": "code",
@@ -144,7 +144,7 @@
         "from slack_bolt import App\n",
         "from slack_sdk.errors import SlackApiError"
       ],
-      "id": "9741b5d1",
+      "id": "cd30e21a",
       "execution_count": null,
       "outputs": []
     },
@@ -154,7 +154,7 @@
       "source": [
         "로 logging 기능과 Slack API를 불러옵니다. SlackApiError는 추후 Error Handling에 사용 될 에정입니다.\n"
       ],
-      "id": "3e27b0f4"
+      "id": "1da1f7f4"
     },
     {
       "cell_type": "code",
@@ -166,7 +166,7 @@
         "    signing_secret=SLACK_SIGNING_SECRET\n",
         ")"
       ],
-      "id": "9da1f2cb",
+      "id": "dc954d1c",
       "execution_count": null,
       "outputs": []
     },
@@ -186,7 +186,7 @@
         "\n",
         "우리는 - \"reply\" action - \"port\" shortcut - \"reply\" shortcut 을 받은 경우 modal이 필요하므로 아래와 같은 Decorator를 작성합니다.\n"
       ],
-      "id": "c89787cf"
+      "id": "2ba5bea1"
     },
     {
       "cell_type": "code",
@@ -199,7 +199,7 @@
         "def open_modal(ack, body, client, logger):\n",
         "  ..."
       ],
-      "id": "2a6a9fe6",
+      "id": "9d7076dc",
       "execution_count": null,
       "outputs": []
     },
@@ -209,7 +209,7 @@
       "source": [
         "Slack API는 요청을 받는 경우 `ack()`를 실행하도록 요청하고 있습니다. 그러므로, open_modal(...)이 호출되는 경우 `{{python}} ack()`가 실행되어야 합니다.\n"
       ],
-      "id": "06c58d14"
+      "id": "64d70917"
     },
     {
       "cell_type": "code",
@@ -219,7 +219,7 @@
         "def open_modal(ack, body, client, logger):\n",
         "  ack()"
       ],
-      "id": "ff0d109e",
+      "id": "6c31786e",
       "execution_count": null,
       "outputs": []
     },
@@ -229,7 +229,7 @@
       "source": [
         "다음으로, open_modal이 끝난 경우, 즉 유저가 Modal에 무엇인가를 입력하여 반환 된 경우를 보겠습니다. Modal이 닫히면, 그 내용을 대나무숲 봇이 #bambooforest 채널에 포스팅/댓글 작성 해야합니다. 이를 위해, Modal에 callback_id를 설정해야 합니다. 우리는 \"view_post\"라고 하겠습니다.\n"
       ],
-      "id": "80381a44"
+      "id": "4e13ef5c"
     },
     {
       "cell_type": "code",
@@ -258,7 +258,7 @@
         "    except SlackApiError as e:\n",
         "        logger.error(\"Error creating conversation: {}\".format(e))"
       ],
-      "id": "4bf4a12b",
+      "id": "7887feba",
       "execution_count": null,
       "outputs": []
     },
@@ -268,7 +268,7 @@
       "source": [
         "그러면 위 \"view_post\" 콜백를 처리할 수 있는 함수를 만들어 보겠습니다. 마찬가지로 Decorator을 사용합니다.\n"
       ],
-      "id": "706c9d92"
+      "id": "fe9e46c9"
     },
     {
       "cell_type": "code",
@@ -283,7 +283,7 @@
         "  content=view['state']['values']['post_input_block']['post_content_input']['value']\n",
         "  username=view[\"state\"][\"values\"][\"name_input_block\"][\"name_input\"]['value']"
       ],
-      "id": "33179f8c",
+      "id": "0462b80b",
       "execution_count": null,
       "outputs": []
     },
@@ -295,7 +295,7 @@
         "\n",
         "익명 게시판이므로, Username을 작성하지 않은 경우가 많을 것입니다. 이 경우, 아래에서 만들 username() 함수를 통해 랜덤한 username을 생성합니다. 또한, 게시글의 경우 message_ts 값이 없습니다(위에서 \"\"를 대입합니다). 경우에 따라 type=\"게시글\" 또는 type=\"댓글\"을 저장합니다.\n"
       ],
-      "id": "480e024c"
+      "id": "380b1b3a"
     },
     {
       "cell_type": "code",
@@ -310,7 +310,7 @@
         "else:\n",
         "  type=\"댓글\""
       ],
-      "id": "9f824c77",
+      "id": "9ef5bec6",
       "execution_count": null,
       "outputs": []
     },
@@ -320,7 +320,7 @@
       "source": [
         "위에서 정리된 내용을 바탕으로 메시지를 발송합니다. message_ts가 있으면(즉 댓글이면) 메시지를 해당 thread에, 아니면 .env에서 지정한 채널에 발송합니다.\n"
       ],
-      "id": "a1286715"
+      "id": "ed7c2881"
     },
     {
       "cell_type": "code",
@@ -368,7 +368,7 @@
         "else: \n",
         "    client.chat_postMessage(channel=CHANNEL_NAME, thread_ts=message_ts, blocks=send_message)"
       ],
-      "id": "d4d753dc",
+      "id": "c0b016b5",
       "execution_count": null,
       "outputs": []
     },
@@ -378,7 +378,7 @@
       "source": [
         "src/name.py는 다음과 같습니다.\n"
       ],
-      "id": "047f9dcf"
+      "id": "9ddf875d"
     },
     {
       "cell_type": "code",
@@ -402,7 +402,7 @@
         "def randname():\n",
         "    return firstNames[random.randint(0, len(firstNames)-1)] + \" \" + lastNames[random.randint(0, len(lastNames)-1)]"
       ],
-      "id": "71cd782f",
+      "id": "d98d600c",
       "execution_count": null,
       "outputs": []
     },
@@ -416,7 +416,7 @@
         "\n",
         "src/app.py 상단에\n"
       ],
-      "id": "06962fe9"
+      "id": "2542d7e6"
     },
     {
       "cell_type": "code",
@@ -425,7 +425,7 @@
         "#| eval: false\n",
         "from name import randname"
       ],
-      "id": "c34051f8",
+      "id": "80c1c641",
       "execution_count": null,
       "outputs": []
     },
@@ -437,7 +437,7 @@
         "\n",
         "마지막으로, src/app.py 마지막에\n"
       ],
-      "id": "2d905db4"
+      "id": "7ceef867"
     },
     {
       "cell_type": "code",
@@ -447,7 +447,7 @@
         "if __name__ == \"__main__\":\n",
         "  app.start(3000)"
       ],
-      "id": "3f70defa",
+      "id": "bdd08128",
       "execution_count": null,
       "outputs": []
     },
@@ -465,7 +465,7 @@
         "\n",
         "전체 코드는 [링크](https://github.com/zarathucorp/slack-bambooforest)에서 확인하실 수 있습니다.(글과 일부 바뀌었을 수 있음.)"
       ],
-      "id": "ca810054"
+      "id": "25413c92"
     }
   ],
   "metadata": {
