@@ -1,12 +1,5 @@
 [
   {
-    "objectID": "index.html#latest-insights",
-    "href": "index.html#latest-insights",
-    "title": "차라투 블로그",
-    "section": "Latest Insights",
-    "text": "Latest Insights"
-  },
-  {
     "objectID": "source_code/Custom_Search_Zarathu.html",
     "href": "source_code/Custom_Search_Zarathu.html",
     "title": "Depedency",
@@ -2324,6 +2317,20 @@
     "text": "Discussion\nMDLM을 이용해서 기존의 선형모형을 완벽히 포괄하면서 선형모형의 개념을 휘어진 다차원 공간으로 확장할 수 있었고, 이를 통해 \\(J,U\\)-shape같은 curved linear relationship을 잘 추정하고 cut-off값도 쉽게 확인할 수 있는 장점을 확인할 수 있었다. 기존 선형모형의 틀은 유지하면서 그것만이 진실은 아닐 수 있다는 것을 보여줬다는 점, 이를 통해 선형관계가 아닌 것을 선형관계로 해석할 수 있는 방법을 제시하였다는 점에서 큰 의미가 있다. 향후 연구자들이 평면에서의 선형관계에 국한되지 않고 가설을 검증할 수 있을 것이며, 이를 토대로 Health science 연구에서 MDLM이 기존 선형모형을 포괄하는 새로운 표준으로 자리잡을 수 있으리라 예상한다.\nMDLM의 추정식은 제곱근이 포함되어 있어 \\(Y\\)가 음수값을 갖고 있는 경우에는 적용하기 어렵다는 한계가 있다. 그러나 Health Science 분야에서 음수값을 갖는 지표는 별로 많지 않아 큰 문제는 아닐 것으로 생각하며, 변수변환을 통해 (+)로만 이루어진 새로운 변수를 만들어 해결할 수도 있다. 이 문제는 물리학자 Paul Dirac이 특수상대성이론을 고려한 양자역학의 방정식을 만들 때 겪었던 문제와 비슷한데, 그는 방정식의 계수가 꼭 숫자일 필요가 없고 행렬일 수도 있다는 기발한 아이디어로 이를 해결했다(Dirac 1928). 예를 들어 \\(Y = \\sqrt{\\beta_0^2 + \\beta_1^2x_1^2 + \\beta_2^2x_2^2 }\\) 일 때, \\(\\beta_0, \\beta_1, \\beta_2\\)가 숫자일 필요가 없다는 것이다. \\(\\beta\\)들을 행렬로 간주한다면 \\(Y = \\sqrt{\\beta_0^2 + \\beta_1^2x_1^2 + \\beta_2^2x_2^2 } = \\beta_0 + \\beta_1x_1 + \\beta_2x_2\\) 꼴이 되어 제곱근을 없애는 것이 가능하다. 이 행렬들은 최소 \\(4\\times 4\\) 이상의 정방행렬이어야 함이 알려져 있으며, 대표적인 예로 Cliford Algebra를 만족하는 Dirac matrices 있는데 \\(\\beta\\)들의 예를 하나 들면 아래와 같다(Traubenberg 2009).\n\\[\n\\beta_0 = \\alpha_0 \\times \\begin{pmatrix}\n  1 & 0 &  0 &  0 \\\\\n  0 & 1 &  0 &  0 \\\\\n  0 & 0 &  -1 &  0 \\\\\n  0 & 0 &  0 & -1\n\\end{pmatrix}\n\\]\n\\[\n\\beta_1 = \\alpha_1 \\times \\begin{pmatrix}\n   0 &  0 & 0 & 1 \\\\\n   0 &  0 & 1 & 0 \\\\\n   0 & -1 & 0 & 0 \\\\\n  -1 &  0 & 0 & 0\n\\end{pmatrix}\n\\]\n\\[\n\\beta_2 = \\alpha_2 \\times \\begin{pmatrix}\n   0 & 0 & 1 &  0 \\\\\n   0 & 0 & 0 & -1 \\\\\n  -1 & 0 & 0 &  0 \\\\\n   0 & 1 & 0 &  0\n\\end{pmatrix}\n\\]\n(\\(\\alpha_0, \\alpha_1, \\alpha_2\\): 실수)\n회귀계수가 숫자가 아닌 행렬이 가능하다는 이 아이디어가 향후 본 연구의 제곱근 문제를 극복하는 열쇠가 될 수 있을 것이라 생각한다.\n\\(SSE(\\beta)\\)를 최소화하는\\(\\beta\\)를 구하기 위해 optimization tequnique을 활용한 것도 문제가 될 수 있는데, 얻은 \\(SSE(\\beta)\\)값이 진짜 최소값(global minimum)인지 보장할 수 없기 때문이다. 이를 local minima problem이라 한다. 그러나 machine learning의 유행과 더불어 optimization technique도 빠르게 발전되고 있어 조만간 이 문제가 해결되리라 예상한다. 게다가 최근 연구에서 high-dimensional space인 경우 local minima problem은 매우 희귀한 것으로 나타났는데, 모든 차원에서 local minima일 가능성은 매우 낮기 때문으로 여겨진다(Dauphin et al. 2014).\nIntroduction에서 언급했듯이 아인슈타인(Albert Einstein)은 공간의 무대를 3차원이 아니라 휘어진 4차원으로 확장한다면 빛은 여전히 직선임을 설명하였는데, 수식으로 살펴보면 3차원 공간에서 기술된 뉴턴의 중력장 방정식 \\(\\nabla^2\\Phi = 4 \\pi G\\rho_0\\)를 휘어진 4차원에서의 방정식 \\(\\boldsymbol{R}_{uv}-\\dfrac{1}{2}\\boldsymbol{g}_{uv} = \\dfrac{8\\pi G}{c^4}\\boldsymbol{T}_{uv}\\)로 확장한 것이다(Verlinde 2011). 본 연구의 MDLM을 통해 선형공간의 무대를 다차원으로 확장하여 \\(U\\)-shape같은 curved linear relationship을 선형관계로 바라볼 수 있게 되었다는 점에서 물리학에서의 아인슈타인 방정식과 비슷한 의미를 가진다고 감히 주장해 본다. 실제로 \\(\\beta_i^2\\) 를 \\(g_{ii}\\), \\(g_{ij}\\beta_i\\beta_j\\)를 합쳐서 \\(g_{ij}\\)라 놓으면 \\(g_{ij}\\)는 아인슈타인 중력장 방정식을 표현하는데 쓰이는 계량텐서(metric tensor) \\(g_{uv}\\)와 같은 의미를 갖게 되는데, \\((dY)^2\\)를 표현하는 식은 \\(\\sum_{i,j}g_{ij}(dX_i)(dX_j)\\)로 휘어진 시공간에서 두 지점 사이의 거리를 나타내는 방법과 정확히 일치한다. 뉴턴의 방정식으로도 일상적인 운동을 잘 설명할 수 있으나 우주 공간같은 거시적인 스케일에서는 아인슈타인 방정식이 필요해지는데, 이와 마찬가지로 다차원 공간에서 기술된 본 연구의 MDLM이 population level에서 기존 선형모형보다 더 정확히 건강관련 현상을 설명할 수 있으리라 예상한다.\n한편 일반상대성이론은 원자 이하의 미시세계의 현상을 잘 설명하지 못한다는 문제점이 있으며,불확정성의 원리(uncertainty principle)와 슈뢰딩거 방정식(Schrödinger equation)으로 대표되는 양자역학(quantum mechanics)의 논리가 이곳을 지배한다. 슈뢰딩거 방정식은 입자의 운동은 확률로 기술되고 그 확률은 파동처럼 행동한다는 내용으로 파동을 기술하는 함수가 복소수로 표현되어 있다는 것이 특이한 점이다. 복소수는 그 자체로는 실제 세계를 해석하기 어렵지만 켤레복소수와의 곱을 통해 확률을 표현하게 되고 놀라운 정확도로 미시세계의 현상을 설명할 수 있다. 이것은 Health science에도 중요한 시사점이 될 수 있는데, Health science에서 가장 큰 문제점 중 하나가 population level의 연구결과가 개인의 건강상태를 잘 설명하지 못한다는 것이다. 상태를 확률로 기술한다는 점에서는 베이지안 접근법(bayesian approach)이 양자역학의 접근과 비슷하지만 복소수를 활용할 수 없다는 점에서 차이가 있다. 양자역학이 미시세계의 현상을 설명하는 새로운 방법이 된 것과 마찬가지로 확률을 복소수를 포함한 파동함수로 표현하는 방법이 향후 Health science에서 개인의 건강상태를 설명하는 새로운 방법이 될 것이라 과감히 추측해 본다."
   },
   {
+    "objectID": "index.html#latest-insights",
+    "href": "index.html#latest-insights",
+    "title": "차라투 블로그",
+    "section": "Latest Insights",
+    "text": "Latest Insights"
+  },
+  {
+    "objectID": "contributors.html",
+    "href": "contributors.html",
+    "title": "차라투 블로그",
+    "section": "",
+    "text": "Below is a list of contributors to this blog.\n\n\n\n  \n\n\n\nJinseob Kim\n\n\nJinhwan Kim\n\n\nChangwoo Lim\n\n\nWon Kim\n\n\nSeoyoon Kim\n\n\nJunhyuk Ko\n\n\nYujin Lee\n\n\nJihee Han\n\n\nBeomsu Park\n\n\nYumin Kim\n\n\nSiyeol Jung\n\n\nJisoo Kim\n\n\nHyunjun Ko\n\n\nChaehee Lee\n\n\nHyunki Lee\n\n\nYeji Kang\n\n\n\n\n\nCitationBibTeX citation:@online{untitled,\n  author = {},\n  url = {https://blog.zarathu.com/contributors.html},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nn.d. https://blog.zarathu.com/contributors.html."
+  },
+  {
     "objectID": "posts/2018-09-25-welcome/index.html",
     "href": "posts/2018-09-25-welcome/index.html",
     "title": "Welcome",
@@ -4485,12 +4492,5 @@
     "title": "Breslow 방식을 이용한 Cox 예측 모델 만들기",
     "section": "[더 알아보기] baseline hazard를 추정하는 다양한 방식",
     "text": "[더 알아보기] baseline hazard를 추정하는 다양한 방식\n앞서 우리는 Breslow 방식으로 baseline hazard \\(H_0(t)\\)를 추정했습니다. 가장 널리 쓰이는 방법이기도 합니다. 하지만 실제 데이터는 그렇게 단순하지 않습니다.\n예를 들어, 동시에 여러 사건이 발생하는 경우에는 Breslow 방식이 정확하지 않을 수 있습니다.\n그래서 여러 가지 방식들이 제안되었고, R에서는 coxph() 함수의 ties 인자를 통해 이를 선택할 수 있습니다.\n\n왜 다른 방식이 필요한가?\n\n현실 데이터에서는 여러 명이 동일한 시간에 이탈하는 일이 자주 발생합니다. 이런 경우, 누가 먼저였는지 모르기 때문에 동시 사건 처리 방식이 중요합니다.\n\n\n\n주요 방식 비교\n\n\n\n\n\n\n\n\n\n\n방식\n특징\n동시사건 처리\ncoxph() 옵션\n사용 추천 상황\n\n\n\n\nBreslow\n기본값, 계산 간단\n사건 수를 평균 분배\n\"breslow\" (기본값)\n동시사건이 적을 때\n\n\nEfron\n보정된 평균 방식\n순차적으로 분배\n\"efron\"\n동시사건이 많을 때\n\n\nExact\n순열 기반 정밀 추정\n완전 계산\n\"exact\"\n표본이 작고 정확성이 중요한 경우\n\n\n\n\n\nBreslow vs Efron의 핵심 차이\n\nBreslow 방식\n\n\\(d\\)건의 사건이 같은 시간에 발생하면, 그냥 \\(\\frac{d}{\\sum \\exp(\\beta^T X)}\\)과 같이 평균 분배\n계산은 빠르지만, bias가 생길 수 있음\n\n\n\nEfron 방식\n\n사건을 하나씩 순차적으로 발생한 것처럼 나눠서 분자와 분모를 보정\n보다 현실적인 근사 방식\n\n\\[\n\\Delta H_0(t) = \\sum_{k=1}^{d} \\frac{1}{\\sum_{j \\in R(t)} \\exp(\\beta^T X_j) - \\frac{k - 1}{d} \\sum_{j \\in D(t)} \\exp(\\beta^T X_j)}\n\\]\n\n\\(D(t)\\) : 사건이 발생한 사람들\n순차적으로 사건을 일으키면서 분모를 조정함\n\n\n\n\nR 코드 예시 : Efron 방식 비교\n\n코드 예시\nlibrary(survival)\n\nfit_breslow &lt;- coxph(Surv(time, status) ~ age + sex, data = lung, ties = \"breslow\")\nfit_efron   &lt;- coxph(Surv(time, status) ~ age + sex, data = lung, ties = \"efron\")\n\n# 두 모델의 회귀계수 비교\nsummary(fit_breslow)$coefficients\nsummary(fit_efron)$coefficients\n\n\n코드 결과\n&gt; summary(fit_breslow)$coefficients\n           coef exp(coef)    se(coef)         z    Pr(&gt;|z|)\nage  0.01701289 1.0171584 0.009221954  1.844825 0.065063023\nsex -0.51256479 0.5989574 0.167462063 -3.060782 0.002207601\n&gt; summary(fit_efron)$coefficients\n           coef exp(coef)    se(coef)         z    Pr(&gt;|z|)\nage  0.01704533  1.017191 0.009223273  1.848078 0.064591012\nsex -0.51321852  0.598566 0.167457962 -3.064760 0.002178445\n\n대부분의 경우 큰 차이는 없지만, 동시 사건이 많거나 위험도가 비슷한 경우에는 의미 있는 차이가 생깁니다.\n\n\n\n\n기타 방식: Exact, Kalbfleisch-Prentice\n\nExact 방식은 모든 가능한 사건 순서를 계산하여 우도를 정확히 계산\n→ 계산 비용이 높음, 작은 데이터셋에만 적합\nKalbfleisch-Prentice 방식은 discrete-time hazard 추정용\n→ R 기본에서는 잘 사용되지 않음"
-  },
-  {
-    "objectID": "contributors.html",
-    "href": "contributors.html",
-    "title": "차라투 블로그",
-    "section": "",
-    "text": "Below is a list of contributors to this blog.\n\n\n\n  \n\n\n\nJinseob Kim\n\n\nJinhwan Kim\n\n\nChangwoo Lim\n\n\nWon Kim\n\n\nSeoyoon Kim\n\n\nJunhyuk Ko\n\n\nYujin Lee\n\n\nJihee Han\n\n\nBeomsu Park\n\n\nYumin Kim\n\n\nSiyeol Jung\n\n\nJisoo Kim\n\n\nHyunjun Ko\n\n\nChaehee Lee\n\n\nHyunki Lee\n\n\nYeji Kang\n\n\n\n\n\nCitationBibTeX citation:@online{untitled,\n  author = {},\n  url = {https://blog.zarathu.com/contributors.html},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nn.d. https://blog.zarathu.com/contributors.html."
   }
 ]
