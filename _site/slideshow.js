@@ -64,7 +64,7 @@ async function loadPosts() {
 
       setInterval(() => {
         changeSlide(1);
-      }, 2500);
+      }, 3500);
     } else {
       document.getElementById('slideshow').innerHTML = 'No posts available.';
     }
