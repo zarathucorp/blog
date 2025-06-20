@@ -671,12 +671,12 @@ ga('send', {
 <span></span>
 <span><span class="co">#in case; importing SAS datasets using haven::read_sas()</span></span>
 <span><span class="co"># NA가 아닌 ""로 읽히기 때문에, NA처리를 따로 해줘야한다.</span></span>
-<span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span>
-<span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span>
-<span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">ex</span><span class="op">)</span></span>
-<span><span class="va">ae</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">ae</span><span class="op">)</span></span>
-<span><span class="va">vs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">vs</span><span class="op">)</span></span>
-<span><span class="va">suppdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">suppdm</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span>
+<span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span>
+<span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">ex</span><span class="op">)</span></span>
+<span><span class="va">ae</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">ae</span><span class="op">)</span></span>
+<span><span class="va">vs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">vs</span><span class="op">)</span></span>
+<span><span class="va">suppdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">suppdm</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>이후 편의를 위해 dm과 suppdm을 아래와 같이 합칠 수 있다.</p>
 <div class="cell">
@@ -722,7 +722,7 @@ ga('send', {
 </div>
 <p><br></p>
 <p><strong>Variable Grouping</strong></p>
-<p>이제 subgroup을 만들어보자. <br><code><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_cat.html">admiral::derive_vars_cat()</a></code></p>
+<p>이제 subgroup을 만들어보자. <br><code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_cat.html">admiral::derive_vars_cat()</a></code></p>
 <div class="cell">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">agegr1_lookup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">condition</span>,            <span class="op">~</span><span class="va">AGEGR1</span>, <span class="op">~</span><span class="va">AGEGR1N</span>,</span>
@@ -732,7 +732,7 @@ ga('send', {
 <span>  <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">AGE</span><span class="op">)</span>,             <span class="st">"&gt;64"</span>,        <span class="fl">3</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">adsl_cat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_cat.html">derive_vars_cat</a></span><span class="op">(</span></span>
+<span><span class="va">adsl_cat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_cat.html">derive_vars_cat</a></span><span class="op">(</span></span>
 <span>  dataset <span class="op">=</span> <span class="va">adsl_preds</span>,</span>
 <span>  definition <span class="op">=</span> <span class="va">agegr1_lookup</span></span>
 <span><span class="op">)</span></span>
@@ -822,11 +822,11 @@ ga('send', {
 <div class="cell">
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># DTC &gt; DTM: `derive_vars_dtm`</span></span>
 <span><span class="va">ex_ext</span> <span class="op">&lt;-</span> <span class="va">ex</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dtm.html">derive_vars_dtm</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dtm.html">derive_vars_dtm</a></span><span class="op">(</span></span>
 <span>    dtc <span class="op">=</span> <span class="va">EXSTDTC</span>,   <span class="co"># 시작 일시</span></span>
 <span>    new_vars_prefix <span class="op">=</span> <span class="st">"EXST"</span>   <span class="co"># EXSTDTM</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dtm.html">derive_vars_dtm</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dtm.html">derive_vars_dtm</a></span><span class="op">(</span></span>
 <span>    dtc <span class="op">=</span> <span class="va">EXENDTC</span>,   <span class="co"># 종료 일시 </span></span>
 <span>    new_vars_prefix <span class="op">=</span> <span class="st">"EXEN"</span>,  <span class="co"># EXENDTM</span></span>
 <span>    time_imputation <span class="op">=</span> <span class="st">"last"</span>   <span class="co">#종료 시간 결측 시 "23:59"로 대체.</span></span>
@@ -837,7 +837,7 @@ ga('send', {
 <span><span class="co"># ADSL에 병합</span></span>
 <span><span class="va">adsl_raw</span> <span class="op">&lt;-</span> <span class="va">adsl_ct</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># Treatment Start Datetime</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
 <span>    dataset_add <span class="op">=</span> <span class="va">ex_ext</span>,</span>
 <span>    filter_add <span class="op">=</span> <span class="op">(</span><span class="va">EXDOSE</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">|</span> <span class="op">(</span><span class="va">EXDOSE</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">EXTRT</span>, <span class="st">"PLACEBO"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">EXSTDTM</span><span class="op">)</span>,</span>
 <span>    new_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span>TRTSDTM <span class="op">=</span> <span class="va">EXSTDTM</span>, TRTSTMF <span class="op">=</span> <span class="va">EXSTTMF</span><span class="op">)</span>,</span>
@@ -847,7 +847,7 @@ ga('send', {
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  </span>
 <span>  <span class="co"># Treatment End Datetime</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
 <span>    dataset_add <span class="op">=</span> <span class="va">ex_ext</span>,</span>
 <span>    filter_add <span class="op">=</span> <span class="op">(</span><span class="va">EXDOSE</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">|</span> <span class="op">(</span><span class="va">EXDOSE</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">EXTRT</span>, <span class="st">"PLACEBO"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">EXENDTM</span><span class="op">)</span>,</span>
 <span>    new_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span>TRTEDTM <span class="op">=</span> <span class="va">EXENDTM</span>, TRTETMF <span class="op">=</span> <span class="va">EXENTMF</span><span class="op">)</span>,</span>
@@ -857,16 +857,16 @@ ga('send', {
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  </span>
 <span>  <span class="co"># Treatment Start and End Date (TRTSDT, TRTEDT 생성.)</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dtm_to_dt.html">derive_vars_dtm_to_dt</a></span><span class="op">(</span>source_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">TRTSDTM</span>, <span class="va">TRTEDTM</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># Convert Datetime variables to date</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dtm_to_dt.html">derive_vars_dtm_to_dt</a></span><span class="op">(</span>source_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">TRTSDTM</span>, <span class="va">TRTEDTM</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># Convert Datetime variables to date</span></span>
 <span>      </span>
 <span>  <span class="co"># Treatment Start Time (TRTSM)</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dtm_to_tm.html">derive_vars_dtm_to_tm</a></span><span class="op">(</span>source_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">TRTSDTM</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dtm_to_tm.html">derive_vars_dtm_to_tm</a></span><span class="op">(</span>source_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">TRTSDTM</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  </span>
 <span>  <span class="co"># Treatment Duration ( TRTDURD = TRTEDT - TRTSDT + 1 )</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_var_trtdurd.html">derive_var_trtdurd</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_var_trtdurd.html">derive_var_trtdurd</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  </span>
 <span>  <span class="co"># Safety Population Flag (SAFFL: "Y" or `NA`)</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_var_merged_exist_flag.html">derive_var_merged_exist_flag</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_var_merged_exist_flag.html">derive_var_merged_exist_flag</a></span><span class="op">(</span></span>
 <span>    dataset_add <span class="op">=</span> <span class="va">ex</span>,</span>
 <span>    by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>,</span>
 <span>    new_var <span class="op">=</span> <span class="va">SAFFL</span>,</span>
@@ -910,7 +910,7 @@ ga('send', {
 <div class="cell">
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 1. 연구 종료 일자(EOSDT)</span></span>
 <span>  <span class="co"># DS 데이터에서 문자형 날짜(DTC) → 숫자형 날짜(DT) 변환</span></span>
-<span>  <span class="va">ds_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dt.html">derive_vars_dt</a></span><span class="op">(</span></span>
+<span>  <span class="va">ds_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dt.html">derive_vars_dt</a></span><span class="op">(</span></span>
 <span>    <span class="va">ds</span>,</span>
 <span>    dtc <span class="op">=</span> <span class="va">DSSTDTC</span>,           <span class="co"># 문자형 일자 (예: "2014-07-02")</span></span>
 <span>    new_vars_prefix <span class="op">=</span> <span class="st">"DSST"</span> <span class="co"># 생성 변수: DSSTDT, DSSTDTF</span></span>
@@ -918,7 +918,7 @@ ga('send', {
 <span>  </span>
 <span>  <span class="co">#. ADSL에 연구 종료 일자 병합 (EOSDT, ex: 2014-07-02)</span></span>
 <span>  <span class="va">adsl</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
 <span>      dataset_add <span class="op">=</span> <span class="va">ds_ext</span>,</span>
 <span>      by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>,</span>
 <span>      new_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span>EOSDT <span class="op">=</span> <span class="va">DSSTDT</span><span class="op">)</span>,</span>
@@ -937,7 +937,7 @@ ga('send', {
 <span>  </span>
 <span>  <span class="co"># ADSL에 상태 변수 병합</span></span>
 <span>  <span class="va">adsl</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
 <span>      dataset_add <span class="op">=</span> <span class="va">ds</span>,</span>
 <span>      by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>,</span>
 <span>      filter_add <span class="op">=</span> <span class="va">DSCAT</span> <span class="op">==</span> <span class="st">"DISPOSITION EVENT"</span>,</span>
@@ -961,7 +961,7 @@ ga('send', {
 <div class="cell">
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 3. 사망일자(DTHDT)</span></span>
 <span>  <span class="va">adsl</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dt.html">derive_vars_dt</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dt.html">derive_vars_dt</a></span><span class="op">(</span></span>
 <span>      new_vars_prefix <span class="op">=</span> <span class="st">"DTH"</span>,      <span class="co"># 생성 변수: DTHDT, DTHDTF</span></span>
 <span>      dtc <span class="op">=</span> <span class="va">DTHDTC</span>,                 <span class="co"># 사망 일자 (DTC)</span></span>
 <span>      highest_imputation <span class="op">=</span> <span class="st">"M"</span>,     <span class="co"># 월까지만 있는 경우 "01"일로 대체</span></span>
@@ -974,21 +974,21 @@ ga('send', {
 <span><span class="co"># 4. 추가 날짜 변수  </span></span>
 <span>  <span class="va">adsl</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># 무작위 배정 일자(RANDDT)</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
 <span>    dataset_add <span class="op">=</span> <span class="va">ds_ext</span>,</span>
 <span>    by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>,</span>
 <span>    new_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span>RANDDT <span class="op">=</span> <span class="va">DSSTDT</span><span class="op">)</span>,</span>
 <span>    filter_add <span class="op">=</span> <span class="va">DSDECOD</span> <span class="op">==</span> <span class="st">"RANDOMIZED"</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># 스크린 실패 일자(SCRFDT)</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
 <span>    dataset_add <span class="op">=</span> <span class="va">ds_ext</span>,</span>
 <span>    by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>,</span>
 <span>    new_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span>SCRFDT <span class="op">=</span> <span class="va">DSSTDT</span><span class="op">)</span>,</span>
 <span>    filter_add <span class="op">=</span> <span class="va">DSDECOD</span> <span class="op">==</span> <span class="st">"SCREEN FAILURE"</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># 최종 방문 일자(FRVDT)</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
 <span>    dataset_add <span class="op">=</span> <span class="va">ds_ext</span>,</span>
 <span>    by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>,</span>
 <span>    new_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span>FRVDT <span class="op">=</span> <span class="va">DSSTDT</span><span class="op">)</span>,</span>
@@ -1005,7 +1005,7 @@ ga('send', {
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 5. 사망 관련 기간 변수</span></span>
 <span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># 사망 상대일(DTHADY): 치료 시작일(TRTSDT) 기준</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_duration.html">derive_vars_duration</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_duration.html">derive_vars_duration</a></span><span class="op">(</span></span>
 <span>    new_var <span class="op">=</span> <span class="va">DTHADY</span>,</span>
 <span>    start_date <span class="op">=</span> <span class="va">TRTSDT</span>,</span>
 <span>    end_date <span class="op">=</span> <span class="va">DTHDT</span>,</span>
@@ -1013,7 +1013,7 @@ ga('send', {
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  </span>
 <span>  <span class="co"># 최종 투여-사망 간격(LDDTHELD): 치료 종료일(TRTEDT) 기준</span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_duration.html">derive_vars_duration</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_duration.html">derive_vars_duration</a></span><span class="op">(</span></span>
 <span>    new_var <span class="op">=</span> <span class="va">LDDTHELD</span>,</span>
 <span>    start_date <span class="op">=</span> <span class="va">TRTEDT</span>,</span>
 <span>    end_date <span class="op">=</span> <span class="va">DTHDT</span>,</span>
@@ -1039,7 +1039,7 @@ ga('send', {
 </div>
 </div>
 <p><br><strong>Derive Cause of Death</strong></p>
-<p><code><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_extreme_event.html">admiral::derive_vars_extreme_event()</a></code>를 이용, <br> dm/suppdm이 아닌 다른 위치(AE/DS 등)의 사망 원인 정보를 통합, ADSL에 추가할 수 있다.</p>
+<p><code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_extreme_event.html">admiral::derive_vars_extreme_event()</a></code>를 이용, <br> dm/suppdm이 아닌 다른 위치(AE/DS 등)의 사망 원인 정보를 통합, ADSL에 추가할 수 있다.</p>
 <ul>
 <li>
 <code>DTHDT</code> : death date</li>
@@ -1050,14 +1050,14 @@ ga('send', {
 </ul>
 <div class="cell">
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_extreme_event.html">derive_vars_extreme_event</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_extreme_event.html">derive_vars_extreme_event</a></span><span class="op">(</span></span>
 <span>    <span class="co"># 그룹화 변수</span></span>
 <span>    by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>,</span>
 <span></span>
 <span>    <span class="co"># 사망 원인 이벤트 정의</span></span>
 <span>    events <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
 <span>      <span class="co"># 1. AE 도메인에서 사망 원인 추출</span></span>
-<span>      <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/event.html">event</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/event.html">event</a></span><span class="op">(</span></span>
 <span>        dataset_name <span class="op">=</span> <span class="st">"ae"</span>,</span>
 <span>        condition <span class="op">=</span> <span class="va">AEOUT</span> <span class="op">==</span> <span class="st">"FATAL"</span>,  <span class="co"># 치명적 부작용 필터</span></span>
 <span>        set_values_to <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span></span>
@@ -1066,7 +1066,7 @@ ga('send', {
 <span>        <span class="op">)</span></span>
 <span>      <span class="op">)</span>,</span>
 <span>      <span class="co"># 2. DS 도메인에서 사망 원인 추출</span></span>
-<span>      <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/event.html">event</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/event.html">event</a></span><span class="op">(</span></span>
 <span>        dataset_name <span class="op">=</span> <span class="st">"ds"</span>,</span>
 <span>        condition <span class="op">=</span> <span class="va">DSDECOD</span> <span class="op">==</span> <span class="st">"DEATH"</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"DEATH DUE TO"</span>, <span class="va">DSTERM</span><span class="op">)</span>,</span>
 <span>        set_values_to <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span></span>
@@ -1098,7 +1098,7 @@ ga('send', {
 <ul>
 <li>지역, 인종, 사망 범주 등 다양한 grouping variable들을 추가할 수 있다.</li>
 <li>
-<code><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_cat.html">derive_vars_cat()</a></code>을 이용, factor와 numeric variable 추가을 추가할 수 있다.</li>
+<code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_cat.html">derive_vars_cat()</a></code>을 이용, factor와 numeric variable 추가을 추가할 수 있다.</li>
 </ul>
 <pre><code>주요 변수
 변수명    설명                   생성 규칙 예시
@@ -1136,9 +1136,9 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 <span></span>
 <span><span class="co"># 변수 생성</span></span>
 <span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_cat.html">derive_vars_cat</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="va">region1_lookup</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_cat.html">derive_vars_cat</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="va">racegr1_lookup</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_cat.html">derive_vars_cat</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="va">dthcgr1_lookup</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_cat.html">derive_vars_cat</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="va">region1_lookup</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_cat.html">derive_vars_cat</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="va">racegr1_lookup</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_cat.html">derive_vars_cat</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="va">dthcgr1_lookup</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">adsl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">head</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"STUDYID"</span>, <span class="st">"USUBJID"</span>, <span class="st">"COUNTRY"</span>, <span class="st">"REGION1"</span>, <span class="st">"REGION1N"</span>, <span class="st">"RACE"</span>, <span class="st">"RACEGR1"</span>, <span class="st">"RACEGR1N"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -1394,8 +1394,8 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 <span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu">pharmaversesdtm</span><span class="fu">::</span><span class="va"><a href="https://pharmaverse.github.io/pharmaversesdtm/reference/ex.html">ex</a></span></span>
 <span></span>
 <span><span class="co"># When SAS datasets are imported into R using haven::read_sas(), missing</span></span>
-<span><span class="va">ae</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">ae</span><span class="op">)</span></span>
-<span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">ex</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">ae</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">ae</span><span class="op">)</span></span>
+<span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/convert_blanks_to_na.html">convert_blanks_to_na</a></span><span class="op">(</span><span class="va">ex</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Metacore specification loading</strong></p>
 <div class="cell">
@@ -1413,17 +1413,17 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 <span></span>
 <span><span class="co"># AE 데이터에 ADSL 변수 병합</span></span>
 <span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="va">ae</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
 <span>    dataset_add <span class="op">=</span> <span class="va">adsl</span>,          <span class="co"># ADSL 데이터</span></span>
 <span>    new_vars <span class="op">=</span> <span class="va">adsl_vars</span>,        <span class="co"># 추가할 변수</span></span>
 <span>    by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>  <span class="co"># 병합 키</span></span>
 <span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Derive Analysis Dates</strong> <br><br><strong>1. Analysis Date/Relative Analysis Day</strong> <br><code><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dt.html">admiral::derive_vars_dt()</a></code> and <code><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dy.html">admiral::derive_vars_dy()</a></code> <br></p>
+<p><strong>Derive Analysis Dates</strong> <br><br><strong>1. Analysis Date/Relative Analysis Day</strong> <br><code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dt.html">admiral::derive_vars_dt()</a></code> and <code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dy.html">admiral::derive_vars_dy()</a></code> <br></p>
 <div class="cell">
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span>  <span class="co"># AE 종료일(AENDT) 파생 (부분일자 대체)</span></span>
 <span>  <span class="va">adae</span> <span class="op">&lt;-</span> <span class="va">adae</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dt.html">derive_vars_dt</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dt.html">derive_vars_dt</a></span><span class="op">(</span></span>
 <span>      new_vars_prefix <span class="op">=</span> <span class="st">"AEN"</span>,           <span class="co"># 생성 변수: AENDT, AENDTF</span></span>
 <span>      dtc <span class="op">=</span> <span class="va">AEENDTC</span>,                     <span class="co"># 원본 AE 종료일 문자형</span></span>
 <span>      date_imputation <span class="op">=</span> <span class="st">"last"</span>,          <span class="co"># 결측일은 월의 마지막 날로 대체 ("2023-02" → 2023-02-28)</span></span>
@@ -1432,7 +1432,7 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 <span>    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>    </span>
 <span>    <span class="co"># AE 시작일(ASTDT) 파생 (추가 제약조건 적용)</span></span>
-<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dt.html">derive_vars_dt</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dt.html">derive_vars_dt</a></span><span class="op">(</span></span>
 <span>      new_vars_prefix <span class="op">=</span> <span class="st">"AST"</span>,           <span class="co"># 생성 변수: ASTDT, ASTDTF</span></span>
 <span>      dtc <span class="op">=</span> <span class="va">AESTDTC</span>,</span>
 <span>      highest_imputation <span class="op">=</span> <span class="st">"M"</span>,</span>
@@ -1442,7 +1442,7 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 <span>    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>    </span>
 <span>    <span class="co"># 치료 시작일 기준 상대일자 파생</span></span>
-<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dy.html">derive_vars_dy</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dy.html">derive_vars_dy</a></span><span class="op">(</span></span>
 <span>      reference_date <span class="op">=</span> <span class="va">TRTSDT</span>,           <span class="co"># 기준일자</span></span>
 <span>      source_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">ASTDT</span>, <span class="va">AENDT</span><span class="op">)</span>  <span class="co"># 계산 대상</span></span>
 <span>    <span class="op">)</span>                                    <span class="co"># 생성 변수: ASTDY, AENDY</span></span>
@@ -1453,10 +1453,10 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 <script type="application/json" data-for="htmlwidget-05670a7e3ac21a008854">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6"],["01-701-1015","01-701-1015","01-701-1015","01-701-1023","01-701-1023","01-701-1023"],["2014-01-03","2014-01-03","2014-01-09","2012-08-26","2012-08-07","2012-08-07"],["2014-01-03","2014-01-03","2014-01-09","2012-08-26","2012-08-07","2012-08-07"],[null,null,null,null,null,null],[2,2,8,22,3,3],[null,null,"2014-01-11",null,"2012-08-30",null],[null,null,"2014-01-11",null,"2012-08-30",null],[null,null,null,null,null,null],[null,null,10,null,26,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>USUBJID<\/th>\n      <th>AESTDTC<\/th>\n      <th>ASTDT<\/th>\n      <th>ASTDTF<\/th>\n      <th>ASTDY<\/th>\n      <th>AEENDTC<\/th>\n      <th>AENDT<\/th>\n      <th>AENDTF<\/th>\n      <th>AENDY<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[5,9]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"USUBJID","targets":1},{"name":"AESTDTC","targets":2},{"name":"ASTDT","targets":3},{"name":"ASTDTF","targets":4},{"name":"ASTDY","targets":5},{"name":"AEENDTC","targets":6},{"name":"AENDT","targets":7},{"name":"AENDTF","targets":8},{"name":"AENDY","targets":9}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<p><strong>2. AE duration</strong> <br><code><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_duration.html">admiral::derive_vars_duration()</a></code> <br><code><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_joined.html">admiral::derive_vars_joined()</a></code> : 다른 data(예: ex)로 부터 join할 수 있다. <br></p>
+<p><strong>2. AE duration</strong> <br><code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_duration.html">admiral::derive_vars_duration()</a></code> <br><code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_joined.html">admiral::derive_vars_joined()</a></code> : 다른 data(예: ex)로 부터 join할 수 있다. <br></p>
 <div class="cell">
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="va">adae</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_duration.html">derive_vars_duration</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_duration.html">derive_vars_duration</a></span><span class="op">(</span></span>
 <span>    new_var <span class="op">=</span> <span class="va">ADURN</span>,        <span class="co"># 지속일수 변수명</span></span>
 <span>    new_var_unit <span class="op">=</span> <span class="va">ADURU</span>,   <span class="co"># 단위 변수명 (기본값 "DAYS")</span></span>
 <span>    start_date <span class="op">=</span> <span class="va">ASTDT</span>,     <span class="co"># 시작일</span></span>
@@ -1467,14 +1467,14 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 <span><span class="co"># EX 데이터 전처리</span></span>
 <span><span class="co"># &gt; last dose date을 위해 ex에서 exposure information을 불러오자.</span></span>
 <span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="va">ex</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_dt.html">derive_vars_dt</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_dt.html">derive_vars_dt</a></span><span class="op">(</span></span>
 <span>    dtc <span class="op">=</span> <span class="va">EXENDTC</span>,</span>
 <span>    new_vars_prefix <span class="op">=</span> <span class="st">"EXEN"</span>  <span class="co"># EXENDT 생성</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ADAE에 최종 투여일 병합</span></span>
 <span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="va">adae</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_joined.html">derive_vars_joined</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_joined.html">derive_vars_joined</a></span><span class="op">(</span></span>
 <span>    dataset_add <span class="op">=</span> <span class="va">ex</span>,</span>
 <span>    by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>,  <span class="co"># 기본 조인 키</span></span>
 <span>    order <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">EXENDT</span><span class="op">)</span>,              <span class="co"># EXENDT 기준 정렬</span></span>
@@ -1499,17 +1499,17 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 </div>
 </div>
 <p><strong>Derive Flags</strong></p>
-<p><code><a href="https://pharmaverse.github.io/admiral/reference/derive_var_trtemfl.html">admiral::derive_var_trtemfl()</a></code> : Treatment Emergent Flag (<code>TRTEMFL</code>) <br> &nbsp;&nbsp;&nbsp;&nbsp; # TRTSDT &lt; ASTDT, &nbsp;&nbsp; TRTEMFL: Y <br><code><a href="https://pharmaverse.github.io/admiral/reference/derive_var_ontrtfl.html">admiral::derive_var_ontrtfl()</a></code> : On-Treatment Flag (<code>ONTRTFL</code>) <br> &nbsp;&nbsp;&nbsp;&nbsp; # TRTSDT &lt; ASTDT &lt; TRTEDT +30day, &nbsp;&nbsp; ONTRTFL: Y <br><code><a href="https://pharmaverse.github.io/admiral/reference/derive_var_extreme_flag.html">admiral::derive_var_extreme_flag()</a></code> : AE occurance initial Flag (<code>AOCCIFL</code>) <br></p>
+<p><code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_var_trtemfl.html">admiral::derive_var_trtemfl()</a></code> : Treatment Emergent Flag (<code>TRTEMFL</code>) <br> &nbsp;&nbsp;&nbsp;&nbsp; # TRTSDT &lt; ASTDT, &nbsp;&nbsp; TRTEMFL: Y <br><code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_var_ontrtfl.html">admiral::derive_var_ontrtfl()</a></code> : On-Treatment Flag (<code>ONTRTFL</code>) <br> &nbsp;&nbsp;&nbsp;&nbsp; # TRTSDT &lt; ASTDT &lt; TRTEDT +30day, &nbsp;&nbsp; ONTRTFL: Y <br><code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_var_extreme_flag.html">admiral::derive_var_extreme_flag()</a></code> : AE occurance initial Flag (<code>AOCCIFL</code>) <br></p>
 <div class="cell">
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Derive TRTEMFL and ONTRTFL</span></span>
 <span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="va">adae</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_var_trtemfl.html">derive_var_trtemfl</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_var_trtemfl.html">derive_var_trtemfl</a></span><span class="op">(</span></span>
 <span>    start_date <span class="op">=</span> <span class="va">ASTDT</span>,       <span class="co"># AE 시작일</span></span>
 <span>    end_date <span class="op">=</span> <span class="va">AENDT</span>,         <span class="co"># AE 종료일</span></span>
 <span>    trt_start_date <span class="op">=</span> <span class="va">TRTSDT</span>,  <span class="co"># 치료 시작일</span></span>
 <span>    trt_end_date <span class="op">=</span> <span class="va">TRTEDT</span>     <span class="co"># 치료 종료일</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_var_ontrtfl.html">derive_var_ontrtfl</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_var_ontrtfl.html">derive_var_ontrtfl</a></span><span class="op">(</span></span>
 <span>    start_date <span class="op">=</span> <span class="va">ASTDT</span>,        <span class="co"># AE 시작일</span></span>
 <span>    ref_start_date <span class="op">=</span> <span class="va">TRTSDT</span>,   <span class="co"># 치료 시작일</span></span>
 <span>    ref_end_date <span class="op">=</span> <span class="va">TRTEDT</span>,     <span class="co"># 치료 종료일</span></span>
@@ -1525,7 +1525,7 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 <span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="va">adae</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># create temporary numeric ASEVN for sorting purpose</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>TEMP_AESEVN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">AESEV</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"SEVERE"</span>, <span class="st">"MODERATE"</span>, <span class="st">"MILD"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_var_extreme_flag.html">derive_var_extreme_flag</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_var_extreme_flag.html">derive_var_extreme_flag</a></span><span class="op">(</span></span>
 <span>    new_var <span class="op">=</span> <span class="va">AOCCIFL</span>,                  <span class="co"># 새 플래그 변수명</span></span>
 <span>    by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>,  <span class="co"># 그룹화 기준 (환자별)</span></span>
 <span>    order <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">TEMP_AESEVN</span>, <span class="va">ASTDT</span>, <span class="va">AESEQ</span><span class="op">)</span>,  <span class="co"># 정렬 순서</span></span>
@@ -1538,9 +1538,9 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 </div>
 </div>
 <p><br><strong>Derive Query Variables</strong></p>
-<p><strong>Query dataset</strong>: AE 관련 용어들을 정리해놓은 basket으로 mapping 규칙을 정의. ex) SMQs, CQs. <br><a href="https://pharmaverse.github.io/admiral/articles/queries_dataset.html/"><code>{admiral}</code>Queries Dataset Vignette</a> 참고. <br><br><code><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_query.html">admiral::derive_vars_query()</a></code>을 이용한다. <br></p>
+<p><strong>Query dataset</strong>: AE 관련 용어들을 정리해놓은 basket으로 mapping 규칙을 정의. ex) SMQs, CQs. <br><a href="https://pharmaverse.github.io/admiral/articles/queries_dataset.html/"><code>{admiral}</code>Queries Dataset Vignette</a> 참고. <br><br><code><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_query.html">admiral::derive_vars_query()</a></code>을 이용한다. <br></p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">queries</span> <span class="op">&lt;-</span> <span class="fu">admiral</span><span class="fu">::</span><span class="va"><a href="https://pharmaverse.github.io/admiral/reference/queries.html">queries</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">queries</span> <span class="op">&lt;-</span> <span class="fu">admiral</span><span class="fu">::</span><span class="va"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/queries.html">queries</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">PREFIX</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CQ01"</span>, <span class="st">"SMQ02"</span><span class="op">)</span><span class="op">)</span>  <span class="co"># CQ01(커스텀)과 SMQ02(표준)만 필터링</span></span>
 <span></span>
 <span><span class="va">queries</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">head</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">datatable</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1550,7 +1550,7 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 </div>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># query변수 생성</span></span>
 <span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="va">adae</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_query.html">derive_vars_query</a></span><span class="op">(</span>dataset_queries <span class="op">=</span> <span class="va">queries</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_query.html">derive_vars_query</a></span><span class="op">(</span>dataset_queries <span class="op">=</span> <span class="va">queries</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">adae</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"USUBJID"</span>, <span class="st">"AEDECOD"</span>, <span class="st">"CQ01NAM"</span>,<span class="st">"SMQ02NAM"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -1561,8 +1561,8 @@ DTHCGR1N  사망 원인 코드       1=ADVERSE EVENT, 2=PROGRESSIVE DISEASE</cod
 <p><strong>Add ADSL variables</strong></p>
 <div class="cell">
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="va">adae</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
-<span>    dataset_add <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">adsl</span>, <span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="fu"><a href="https://pharmaverse.github.io/admiral/reference/negate_vars.html">negate_vars</a></span><span class="op">(</span><span class="va">adsl_vars</span><span class="op">)</span><span class="op">)</span>,  <span class="co"># adsl_vars에 없는 변수만 선택</span></span>
+<span>  <span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/derive_vars_merged.html">derive_vars_merged</a></span><span class="op">(</span></span>
+<span>    dataset_add <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">adsl</span>, <span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="fu"><a href="https://pharmaverse.github.io/admiral/cran-release/reference/negate_vars.html">negate_vars</a></span><span class="op">(</span><span class="va">adsl_vars</span><span class="op">)</span><span class="op">)</span>,  <span class="co"># adsl_vars에 없는 변수만 선택</span></span>
 <span>    by_vars <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="va">STUDYID</span>, <span class="va">USUBJID</span><span class="op">)</span>  <span class="co"># 키 변수</span></span>
 <span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

@@ -2,6 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 #title-block-header {
   padding-top: 50px;
 }
@@ -404,11 +409,11 @@ body {
 }
 
 .left-arrow {
-  left: -20px;
+  left: 5px;
 }
 
 .right-arrow {
-  right: -20px; 
+  right: 5px; 
 }
 
 
@@ -492,20 +497,32 @@ body {
 }
 
 @media (max-width: 768px) {
+  .navbar-container,
+  .navbar {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+  }
+
+  .quarto-title-block {
+    padding: 0rem;
+  }
+
   main {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 0.5rem;
-    background-color: white;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 16px;
-    }
+    width: 100vw;
+    margin: 0 !important;
+    padding: 0.5 !important;
+    box-sizing: border-box;
+  }
     
   main p {
     font-size: 0.85rem !important;
     line-height: 1.6;
     }
-
+    
+  body:not(.rendered_html) #quarto-content {
+    display: block !important;
+  }
+    
   .hero-section {
     position: relative;
     width: 100%;
@@ -527,4 +544,25 @@ body {
     margin-left: 0.7rem;
     margin-right: 0.7rem;
     }
+    
+  .listing-pagination {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    box-sizing: border-box;
+  }
+  
+  .giscus {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+
+  .nav-footer {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    box-sizing: border-box;
+  }
 }
