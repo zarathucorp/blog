@@ -41,7 +41,7 @@ usethis::create_package(".") # R package 생성
 
 3. R 함수 생성
 
-R/ 에 함수 hello.R을 생성합니다.
+  R/ 아래에 함수 hello.R을 생성합니다.
 
 ``` r
 #' # hello.R
@@ -66,7 +66,7 @@ cp R/hello.R inst/app/source
 
 2. Shiny app 생성성
 
-inst/app/에 app.R을 생성합니다.
+  inst/app/ 아래에 app.R을 생성합니다.
 
 ``` r
 # app.R
@@ -102,8 +102,8 @@ shinylive::export("inst/app", "pkgdown/assets/site")
 
 1. _pkgdown.yml 수정
 
-pkgdown 문서의 navbar에 Shinylive app 링크를 추가합니다.
-기존 pkgdown 문서 아래에 다음 내용을 추가합니다.
+  pkgdown 문서의 navbar에 Shinylive app 링크를 추가합니다.
+  기존 pkgdown 문서 아래에 다음 내용을 추가합니다.
 
 ```yml
 navbar:
@@ -127,8 +127,8 @@ usethis::use_pkgdown()
 pkgdown::build_site()
 ```
 
-.gitignore 파일에서 docs를 제거 후 git에 commit합니다.
-github repository에 gh-pages가 생성됩니다. (약간의 시간이 소요됩니다.)
+  .gitignore 파일에서 docs를 제거 후 git에 commit합니다.
+  github repository에 gh-pages가 생성됩니다. (약간의 시간이 소요됩니다.)
 
 
 # 정리
@@ -150,7 +150,7 @@ myPackage/
 
 # UI tweak
 
-이렇게 추가한 Shinylive app의 경우 UI 구성 요소가 다르다는 문제가 있습니다.
+이렇게 추가한 Shinylive app은 UI 구성 요소가 다르다는 문제가 있습니다.
 UI를 pkgdown 문서와 일치시키는 방법을 소개합니다.
 
 pkgdown으로 생성된 문서의 UI는 docs/index.html과 이에 연결된 .css 및 .js 스크립트들로 이루어져 있습니다.
@@ -186,7 +186,7 @@ cp docs/index.html pkgdown/assets/hello.html
 </html>
 ```
 
-각 `<nav>`, `<main>`, `<aside>`, `<footer>`는 아래 부분을 정의합니다.
+  각 `<nav>`, `<main>`, `<aside>`, `<footer>`는 아래 부분을 정의합니다.
 ![각 영역 설명](img/area.PNG)
 
 2. hello.html에서 사용할 `<nav>`, `<footer>`를 남겨두고 `<aside>`를 삭제합니다.
@@ -196,7 +196,7 @@ cp docs/index.html pkgdown/assets/hello.html
     <iframe src="site/index.html" style="width:100%; height:calc(100vh - 106px); border:none;"></iframe>
   </main>
 ```
-`<main>` 영역의 크기를 조절할 때, `border:1px solid black;`로 테두리 설정하면 조절하기 용이합니다.
+  `<main>` 영역의 크기를 조절할 때, `border:1px solid black;`로 테두리 설정하면 조절하기 용이합니다.
 
 3. 마지막으로 _pkgdown.yml의 navbar 부분을 다음과 같이 수정합니다.
 ``` yml
