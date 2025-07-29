@@ -154,8 +154,16 @@ navbar:
       href: site/index.html
 ```
 
+   이후 다시 build_site()를 해봅니다.
+
+``` r
+pkgdown::build_site()
+```
+
+   여기서 navbar에 Hello 탭이 생기는 것을 확인할 수 있습니다. (여기서 Hello 동작 안하지만 정상적인 현상입니다.)
    .gitignore 파일에서 docs를 제거 후 git에 commit합니다.
    github repository에 gh-pages가 생성됩니다. (약간의 시간이 소요됩니다.)
+   연결된 gh-pages에 들어가면 Hello가 정상적으로 동작 하는 것을 확인할 수 있습니다.
 
 
 # 정리
@@ -226,7 +234,7 @@ cp docs/index.html pkgdown/assets/hello.html
 ```
    `<main>` 영역의 크기를 조절할 때, `border:1px solid black;`로 테두리 설정하면 조절하기 용이합니다.
 
-3. 마지막으로 _pkgdown.yml의 navbar 부분을 다음과 같이 수정합니다.
+3. _pkgdown.yml의 navbar 부분을 다음과 같이 수정합니다.
 ``` yml
 navbar:
   structure:
@@ -240,5 +248,10 @@ navbar:
       href: hello.html
 ```
 
+4. 마지막으로 다시 사이트를 업데이트 하고 git에 commit 합니다.
+
+``` r
+pkgdown::build_site()
+```
 
 
