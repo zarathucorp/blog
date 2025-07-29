@@ -293,7 +293,7 @@ ga('send', {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 <!-- Google tag (gtag.js) -->
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
 <script>
@@ -420,7 +420,7 @@ ga('send', {
 └── R/
     └── hello.R</code></pre>
 </section>
-<section id="ui-tweak" class="level1 page-columns page-full">
+<section id="ui-tweak" class="level1">
 <h1>UI tweak</h1>
 <p>이렇게 추가한 Shinylive app의 경우 UI 구성 요소가 다르다는 문제가 있습니다. UI를 pkgdown 문서와 일치시키는 방법을 소개합니다.</p>
 <p>pkgdown으로 생성된 문서의 UI는 docs/index.html과 이에 연결된 .css 및 .js 스크립트들로 이루어져 있습니다. 따라서 index.html을 복사하고, 내용을 지우고, Shinylive app의 내용을 추가하면 같은 UI를 사용할 수 있습니다.</p>
@@ -448,31 +448,14 @@ ga('send', {
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
 <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span>
 <span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">html</span><span class="dt">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-각
-<nav class="page-columns page-full">
-,
-<main class="page-columns page-full">
-,
-<aside class="page-columns page-full">
-,
-<footer class="page-columns page-full">
-<p>는 아래 부분을 정의합니다. <img src="img/area.PNG" class="img-fluid" alt="각 영역 설명"></p>
-<ol start="2" type="1" class="page-columns page-full">
-<li class="page-columns page-full">hello.html에서 사용할
-<nav class="page-columns page-full">
-,
-<footer class="page-columns page-full">
-를 남겨두고
-<aside>
-를 삭제합니다.
-<main>
-아래 내용을 아래와 같이 수정합니다.</main></aside></footer></nav></li>
+<p>각 <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;footer&gt;</code>는 아래 부분을 정의합니다. <img src="img/area.PNG" class="img-fluid" alt="각 영역 설명"></p>
+<ol start="2" type="1">
+<li>hello.html에서 사용할 <code>&lt;nav&gt;</code>, <code>&lt;footer&gt;</code>를 남겨두고 <code>&lt;aside&gt;</code>를 삭제합니다. <code>&lt;main&gt;</code> 아래 내용을 아래와 같이 수정합니다.</li>
 </ol>
 <div class="sourceCode" id="cb11"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">main</span><span class="ot"> id</span><span class="op">=</span><span class="st">"main"</span><span class="ot"> class</span><span class="op">=</span><span class="st">"col-md-12"</span><span class="ot"> style</span><span class="op">=</span><span class="st">"max-width: 1200px;"</span><span class="dt">&gt;</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">iframe</span><span class="ot"> src</span><span class="op">=</span><span class="st">"site/index.html"</span><span class="ot"> style</span><span class="op">=</span><span class="st">"width:100%; height:calc(100vh - 106px); border:none;"</span><span class="dt">&gt;&lt;/</span><span class="kw">iframe</span><span class="dt">&gt;</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;/</span><span class="kw">main</span><span class="dt">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<main>
-<p>영역의 크기를 조절할 때, <code>border:1px solid black;</code>로 테두리 설정하면 조절하기 용이합니다.</p>
+<p><code>&lt;main&gt;</code> 영역의 크기를 조절할 때, <code>border:1px solid black;</code>로 테두리 설정하면 조절하기 용이합니다.</p>
 <ol start="3" type="1">
 <li>마지막으로 _pkgdown.yml의 navbar 부분을 다음과 같이 수정합니다.</li>
 </ol>
@@ -488,7 +471,7 @@ ga('send', {
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">href</span><span class="kw">:</span><span class="at"> hello.html</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
-</main></footer></aside></main></nav></section>
+</section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hwangbo2025,
   author = {Hwangbo, Gyeom},
