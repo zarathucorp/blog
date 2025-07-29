@@ -1,0 +1,216 @@
+---
+title: "R 패키지 문서에 서버 없이 Shiny 앱 추가하는 법"
+description: | 
+   pkgdown 문서에 서버 없이 작동하는 shinylive 앱을 추가하는 방법을 소개합니다.
+categories: [shinylive]
+author:
+  name: "Gyeom Hwangbo"
+  url: https://github.com/hbgyeom1
+image: img/logo.png
+date: 2025-07-29
+format: html
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+
+# 참고 글
+
+- [pkgdown](https://blog.zarathu.com/posts/2023-03-17-pkgdown/index.html)
+- [shinylive](https://blog.zarathu.com/posts/2024-03-04-shinylive/index.html#shinylive)
+
+# Getting started
+
+pkgdown을 이용한 R 패키지 문서화와 서버 없이 작동하는 Shiny 앱 만들기는 위 글에서 확인할 수 있습니다.
+이 글에서는 간단한 R package 생성부터 pkgdown으로 gh-pages에 deploy한 웹페이지에 Shiny 앱을 추가하는 방법을 소개합니다.
+
+# 준비물
+
+- R package
+- Shiny app
+
+# R package 생성
+
+1. 빈 git repository를 생성 후 로컬에 clone 합니다.
+2. clone된 폴더로 R package를 생성 합니다.
+
+``` r
+usethis::create_package(".") # R package 생성
+```
+
+3. R 함수 생성
+
+R/ 에 함수 hello.R을 생성합니다.
+
+``` r
+#' # hello.R
+#' Say hello
+#'
+#' @param name A character name
+#' @return A greeting
+#' @export
+hello <- function(name) {
+  paste("Hello,", name)
+}
+```
+
+# Shiny app 생성
+
+1. 폴더 생성
+
+``` bash
+mkdir -p inst/app/source
+cp R/hello.R inst/app/source
+```
+
+2. Shiny app 생성성
+
+inst/app/에 app.R을 생성합니다.
+
+``` r
+# app.R
+library(shiny)
+
+source("source/hello.R")
+
+ui <- fluidPage(
+  textInput("name", "Name:"),
+  textOutput("out")
+)
+
+server <- function(input, output, session) {
+  output$out <- renderText({
+    hello(input$name)
+  })
+}
+
+shinyApp(ui, server)
+```
+
+# Shinylive app 생성
+
+pkgdown은 docs라는 폴더를 생성하고 docs 내부에 파일들을 생성합니다.
+이 때, pkgdown은 pkgdown/assets/ 아래 있는 모든 파일들을 docs 폴더로 복사합니다.
+pkgdown/assets/ 아래 Shinylive app을 export합니다.
+
+``` r
+shinylive::export("inst/app", "pkgdown/assets/site")
+```
+
+# pkgdown 문서화
+
+1. _pkgdown.yml 수정
+
+pkgdown 문서의 navbar에 Shinylive app 링크를 추가합니다.
+기존 pkgdown 문서 아래에 다음 내용을 추가합니다.
+
+```yml
+navbar:
+  structure:
+    left:
+    - home
+    - reference
+    - hello
+  components:
+    hello:
+      text: Hello
+      href: site/index.html
+```
+
+2. 문서화
+
+``` r
+devtools::document()
+usethis::use_pkgdown_github_pages()
+usethis::use_pkgdown()
+pkgdown::build_site()
+```
+
+.gitignore 파일에서 docs를 제거 후 git에 commit합니다.
+github repository에 gh-pages가 생성됩니다. (약간의 시간이 소요됩니다.)
+
+
+# 정리
+
+수정 및 생성한 폴더와 파일은 다음과 같습니다.
+
+```
+myPackage/
+├── _pkgdown.yml
+├── .gitignore
+├── inst/
+│   └── app/
+│       ├── app.R
+│       └── source/
+│           └── hello.R
+└── R/
+    └── hello.R
+```
+
+# UI tweak
+
+이렇게 추가한 Shinylive app의 경우 UI 구성 요소가 다르다는 문제가 있습니다.
+UI를 pkgdown 문서와 일치시키는 방법을 소개합니다.
+
+pkgdown으로 생성된 문서의 UI는 docs/index.html과 이에 연결된 .css 및 .js 스크립트들로 이루어져 있습니다.
+따라서 index.html을 복사하고, 내용을 지우고, Shinylive app의 내용을 추가하면 같은 UI를 사용할 수 있습니다.
+
+
+1. docs/index.html을 pkgdown/assets에 복사
+
+``` bash
+cp docs/index.html pkgdown/assets/hello.html
+```
+
+1-1. index.html은 다음과 같은 구조로 되어 있습니다.
+``` html
+<!DOCTYPE html>
+<head>
+<!-- .css, .js 스크립트 연결 -->
+</head>
+<body>
+  <nav>
+  </nav>
+  <div class="container template-home">
+    <div class="row">
+      <main id="main" class="col-md-9">
+      </main>
+      <aside class="col-md-3"><div class="license">
+      </aside>
+    </div>
+      <footer>
+      </footer>
+  </div>
+</body>
+</html>
+```
+
+각 <nav>, <main>, <aside>, <footer>는 아래 부분을 정의합니다.
+![각 영역 설명](img/area.PNG)
+
+2. hello.html에서 사용할 <nav>, <footer>를 남겨두고 <aside>를 삭제합니다.
+<main> 아래 내용을 아래와 같이 수정합니다.
+``` html
+  <main id="main" class="col-md-12" style="max-width: 1200px;">
+    <iframe src="site/index.html" style="width:100%; height:calc(100vh - 106px); border:none;"></iframe>
+  </main>
+```
+<main> 영역의 크기를 조절할 때, `border:1px solid black;`로 테두리 설정하면 조절하기 용이합니다.
+
+3. 마지막으로 _pkgdown.yml의 navbar 부분을 다음과 같이 수정합니다.
+``` yml
+navbar:
+  structure:
+    left:
+    - home
+    - reference
+    - hello
+  components:
+    hello:
+      text: Hello
+      href: hello.html
+```
+
+
+
