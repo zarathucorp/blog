@@ -1,0 +1,113 @@
+---
+title: "ggplot으로 만든 그래프에 p-value 추가하는 법"
+description: |
+   ggplot의 stat_compare_means()로는 그래프에 p < 0.001 같은 유의성을 깔끔하게 나타내기 어렵습니다. 이 글에서는 그래프에 원하는 형식으로 p-value를 직접 표시하는 방법을 소개합니다.
+categories: [ggplot]
+author: 
+  name: "Yeji Kang"
+  url: https://github.com/YejiKang63
+date: 2025-07-28
+image: img/pval.png
+format:
+  html:
+    toc: true
+    theme: cosmo
+execute:
+  freeze: true
+  echo: true
+  warning: false 
+  message: false
+draft: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+# p-value 시각화
+
+ggplot2로 그룹 간 평균 차이를 시각화할 때, p-value를 함께 표시하면 결과를 보다 직관적으로 이해할 수 있습니다.
+
+이때 흔히 사용하는 함수가 `stat_compare_means()`인데, 기본적으로 p-value를 자동 계산해 그래프에 추가해주는 유용한 기능을 제공합니다.
+
+다만 이 함수는 `p.format`이나 `p.signif` 옵션을 통해 소수점 표기 또는 `*`, `**`, `***` 기호로 유의성을 강조하는 정도만 가능하며, `p < 0.05`나 `p < 0.001`처럼 원하는 형식으로 자유롭게 표현하는 데는 한계가 있습니다.
+
+따라서 이번 글에서는 `stat_compare_means()` 대신 `compare_means()`로 직접 p-value를 계산한 뒤, 그래프 위에 원하는 형식으로 표시하는 방법을 소개합니다.
+특히 `p < 0.001`과 같은 유의성을 명확하게 전달하고 싶은 경우에 유용한 실전 예제를 중심으로 다뤄보겠습니다.
+
+# Practice
+
+먼저 아래는 필요한 패키지와 함께 예제 데이터를 생성하는 코드입니다.
+
+```{r echo=TRUE}
+library(data.table)
+library(ggplot2)
+library(ggpubr)
+
+set.seed(2025)
+df <- data.table(
+  ID = rep(1:30, times = 2),
+  Group = rep(c("A", "B"), each = 30),
+  Visit = rep(rep(c("Baseline", "Week 2", "Week 4"), each = 10), times = 2),
+  Score = c(
+    rnorm(10, 70, 4), rnorm(10, 68, 4), rnorm(10, 66, 4),
+    rnorm(10, 70, 4), rnorm(10, 55, 4), rnorm(10, 40, 4)
+  )
+)
+```
+코드를 통해 생성된 데이터는 다음과 같습니다. 이는 세 시점(Baseline, Week 2, Week 4)에 걸쳐 두 그룹 간의 점수를 비교하기 위한 목적으로 구성된 데이터입니다.
+
+```{r echo=FALSE}
+library(readxl)
+library(knitr)
+
+dff <- read_excel("data.xlsx")
+kable(head(dff, 10))
+```
+
+Visit 변수의 순서를 Baseline → Week 2 → Week 4로 지정해 그래프에서 시간 순서대로 정렬되도록 합니다.
+
+```{r echo=TRUE}
+df[, Visit := factor(Visit, levels = c("Baseline", "Week 2", "Week 4"))]
+```
+
+다음으로, 각 Visit 시점별로 두 그룹 간 평균 차이에 대한 t-test를 수행합니다.
+`compare_means()` 함수를 사용하면, `group.by = "Visit"` 옵션을 통해 각 시점별로 그룹 간 비교가 이뤄지며, 그 결과가 데이터프레임 형태로 저장됩니다.
+```{r echo=TRUE}
+pval_df <- compare_means(Score ~ Group, data = df, group.by = "Visit", method = "t.test")
+```
+`pval_df`에는 각 Visit에 해당하는 시점별로 t-test 결과가 행 단위로 저장되며,
+그 중 `pval_df$p` 열에는 계산된 p-value 값이 포함되어 있습니다.
+
+이제 계산된 p-value를 시각적으로 명확하게 전달될 수 있게 만듭니다.
+`ifelse()` 함수를 사용하여 p-value가 0.001보다 작을 경우 "p < 0.001"로, 그렇지 않으면 소수점 셋째 자리까지 표기하도록 합니다. 
+
+이렇게 만든 텍스트 라벨은 pval_df$label이라는 새로운 열로 저장됩니다.
+```{r echo=TRUE}
+pval_df$label <- ifelse(pval_df$p < 0.001, "p < 0.001", sprintf("p = %.3f", pval_df$p))
+```
+이 `pval_df$label`은 이후 `geom_text()`에서 `label = label`로 호출되어 그래프에 p-value 텍스트로 표시됩니다.
+
+이제 `stat_summary()`로 mean과 standard error를 line graph로 시각화하고,
+앞서 계산한 p-value는 `geom_text()`를 활용해 각 시점 위에 직접 추가합니다.
+p-value 텍스트가 겹치지 않도록 적절한 y축 위치도 함께 지정해줍니다.
+```{r echo=TRUE}
+pval_df$y <- 85  # adjust label height
+ggplot(df, aes(x = Visit, y = Score, color = Group, group = Group)) +
+  stat_summary(fun = mean, geom = "line", size = 1.2) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.1) +
+  geom_text(data = pval_df, aes(x = Visit, y = y, label = label), inherit.aes = FALSE) +
+  theme_minimal()
+```
+여기서 `inherit.aes = FALSE`를 지정한 이유는 `geom_text()`에 별도로 지정한 `pval_df`의 `aesthetics(x, y, label)`만 사용하고, 기본 `ggplot()`에 설정된 `aes(x = Visit, y = Score, ...)`를 상속받지 않도록 하기 위해서입니다.
+
+이 옵션이 없으면 `geom_text()`가 Score 값을 y로 사용하려 하면서 오류가 나거나 잘못된 위치에 텍스트가 표시될 수 있습니다.
+
+![Line Graph](Rplot.png)
+
+선 위에 표시된 p-value는 각 시점별로 수행한 t-test 결과이며, 특히 p < 0.001과 같이 유의한 차이는 직관적으로 확인할 수 있도록 강조되었습니다. 이런 방식으로 결과 해석을 한눈에 쉽게 할 수 있도록 만들 수 있습니다.
+
+# 마치며
+
+이렇게 `compare_means()`로 직접 계산한 p-value를 `geom_text()`를 활용해 원하는 위치에 표시하는 방식은 boxplot과 barplot 등 다양한 ggplot 그래프 유형에도 동일하게 적용할 수 있습니다.
+
+특히 `stat_compare_means()`의 기본 기능으로는 원하는 형식의 p-value를 표현하기 어려운 경우, 이와 같이 수동적인 방식이 훨씬 유연한 대안이 될 수 있겠습니다.
