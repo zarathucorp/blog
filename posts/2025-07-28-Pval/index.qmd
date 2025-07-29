@@ -38,7 +38,7 @@ ggplot2로 그룹 간 평균 차이를 시각화할 때, p-value를 함께 표�
 
 먼저 아래는 필요한 패키지와 함께 예제 데이터를 생성하는 코드입니다.
 
-```{r echo=TRUE}
+```{r eval=FALSE, echo=TRUE}
 library(data.table)
 library(ggplot2)
 library(ggpubr)
@@ -56,7 +56,7 @@ df <- data.table(
 ```
 코드를 통해 생성된 데이터는 다음과 같습니다. 이는 세 시점(Baseline, Week 2, Week 4)에 걸쳐 두 그룹 간의 점수를 비교하기 위한 목적으로 구성된 데이터입니다.
 
-```{r echo=FALSE}
+```{r eval=FALSE, echo=TRUE}
 library(readxl)
 library(knitr)
 
@@ -66,13 +66,13 @@ kable(head(dff, 10))
 
 Visit 변수의 순서를 Baseline → Week 2 → Week 4로 지정해 그래프에서 시간 순서대로 정렬되도록 합니다.
 
-```{r echo=TRUE}
+```{r eval=FALSE, echo=TRUE}
 df[, Visit := factor(Visit, levels = c("Baseline", "Week 2", "Week 4"))]
 ```
 
 다음으로, 각 Visit 시점별로 두 그룹 간 평균 차이에 대한 t-test를 수행합니다.
 `compare_means()` 함수를 사용하면, `group.by = "Visit"` 옵션을 통해 각 시점별로 그룹 간 비교가 이뤄지며, 그 결과가 데이터프레임 형태로 저장됩니다.
-```{r echo=TRUE}
+```{r eval=FALSE, echo=TRUE}
 pval_df <- compare_means(Score ~ Group, data = df, group.by = "Visit", method = "t.test")
 ```
 `pval_df`에는 각 Visit에 해당하는 시점별로 t-test 결과가 행 단위로 저장되며,
@@ -82,7 +82,7 @@ pval_df <- compare_means(Score ~ Group, data = df, group.by = "Visit", method = 
 `ifelse()` 함수를 사용하여 p-value가 0.001보다 작을 경우 "p < 0.001"로, 그렇지 않으면 소수점 셋째 자리까지 표기하도록 합니다. 
 
 이렇게 만든 텍스트 라벨은 pval_df$label이라는 새로운 열로 저장됩니다.
-```{r echo=TRUE}
+```{r eval=FALSE, echo=TRUE}
 pval_df$label <- ifelse(pval_df$p < 0.001, "p < 0.001", sprintf("p = %.3f", pval_df$p))
 ```
 이 `pval_df$label`은 이후 `geom_text()`에서 `label = label`로 호출되어 그래프에 p-value 텍스트로 표시됩니다.
@@ -90,7 +90,7 @@ pval_df$label <- ifelse(pval_df$p < 0.001, "p < 0.001", sprintf("p = %.3f", pval
 이제 `stat_summary()`로 mean과 standard error를 line graph로 시각화하고,
 앞서 계산한 p-value는 `geom_text()`를 활용해 각 시점 위에 직접 추가합니다.
 p-value 텍스트가 겹치지 않도록 적절한 y축 위치도 함께 지정해줍니다.
-```{r echo=TRUE}
+```{r eval=FALSE, echo=TRUE}
 pval_df$y <- 85  # adjust label height
 ggplot(df, aes(x = Visit, y = Score, color = Group, group = Group)) +
   stat_summary(fun = mean, geom = "line", size = 1.2) +
