@@ -53,7 +53,7 @@ install.packages(c("shiny", "shinylive", "pkgdown", "usethis", "devtools"))
 
 # R package 생성
 
-1. 빈 git repository를 생성 후 로컬에 clone 합니다.
+1. 빈 git repository(public)를 생성 후 로컬에 clone 합니다.
 2. clone된 폴더로 R package를 생성 합니다.
 
 ``` r
@@ -125,9 +125,20 @@ export 후 pkgdown/assets/site/ 아래에 다음과 같은 파일들이 생성�
 
 # pkgdown 문서화
 
-1. _pkgdown.yml 수정
+1. 문서화
 
-   pkgdown 문서의 navbar에 Shinylive app 링크를 추가합니다.
+``` r
+devtools::document()
+usethis::use_pkgdown_github_pages()
+usethis::use_pkgdown()
+pkgdown::build_site()
+```
+   docs/ 아래에 다음과 같은 파일들이 생성됩니다.
+![결과 파일들](img/pkgresult.PNG)
+
+2. _pkgdown.yml 수정
+
+   _pkgdown.yml 파일의 navbar에 Shinylive app 링크를 추가합니다.
    기존 pkgdown 문서 아래에 다음 내용을 추가합니다.
 
 ```yml
@@ -142,17 +153,6 @@ navbar:
       text: Hello
       href: site/index.html
 ```
-
-2. 문서화
-
-``` r
-devtools::document()
-usethis::use_pkgdown_github_pages()
-usethis::use_pkgdown()
-pkgdown::build_site()
-```
-   docs/ 아래에 다음과 같은 파일들이 생성됩니다.
-![결과 파일들](img/pkgresult.PNG)
 
    .gitignore 파일에서 docs를 제거 후 git에 commit합니다.
    github repository에 gh-pages가 생성됩니다. (약간의 시간이 소요됩니다.)
