@@ -44,6 +44,24 @@
 <section id="준비물" class="level1">
 <h1>준비물</h1>
 <ul>
+<li>패키지 설치</li>
+</ul>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"shiny"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"shinylive"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pkgdown"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"usethis"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"devtools"</span>))</span></code></pre></div>
+<ul>
 <li>R package</li>
 <li>Shiny app</li>
 </ul>
@@ -54,7 +72,7 @@
 <li>빈 git repository를 생성 후 로컬에 clone 합니다.</li>
 <li>clone된 폴더로 R package를 생성 합니다.</li>
 </ol>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">usethis<span class="sc" style="color: #5E5E5E;
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">usethis<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -64,118 +82,121 @@ font-style: inherit;">"."</span>) <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># R package 생성</span></span></code></pre></div>
 <ol start="3" type="1">
-<li>R 함수 생성</li>
+<li><p>R 함수 생성</p>
+<p>R/ 아래에 함수 hello.R을 생성합니다.</p></li>
 </ol>
-<p>R/ 아래에 함수 hello.R을 생성합니다.</p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#' # hello.R</span></span>
-<span id="cb2-2"><span class="co" style="color: #5E5E5E;
+<span id="cb3-2"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#' Say hello</span></span>
-<span id="cb2-3"><span class="co" style="color: #5E5E5E;
+<span id="cb3-3"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#'</span></span>
-<span id="cb2-4"><span class="co" style="color: #5E5E5E;
+<span id="cb3-4"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#' @param name A character name</span></span>
-<span id="cb2-5"><span class="co" style="color: #5E5E5E;
+<span id="cb3-5"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#' @return A greeting</span></span>
-<span id="cb2-6"><span class="co" style="color: #5E5E5E;
+<span id="cb3-6"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#' @export</span></span>
-<span id="cb2-7">hello <span class="ot" style="color: #003B4F;
+<span id="cb3-7">hello <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">function</span>(name) {</span>
-<span id="cb2-8">  <span class="fu" style="color: #4758AB;
+<span id="cb3-8">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">paste</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Hello,"</span>, name)</span>
-<span id="cb2-9">}</span></code></pre></div>
+<span id="cb3-9">}</span></code></pre></div>
 </section>
 <section id="shiny-app-생성" class="level1">
 <h1>Shiny app 생성</h1>
 <ol type="1">
 <li>폴더 생성</li>
 </ol>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Rstudio Terminal에 입력</span></span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">mkdir</span> <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">-p</span> inst/app/source</span>
-<span id="cb3-2"><span class="fu" style="color: #4758AB;
+<span id="cb4-3"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">cp</span> R/hello.R inst/app/source</span></code></pre></div>
 <ol start="2" type="1">
-<li>Shiny app 생성</li>
+<li><p>Shiny app 생성</p>
+<p>inst/app/ 아래에 app.R을 생성합니다.</p></li>
 </ol>
-<p>inst/app/ 아래에 app.R을 생성합니다.</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># app.R</span></span>
-<span id="cb4-2"><span class="fu" style="color: #4758AB;
+<span id="cb5-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(shiny)</span>
-<span id="cb4-3"></span>
-<span id="cb4-4"><span class="fu" style="color: #4758AB;
+<span id="cb5-3"></span>
+<span id="cb5-4"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"source/hello.R"</span>)</span>
-<span id="cb4-5"></span>
-<span id="cb4-6">ui <span class="ot" style="color: #003B4F;
+<span id="cb5-5"></span>
+<span id="cb5-6">ui <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">fluidPage</span>(</span>
-<span id="cb4-7">  <span class="fu" style="color: #4758AB;
+<span id="cb5-7">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">textInput</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"name"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Name:"</span>),</span>
-<span id="cb4-8">  <span class="fu" style="color: #4758AB;
+<span id="cb5-8">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">textOutput</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"out"</span>)</span>
-<span id="cb4-9">)</span>
-<span id="cb4-10"></span>
-<span id="cb4-11">server <span class="ot" style="color: #003B4F;
+<span id="cb5-9">)</span>
+<span id="cb5-10"></span>
+<span id="cb5-11">server <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">function</span>(input, output, session) {</span>
-<span id="cb4-12">  output<span class="sc" style="color: #5E5E5E;
+<span id="cb5-12">  output<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>out <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">renderText</span>({</span>
-<span id="cb4-13">    <span class="fu" style="color: #4758AB;
+<span id="cb5-13">    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">hello</span>(input<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>name)</span>
-<span id="cb4-14">  })</span>
-<span id="cb4-15">}</span>
-<span id="cb4-16"></span>
-<span id="cb4-17"><span class="fu" style="color: #4758AB;
+<span id="cb5-14">  })</span>
+<span id="cb5-15">}</span>
+<span id="cb5-16"></span>
+<span id="cb5-17"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">shinyApp</span>(ui, server)</span></code></pre></div>
 </section>
 <section id="shinylive-app-생성" class="level1">
 <h1>Shinylive app 생성</h1>
 <p>pkgdown은 docs라는 폴더를 생성하고 docs 내부에 파일들을 생성합니다. 이 때, pkgdown은 pkgdown/assets/ 아래 있는 모든 파일들을 docs 폴더로 복사합니다. pkgdown/assets/ 아래 Shinylive app을 export합니다.</p>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">shinylive<span class="sc" style="color: #5E5E5E;
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">shinylive<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -184,20 +205,21 @@ background-color: null;
 font-style: inherit;">"inst/app"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"pkgdown/assets/site"</span>)</span></code></pre></div>
+<p>export 후 pkgdown/assets/site/ 아래에 다음과 같은 파일들이 생성됩니다. <img src="https://blog.zarathu.com/posts/2025-07-29-pkgdownshiny/img/liveresult.PNG" class="img-fluid" alt="결과 파일들"></p>
 </section>
 <section id="pkgdown-문서화" class="level1">
 <h1>pkgdown 문서화</h1>
 <ol type="1">
-<li>_pkgdown.yml 수정</li>
+<li><p>_pkgdown.yml 수정</p>
+<p>pkgdown 문서의 navbar에 Shinylive app 링크를 추가합니다. 기존 pkgdown 문서 아래에 다음 내용을 추가합니다.</p></li>
 </ol>
-<p>pkgdown 문서의 navbar에 Shinylive app 링크를 추가합니다. 기존 pkgdown 문서 아래에 다음 내용을 추가합니다.</p>
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">navbar</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">:</span></span>
-<span id="cb6-2"><span class="at" style="color: #657422;
+<span id="cb7-2"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -205,7 +227,7 @@ font-style: inherit;">structure</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">:</span></span>
-<span id="cb6-3"><span class="at" style="color: #657422;
+<span id="cb7-3"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -213,7 +235,7 @@ font-style: inherit;">left</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">:</span></span>
-<span id="cb6-4"><span class="at" style="color: #657422;
+<span id="cb7-4"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">    </span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -221,7 +243,7 @@ font-weight: bold;
 font-style: inherit;">-</span><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;"> home</span></span>
-<span id="cb6-5"><span class="at" style="color: #657422;
+<span id="cb7-5"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">    </span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -229,7 +251,7 @@ font-weight: bold;
 font-style: inherit;">-</span><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;"> reference</span></span>
-<span id="cb6-6"><span class="at" style="color: #657422;
+<span id="cb7-6"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">    </span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -237,7 +259,7 @@ font-weight: bold;
 font-style: inherit;">-</span><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;"> hello</span></span>
-<span id="cb6-7"><span class="at" style="color: #657422;
+<span id="cb7-7"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -245,7 +267,7 @@ font-style: inherit;">components</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">:</span></span>
-<span id="cb6-8"><span class="at" style="color: #657422;
+<span id="cb7-8"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -253,7 +275,7 @@ font-style: inherit;">hello</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">:</span></span>
-<span id="cb6-9"><span class="at" style="color: #657422;
+<span id="cb7-9"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">      </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -263,7 +285,7 @@ font-weight: bold;
 font-style: inherit;">:</span><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;"> Hello</span></span>
-<span id="cb6-10"><span class="at" style="color: #657422;
+<span id="cb7-10"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">      </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -276,26 +298,27 @@ font-style: inherit;"> site/index.html</span></span></code></pre></div>
 <ol start="2" type="1">
 <li>문서화</li>
 </ol>
-<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">devtools<span class="sc" style="color: #5E5E5E;
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">devtools<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">document</span>()</span>
-<span id="cb7-2">usethis<span class="sc" style="color: #5E5E5E;
+<span id="cb8-2">usethis<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">use_pkgdown_github_pages</span>()</span>
-<span id="cb7-3">usethis<span class="sc" style="color: #5E5E5E;
+<span id="cb8-3">usethis<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">use_pkgdown</span>()</span>
-<span id="cb7-4">pkgdown<span class="sc" style="color: #5E5E5E;
+<span id="cb8-4">pkgdown<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">build_site</span>()</span></code></pre></div>
+<p>docs/ 아래에 다음과 같은 파일들이 생성됩니다. <img src="https://blog.zarathu.com/posts/2025-07-29-pkgdownshiny/img/pkgresult.PNG" class="img-fluid" alt="결과 파일들"></p>
 <p>.gitignore 파일에서 docs를 제거 후 git에 commit합니다. github repository에 gh-pages가 생성됩니다. (약간의 시간이 소요됩니다.)</p>
 </section>
 <section id="정리" class="level1">
@@ -319,16 +342,19 @@ font-style: inherit;">build_site</span>()</span></code></pre></div>
 <ol type="1">
 <li>docs/index.html을 pkgdown/assets에 복사</li>
 </ol>
-<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Rstudio Terminal에 입력</span></span>
+<span id="cb10-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">cp</span> docs/index.html pkgdown/assets/hello.html</span></code></pre></div>
 <p>1-1. index.html은 다음과 같은 구조로 되어 있습니다.</p>
-<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb10-1"><span class="dt" style="color: #AD0000;
+<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb11-1"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;!DOCTYPE</span> html<span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-2"><span class="dt" style="color: #AD0000;
+<span id="cb11-2"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -336,10 +362,10 @@ font-weight: bold;
 font-style: inherit;">head</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-3"><span class="co" style="color: #5E5E5E;
+<span id="cb11-3"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;!-- .css, .js 스크립트 연결 --&gt;</span></span>
-<span id="cb10-4"><span class="dt" style="color: #AD0000;
+<span id="cb11-4"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;/</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -347,7 +373,7 @@ font-weight: bold;
 font-style: inherit;">head</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-5"><span class="dt" style="color: #AD0000;
+<span id="cb11-5"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -355,7 +381,7 @@ font-weight: bold;
 font-style: inherit;">body</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-6">  <span class="dt" style="color: #AD0000;
+<span id="cb11-6">  <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -363,7 +389,7 @@ font-weight: bold;
 font-style: inherit;">nav</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-7">  <span class="dt" style="color: #AD0000;
+<span id="cb11-7">  <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;/</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -371,7 +397,7 @@ font-weight: bold;
 font-style: inherit;">nav</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-8">  <span class="dt" style="color: #AD0000;
+<span id="cb11-8">  <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -385,7 +411,7 @@ background-color: null;
 font-style: inherit;">"container template-home"</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-9">    <span class="dt" style="color: #AD0000;
+<span id="cb11-9">    <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -399,7 +425,7 @@ background-color: null;
 font-style: inherit;">"row"</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-10">      <span class="dt" style="color: #AD0000;
+<span id="cb11-10">      <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -419,7 +445,7 @@ background-color: null;
 font-style: inherit;">"col-md-9"</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-11">      <span class="dt" style="color: #AD0000;
+<span id="cb11-11">      <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;/</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -427,7 +453,7 @@ font-weight: bold;
 font-style: inherit;">main</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-12">      <span class="dt" style="color: #AD0000;
+<span id="cb11-12">      <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -452,7 +478,7 @@ background-color: null;
 font-style: inherit;">"license"</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-13">      <span class="dt" style="color: #AD0000;
+<span id="cb11-13">      <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;/</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -460,7 +486,7 @@ font-weight: bold;
 font-style: inherit;">aside</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-14">    <span class="dt" style="color: #AD0000;
+<span id="cb11-14">    <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;/</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -468,7 +494,7 @@ font-weight: bold;
 font-style: inherit;">div</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-15">      <span class="dt" style="color: #AD0000;
+<span id="cb11-15">      <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -476,7 +502,7 @@ font-weight: bold;
 font-style: inherit;">footer</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-16">      <span class="dt" style="color: #AD0000;
+<span id="cb11-16">      <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;/</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -484,7 +510,7 @@ font-weight: bold;
 font-style: inherit;">footer</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-17">  <span class="dt" style="color: #AD0000;
+<span id="cb11-17">  <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;/</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -492,7 +518,7 @@ font-weight: bold;
 font-style: inherit;">div</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-18"><span class="dt" style="color: #AD0000;
+<span id="cb11-18"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;/</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -500,7 +526,7 @@ font-weight: bold;
 font-style: inherit;">body</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb10-19"><span class="dt" style="color: #AD0000;
+<span id="cb11-19"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;/</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -512,7 +538,7 @@ font-style: inherit;">&gt;</span></span></code></pre></div>
 <ol start="2" type="1">
 <li>hello.html에서 사용할 <code>&lt;nav&gt;</code>, <code>&lt;footer&gt;</code>를 남겨두고 <code>&lt;aside&gt;</code>를 삭제합니다. <code>&lt;main&gt;</code> 아래 내용을 아래와 같이 수정합니다.</li>
 </ol>
-<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb11-1">  <span class="dt" style="color: #AD0000;
+<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb12-1">  <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -538,7 +564,7 @@ background-color: null;
 font-style: inherit;">"max-width: 1200px;"</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb11-2">    <span class="dt" style="color: #AD0000;
+<span id="cb12-2">    <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -563,7 +589,7 @@ font-weight: bold;
 font-style: inherit;">iframe</span><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&gt;</span></span>
-<span id="cb11-3">  <span class="dt" style="color: #AD0000;
+<span id="cb12-3">  <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">&lt;/</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -575,13 +601,13 @@ font-style: inherit;">&gt;</span></span></code></pre></div>
 <ol start="3" type="1">
 <li>마지막으로 _pkgdown.yml의 navbar 부분을 다음과 같이 수정합니다.</li>
 </ol>
-<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb12-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">navbar</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">:</span></span>
-<span id="cb12-2"><span class="at" style="color: #657422;
+<span id="cb13-2"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -589,7 +615,7 @@ font-style: inherit;">structure</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">:</span></span>
-<span id="cb12-3"><span class="at" style="color: #657422;
+<span id="cb13-3"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -597,7 +623,7 @@ font-style: inherit;">left</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">:</span></span>
-<span id="cb12-4"><span class="at" style="color: #657422;
+<span id="cb13-4"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">    </span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -605,7 +631,7 @@ font-weight: bold;
 font-style: inherit;">-</span><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;"> home</span></span>
-<span id="cb12-5"><span class="at" style="color: #657422;
+<span id="cb13-5"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">    </span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -613,7 +639,7 @@ font-weight: bold;
 font-style: inherit;">-</span><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;"> reference</span></span>
-<span id="cb12-6"><span class="at" style="color: #657422;
+<span id="cb13-6"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">    </span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -621,7 +647,7 @@ font-weight: bold;
 font-style: inherit;">-</span><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;"> hello</span></span>
-<span id="cb12-7"><span class="at" style="color: #657422;
+<span id="cb13-7"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -629,7 +655,7 @@ font-style: inherit;">components</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">:</span></span>
-<span id="cb12-8"><span class="at" style="color: #657422;
+<span id="cb13-8"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -637,7 +663,7 @@ font-style: inherit;">hello</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">:</span></span>
-<span id="cb12-9"><span class="at" style="color: #657422;
+<span id="cb13-9"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">      </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -647,7 +673,7 @@ font-weight: bold;
 font-style: inherit;">:</span><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;"> Hello</span></span>
-<span id="cb12-10"><span class="at" style="color: #657422;
+<span id="cb13-10"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">      </span><span class="fu" style="color: #4758AB;
 background-color: null;

@@ -27,6 +27,10 @@ pkgdown을 이용한 R 패키지 문서화와 서버 없이 작동하는 Shiny �
 
 # 준비물
 
+- 패키지 설치
+``` r
+install.packages(c("shiny", "shinylive", "pkgdown", "usethis", "devtools"))
+```
 - R package
 - Shiny app
 
@@ -41,7 +45,7 @@ usethis::create_package(".") # R package 생성
 
 3. R 함수 생성
 
-  R/ 아래에 함수 hello.R을 생성합니다.
+   R/ 아래에 함수 hello.R을 생성합니다.
 
 ``` r
 #' # hello.R
@@ -60,13 +64,14 @@ hello <- function(name) {
 1. 폴더 생성
 
 ``` bash
+# Rstudio Terminal에 입력
 mkdir -p inst/app/source
 cp R/hello.R inst/app/source
 ```
 
 2. Shiny app 생성
 
-  inst/app/ 아래에 app.R을 생성합니다.
+   inst/app/ 아래에 app.R을 생성합니다.
 
 ``` r
 # app.R
@@ -98,12 +103,15 @@ pkgdown/assets/ 아래 Shinylive app을 export합니다.
 shinylive::export("inst/app", "pkgdown/assets/site")
 ```
 
+export 후 pkgdown/assets/site/ 아래에 다음과 같은 파일들이 생성됩니다.
+![결과 파일들](img/liveresult.PNG)
+
 # pkgdown 문서화
 
 1. _pkgdown.yml 수정
 
-  pkgdown 문서의 navbar에 Shinylive app 링크를 추가합니다.
-  기존 pkgdown 문서 아래에 다음 내용을 추가합니다.
+   pkgdown 문서의 navbar에 Shinylive app 링크를 추가합니다.
+   기존 pkgdown 문서 아래에 다음 내용을 추가합니다.
 
 ```yml
 navbar:
@@ -126,9 +134,11 @@ usethis::use_pkgdown_github_pages()
 usethis::use_pkgdown()
 pkgdown::build_site()
 ```
+   docs/ 아래에 다음과 같은 파일들이 생성됩니다.
+![결과 파일들](img/pkgresult.PNG)
 
-  .gitignore 파일에서 docs를 제거 후 git에 commit합니다.
-  github repository에 gh-pages가 생성됩니다. (약간의 시간이 소요됩니다.)
+   .gitignore 파일에서 docs를 제거 후 git에 commit합니다.
+   github repository에 gh-pages가 생성됩니다. (약간의 시간이 소요됩니다.)
 
 
 # 정리
@@ -160,6 +170,7 @@ pkgdown으로 생성된 문서의 UI는 docs/index.html과 이에 연결된 .css
 1. docs/index.html을 pkgdown/assets에 복사
 
 ``` bash
+# Rstudio Terminal에 입력
 cp docs/index.html pkgdown/assets/hello.html
 ```
 
@@ -186,7 +197,7 @@ cp docs/index.html pkgdown/assets/hello.html
 </html>
 ```
 
-  각 `<nav>`, `<main>`, `<aside>`, `<footer>`는 아래 부분을 정의합니다.
+   각 `<nav>`, `<main>`, `<aside>`, `<footer>`는 아래 부분을 정의합니다.
 ![각 영역 설명](img/area.PNG)
 
 2. hello.html에서 사용할 `<nav>`, `<footer>`를 남겨두고 `<aside>`를 삭제합니다.
@@ -196,7 +207,7 @@ cp docs/index.html pkgdown/assets/hello.html
     <iframe src="site/index.html" style="width:100%; height:calc(100vh - 106px); border:none;"></iframe>
   </main>
 ```
-  `<main>` 영역의 크기를 조절할 때, `border:1px solid black;`로 테두리 설정하면 조절하기 용이합니다.
+   `<main>` 영역의 크기를 조절할 때, `border:1px solid black;`로 테두리 설정하면 조절하기 용이합니다.
 
 3. 마지막으로 _pkgdown.yml의 navbar 부분을 다음과 같이 수정합니다.
 ``` yml
