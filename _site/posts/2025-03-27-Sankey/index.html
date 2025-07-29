@@ -289,8 +289,8 @@ ga('send', {
 <p>Sankey Plot은 데이터의 흐름이나 분포를 시각적으로 표현하는 그래프다.</p>
 <p>선(링크)의 굵기로 양 또는 비율을 보여주며, 한 집단에서 다른 집단으로 얼마나 이동했는지를 한눈에 확인할 수 있게 도와 전체적인 구조와 흐름을 직관적으로 이해할 수 있도록 한다.</p>
 <section id="텍스트를-추가하려고-했더니" class="level2"><h2 class="anchored" data-anchor-id="텍스트를-추가하려고-했더니">텍스트를 추가하려고 했더니…</h2>
-<p>R에는 <code><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork()</a></code> 함수로 Sankey Plot을 생성할 수 있는 기능이 존재한다. 이 함수는 <code>networkD3</code> 패키지에서 제공되며, 비교적 간단한 코드로 노드와 링크 데이터를 연결해 Sankey Plot을 만들 수 있다는 장점이 있다 (특히 마우스 오버 시 강조되거나, 노드를 드래그할 수 있는 등의 동작은 시각적으로 유용하다).</p>
-<p>하지만 이 함수만으로는 각 링크 위에 텍스트를 추가하거나, 노드 옆에 퍼센트 또는 샘플 수(n=) 같은 세부 정보를 표시하는 것이 어렵다. 그 이유는 Sankey Plot 내부 요소들의 위치(x, y 좌표)가 JavaScript에서 실시간으로 계산되기 때문이다. 따라서 R에서는 그 위치 정보를 직접 참조하거나 조작할 수가 없어 <code><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork()</a></code>를 이용한 기본적인 시각화 요소 외에는 커스터마이징 옵션이 제한적이다.</p>
+<p>R에는 <code>sankeyNetwork()</code> 함수로 Sankey Plot을 생성할 수 있는 기능이 존재한다. 이 함수는 <code>networkD3</code> 패키지에서 제공되며, 비교적 간단한 코드로 노드와 링크 데이터를 연결해 Sankey Plot을 만들 수 있다는 장점이 있다 (특히 마우스 오버 시 강조되거나, 노드를 드래그할 수 있는 등의 동작은 시각적으로 유용하다).</p>
+<p>하지만 이 함수만으로는 각 링크 위에 텍스트를 추가하거나, 노드 옆에 퍼센트 또는 샘플 수(n=) 같은 세부 정보를 표시하는 것이 어렵다. 그 이유는 Sankey Plot 내부 요소들의 위치(x, y 좌표)가 JavaScript에서 실시간으로 계산되기 때문이다. 따라서 R에서는 그 위치 정보를 직접 참조하거나 조작할 수가 없어 <code>sankeyNetwork()</code>를 이용한 기본적인 시각화 요소 외에는 커스터마이징 옵션이 제한적이다.</p>
 <p>따라서 Sankey Plot의 시각적 완성도를 높이기 위해서는 결국 R 코드와 JavaScript를 함께 사용하는 접근이 요구된다.</p>
 </section></section><section id="ii.-onrender-소개" class="level1"><h1>II. <code>onRender()</code> 소개</h1>
 <p><code>onRender()</code>는 R에서 만든 시각화 객체에 JavaScript 코드를 직접 삽입할 수 있도록 도와주는 함수이다. 이 함수는 <code>htmlwidgets</code> 패키지에서 제공되며, <code>networkD3</code>, <code>plotly</code>, <code>leaflet</code> 등 다양한 시각화 패키지와 함께 사용된다.</p>
@@ -298,11 +298,11 @@ ga('send', {
 </section><section id="iii.-기본-sankey-diagram-만들기" class="level1"><h1>III. 기본 Sankey Diagram 만들기</h1>
 <p>아래의 ‘sankeyNetwork()’ 함수의 정의를 참고한다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://CRAN.R-project.org/package=networkD3">networkD3</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://christophergandrud.github.io/networkD3/">networkD3</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork</a></span><span class="op">(</span><span class="va">Links</span>, <span class="va">Nodes</span>, <span class="va">Source</span>, <span class="va">Target</span>, <span class="va">Value</span>, <span class="va">NodeID</span>, NodeGroup <span class="op">=</span> <span class="va">NodeID</span>,</span>
+<span><span class="fu">sankeyNetwork</span><span class="op">(</span><span class="va">Links</span>, <span class="va">Nodes</span>, <span class="va">Source</span>, <span class="va">Target</span>, <span class="va">Value</span>, <span class="va">NodeID</span>, NodeGroup <span class="op">=</span> <span class="va">NodeID</span>,</span>
 <span>  LinkGroup <span class="op">=</span> <span class="cn">NULL</span>, units <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  colourScale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/networkD3/man/JS.html">JS</a></span><span class="op">(</span><span class="st">"d3.scaleOrdinal(d3.schemeCategory20);"</span><span class="op">)</span>, fontSize <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  colourScale <span class="op">=</span> <span class="fu">JS</span><span class="op">(</span><span class="st">"d3.scaleOrdinal(d3.schemeCategory20);"</span><span class="op">)</span>, fontSize <span class="op">=</span> <span class="fl">7</span>,</span>
 <span>  fontFamily <span class="op">=</span> <span class="cn">NULL</span>, nodeWidth <span class="op">=</span> <span class="fl">15</span>, nodePadding <span class="op">=</span> <span class="fl">10</span>, margin <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  height <span class="op">=</span> <span class="cn">NULL</span>, width <span class="op">=</span> <span class="cn">NULL</span>, iterations <span class="op">=</span> <span class="fl">32</span>, sinksRight <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -450,9 +450,9 @@ dbl (3): N, IDsource, IDtarget
 <span><span class="st">'</span></span>
 <span></span>
 <span><span class="co"># Sankey Plot 생성</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://CRAN.R-project.org/package=networkD3">networkD3</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://christophergandrud.github.io/networkD3/">networkD3</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork</a></span><span class="op">(</span>Links <span class="op">=</span> <span class="va">mydata</span>, Nodes <span class="op">=</span> <span class="va">nodes</span>, Source <span class="op">=</span> <span class="st">'IDsource'</span>,</span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">sankeyNetwork</span><span class="op">(</span>Links <span class="op">=</span> <span class="va">mydata</span>, Nodes <span class="op">=</span> <span class="va">nodes</span>, Source <span class="op">=</span> <span class="st">'IDsource'</span>,</span>
 <span>                   Target <span class="op">=</span> <span class="st">'IDtarget'</span>, Value <span class="op">=</span> <span class="st">'N'</span>, NodeID <span class="op">=</span> <span class="st">'id'</span>,</span>
 <span>                   fontSize <span class="op">=</span> <span class="fl">15</span>, nodeWidth <span class="op">=</span> <span class="fl">40</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>left <span class="op">=</span> <span class="fl">200</span>, right <span class="op">=</span> <span class="fl">250</span><span class="op">)</span>, colourScale <span class="op">=</span> <span class="va">colourScale</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -565,7 +565,7 @@ dbl (3): N, IDsource, IDtarget
 <p>이 기능들을 실행시켜 생성한 Sankey Diagram의 예시다:</p>
 <p><img src="img/sankey_editor2.png" class="img-fluid" alt="sankeyeditor"> 이와 같이 Saneky Diagram Editor App은 Sankey Plot 제작 과정을 더 간단하고 효율적으로 만들기 위한 도구로, 기능성과 편의성을 갖추고 있다.</p>
 </section><section id="vi.-마치며" class="level1"><h1>VI. 마치며</h1>
-<p>이번 포스트에서는 <code><a href="https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html">sankeyNetwork()</a></code>로 생성한 Sankey Plot에 JavaScript를 활용해 링크마다 비율을 표시하고, 노드 옆에 샘플 수와 비율을 함께 표시하는 방법을 살펴보았다. 기본적으로 R에서는 sankeyNetwork로 그래프를 쉽게 만들 수는 있지만, 텍스트나 위치와 같은 디테일한 조정은 제공되지 않는다. 그래서 <code><a href="https://rdrr.io/pkg/htmlwidgets/man/onRender.html">htmlwidgets::onRender()</a></code>를 활용해 JavaScript 코드를 직접 삽입하는 방식이 필요했고, 이를 통해 시각적으로 훨씬 더 풍부한 Sankey Plot을 만들 수 있다.</p>
+<p>이번 포스트에서는 <code>sankeyNetwork()</code>로 생성한 Sankey Plot에 JavaScript를 활용해 링크마다 비율을 표시하고, 노드 옆에 샘플 수와 비율을 함께 표시하는 방법을 살펴보았다. 기본적으로 R에서는 sankeyNetwork로 그래프를 쉽게 만들 수는 있지만, 텍스트나 위치와 같은 디테일한 조정은 제공되지 않는다. 그래서 <code><a href="https://rdrr.io/pkg/htmlwidgets/man/onRender.html">htmlwidgets::onRender()</a></code>를 활용해 JavaScript 코드를 직접 삽입하는 방식이 필요했고, 이를 통해 시각적으로 훨씬 더 풍부한 Sankey Plot을 만들 수 있다.</p>
 <p>앞서 소개한 Shiny App은 이 과정을 생략할 수 있는 도구로, 빠르게 커스터마이징 된 Sankey Plot을 편집하고 저장할 수 있기 때문에 편의성을 재공한다.</p>
 
 
