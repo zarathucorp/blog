@@ -734,46 +734,6 @@ Hwangbo, Gyeom. 2025. <span>“R 패키지 문서에 서버 없이 Shiny 앱 추
   <media:content url="https://blog.zarathu.com/posts/2025-07-29-pkgdownshiny/img/logo.png" medium="image" type="image/png" height="89" width="144"/>
 </item>
 <item>
-  <title>Testing slide</title>
-  <dc:creator>Yeji Kang</dc:creator>
-  <link>https://blog.zarathu.com/posts/2025-07-29-test/</link>
-  <description><![CDATA[ 
-<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-L0DYYSH9KM');
-</script>
-
-
-
-
-
-<section id="testing" class="level1">
-<h1>testing</h1>
-<p>hello</p>
-
-
-</section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kang2025,
-  author = {Kang, Yeji},
-  title = {Testing Slide},
-  date = {2025-07-29},
-  url = {https://blog.zarathu.com/posts/2025-07-29-test/},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kang2025" class="csl-entry quarto-appendix-citeas">
-Kang, Yeji. 2025. <span>“Testing Slide.”</span> July 29, 2025. <a href="https://blog.zarathu.com/posts/2025-07-29-test/">https://blog.zarathu.com/posts/2025-07-29-test/</a>.
-</div></div></section></div> ]]></description>
-  <category>ggplot</category>
-  <guid>https://blog.zarathu.com/posts/2025-07-29-test/</guid>
-  <pubDate>Tue, 29 Jul 2025 00:00:00 GMT</pubDate>
-</item>
-<item>
   <title>ggplot으로 만든 그래프에 p-value 추가하는 법</title>
   <dc:creator>Yeji Kang</dc:creator>
   <link>https://blog.zarathu.com/posts/2025-07-28-Pval/</link>
@@ -33458,6 +33418,2216 @@ Seo, Jeongmin. 2024. <span>“Tidyplots: 간편한 그래프 작성
   <guid>https://blog.zarathu.com/posts/2024-12-06-tidyplots/</guid>
   <pubDate>Fri, 06 Dec 2024 00:00:00 GMT</pubDate>
   <media:content url="https://blog.zarathu.com/posts/2024-12-06-tidyplots/img/logo.png" medium="image" type="image/png" height="166" width="144"/>
+</item>
+<item>
+  <title>DeLong’s Method; for ROC AUC</title>
+  <dc:creator>Hojun LEE</dc:creator>
+  <link>https://blog.zarathu.com/posts/2024-11-20-DeLongsMethod/</link>
+  <description><![CDATA[ <!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="introduction" class="level1"><h1>Introduction</h1>
+<p>우리는 <strong>ROC</strong> 곡선에서 <strong>AUC</strong> 값을 구할 수 있다. <strong>AUC</strong> 값이 1에 가까우면 모델의 성능이 좋다라고 하며, 0.5에 가까워질 수록 성능이 나쁘다- 라고 한다. 그렇다면, <strong>ROC</strong>에서 신뢰구간은 어떻게 구할까? 특정 <strong>AUC</strong>값과 비교하여 <strong>p value</strong>를 구하려면 어떻게 해야 할까?</p>
+<p>이를 위해 <strong>DeLong</strong>의 <strong>AUC 표준 오차</strong> 구하는 방법을 소개하려 한다. (E. DeLong, 1988)</p>
+<section id="roc-curve-recevier-operating-characteristic-curve" class="level2"><h2 class="anchored" data-anchor-id="roc-curve-recevier-operating-characteristic-curve">ROC curve (Recevier Operating Characteristic Curve)</h2>
+<ul>
+<li>
+<strong>ROC</strong> 곡선은 이진 분류 문제에서 모델의 성능을 평가하는데 사용되는 시각적 도구이다.</li>
+<li>다양한 임계값에서의 민감도와 False Positive Rate의 관계를 시각화한 것으로,</li>
+<li>
+<strong>민감도(Sensitivity)</strong>를 <strong>Y</strong>축으로, <strong>1 - 특이도(False Positive Rate)</strong>을 <strong>X</strong>축으로 하여 관계를 그린 그래프이다.</li>
+</ul>
+<p><strong>민감도(Sensitivity, True Positive Rate)</strong></p>
+<ul>
+<li>실제 양성 사례를 얼마나 잘 분류하는지/ 실제 양성인 샘플을 양성으로 올바르게 분류한 비율 <img src="https://latex.codecogs.com/png.latex?%0ASens%20=%20%5Cfrac%7BTrue%20Positives(TP)%7D%7BTrue%20Positives(TP)%20+%20False%20Negatives(FN)%7D%0A">
+</li>
+</ul>
+<p><strong>특이도(Specificity, True Negative Rate)</strong></p>
+<ul>
+<li>실제 음성 사례를 얼마나 잘 분류하는지/ 실제 음성인 샘플을 음성으로 올바르게 분류한 비율</li>
+<li>
+<strong>False Positive Rate(FPR)</strong> : 1-Spec, 실제 음성인 샘플을 잘못 양성으로 분류한 비율</li>
+</ul>
+<p><img src="https://latex.codecogs.com/png.latex?%0ASpec%20=%20%5Cfrac%7BTrue%20Negatives(TN)%7D%7BTrue%5C%20Negatives(TN)%20+%20False%20%5C%20Positives(FP)%7D%0A"></p>
+<p><strong>이상적인 ROC 곡선</strong></p>
+<ul>
+<li>이상적인 분류는 <strong>ROC</strong>가 (0,1)을 지날 때, 즉 <strong>FPR</strong>이 0이고, <strong>TPR</strong>이 1인 경우.</li>
+<li>무작위 분류는 <strong>ROC</strong>가 <strong>y=x</strong>일 때, <strong>TPR = FPR</strong>인 경우.</li>
+</ul>
+<p><strong>AUC(Area Under the Curve)</strong></p>
+<ul>
+<li>
+<strong>AUC</strong>는 <strong>ROC</strong> 곡선 아래 면적을 의미한다.</li>
+<li>
+<strong>AUC</strong>가 1에 가까울수록 성능이 좋은 모델. 0.5에 가까울수록 성능이 안좋은 모델.</li>
+</ul>
+<div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://blog.zarathu.com/posts/2024-11-20-DeLongsMethod/img/logo.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="250">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: ROC
+</figcaption></figure>
+</div>
+</section><section id="empirical-roc-curve" class="level2"><h2 class="anchored" data-anchor-id="empirical-roc-curve">Empirical ROC Curve</h2>
+<ul>
+<li>아래와 같이 <strong>ROC Curve</strong>를 추정할 수 있다.</li>
+<li>test를 시행한 총 집단의 수를 N이라 할 때, 실제로 이벤트가 발생한 집단을 <img src="https://latex.codecogs.com/png.latex?C_1">(<img src="https://latex.codecogs.com/png.latex?X_i">,n=m), 발생하지 않은 집단을 <img src="https://latex.codecogs.com/png.latex?C2">(<img src="https://latex.codecogs.com/png.latex?Y_i">,n=n)이라 하자.</li>
+</ul>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7Bfor%20any%20real%20number%20z,%7D%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%20%5C%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0ASens(z)%20=%20%5Cfrac%7B1%7D%7Bm%7D%5Csum_%7Bi=1%7D%5E%7Bm%7D%7BI(X_i%20%5Cgeq%20z)%7D,%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0ASpec(z)%20=%20%5Cfrac%7B1%7D%7Bn%7D%5Csum_%7Bj=1%7D%5E%7Bn%7D%7BI(Y_i%20%3C%20z)%7D,%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0AI(A)%20=%0A%5Cbegin%7Bcases%7D%0A1,%20&amp;%20%20A%20%5Ctext%7B%20is%20true%7D%20%5C%5C%0A0,%20&amp;%20%5Ctext%7Botherwise%7D%0A%5Cend%7Bcases%7D%0A"></p>
+<ul>
+<li>이때 실수 z가 variable 내 가능한 값들 내에서 움직인다면, <strong>ROC curve</strong>는 <strong>[1 - spec(z)]</strong>를 <strong>X</strong>로, <strong>Sens(z)</strong>를 <strong>Y</strong>로 갖는 plot이라 할 수 있다. 만약 <strong>z</strong>가 가능한 최대값보다 크다면 curve는 (0,0)을, 최솟값보다 작다면(1,1)을 지날 것이다. <strong>Sens(z) = 1 - Spec(z)</strong>라면 y=x 위, 45도 선 위에 놓일 것이다.</li>
+</ul>
+<div id="fig-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://blog.zarathu.com/posts/2024-11-20-DeLongsMethod/img/auc.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="250">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: AUC
+</figcaption></figure>
+</div>
+</section><section id="auc" class="level2"><h2 class="anchored" data-anchor-id="auc">AUC</h2>
+<ul>
+<li>
+<strong>ROC curve</strong>는 위와 같이 구할 수 있다. 그럼 이의 넓이: <strong>AUC</strong> 값은 어떻게 구할까? 보통, 곡선 아래 넓이는 <em>trapezoidal rule</em>을 통해 구한다. 고등학교 때 배운 적분을 떠올리면 된다. 수많은 사다리꼴로 쪼개어 넓이를 근사하던 기억을 되살려 보자.</li>
+</ul>
+<div id="fig-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://blog.zarathu.com/posts/2024-11-20-DeLongsMethod/img/trapezes.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="250">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Trapezes
+</figcaption></figure>
+</div>
+<p>여기서, <em>Mann-Whitney two sample statistic</em>에 따르면, ROC curve 아래 넓이를 구할때, <em>trapezodial rule</em>로 구한 넓이는 <em>Mann-Whitney two sample statistic</em>으로 구한 넓이로 대체할 수 있다.</p>
+<ul>
+<li>
+<strong>Mann-Whitney statistic</strong>는 확률<img src="https://latex.codecogs.com/png.latex?%5Ctheta">를 예측한다. <img src="https://latex.codecogs.com/png.latex?C_2">에서 무작위 추출한 값이 <img src="https://latex.codecogs.com/png.latex?C_1">의 값보다 같거나 작을 확률을 추정한다. <em>(test를 시행한 총 집단의 수를 N이라 할 때, 실제로 이벤트가 발생한 집단을 <img src="https://latex.codecogs.com/png.latex?C_1">(<img src="https://latex.codecogs.com/png.latex?X_i">,n=m), 발생하지 않은 집단을 <img src="https://latex.codecogs.com/png.latex?C2">(<img src="https://latex.codecogs.com/png.latex?Y_i">,n=n)이라 하자)</em>
+</li>
+</ul>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Chat%7B%5Ctheta%7D%20=%20%5Cfrac%7B1%7D%7Bmn%7D%5Csum_%7Bj=1%7D%5E%7Bn%7D%5Csum_%7Bi=1%7D%5E%7Bm%7D%7B%5Cpsi(X_i,%20Y_j)%7D%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cpsi(X,Y)%20=%20%5Cbegin%7Bcases%7D%0A1%20&amp;%20%20%5C%20Y%20%3C%20X%20%5C%5C%0A1/2%20&amp;%20%5C%20%20Y=X%20%5C%5C%0A0%20&amp;%20%5C%20Y%3EX%0A%5Cend%7Bcases%7D%0A"></p>
+<ul>
+<li>모든 (X, Y) 쌍에 대해 X &gt; Y이면 1을, X = Y이면 <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D">, X &lt; Y 이면 0을 부여하여 확률을 구한다.</li>
+<li>직관적으로, <strong>ROC curve</strong>와 <strong>AUC</strong> 값은 곧 모델의 추정이 옳을 확률이며, 이의 성능의 최고값은 1, 최저값은 1/2이라는 점을 고민하면 위의 추정은 그럴듯 하다.</li>
+</ul>
+<p><img src="https://latex.codecogs.com/png.latex?%0AE(%5Chat%7B%5Ctheta%7D)%20=%20Pr(X%3EY)%20+%20%5Cfrac%7B1%7D%7B2%7DPr(X=%20Y)%0A"></p>
+<ul>
+<li>그럼, <strong>확률(AUC)</strong>은 위와 같이 정리할 수 있다.</li>
+</ul></section><section id="standard-error" class="level2"><h2 class="anchored" data-anchor-id="standard-error">Standard Error</h2>
+<p>이제, <strong>AUC</strong>값의 신뢰성을 측정하기 위해서는 <strong>SE(standard Error)</strong>를 계산하는 것이 필요하다. 이는 <strong>DeLong(1988)</strong>이 제시한 방법을 참고하자.</p>
+<p>ξ를 각각의 집단 간 공분산이라 하자.</p>
+<p>ξ₁₀은 <img src="https://latex.codecogs.com/png.latex?C_1">의 <img src="https://latex.codecogs.com/png.latex?X_i">와 <img src="https://latex.codecogs.com/png.latex?C_2">의 <img src="https://latex.codecogs.com/png.latex?Y_j,%20Y_k">간 공분산,</p>
+<p>ξ₀₁은 <img src="https://latex.codecogs.com/png.latex?C_2">의 <img src="https://latex.codecogs.com/png.latex?Y_j">와 <img src="https://latex.codecogs.com/png.latex?C_1">의 <img src="https://latex.codecogs.com/png.latex?X_i,%20Y_k">간 공분산,</p>
+<p>ξ₁₁은 <img src="https://latex.codecogs.com/png.latex?C_1">의 <img src="https://latex.codecogs.com/png.latex?X_i">와 <img src="https://latex.codecogs.com/png.latex?C_2">의 <img src="https://latex.codecogs.com/png.latex?Y_j">간 자기공분산이다.</p>
+<p>ξ₁₀, ξ₀₁, ξ₁₁의 기대값은 아래와 같다.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%CE%BE_%7B10%7D%20=%20E%5B%5Cpsi(X_i,%20Y_j)%20%5Cpsi(X_i,Y_k)%5D-%5Ctheta%5E2,%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%CE%BE_%7B01%7D%20=%20E%5B%5Cpsi(X_i,%20Y_j)%20%5Cpsi(X_k,Y_j)%5D-%5Ctheta%5E2,%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%CE%BE_%7B11%7D%20=%20E%5B%5Cpsi(X_i,%20Y_j)%20%5Cpsi(X_i,Y_j)%5D-%5Ctheta%5E2,%0A"></p>
+<p>기댓값들을 이용하여 <strong>AUC</strong> 추정치의 분산을 계산할 수 있다.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Avar(%5Chat%7B%5Ctheta%7D)%20=%20%5Cfrac%7B(n-1)%CE%BE_%7B10%7D+(m-1)%CE%BE_%7B01%7D%7D%7Bmn%7D%20+%20%5Cfrac%7B%CE%BE_%7B11%7D%7D%7Bmn%7D%0A"></p>
+<p>이와 같은 방법으로 단일 표본 집합에서의 <strong>AUC</strong>의 <strong>표준 오차</strong>를 구할 수 있다.</p>
+<ul>
+<li>이제, 단일 표본 집합이 아닌 다른 표본집합 r과 s에 대해 다뤄보자. 여러 표본 집합이 있을 경우, 각 표본 간의 <strong>상호 공분산</strong> 또한 고려되어야한다. 두 표본 집합 r과 s에 대해 AUC의 공분산 계산은 아래와 같다.</li>
+</ul>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%CE%BE_%7B10%7D%5E%7Brs%7D%20=%20E%5B%5Cpsi(X_i%5Er,%20Y_j%5Er)%20%5Cpsi(X_i%5Es,Y_k%5Es)%5D-%5Ctheta%5Er%20%5Ctheta%5Es,%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%CE%BE_%7B01%7D%5E%7Brs%7D%20=%20E%5B%5Cpsi(X_i%5Er,%20Y_j%5Er)%20%5Cpsi(X_i%5Es,Y_k%5Es)%5D-%5Ctheta%5Er%20%5Ctheta%5Es,%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%CE%BE_%7B11%7D%5E%7Brs%7D%20=%20E%5B%5Cpsi(X_i%5Er,%20Y_j%5Er)%20%5Cpsi(X_i%5Es,Y_k%5Es)%5D-%5Ctheta%5Er%20%5Ctheta%5Es,%0A"></p>
+<p>이제, 아래 식을 통해 표본 집합의 <strong>AUC</strong> 값 간의 <strong>공분산</strong>을 계산할 수 있다.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Acov(%5Chat%7B%5Ctheta%5Er%7D,%5Chat%7B%5Ctheta%5Es%7D)%20=%20%5Cfrac%7B(n-1)%CE%BE_%7B10%7D%5E%7Brs%7D+(m-1)%CE%BE_%7B01%7D%5E%7Brs%7D%7D%7Bmn%7D%20+%20%5Cfrac%7B%CE%BE_%7B11%7D%5E%7Brs%7D%7D%7Bmn%7D%0A"> 이 수식을 통해 여러 표본 집합 간의 공분산을 반영하여 <strong>AUC의 표준 오차</strong>를 더 정확하게 추정할 수 있다.</p>
+<ul>
+<li>이를 바탕으로 우리가 궁금한 값 <strong>“표준 오차”</strong>에 접근해 보자. <strong>(Hoeffding_1948, Bamber_1975, Sen_1960)</strong>과 같은 분들 덕분에, 우리는 <strong>AUC 표준 오차</strong>를 보다 정확히 추정할 수 있다.</li>
+</ul>
+<p><img src="https://latex.codecogs.com/png.latex?%0AV%5Er_%7B10%7D(X_i)%20=%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bj=1%7D%5En%5Cpsi(X_i%5Er,Y_j%5Er)%5C%20%5C%20%5C%20%5C%20%5C%20(i=%201,2,...,m)%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0AV%5Er_%7B01%7D(Y_j)%20=%20%5Cfrac%7B1%7D%7Bm%7D%20%5Csum_%7Bi=1%7D%5Em%5Cpsi(X_i%5Er,Y_j%5Er)%5C%20%5C%20%5C%20%5C%20%5C%20(j=%201,2,...,m)%0A"></p>
+<ul>
+<li>
+<img src="https://latex.codecogs.com/png.latex?V%5Er_%7B10%7D(X_i)">은 집합r에서 값을 기반으로 한 분산이다.</li>
+</ul>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cpsi(X_i%5Er,Y_j%5Er)">는 <img src="https://latex.codecogs.com/png.latex?X_i%5Er,Y_j%5Er">의 관계를 나타내며, 이를 통해 분산을 구한다. <img src="https://latex.codecogs.com/png.latex?V%5Er_%7B01%7D(Y_j)">은 집합 <img src="https://latex.codecogs.com/png.latex?Y%5Er_j">에서의 분산이다.</p>
+<p>두 값을 통해 각 표본 집합에 대한 분산을 따로 계산한 후, 이를 결합하여 최종적으로 <strong>표준 오차</strong>를 추정할 수 있다. 각 분산 값이 표본 크기에 따라 가중평균되며, <strong>AUC 표준 오차 S</strong>는 아래와 같다.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5C%5C%0AS%20=%20%5Cfrac%7B1%7D%7Bm%7DS_%7B10%7D%20+%20%5Cfrac%7B1%7D%7Bn%7DS_%7B01%7D%0A%5C%5C%0A"></p>
+<blockquote class="blockquote">
+<p>표준 오차를 통해 우리는 AUC 값이 얼마나 신뢰할 수 있는지 평가할 수 있으며, 이는 모델의 성능을 명확히 이해하는데 중요한 역할을 한다.</p>
+</blockquote>
+</section></section><section id="code" class="level1"><h1>Code</h1>
+<p>이를 R에서는 <strong>pROC package</strong>를 통해 이용할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://xrobin.github.io/pROC/">pROC</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>;<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>;<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://r-datatable.com">data.table</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">aSAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SAH</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html">as.data.table</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">aSAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    gos6 outcome gender   age  wfns s100b  ndka
+   &lt;ord&gt;  &lt;fctr&gt; &lt;fctr&gt; &lt;int&gt; &lt;ord&gt; &lt;num&gt; &lt;num&gt;
+1:     5    Good Female    42     1  0.13  3.01
+2:     5    Good Female    37     1  0.14  8.54
+3:     5    Good Female    42     1  0.10  8.09
+4:     5    Good Female    27     1  0.04 10.42
+5:     1    Poor Female    42     3  0.13 17.40
+6:     1    Poor   Male    48     2  0.10 12.75</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>데이터는 pROC 패키지 내장 데이터인 aSAH 데이터를 사용하였다. aSAH는 뇌동맥류 파열로 인해 발생하는 SAH에 대한 데이터이다. n=113명이며, 변수는 아래와 같다.</p>
+</blockquote>
+<pre><code>  gos6        (Glasgow Outcome scale), 
+  outcome     (clinical outcome: Good/Poor)
+  gender      (성별:  Male/female)       
+  age         (나이)        
+  wfns        (신경학적 평가 점수: 1~5, 1= 가장 양호), 
+  s100b       (혈액 내 S100B 단백질 농도: 뇌손상 biomarker)
+  ndka        (혈액 내 neuron-specific enoalse 농도: 신경 손상 biomarker)</code></pre>
+<p>위 변수 중 100b를 사용하여 outcome을 예측하는 <strong>ROC curve</strong>와 <strong>AUC</strong> 값을 구해보자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/pROC/man/roc.html">roc</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>response <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">outcome</span>, </span>
+<span>                  predictor <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">s100b</span>, </span>
+<span>                  levels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Good"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Poor"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># outcome의 순서 지정</span></span>
+<span>                  direction <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>  </span>
+<span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+roc.default(response = SAH$outcome, predictor = SAH$s100b, levels = c("Good",     "Poor"), direction = "&lt;")
+
+Data: SAH$s100b in 72 controls (SAH$outcome Good) &lt; 41 cases (SAH$outcome Poor).
+Area under the curve: 0.7314</code></pre>
+</div>
+</div>
+<p>위와 같이 지정한 변수 및 <strong>AUC</strong> 값을 확인할 수 있다.</p>
+<p>여기서 <strong>ROC curve</strong>를 직접 보고싶으면 아래와 같이 확인할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span>,</span>
+<span>  col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"blue"</span>,    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># curve 색깔 지정</span></span>
+<span>  lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>,         <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># curve 두께 지정</span></span>
+<span>  main <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ROC Curve for s100b"</span>      <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#그래프 제목 지정</span></span>
+<span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># xlim = c(1, 0),                 # x축 범위, 일반적으로 1-spec(FPR)   </span></span>
+<span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ylim = c(0, 1)                  # y축 범위, 일반적으로 Sensitivity       </span></span>
+<span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># type = "1"                      # 그래프의 형태, 기본값은 선그래프</span></span>
+<span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># xlab/ylab = "1-Specificity"     # x/y축 레이블 지정.</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>             <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># curve와 함께 AUC값 표기.</span></span>
+<span>  x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.4</span>, </span>
+<span>  labels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"AUC ="</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/pROC/man/auc.html">auc</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, </span>
+<span>  col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://blog.zarathu.com/posts/2024-11-20-DeLongsMethod/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>이처럼 <strong>ROC curve, AUC</strong>값을 구할 수 있다. 이제 <strong>AUC</strong> 값에 대해 추가적으로 알아보자.</p>
+<ul>
+<li>
+<strong>pROC package</strong>을 이용해 <strong>AUC</strong>의 <strong>표준오차(SE)와 신뢰구간(CI)</strong>를 구할 수 있다.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">auc_result</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/pROC/man/auc.html">auc</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>   <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#이전에 구한 roc_result 사용</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">se_auc</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>  </span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ci_result</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/pROC/man/ci.auc.html">ci.auc</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">auc_result</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>;<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ci_result</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>;<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">se_auc</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve: 0.7314</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI: 0.6301-0.8326 (DeLong)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.05165929</code></pre>
+</div>
+</div>
+<ul>
+<li>위처럼 <strong>SE/CI</strong>를 구하는 것에 더해, ROC curve에서 <strong>특정 threshold(0.7)</strong>와 비교한 <strong>p-value</strong>를 구할 수 있다.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">z_value</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">auc_result</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">se_auc</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">z_value</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"p-value for AUC &gt; 0.7:"</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"\n"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value for AUC &gt; 0.7: 0.5437048 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>위 경우는 유의하지 않다.</p>
+</blockquote>
+</section><section id="example" class="level1"><h1>Example</h1>
+<ul>
+<li>위와 같은 방법으로 aSAH의 다양한 변수들 중, <strong>outcome 예측</strong>에 가장 좋은 변수를 확인하자. 또한, <strong>age/gender</strong>를 기준으로 <strong>subgroup analysis</strong>도 진행하자.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://xrobin.github.io/pROC/">pROC</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>;<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://r-datatable.com">data.table</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>;<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#data</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">aSAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SAH</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html">as.data.table</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">aSAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#subgroup</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">subgroups</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SAH</span>,</span>
+<span>  age_over_50 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">age</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span>,</span>
+<span>  age_50_or_below <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">age</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span>,</span>
+<span>  male <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">gender</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Male"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span>,</span>
+<span>  female <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">SAH</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">gender</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Female"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ROC 및 성능 평가 함수(threshold: 0.8)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">evaluate_roc</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predictor_var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#predictor_var는 numeric variable이어야.</span></span>
+<span>   <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predictor_var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predictor_var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predictor_var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>   <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span>  </span>
+<span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># outcome variable은 factor variable이어야.</span></span>
+<span>  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/factor.html">is.factor</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">outcome</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">outcome</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">outcome</span>, levels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Poor"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Good"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span>  </span>
+<span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#ROC</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/pROC/man/roc.html">roc</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">outcome</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predictor_var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span>, levels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Poor"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Good"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  </span>
+<span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#AUC, CI</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">auc_value</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/pROC/man/auc.html">auc</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">auc_CI</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/pkg/pROC/man/ci.auc.html">ci.auc</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  </span>
+<span>      <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Handle AUC == 1</span></span>
+<span>      <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">auc_value</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/warning.html">warning</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"AUC is 1. SE and p-value may be undefined."</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">se_auc</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span></span>
+<span>      <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># SE </span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">se_auc</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">roc_result</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># P-value</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">z_value</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">auc_value</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">se_auc</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">z_value</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>      <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span>  </span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value_display</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.001</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;0.001"</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  </span>
+<span>    </span>
+<span>    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 비교하고픈 cutoff가 있다면 비교하여 Sensitivity, Specificity, PPV, NPV, Accuracy등 다양한 값을 구할 수 있다. </span></span>
+<span>      <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#ex. median으로 cutoff를 지정하여 비교할 수 있다. (결과에는 포함하지 않음.)</span></span>
+<span>      <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#median cutoff.</span></span>
+<span>      <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">median_cutoff</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predictor_var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span>, na.rm <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>      </span>
+<span>      <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># </span></span>
+<span>      <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predicted</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predictor_var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">median_cutoff</span></span>
+<span>      <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">outcome</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predicted</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span>  </span>
+<span>        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 구조 점검.</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">row_levels</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">col_levels</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        </span>
+<span>        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Good"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">row_levels</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Good"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Poor"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">row_levels</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Poor"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"TRUE"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">col_levels</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"TRUE"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"FALSE"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">col_levels</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"FALSE"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        </span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TP</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Good"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"TRUE"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">FP</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Poor"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"TRUE"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">FN</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Good"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"FALSE"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TN</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">table1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Poor"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"FALSE"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span>        </span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Sensitivity</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TP</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TP</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">FN</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Specificity</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TN</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TN</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">FP</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">PPV</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TP</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TP</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">FP</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">NPV</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TN</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TN</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">FN</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Accuracy</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TP</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TN</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TP</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">FP</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">TN</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">FN</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>    AUC <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">auc_value</span>,</span>
+<span>    AUC_CI <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">auc_CI</span>,</span>
+<span>    `P value` <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p_value_display</span></span>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ROC 분석</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predictor_vars</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gos6"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"age"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"wfns"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"s100b"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ndka"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">results</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">subgroups</span>, <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">group</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">predictor_vars</span>, <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">evaluate_roc</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">group</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">var</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">result_tables</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">results</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">group_name</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>  </span>
+<span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#subgroup 가져오기</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">group_results</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">results</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">group_name</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 예측 변수 가져오기</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">group_data</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">group_results</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">i</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 인덱스(i)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">group_results</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">i</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span>    </span>
+<span>    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html">as.data.table</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>          Group <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">group_name</span>,               </span>
+<span>          Predictor <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predictor"</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">i</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, </span>
+<span>          `AUC(95% CI)` <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">AUC_CI</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"-"</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">AUC_CI</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, </span>
+<span>          `P value` <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">`P value`</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.001</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;0.001"</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">`P value`</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> </span>
+<span>        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>          <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Group</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Predictor</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">AUC</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">`AUC(95% CI)`</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">`P value`</span></span>
+<span>        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> </span>
+<span>    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  </span>
+<span>  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">group_data</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, use.names <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> </span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">result_tables</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Predictor</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Predictor</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predictor 1"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gos6"</span>,</span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Predictor</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predictor 2"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"age"</span>,</span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Predictor</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predictor 3"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"wfns"</span>,</span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Predictor</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predictor 4"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"s100b"</span>,</span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Predictor</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predictor 5"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ndka"</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># cause CI, 3 row created. rm. </span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">result_tables_filtered</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">result_tables</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">result_tables</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, by <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">result_tables_filtered</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Group Predictor   AUC AUC(95% CI) P value
+             &lt;char&gt;    &lt;char&gt; &lt;num&gt;      &lt;char&gt;  &lt;char&gt;
+ 1:            data      gos6 1.000         1-1    &lt;NA&gt;
+ 2:            data       age 0.615 0.508-0.722  &lt;0.001
+ 3:            data      wfns 0.824 0.749-0.899   0.531
+ 4:            data     s100b 0.731  0.63-0.833   0.182
+ 5:            data      ndka 0.612 0.501-0.723  &lt;0.001
+ 6:     age_over_50      gos6 1.000         1-1    &lt;NA&gt;
+ 7:     age_over_50       age 0.517  0.36-0.675  &lt;0.001
+ 8:     age_over_50      wfns 0.738 0.613-0.864   0.334
+ 9:     age_over_50     s100b 0.725 0.588-0.861    0.28
+10:     age_over_50      ndka 0.626 0.473-0.778   0.025
+11: age_50_or_below      gos6 1.000         1-1    &lt;NA&gt;
+12: age_50_or_below       age 0.541 0.387-0.695  &lt;0.001
+13: age_50_or_below      wfns 0.910 0.837-0.983   0.003
+14: age_50_or_below     s100b 0.702 0.529-0.874   0.266
+15: age_50_or_below      ndka 0.612 0.453-0.771   0.021
+16:            male      gos6 1.000         1-1    &lt;NA&gt;
+17:            male       age 0.680 0.514-0.845   0.154
+18:            male      wfns 0.876 0.773-0.979   0.148
+19:            male     s100b 0.773 0.632-0.914   0.707
+20:            male      ndka 0.552 0.371-0.734   0.007
+21:          female      gos6 1.000         1-1    &lt;NA&gt;
+22:          female       age 0.635   0.49-0.78   0.026
+23:          female      wfns 0.779  0.67-0.887   0.705
+24:          female     s100b 0.720   0.57-0.87   0.296
+25:          female      ndka 0.667 0.526-0.808   0.064
+              Group Predictor   AUC AUC(95% CI) P value</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>데이터 상 크게 유의미한 변수는 없다.</p>
+</blockquote>
+</section><section id="conclusion" class="level1"><h1>Conclusion</h1>
+<ul>
+<li>
+<strong>ROC curve</strong>를 그리고, <strong>AUC</strong> 값을 구할 수 있다.</li>
+<li>
+<strong>AUC</strong> 값의 <strong>SE, CI</strong>를 구할 수 있다.</li>
+<li>threshold와 비교하여 <strong>p-value</strong>를 구할 수 있다.</li>
+<li>이를 실제 데이터에 적용/연습해 보았다.</li>
+</ul></section><section id="reference" class="level1"><h1>Reference</h1>
+<p>[1] E. DeLong, D. DeLong, and D. Clarke-Pearson, “Comparing the areasunder two or more correlated receiver operating characteristic curves: anonparametric approach,” Biometrics, pp.&nbsp;837–845, 1988</p>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lee2024,
+  author = {LEE, Hojun},
+  title = {DeLong’s {Method;} for {ROC} {AUC}},
+  date = {2024-11-20},
+  url = {https://blog.zarathu.com/posts/2024-11-20-DeLongsMethod/},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lee2024" class="csl-entry quarto-appendix-citeas">
+LEE, Hojun. 2024. <span>“DeLong’s Method; for ROC AUC.”</span> November
+20, 2024. <a href="https://blog.zarathu.com/posts/2024-11-20-DeLongsMethod/">https://blog.zarathu.com/posts/2024-11-20-DeLongsMethod/</a>.
+</div></div></section></div> ]]></description>
+  <category>statistics</category>
+  <guid>https://blog.zarathu.com/posts/2024-11-20-DeLongsMethod/</guid>
+  <pubDate>Wed, 20 Nov 2024 00:00:00 GMT</pubDate>
+  <media:content url="https://blog.zarathu.com/posts/2024-11-20-DeLongsMethod/img/logo.png" medium="image" type="image/png" height="132" width="144"/>
 </item>
 </channel>
 </rss>
