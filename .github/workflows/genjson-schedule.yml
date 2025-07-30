@@ -1,8 +1,9 @@
 name: Scheduled genjson.py runner
 
 on:
-  schedule:
-    - cron: '0 9 * * *'  # 6 PM KST (09:00 UTC)
+  push:
+    paths:
+      - 'posts/**'   # Only trigger when files in posts/ change
   workflow_dispatch:
 
 jobs:
