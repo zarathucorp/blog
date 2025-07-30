@@ -2,8 +2,8 @@ name: Scheduled genjson.py runner
 
 on:
   schedule:
-    - cron: '0 9 * * *'  # runs every day at 6 PM KST
-  workflow_dispatch:      # optional manual run button
+    - cron: '0 9 * * *'  # 6 PM KST (09:00 UTC)
+  workflow_dispatch:
 
 jobs:
   run-genjson:
@@ -17,6 +17,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install pyyaml
 
       - name: Run genjson.py
         run: python genjson.py
