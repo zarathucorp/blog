@@ -296,30 +296,97 @@ ga('send', {
 </div>
 <p>코드를 통해 생성된 데이터는 다음과 같습니다. 이는 세 시점(Baseline, Week 2, Week 4)에 걸쳐 두 그룹 간의 점수를 비교하기 위한 목적으로 구성된 데이터입니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/">knitr</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">dff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">"data.xlsx"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dff</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: right;">ID</th>
+<th style="text-align: left;">Group</th>
+<th style="text-align: left;">Visit</th>
+<th style="text-align: right;">Score</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">72.48303</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">70.14257</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">73.09262</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">75.08996</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">71.48390</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">69.34858</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">71.58845</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">69.68004</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">68.62014</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">72.80861</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <p>Visit 변수의 순서를 Baseline → Week 2 → Week 4로 지정해 그래프에서 시간 순서대로 정렬되도록 합니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span><span class="op">[</span>, <span class="va">Visit</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Visit</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Baseline"</span>, <span class="st">"Week 2"</span>, <span class="st">"Week 4"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span><span class="op">[</span>, <span class="va">Visit</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Visit</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Baseline"</span>, <span class="st">"Week 2"</span>, <span class="st">"Week 4"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>다음으로, 각 Visit 시점별로 두 그룹 간 평균 차이에 대한 t-test를 수행합니다. <code><a href="https://rpkgs.datanovia.com/ggpubr/reference/compare_means.html">compare_means()</a></code> 함수를 사용하면, <code>group.by = "Visit"</code> 옵션을 통해 각 시점별로 그룹 간 비교가 이뤄지며, 그 결과가 데이터프레임 형태로 저장됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pval_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/compare_means.html">compare_means</a></span><span class="op">(</span><span class="va">Score</span> <span class="op">~</span> <span class="va">Group</span>, data <span class="op">=</span> <span class="va">df</span>, group.by <span class="op">=</span> <span class="st">"Visit"</span>, method <span class="op">=</span> <span class="st">"t.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pval_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/compare_means.html">compare_means</a></span><span class="op">(</span><span class="va">Score</span> <span class="op">~</span> <span class="va">Group</span>, data <span class="op">=</span> <span class="va">df</span>, group.by <span class="op">=</span> <span class="st">"Visit"</span>, method <span class="op">=</span> <span class="st">"t.test"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>pval_df</code>에는 각 Visit에 해당하는 시점별로 t-test 결과가 행 단위로 저장되며, 그 중 <code>pval_df$p</code> 열에는 계산된 p-value 값이 포함되어 있습니다.</p>
 <p>이제 계산된 p-value를 시각적으로 명확하게 전달될 수 있게 만듭니다. <code><a href="https://rdrr.io/r/base/ifelse.html">ifelse()</a></code> 함수를 사용하여 p-value가 0.001보다 작을 경우 “p &lt; 0.001”로, 그렇지 않으면 소수점 셋째 자리까지 표기하도록 합니다.</p>
 <p>이렇게 만든 텍스트 라벨은 pval_df$label이라는 새로운 열로 저장됩니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pval_df</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">pval_df</span><span class="op">$</span><span class="va">p</span> <span class="op">&lt;</span> <span class="fl">0.001</span>, <span class="st">"p &lt; 0.001"</span>, <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"p = %.3f"</span>, <span class="va">pval_df</span><span class="op">$</span><span class="va">p</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pval_df</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">pval_df</span><span class="op">$</span><span class="va">p</span> <span class="op">&lt;</span> <span class="fl">0.001</span>, <span class="st">"p &lt; 0.001"</span>, <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"p = %.3f"</span>, <span class="va">pval_df</span><span class="op">$</span><span class="va">p</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>이 <code>pval_df$label</code>은 이후 <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text()</a></code>에서 <code>label = label</code>로 호출되어 그래프에 p-value 텍스트로 표시됩니다.</p>
 <p>이제 <code><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html">stat_summary()</a></code>로 mean과 standard error를 line graph로 시각화하고, 앞서 계산한 p-value는 <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text()</a></code>를 활용해 각 시점 위에 직접 추가합니다. p-value 텍스트가 겹치지 않도록 적절한 y축 위치도 함께 지정해줍니다.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pval_df</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">85</span>  <span class="co"># adjust label height</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pval_df</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">85</span>  <span class="co"># adjust label height</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Visit</span>, y <span class="op">=</span> <span class="va">Score</span>, color <span class="op">=</span> <span class="va">Group</span>, group <span class="op">=</span> <span class="va">Group</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html">stat_summary</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="va">mean</span>, geom <span class="op">=</span> <span class="st">"line"</span>, size <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html">stat_summary</a></span><span class="op">(</span>fun.data <span class="op">=</span> <span class="va">mean_se</span>, geom <span class="op">=</span> <span class="st">"errorbar"</span>, width <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
