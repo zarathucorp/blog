@@ -251,7 +251,6 @@ window.Quarto = {
       </div>
                           <div class="quarto-categories">
                 <div class="quarto-category">R</div>
-                <div class="quarto-category">rpackage</div>
               </div>
                   </div>
   </div>
@@ -332,9 +331,9 @@ window.Quarto = {
 <p><span class="math inline">\(y_{ij} = \beta_0 + \beta_1 * Group_i + \beta_2 * Time_{ij} + \beta_3(Group_i * Time_{ij}) + \epsilon_{ij}\)</span></p>
 <p><span class="math inline">\(y_{ij}\)</span>는 i번째 환자의 j번째 측정값을 의미하고, <span class="math inline">\(\epsilon_{ij}\sim N(0, \sigma^2)\)</span>라고 가정하겠습니다.</p>
 <p>위 모델에서</p>
-<p><span class="math inline">\(\beta_1\)</span>(<strong>Group effect</strong>): 시간에 관계없이 group간 평균적인 차이를 나타냅니다. 이는 baseline에서 그룹 간 평균 차이를 의미합니다.</p>
+<p><span class="math inline">\(\beta_1\)</span>(<strong>Group effect</strong>): 시간에 관계없이 Group간 평균적인 차이를 나타냅니다. 이는 baseline에서 그룹 간 평균 차이를 의미합니다.</p>
 <p><span class="math inline">\(\beta_2\)</span>(<strong>Time effect</strong>): 어떤 Group에 속하는지와 무관하게 시간이 지남에 따라 전체 평균이 얼마나 변하는지를 나타냅니다. 이 값이 음수라면 평균이 감소, 양수면 평균이 증가하는 경향성을 의미합니다.</p>
-<p><span class="math inline">\(\beta_3\)</span>(<strong>Interaction effect</strong>): 시간과 그룹 간의 상호작용 효과로, 시간에 따른 치료 효과의 변화 차이를 나타냅니다. 즉, 시간에 따라 치료효과가 Group 별로 얼마나 다르게 나타났는지를 의미합니다.</p>
+<p><span class="math inline">\(\beta_3\)</span>(<strong>Interaction effect</strong>): 시간과 Group 간의 상호작용 효과로, 시간에 따라 Group별로 나타나는 차이를 나타냅니다. 즉, 시간에 따라 Group 별로 얼마나 평균이 다르게 나타났는지를 의미합니다.</p>
 <p>fixed effects의 경우 위와 같이 estimate 형태로 도출되고, 전체 데이터에 일관되게 적용됩니다.</p>
 </section><section id="random-effects" class="level2"><h2 class="anchored" data-anchor-id="random-effects">Random Effects</h2>
 <p><strong>random effects</strong>의 경우 fixed effects와 비슷하면서도 조금 다른 형태를 보입니다. 이번 포스팅에서는 <strong>intercept</strong>에만 random effect를 주어 여기에 집중해보도록 하겠습니다.</p>
@@ -685,7 +684,7 @@ Number of clusters:   20  Maximum cluster size: 4 </code></pre>
 <p><span class="math display">\[
 f(Y,u) = f(Y\mid u) \cdot f(u)
 \]</span> <span class="math display">\[
-= \frac{1}{({2\pi})^\frac{n}{2}\det V^{1/2}} \exp(- \frac{1}{2}(Y-X\beta-Zu)^T V^{-1}\frac{1}{2}(Y-X\beta-Zu))
+= \frac{1}{({2\pi})^\frac{n}{2}\det R^{1/2}} \exp(- \frac{1}{2}(Y-X\beta-Zu)^T V^{-1}\frac{1}{2}(Y-X\beta-Zu))
 \]</span></p>
 <p><span class="math display">\[
 \times \frac{1}{({2\pi})^\frac{r}{2}\det G^{1/2}} \exp(- \frac{1}{2}u^TGu)
@@ -728,7 +727,7 @@ Var(b)= [(X^TV^{-1}X)^{-1}X^TV^{-1} + A] V [(X^TV^{-1}X)^{-1}X^TV^{-1} + A]^{-1}
 \]</span> <span class="math display">\[
 = Var(\hat\beta_{GLS})
 \]</span></p>
-<p>따라서 <span class="math inline">\(\hat\beta_{GLS}\)</span>$가 <span class="math inline">\(BLUE\)</span>가 됨을 보일 수 있습니다. BLUP 또한 BLUE와 비슷한 방법으로 또다른 linear unbiased parameter을 들고 와서 증명이 가능합니다. BLUP의 형태를 다시 한 번 보겠습니다.</p>
+<p>따라서 <span class="math inline">\(\hat\beta_{GLS}\)</span>가 BLUE가 됨을 보일 수 있습니다. BLUP 또한 BLUE와 비슷한 방법으로 또다른 linear unbiased parameter을 들고 와서 증명이 가능합니다. BLUP의 형태를 다시 한 번 보겠습니다.</p>
 <p><span class="math display">\[
 BLUP = \hat u =GZ^TV^{-1}(Y-X\hat\beta)
 \]</span> 이제 이 식을 우리가 계속 다뤘던 intercept에만 random effects가 존재하는 모델에 맞추어 바꿔보도록 하겠습니다. <span class="math inline">\(G\)</span> 또한 원래의 노테이션으로 바꿔서 i번째 환자의 입장에서 정리해보면 다음과 같이 표현할 수 있겠습니다.</p>
