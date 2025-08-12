@@ -4,7 +4,6 @@ description: |
   linear mixed effects model에서 사용했을 때 추정치들의 standard error가 모두 같아지는 상황에 대해 알아봅시다.
 categories:
   - R
-  - rpackage
 author:
   name: "Mingu Jee"
   email: rafamingujee047@gmail.com
@@ -47,11 +46,11 @@ $y_{ij}$는 i번째 환자의 j번째 측정값을 의미하고, $\epsilon_{ij}\
 
 위 모델에서
 
-$\beta_1$(**Group effect**): 시간에 관계없이 group간 평균적인 차이를 나타냅니다. 이는 baseline에서 그룹 간 평균 차이를 의미합니다.
+$\beta_1$(**Group effect**): 시간에 관계없이 Group간 평균적인 차이를 나타냅니다. 이는 baseline에서 그룹 간 평균 차이를 의미합니다.
 
 $\beta_2$(**Time effect**): 어떤 Group에 속하는지와 무관하게 시간이 지남에 따라 전체 평균이 얼마나 변하는지를 나타냅니다. 이 값이 음수라면 평균이 감소, 양수면 평균이 증가하는 경향성을 의미합니다.
 
-$\beta_3$(**Interaction effect**): 시간과 그룹 간의 상호작용 효과로, 시간에 따른 치료 효과의 변화 차이를 나타냅니다. 즉, 시간에 따라 치료효과가 Group 별로 얼마나 다르게 나타났는지를 의미합니다.
+$\beta_3$(**Interaction effect**): 시간과 Group 간의 상호작용 효과로, 시간에 따라 Group별로 나타나는 차이를 나타냅니다. 즉, 시간에 따라 Group 별로 얼마나 평균이 다르게 나타났는지를 의미합니다.
 
 fixed effects의 경우 위와 같이 estimate 형태로 도출되고, 전체 데이터에 일관되게 적용됩니다.
 
@@ -366,7 +365,7 @@ $$
 f(Y,u) = f(Y\mid u) \cdot f(u)
 $$
 $$
-= \frac{1}{({2\pi})^\frac{n}{2}\det V^{1/2}} \exp(- \frac{1}{2}(Y-X\beta-Zu)^T V^{-1}\frac{1}{2}(Y-X\beta-Zu))
+= \frac{1}{({2\pi})^\frac{n}{2}\det R^{1/2}} \exp(- \frac{1}{2}(Y-X\beta-Zu)^T V^{-1}\frac{1}{2}(Y-X\beta-Zu))
 $$
 
 $$
@@ -431,7 +430,7 @@ $$
 = Var(\hat\beta_{GLS})
 $$
 
-따라서 $\hat\beta_{GLS}$$가 $BLUE$가 됨을 보일 수 있습니다. BLUP 또한 BLUE와 비슷한 방법으로 또다른 linear unbiased parameter을 들고 와서 증명이 가능합니다. BLUP의 형태를 다시 한 번 보겠습니다.
+따라서 $\hat\beta_{GLS}$가 BLUE가 됨을 보일 수 있습니다. BLUP 또한 BLUE와 비슷한 방법으로 또다른 linear unbiased parameter을 들고 와서 증명이 가능합니다. BLUP의 형태를 다시 한 번 보겠습니다.
 
 $$
 BLUP = \hat u =GZ^TV^{-1}(Y-X\hat\beta)
