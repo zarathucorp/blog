@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Mingu Jee">
 <meta name="dcterms.date" content="2025-08-12">
-<meta name="description" content="lmer을 사용했을 때 추정치들의 standard error가 모두 같아지는 상황에 대해 알아봅시다.">
+<meta name="description" content="linear mixed effects model에서 사용했을 때 추정치들의 standard error가 모두 같아지는 상황에 대해 알아봅시다.">
 <title>반복측정자료 모델링: linear mixed effects model – 차라투 블로그</title>
 <style>
 code{white-space: pre-wrap;}
@@ -246,7 +246,7 @@ window.Quarto = {
       <h1 class="title">반복측정자료 모델링: linear mixed effects model</h1>
                   <div>
         <div class="description">
-          <p>lmer을 사용했을 때 추정치들의 standard error가 모두 같아지는 상황에 대해 알아봅시다.</p>
+          <p>linear mixed effects model에서 사용했을 때 추정치들의 standard error가 모두 같아지는 상황에 대해 알아봅시다.</p>
         </div>
       </div>
                           <div class="quarto-categories">
@@ -320,7 +320,7 @@ window.Quarto = {
 
   gtag('config', 'G-L0DYYSH9KM');
 </script><section id="개요" class="level1"><h1>개요</h1>
-<p>linear mixed model에서 intercept에만 random effect를 주었을 때 추정치들의 standard error가 같아지는 경우에 대해 알아봅시다.</p>
+<p>linear mixed model에서 intercept에만 random effects를 주었을 때 추정치들의 standard error가 같아지는 경우에 대해 알아봅시다.</p>
 <hr></section><section id="반복측정자료" class="level1"><h1>1. 반복측정자료</h1>
 <p>어떤 임상실험에서 연구자가 특정 기간을 주기로 당뇨병 환자들의 인슐린 농도를 측정한다고 해봅시다. 이러한 경우 환자 각각은 서로 다른 사람이므로, <strong>서로 다른 환자에게서 관찰된 데이터</strong>는 서로 <strong>독립</strong>이라고 봐도 무방합니다.</p>
 <p>그러나 <strong>동일한 환자에게서 반복적으로 측정된 값</strong>들은 서로 독립이라고 보기 어렵습니다. 동일한 환자에게서 측정정되었기 때문에, 각 시점의 데이터들 간에는 특정한 <strong>상관관계가 존재</strong>할 것이라는 생각을 해볼 수 있겠습니다. 예컨대, 당뇨임에도 치료 효과가 좋은 환자는 시간이 지날수록 인슐린 농도가 점점 높아질 수 있고, 치료에 소극적인 환자의 경우에는 반대의 경향성을 보일 것입니다.</p>
@@ -623,7 +623,7 @@ Number of Fisher Scoring iterations: 2</code></pre>
 </div>
 <p>Group 변수에서 <strong>NA</strong>가 나왔습니다. 아마 다중공산성 문제 등이 발생해서 design matirx가 singular 해진 것 같습니다. 여기서부터 문제가 느껴지시나요? NO의 level이 너무 많아지게되어서 <strong>모델 구조가 필요 이상으로 복잡</strong>해지고, 원하지도 않은 수많은 계수들을 추정하게 됩니다. 이렇게 되면 정작 우리가 중요하게 생각하고 있는 변수들의 효과에 대한 <strong>해석도 어려워집니다.</strong></p>
 <p>Group 변수에서 NA가 발생한 것 자체가 <strong>추정의 불안정성</strong>을 보여주는 예시라고 볼 수 있겠습니다. 이와 별개로 만약 반복측정된 횟수가 정말 적은 경우라면, NA가 뜨지 않더라고 해당 변수에 해당하는 표준 오차가 굉장히 커질 것이기에 값 자체에 대한 신뢰성 또한 떨어집니다.</p>
-<p>이것이 우리가 lmer을 쓰는 이유 중 하나입니다. fixed effects만으로 처리하기에는 어려운 부분을 random effects로 말끔하게 처리하여 문제를 해결합니다.</p>
+<p>이것이 우리가 lmer을 쓰는 이유 중 하나입니다. fixed effects만으로 처리하기에는 어려운 부분을 random effects로 말끔하게 처리하여 문제를 해결해준다는 점에서 큰 장점을 가집니다.</p>
 </section></section><section id="gee-vs-lmer" class="level1"><h1>4. GEE VS lmer</h1>
 <section id="gee" class="level2"><h2 class="anchored" data-anchor-id="gee">GEE</h2>
 <p>이번에는 GEE(Generaluzed Estimating Equation)를 사용해 똑같은 데이터를 분석해보겠습니다. 코드는 아래와 같습니다. 참고로 <strong>corsrt = exchangeable</strong>이라고 설정해주어 한 subject내에서 측정된 모든 관측지의 상관관계는 동일하다고 가정했습니다. GEE는 심지어 반복측정환자들끼리 잘 정리되어 있는 데이터가 아니라면 제대로 돌아가지 않습니다. 예시로 사용한 데이터는 반복측정된 환자 순서대로 잘 정리되어 있음을 밝힙니다.</p>
@@ -711,10 +711,10 @@ BLUP = \hat u =GZ^TV^{-1}(Y-X\hat\beta)
 E[\hat\beta_{GLS}] = E[(X^TV^{-1}X)^{-1}X^TV^{-1}(X\beta+\epsilon^*)]
 \]</span></p>
 <p><span class="math display">\[
-= E[(X^TV^{-1}X)^{-1}X^TV^{-1}X] + E[(X^TV^{-1}X)^{-1}X^TV^{-1}\epsilon^*]
+= E[(X^TV^{-1}X)^{-1}X^TV^{-1}X\beta] + E[(X^TV^{-1}X)^{-1}X^TV^{-1}\epsilon^*]
 \]</span></p>
 <p><span class="math display">\[
-= E[\beta] + (X^TV^{-1}X)^{-1}X^TV^{-1} \times E[\epsilon^*] = \beta
+= E[\beta] + (X^TV^{-1}X)^{-1}X^TV^{-1} E[\epsilon^*] = \beta
 \]</span> 이렇게 쉽게 unbiasedness를 보일 수 있습니다. 나아가 분산을 보겠습니다. <span class="math inline">\(b\)</span>를 또다른 linear unbiased estimator로 이면서 다음과 같은 형태를 만족한다고 해봅시다. <span class="math display">\[
 b = [(X^TV^{-1}X)^{-1}X^TV^{-1} + A]Y
 \]</span> unbiasedness를 만족해야 하기 때문에, 계산을 해보면 <span class="math inline">\(AX =0\)</span>이 되어야 합니다. 그렇다면 분산을 구해보면, <span class="math display">\[
