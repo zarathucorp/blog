@@ -11,10 +11,9 @@ Zarathu Official Blog - <https://blog.zarathu.com>
 3.  Rstudio에서 **blog/zarathucorp.Rproj**을 열기
 4.  **blog/posts**로 이동
 5.  아티클을 담을 디렉토리 **생성**, 이때 형식은 `YYYY-MM-DD-TITLE` (다른 예시 참조)
-6.  생성한 디렉토리로 이동 후 `index.qmd` 생성 후 Terminal에 pip install Pyyaml 실행
+6.  생성한 디렉토리로 이동 후 `index.qmd` 생성 후 Terminal에 `pip install Pyyaml` 실행
 7.  YAML 작성 예시 (render 에러가 날 경우 **Indent**, **tab** 확인)
-수정 해야 하는 것은 `title`, `description`, `categories`, `author`, `date`
-`categories`는 반드시 한 개만 작성해야 함함
+수정 해야 하는 것은 `title`, `description`, `categories`, `author`, `date`이고, 이중  `categories`는 반드시 한 개만 작성해야 함함
 
 > [!IMPORTANT]  
 > categories는 R이나 API 와 같이 대문자가 원어인 경우를 제외하고 전부 소문자로 표기
