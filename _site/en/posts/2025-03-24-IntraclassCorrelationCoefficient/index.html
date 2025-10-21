@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.47">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Sungho Choi">
+<meta name="dcterms.date" content="2025-03-24">
+<meta name="description" content="Intraclass Correlation Coefficient에 대해 정리하였습니다.">
+
+<title>Intraclass Correlation Coefficient 공부하기 – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../en/index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">Applications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R packages</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">    
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../en/contributors.html"> 
+<span class="menu-text">Contributors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Partners</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">    
+        <li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">    
+        <li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Intraclass Correlation Coefficient 공부하기</h1>
+                  <div>
+        <div class="description">
+          <p>Intraclass Correlation Coefficient에 대해 정리하였습니다.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">statistics</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/scacola">Sungho Choi</a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 24, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Intraclass Correlation Coefficient 공부하기</h2>
+   
+  <ul>
+  <li><a href="#icc는-무엇인가" id="toc-icc는-무엇인가" class="nav-link active" data-scroll-target="#icc는-무엇인가">ICC는 무엇인가</a>
+  <ul class="collapse">
+  <li><a href="#icc-vs.-cohens-kappa" id="toc-icc-vs.-cohens-kappa" class="nav-link" data-scroll-target="#icc-vs.-cohens-kappa">ICC vs.&nbsp;Cohen’s Kappa</a></li>
+  <li><a href="#icc의-사용분야" id="toc-icc의-사용분야" class="nav-link" data-scroll-target="#icc의-사용분야">ICC의 사용분야</a></li>
+  </ul></li>
+  <li><a href="#초기의-icc" id="toc-초기의-icc" class="nav-link" data-scroll-target="#초기의-icc">초기의 ICC</a>
+  <ul class="collapse">
+  <li><a href="#초기-icc의-정의" id="toc-초기-icc의-정의" class="nav-link" data-scroll-target="#초기-icc의-정의">초기 ICC의 정의</a></li>
+  <li><a href="#pearson-상관계수와-icc의-차이점" id="toc-pearson-상관계수와-icc의-차이점" class="nav-link" data-scroll-target="#pearson-상관계수와-icc의-차이점">Pearson 상관계수와 ICC의 차이점</a></li>
+  <li><a href="#개-이상의-값을-가진-그룹에서의-icc" id="toc-개-이상의-값을-가진-그룹에서의-icc" class="nav-link" data-scroll-target="#개-이상의-값을-가진-그룹에서의-icc">3개 이상의 값을 가진 그룹에서의 ICC</a></li>
+  <li><a href="#icc의-해석-및-한계점" id="toc-icc의-해석-및-한계점" class="nav-link" data-scroll-target="#icc의-해석-및-한계점">ICC의 해석 및 한계점</a></li>
+  </ul></li>
+  <li><a href="#icc의-체계화" id="toc-icc의-체계화" class="nav-link" data-scroll-target="#icc의-체계화">ICC의 체계화</a>
+  <ul class="collapse">
+  <li><a href="#shrout-fleiss-1979" id="toc-shrout-fleiss-1979" class="nav-link" data-scroll-target="#shrout-fleiss-1979">Shrout &amp; Fleiss (1979)</a></li>
+  <li><a href="#mcgraw-wong-1996" id="toc-mcgraw-wong-1996" class="nav-link" data-scroll-target="#mcgraw-wong-1996">McGraw &amp; Wong (1996)</a></li>
+  <li><a href="#icc-분류" id="toc-icc-분류" class="nav-link" data-scroll-target="#icc-분류">ICC 분류</a></li>
+  <li><a href="#one-way-모델에서-consistency가-정의-되지-않는-이유" id="toc-one-way-모델에서-consistency가-정의-되지-않는-이유" class="nav-link" data-scroll-target="#one-way-모델에서-consistency가-정의-되지-않는-이유">One-way 모델에서 Consistency가 정의 되지 않는 이유</a></li>
+  <li><a href="#icc-방식을-정하는-법" id="toc-icc-방식을-정하는-법" class="nav-link" data-scroll-target="#icc-방식을-정하는-법">ICC 방식을 정하는 법</a></li>
+  <li><a href="#대중적으로-사용되는-icc-방식" id="toc-대중적으로-사용되는-icc-방식" class="nav-link" data-scroll-target="#대중적으로-사용되는-icc-방식">대중적으로 사용되는 ICC 방식</a></li>
+  </ul></li>
+  <li><a href="#모던-icc" id="toc-모던-icc" class="nav-link" data-scroll-target="#모던-icc">모던 ICC</a>
+  <ul class="collapse">
+  <li><a href="#랜덤-효과-모형에서의-icc" id="toc-랜덤-효과-모형에서의-icc" class="nav-link" data-scroll-target="#랜덤-효과-모형에서의-icc">랜덤 효과 모형에서의 ICC</a></li>
+  <li><a href="#모던-icc의-공식" id="toc-모던-icc의-공식" class="nav-link" data-scroll-target="#모던-icc의-공식">모던 ICC의 공식</a></li>
+  <li><a href="#모던-icc의-장점" id="toc-모던-icc의-장점" class="nav-link" data-scroll-target="#모던-icc의-장점">모던 ICC의 장점</a></li>
+  <li><a href="#모던-icc의-한계점" id="toc-모던-icc의-한계점" class="nav-link" data-scroll-target="#모던-icc의-한계점">모던 ICC의 한계점</a></li>
+  </ul></li>
+  <li><a href="#icc-r-실습" id="toc-icc-r-실습" class="nav-link" data-scroll-target="#icc-r-실습">ICC R 실습</a>
+  <ul class="collapse">
+  <li><a href="#특정-icc-방법을-실행하는-r코드" id="toc-특정-icc-방법을-실행하는-r코드" class="nav-link" data-scroll-target="#특정-icc-방법을-실행하는-r코드">특정 ICC 방법을 실행하는 R코드</a></li>
+  <li><a href="#shrout-fleiss의-6개-방법을-모두-보여주는-r코드" id="toc-shrout-fleiss의-6개-방법을-모두-보여주는-r코드" class="nav-link" data-scroll-target="#shrout-fleiss의-6개-방법을-모두-보여주는-r코드">Shrout &amp; Fleiss의 6개 방법을 모두 보여주는 R코드</a></li>
+  <li><a href="#lmer-방식의-모던-icc-r코드" id="toc-lmer-방식의-모던-icc-r코드" class="nav-link" data-scroll-target="#lmer-방식의-모던-icc-r코드">lmer 방식의 모던 ICC R코드</a></li>
+  <li><a href="#모던-icc에서-ci-구하기" id="toc-모던-icc에서-ci-구하기" class="nav-link" data-scroll-target="#모던-icc에서-ci-구하기">모던 ICC에서 CI 구하기</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script>
+
+
+
+
+
+<section id="icc는-무엇인가" class="level1">
+<h1>ICC는 무엇인가</h1>
+<p><a href="https://en.wikipedia.org/wiki/Intraclass_correlation">Intraclass Correlation Coefficient (ICC)</a>는 집단으로 구성된 단위들에 대해 수치 측정값이 주어졌을 때, 동일한 집단 내 단위들이 서로 얼마나 유사한지를 나타내는 기술 통계량이다. 주로 측정 신뢰도를 평가할 때 사용되며, 특히 동일한 대상에 대해 여러 관측자(또는 반복 측정)가 수행한 측정의 일관성을 평가하는 데 유용하다.</p>
+<p>ICC는 일반적인 상관계수와 달리 <strong>짝지어진 관측값</strong>이 아니라, 그룹으로 구성된 데이터에 대해 계산된다는 점에서 차이가 있다.</p>
+<section id="icc-vs.-cohens-kappa" class="level2">
+<h2 class="anchored" data-anchor-id="icc-vs.-cohens-kappa">ICC vs.&nbsp;Cohen’s Kappa</h2>
+<p>ICC와 Cohen’s Kappa는 모두 측정자 간 일치도를 측정하는 도구지만, 적용되는 데이터의 특성과 해석 방식에서 차이가 있다.</p>
+<p><strong>자료의 유형</strong></p>
+<ul>
+<li>ICC는 연속형 변수에 사용됨</li>
+<li>Cohen’s Kappa는 범주형 변수에 사용됨</li>
+</ul>
+<p>즉 ICC는 “얼마나 수치들이 서로 비슷한가?”를 보는 것이고, Cohen’s kappa는 “서로 같은 범주로 분류했는가?”를 보는 것이다.</p>
+<p><strong>평가방식</strong></p>
+<ul>
+<li>ICC는 분산을 기반으로 측정값 간의 상관 관계(유사성)를 분석함.</li>
+<li>Cohen’s Kappa는 기대 일치도를 고려하여, 관측된 일치도와 우연히 일어날 수 있는 일치도의 차이를 보정함.</li>
+</ul>
+<p>즉, ICC는 총 변동성 중에서 집단 내 일관성에 기인하는 부분의 비율을 나타내는 것이고, Cohen’s Kappa는 실제 일치가 단순히 우연에 의한 것이 아님을 보장해 주는 것이다.</p>
+<p><strong>측정자 수</strong></p>
+<ul>
+<li>ICC는 둘 이상의 평가자에게 적용할 수 있음. 측정 모델에 따라 다양한 변형등이 존재함.</li>
+<li>Cohen’s Kappa는 전통적으로 두 평가자에 대한 일치도 측정에 사용되며, 다수 평가자일 경우에는 Fleiss’ kappa 등을 사용함.</li>
+</ul>
+</section>
+<section id="icc의-사용분야" class="level2">
+<h2 class="anchored" data-anchor-id="icc의-사용분야">ICC의 사용분야</h2>
+<ul>
+<li>심리학, 의학, 교육학 등에서 테스트 재현성 또는 평가자 간 신뢰도 분석</li>
+<li>머신러닝/데이터 분석에서는 데이터 라벨링 일관성 확인</li>
+<li>반복 측정 설계에서 측정의 안정성 검증</li>
+</ul>
+</section>
+</section>
+<section id="초기의-icc" class="level1">
+<h1>초기의 ICC</h1>
+<p>초기의 ICC 연구는 <strong>짝을 이루는 측정값</strong>에 초점을 맞췄으며, 처음 제안된 ICC 통계량은 <strong>Pearson 상관계수</strong>를 수정한 형태였다.</p>
+<section id="초기-icc의-정의" class="level2">
+<h2 class="anchored" data-anchor-id="초기-icc의-정의">초기 ICC의 정의</h2>
+<p>Ronald Fisher가 제안한 초기 ICC는 다음과 같다.</p>
+<p><span class="math display">\[
+r = \sum_{n=1}^{N} \frac{(x_{n,1} - \bar{x})(x_{n,2} - \bar{x})}{Ns^2}
+\]</span></p>
+<ul>
+<li>데이터셋은 <span class="math inline">\(N\)</span>개의 짝으로 구성됨</li>
+<li>각 개체 <span class="math inline">\(n\)</span>에 대해 두 개의 측정값 <span class="math inline">\((x_{n,1} , x_{n,2})\)</span>가 존재함</li>
+<li><span class="math inline">\(\bar{x}\)</span>는 전체 데이터의 평균 <span class="math display">\[
+\bar{x} = \frac{1}{2N} \sum_{n=1}^{N} (x_{n,1} + x_{n,2})
+\]</span></li>
+<li><span class="math inline">\(s^2\)</span>은 전체 데이터의 분산 <span class="math display">\[
+s^2 = \frac{1}{2N} \left\{ \sum_{n=1}^{N} (x_{n,1} - \bar{x})^2 + \sum_{n=1}^{N} (x_{n,2} - \bar{x})^2 \right\}
+\]</span></li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">r 값 범위</th>
+<th style="text-align: center;">신뢰도의 정도</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">r ≤ 0.00</td>
+<td style="text-align: center;">Poor</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.00 &lt; r ≤ 0.20</td>
+<td style="text-align: center;">Slight</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.20 &lt; r ≤ 0.40</td>
+<td style="text-align: center;">Fair</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.40 &lt; r ≤ 0.60</td>
+<td style="text-align: center;">Moderate</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.60 &lt; r ≤ 0.80</td>
+<td style="text-align: center;">Substantial</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.80 &lt; r ≤ 1.00</td>
+<td style="text-align: center;">Almost Perfect</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="pearson-상관계수와-icc의-차이점" class="level2">
+<h2 class="anchored" data-anchor-id="pearson-상관계수와-icc의-차이점">Pearson 상관계수와 ICC의 차이점</h2>
+<p>Pearson 상관계수와 ICC는 모두 연속형 데이터를 비교할 때 사용하는 지표이지만, 그들이 측정하는 대상과 의미는 전혀 다르다.</p>
+<p>먼저 Pearson 상관계수는 두 변수 간의 선형 관계(일관된 증가/감소)를 측정한다. 예를 들어, 키와 몸무게처럼, 한 변수가 커질수록 다른 변수도 함께 커지는 경향이 있는지를 파악할 때 유용하다. 이때 값은 -1에서 +1 사이이며, 1에 가까울수록 완벽한 양의 선형 관계를 의미한다. 하지만 이 지표는 값 자체의 차이는 고려하지 않는다.</p>
+<p>반면 ICC는 동일한 대상을 여러 번 측정했을 때 그 값이 얼마나 비슷하게 나오는지를 측정하는 지표아다. 즉 서로 다른 평가자나 시간에 따라 측정값이 달라졌을 때, 그 변화가 개인의 특성 차이 때문인지, 아니면 측정자의 오차 때문인지를 분리할 수 있다. ICC 값은 일반적으로 0에서 1 사이에 있으며, 1에 가까울수록 일관되고 신뢰할 수 있는 측정이라고 해석할 수 있다.</p>
+<p>중요한 차이는 해석의 포인트에 있다:</p>
+<p>Pearson 상관계수는 측정값 간의 선형 관계만을 보기 때문에, 두 평가자가 항상 10점 차이를 주더라도 여전히 상관계수는 1이 될 수 있다.</p>
+<p>하지만 ICC는 ’값 자체가 얼마나 유사한지’를 보며, 위와 같은 상황에서는 일치도가 낮다고 판단한다. 즉 Pearson은 “패턴의 일관성”, ICC는 “값의 일치도”를 본다고 이해할 수 있다.</p>
+<p>또한, Pearson 상관계수는 서로 다른 단위를 가진 두 변수(예: 키와 체중)에도 적용 가능하지만, ICC는 동일한 측정 단위 내에서만 적절하게 해석할 수 있다.</p>
+</section>
+<section id="개-이상의-값을-가진-그룹에서의-icc" class="level2">
+<h2 class="anchored" data-anchor-id="개-이상의-값을-가진-그룹에서의-icc">3개 이상의 값을 가진 그룹에서의 ICC</h2>
+<p>데이터셋이 각 그룹당 3개의 측정값을 가지는 경우, ICC는 다음과 같이 확장된다. <span class="math display">\[
+r = \frac{1}{3N s^2} \sum_{n=1}^{N} \left\{
+(x_{n,1} - \bar{x})(x_{n,2} - \bar{x}) +
+(x_{n,1} - \bar{x})(x_{n,3} - \bar{x}) +
+(x_{n,2} - \bar{x})(x_{n,3} - \bar{x})
+\right\}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\bar{x}\)</span>는 전체 평균 <span class="math display">\[
+\bar{x} = \frac{1}{3N} \sum_{n=1}^{N} (x_{n,1} + x_{n,2} + x_{n,3})
+\]</span></li>
+<li><span class="math inline">\(s^2\)</span>는 전체 분산 <span class="math display">\[
+s^2 = \frac{1}{3N} \left\{
+\sum_{n=1}^{N} (x_{n,1} - \bar{x})^2 +
+\sum_{n=1}^{N} (x_{n,2} - \bar{x})^2 +
+\sum_{n=1}^{N} (x_{n,3} - \bar{x})^2
+\right\}
+\]</span> 여기서, 그룹의 크기(K)가 커질수록, 계산 과정에서 고려해야 할 교차항의 수도 증가한다.</li>
+</ul>
+<p>위 공식을 일반화하면 다음과 같아진다. <span class="math display">\[
+r = \frac{K}{K-1} \cdot \frac{1}{Ns^2} \sum_{n=1}^{N} (\bar{x}_n - \bar{x})^2 - \frac{1}{K-1}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(K\)</span>는 그룹당 데이터 개수</li>
+<li><span class="math inline">\(\bar{x_n}\)</span>는 <span class="math inline">\(n\)</span>번째 그룹의 평균</li>
+</ul>
+<p><span class="math inline">\(K=3\)</span>을 대입하면 위 공식과 완벽히 같아진다. 위 공식에 따르면, ICC값은 항상 <span class="math inline">\(\frac{-1}{K-1}\)</span>이상의 값을 가진다는 것을 알 수 있다. 따라서 ICC는 항상 <span class="math inline">\(-1 \leq r \leq 1\)</span>의 범위 안에서 존재하지만, <strong>데이터 개수(</strong><span class="math inline">\(K\)</span>)가 많아질 수록 음수로 나올 가능성이 줄어든다.</p>
+<p>또한 충분히 큰 <span class="math inline">\(K\)</span>에 대해서, 다음과 같이 근사할 수도 있다. <span class="math display">\[
+r = \frac{K}{K-1} \cdot \frac{1}{Ns^2} \sum_{n=1}^{N} (\bar{x}_n - \bar{x})^2
+\]</span></p>
+</section>
+<section id="icc의-해석-및-한계점" class="level2">
+<h2 class="anchored" data-anchor-id="icc의-해석-및-한계점">ICC의 해석 및 한계점</h2>
+<p>ICC는 총 분산 중에서 그룹 간 변동이 차지하는 비율로 해석할 수 있다.</p>
+<p>이상적인 데이터에서는 ICC 값이 0~1 사이에 있어야 하지만, 실제 샘플 데이터에서는 음수 값이 나올 수도 있다. 이는 Ronald Fisher가 ICC를 편향되지 않은 추정량으로 설계했기 때문이다. 따라서 모집단에서 ICC가 0일 경우, 표본 데이터에서는 음수 값이 나올 수 있다.</p>
+</section>
+</section>
+<section id="icc의-체계화" class="level1">
+<h1>ICC의 체계화</h1>
+<section id="shrout-fleiss-1979" class="level2">
+<h2 class="anchored" data-anchor-id="shrout-fleiss-1979">Shrout &amp; Fleiss (1979)</h2>
+<p>Shrout &amp; Fleiss는 초기의 ICC를 체계적으로 분류하였다. 3가지 모델 유형(Model 1, 2, 3), 2가지 측정 방식(1: single, k: 평균)으로 분류하여 총 6가지 유형의 ICC를 정의하였다.</p>
+<p><strong>모델 종류</strong></p>
+<ul>
+<li>one-way random
+<ul>
+<li>피험자 간의 변동만을 고려하는 모형</li>
+<li>피험자 간의 차이에 대한 평가지의 일치도를 평가할 때 사용함</li>
+<li>평가자의 효과는 고려하지 않고, 단순히 피험자 간의 일관성을 평가할 때 사용함</li>
+</ul></li>
+<li>two-way random
+<ul>
+<li>피험자 간 변동뿐만이 아니라, 평가자 간의 변동도 고려하는 모형</li>
+<li>동일한 피험자에 대해 평가한 결과가 얼마나 일치하는지, 평가자들 간의 평가 결과가 얼마나 일관성 있는 지를 평가할 때 사용함</li>
+</ul></li>
+<li>two-way mixed
+<ul>
+<li>피험자 간의 변동과 평가자 간의 변동을 고려하는 모형</li>
+<li>특정 평가자들이 고정되어 있을 때, 피험자 간의 일치도를 평가하는 데 사용함</li>
+</ul></li>
+</ul>
+<p><strong>측정방식</strong></p>
+<ul>
+<li>단일 측도(single)
+<ul>
+<li>평가자 간에 얼마나 차이가 있는지 확인</li>
+<li>각 평가자에 의해 한 번의 측정이 일어난 경우</li>
+</ul></li>
+<li>평균 측도(average)
+<ul>
+<li>평균값과 얼마나 차이가 있는지 확인</li>
+<li>각 평가자에 의해 여러 번 측정이 일어난 경우</li>
+</ul></li>
+</ul>
+</section>
+<section id="mcgraw-wong-1996" class="level2">
+<h2 class="anchored" data-anchor-id="mcgraw-wong-1996">McGraw &amp; Wong (1996)</h2>
+<p>McGraw &amp; Wong은 Shrout &amp; Fleiss의 체계를 확장하여 총 10가지 ICC 형태를 정의하였다. 다음과 같은 총 3가지의 분류 기준을 제시하였다.</p>
+<p><strong>모델 종류</strong></p>
+<ul>
+<li><p>one-way random</p></li>
+<li><p>two-way random</p></li>
+<li><p>two-way mixed</p></li>
+</ul>
+<p><strong>측정방식</strong></p>
+<ul>
+<li><p>단일 측도(single)</p></li>
+<li><p>평균 측도(average)</p></li>
+</ul>
+<p><strong>정의(Definition Agreement)</strong></p>
+<ul>
+<li>일치도(consistency)
+<ul>
+<li>상대적 순위/경향이 일치하는지를 의미</li>
+<li>평가자 간의 체계적인 차이는 무시하고, 변동성만 분석</li>
+<li>포함하는 오차 : 우연한 변동</li>
+<li>사용 상황 : 평가자가 고정되어 있고, 상대적 순위가 중요한 경우</li>
+</ul></li>
+<li>절대합의도(absolute agreement)
+<ul>
+<li>두 평가자의 결과가 완전히 같은지를 의미</li>
+<li>평가자 간의 체계적인 차이까지도 고려</li>
+<li>포함하는 오차 : 우연한 변동, 평가자 간 편향</li>
+<li>사용 상황 : 정량적 측정이 실제 절대값의 일치도를 요구하는 경우</li>
+</ul></li>
+</ul>
+</section>
+<section id="icc-분류" class="level2">
+<h2 class="anchored" data-anchor-id="icc-분류">ICC 분류</h2>
+<p>아래의 표는 Shrout &amp; Fleiss와 McGraw &amp; Wong의 기준에 따라 ICC를 정리한 것이다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 38%">
+<col style="width: 23%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">McGraw and Wong</th>
+<th style="text-align: center;">Shrout and Fleiss</th>
+<th style="text-align: center;">Formulas for Calculating ICC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">One-way random effects, absolute agreement, single rater/measurment</td>
+<td style="text-align: center;">ICC(1,1)</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MS_R - MS_W}{MS_R +(k+1)MS_W}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Two-way random effects, consistency, single rater/measurment</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MS_R - MS_E}{MS_R +(k-1)MS_E}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Two-way random effects, absolute agreement, single rater/measurment</td>
+<td style="text-align: center;">ICC(2,1)</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MS_R - MS_E}{MS_R +(k-1)MS_E + \frac{k}{n} (MS_C - MS_E )}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Two-way mixed effects, consistency , single rater/measurment</td>
+<td style="text-align: center;">ICC(3,1)</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MS_R - MS_E}{MS_R +(k-1)MS_E}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Two-way mixed effects, absolute agreement, single rater/measurment</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MS_R - MS_E}{MS_R +(k-1)MS_E + \frac{k}{n} (MS_C - MS_E )}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">One-way random effects, absolute agreement, multiple rater/measurment</td>
+<td style="text-align: center;">ICC(1,k)</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MS_R - MS_W}{MS_R}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Two-way random effects, consistency, multiple rater/measurment</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MS_R - MS_E}{MS_R}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Two-way random effects, absolute agreement, multiple rater/measurment</td>
+<td style="text-align: center;">ICC(2,k)</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MS_R - MS_E}{MS_R + \frac{MS_C -MS_E}{n}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Two-way mixed effects, consistency, multiple rater/measurment</td>
+<td style="text-align: center;">ICC(3,k)</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MS_R - MS_E}{MS_R}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Two-way mixed effects, absolute agreement, multiple rater/measurment</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MS_R - MS_E}{MS_R + \frac{MS_C -MS_E}{n}}\)</span></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><span class="math inline">\(k\)</span> : 평가자 수</li>
+<li><span class="math inline">\(n\)</span> : 피험자 수</li>
+<li><span class="math inline">\(MS_R\)</span> : mean square for rows</li>
+<li><span class="math inline">\(MS_W\)</span> : mean square for residual sources of variance</li>
+<li><span class="math inline">\(MS_E\)</span> : mean square for error</li>
+<li><span class="math inline">\(MS_C\)</span> : mean square for columns</li>
+</ul>
+</section>
+<section id="one-way-모델에서-consistency가-정의-되지-않는-이유" class="level2">
+<h2 class="anchored" data-anchor-id="one-way-모델에서-consistency가-정의-되지-않는-이유">One-way 모델에서 Consistency가 정의 되지 않는 이유</h2>
+<p>One-way random model은 평가자 효과를 모델에 포함하지 않기 때문이다. One-way 모델에서는 오직 피험자 간 차이만 고려하기 때문에 평가자 간 차이가 분산 구조에서 빠져있다. 따라서 평가자 간 일관성을 측정할 수 없다. 결과적으로 One-way 모델은 “Agreement”는 가능하지만 “Consistency”는 정의할 수 없다.</p>
+</section>
+<section id="icc-방식을-정하는-법" class="level2">
+<h2 class="anchored" data-anchor-id="icc-방식을-정하는-법">ICC 방식을 정하는 법</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/icc.figure.png" class="img-fluid figure-img"></p>
+<figcaption>ICC 방식을 정하는 과정</figcaption>
+</figure>
+</div>
+<p>위 그림은 ICC 유형을 선택하는 의사결정 흐름도를 시각적으로 잘 정리한 자료이다. ICC는 McGraw &amp; Wong이 제안한 모델을 기준으로 총 10가지 유형이 존재한다. 각각의 선택은 연구 설계에 따라 달라지며, 다음과 같은 과정을 거치면 적절한 유형을 결정할 수 있다.</p>
+<p>첫 번째로, 연구 유형이 Test-Retest / Intra-rater Reliability인지, Inter-rater Reliability인지 알아본다. 만일 Test-Retest / Intra-rater Reliability라면, 같은 평가자가 같은 대상을 반복 측정하는 경우이기 때문에 Two-way Mixed Effects 모델을 사용한다. 반면에 Inter-rater Reliability라면 여러 평가자가 각 대상을 평가하는 경우이기 때문에, 다음 과정으로 넘어간다.</p>
+<p>연구 유형이 Inter-rater Reliability일 때 모든 피평가자가 같은 평가자에게 평가되지 않았다면, 일부 평가자만 일부 피평가자를 평가하므로 One-way Random Effects 모델을 사용한다. 만일 모든 피평가자가 같은 평가자에게 평가되었다면, 평가자가 무작위 집단이라면 Two-way Random Effects 모델을 사용하고, 특정 평가자에 한정된다면 Two-way Mixed Effects 모델을 사용한다. 위 과정을 통해 ICC의 모델 중 어떤 것을 사용할 지 선택할 수 있다.</p>
+<p>두 번째로 측정 프로토콜이 어떤 지 확인한다. 만일 한 번만 측정한다면 single rater/measurment을 사용하고, 여러 번 측정 후 평균을 사용한다면 multiple rater/measurment을 사용한다.</p>
+<p>마지막으로 연구에서 중요한 것이 절대적 일치인지, 경향성 일치인지 판단한다. 진단 일치나 채점 점수 등 수치 자체가 같아야 하는 경우라면 Absolute Agreement를 사용하고, 순위 유지가 중요한 경우라면 Consistency를 사용하면 된다.</p>
+</section>
+<section id="대중적으로-사용되는-icc-방식" class="level2">
+<h2 class="anchored" data-anchor-id="대중적으로-사용되는-icc-방식">대중적으로 사용되는 ICC 방식</h2>
+<p>연구 현장에서 많이 쓰이는 ICC는 다음과 같다.</p>
+<ul>
+<li>ICC(2,1): Two-way random effects, single rater/measurment, absolute agreement</li>
+<li>ICC(2,k): Two-way random effects, multiple rater/measurment, absolute agreement</li>
+</ul>
+<p>Two-way random effects 모델은 평가자와 피평가자 모두 무작위 샘플링된 것으로 간주한다. 따라서 평가자도 연구의 일반적인 모집단에서 랜덤하게 선택된 경우를 반영할 수 있어 일반화 가능성이 높다.</p>
+<p>Absolute agreement는 단순히 측정값 간의 일관성만이 아니라, 측정값 자체가 정확히 일치하는지를 따진다. 이는 consistency보다 더 보수적이고 엄격한 방식이다. 또한 consistency는 평가자의 bias를 왜곡하는 반면, Absolute agreement는 systematic bias까지 감지할 수 있다.</p>
+<p>따라서 Two-way random effects, Absolute agreement를 사용하는 ICC(2,1), ICC(2,k)를 실제 연구에서 많이 사용한다.</p>
+</section>
+</section>
+<section id="모던-icc" class="level1">
+<h1>모던 ICC</h1>
+<p>초기 ICC는 ANOVA(분산 분석) 기반의 접근 방식으로 시작되었으나, 이후 <strong>랜덤 효과 모형(Random Effects Model)</strong>을 통해 발전하였다.</p>
+<section id="랜덤-효과-모형에서의-icc" class="level2">
+<h2 class="anchored" data-anchor-id="랜덤-효과-모형에서의-icc">랜덤 효과 모형에서의 ICC</h2>
+<p>모던 ICC는 다음과 같은 one-way random effects 모형에서 정의된다. <span class="math display">\[
+Y_{ij} = \mu + \alpha_j + \varepsilon_{ij}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(Y_{ij}\)</span>는 <span class="math inline">\(j\)</span>번째 그룹의 <span class="math inline">\(i\)</span>번째 측정값</li>
+<li><span class="math inline">\(\mu\)</span>는 모집단 전체의 평균</li>
+<li><span class="math inline">\(\alpha_j\)</span>는 그룹 <span class="math inline">\(j\)</span>에 해당하는 랜덤효과</li>
+<li><span class="math inline">\(\varepsilon_{ij}\)</span>는 오차항</li>
+</ul>
+</section>
+<section id="모던-icc의-공식" class="level2">
+<h2 class="anchored" data-anchor-id="모던-icc의-공식">모던 ICC의 공식</h2>
+<p>모던 ICC는 다음과 같이 정의된다. <span class="math display">\[
+ICC = \frac{\sigma^2_{\alpha}}{\sigma^2_{\alpha} + \sigma^2_{\varepsilon}}
+\]</span></p>
+<p>분자<span class="math inline">\((\sigma^2_{\alpha})\)</span>는 그룹간 분산을 의미하고, 분모<span class="math inline">\((\sigma^2_{\alpha}+\sigma^2_{\varepsilon})\)</span>은 전체 분산을 의미한다.</p>
+<p>즉 ICC는 전체 변동에서 그룹간 변동이 차지하는 비율이 된다. 따라서 ICC값이 클 수록 같은 그룹 내에서 값들이 더 유사하다는 것을 알 수 있다.</p>
+<p><strong>증명</strong></p>
+<p><span class="math inline">\(Y_{ij} = \mu + \alpha_j + \varepsilon_{ij}\)</span>에서 <span class="math inline">\(\alpha_i \sim N(0, \sigma^2_{\alpha})\)</span>, <span class="math inline">\(\epsilon_{ij} \sim N(0, \sigma^2_{\varepsilon})\)</span>이고 <span class="math inline">\(\alpha_i\)</span>와 <span class="math inline">\(\varepsilon_{ij}\)</span>은 서로 독립이다.</p>
+<p><span class="math inline">\(Var(Y_{ij}) = \sigma^2_{\varepsilon} + \sigma^2_{\alpha^2}\)</span></p>
+<span class="math display">\[\begin{align}
+Cov(Y_{ij}, Y_{ik}) &amp;= Cov(\mu + \alpha_{i} + \varepsilon_{ij}, \mu + \alpha_{i} + \varepsilon_{ik})\\
+  &amp;= Cov(\alpha_i + \varepsilon_{ij},\alpha_i + \varepsilon_{ik}) \\
+  &amp;= Cov(\alpha_i , \alpha_i) + Cov(\alpha_i, \varepsilon_{ik}) + Cov(\varepsilon_{ij}, \alpha_i) + Cov(\varepsilon_{ij}, \varepsilon_{ik}) \\
+  &amp;= Var(\alpha_i) = \sigma^2_\alpha
+\end{align}\]</span>
+</section>
+<section id="모던-icc의-장점" class="level2">
+<h2 class="anchored" data-anchor-id="모던-icc의-장점">모던 ICC의 장점</h2>
+<ul>
+<li>항상 0 이상이다
+<ul>
+<li>초기 ICC는 표본에서 음수값이 나올 수 있었음</li>
+</ul></li>
+<li>ANOVA와 결합 가능하다 <span class="math inline">\(\rightarrow\)</span> 샘플 개수가 달라도 적용 가능하다
+<ul>
+<li>초기 ICC는 같은 크기의 그룹을 가정함</li>
+<li>하지만 ANOVA 기반 ICC는 데이터 개수가 달라도 계산 가능</li>
+</ul></li>
+<li>공변량을 포함할 수 있다
+<ul>
+<li>공변량을 통제한 후에도 같은 그룹 내에서 얼마나 유사한지 평가할 수 있음</li>
+</ul></li>
+<li>복잡한 데이터 설계에 유리하다</li>
+</ul>
+</section>
+<section id="모던-icc의-한계점" class="level2">
+<h2 class="anchored" data-anchor-id="모던-icc의-한계점">모던 ICC의 한계점</h2>
+<ul>
+<li>샘플 ICC가 실제 모집단 ICC보다 클 가능성이 높다
+<ul>
+<li>초기 ICC는 편향되지 않은 추정량임</li>
+<li>모던 ICC는 항상 0 이상이므로, 모집단의 ICC가 정확히 0일 때에도 샘플에서 ICC가 0보다 크게 나올 가능성이 있음</li>
+<li>즉, 양의 편향을 가짐</li>
+</ul></li>
+<li>여러 종류의 ICC가 존재<span class="math inline">\(\rightarrow\)</span>어떤 ICC를 사용할지 논란이 된다
+<ul>
+<li>연구자마다 다른 ICC 통계량을 사용하며, 각 방법이 서로 다른 결과를 낼 수 있음</li>
+<li>특정 연구 목적에 적합한 ICC를 신중하게 선택해야 함</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="icc-r-실습" class="level1">
+<h1>ICC R 실습</h1>
+<section id="특정-icc-방법을-실행하는-r코드" class="level2">
+<h2 class="anchored" data-anchor-id="특정-icc-방법을-실행하는-r코드">특정 ICC 방법을 실행하는 R코드</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(irr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ratings <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Rater1 =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">2</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Rater2 =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">3</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Rater3 =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">2</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">icc</span>(ratings, <span class="at">model =</span> <span class="st">"twoway"</span>, <span class="at">type =</span> <span class="st">"agreement"</span>, <span class="at">unit =</span> <span class="st">"single"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>출력</strong></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Single Score Intraclass Correlation</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   Model<span class="sc">:</span> twoway </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>   Type <span class="sc">:</span> agreement </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>   Subjects <span class="ot">=</span> <span class="dv">5</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>     Raters <span class="ot">=</span> <span class="dv">3</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ICC</span>(A,<span class="dv">1</span>) <span class="ot">=</span> <span class="fl">0.792</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a> F<span class="sc">-</span>Test, H0<span class="sc">:</span> r0 <span class="ot">=</span> <span class="dv">0</span> ; H1<span class="sc">:</span> r0 <span class="sc">&gt;</span> <span class="dv">0</span> </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">F</span>(<span class="dv">4</span>,<span class="fl">9.09</span>) <span class="ot">=</span> <span class="fl">15.1</span> , p <span class="ot">=</span> <span class="fl">0.000482</span> </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a> <span class="dv">95</span>%<span class="sc">-</span>Confidence Interval <span class="cf">for</span> ICC Population Values<span class="sc">:</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fl">0.375</span> <span class="sc">&lt;</span> ICC <span class="sc">&lt;</span> <span class="fl">0.973</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="shrout-fleiss의-6개-방법을-모두-보여주는-r코드" class="level2">
+<h2 class="anchored" data-anchor-id="shrout-fleiss의-6개-방법을-모두-보여주는-r코드">Shrout &amp; Fleiss의 6개 방법을 모두 보여주는 R코드</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ICC</span>(ratings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>출력</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Call<span class="sc">:</span> <span class="fu">ICC</span>(<span class="at">x =</span> ratings)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Intraclass correlation coefficients </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                         type  ICC  F df1 df2       p lower bound upper bound</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>Single_raters_absolute   ICC1 <span class="fl">0.79</span> <span class="dv">12</span>   <span class="dv">4</span>  <span class="dv">10</span> <span class="fl">0.00072</span>        <span class="fl">0.37</span>        <span class="fl">0.97</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>Single_random_raters     ICC2 <span class="fl">0.79</span> <span class="dv">15</span>   <span class="dv">4</span>   <span class="dv">8</span> <span class="fl">0.00085</span>        <span class="fl">0.37</span>        <span class="fl">0.97</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>Single_fixed_raters      ICC3 <span class="fl">0.82</span> <span class="dv">15</span>   <span class="dv">4</span>   <span class="dv">8</span> <span class="fl">0.00085</span>        <span class="fl">0.40</span>        <span class="fl">0.98</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>Average_raters_absolute ICC1k <span class="fl">0.92</span> <span class="dv">12</span>   <span class="dv">4</span>  <span class="dv">10</span> <span class="fl">0.00072</span>        <span class="fl">0.64</span>        <span class="fl">0.99</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>Average_random_raters   ICC2k <span class="fl">0.92</span> <span class="dv">15</span>   <span class="dv">4</span>   <span class="dv">8</span> <span class="fl">0.00085</span>        <span class="fl">0.64</span>        <span class="fl">0.99</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>Average_fixed_raters    ICC3k <span class="fl">0.93</span> <span class="dv">15</span>   <span class="dv">4</span>   <span class="dv">8</span> <span class="fl">0.00085</span>        <span class="fl">0.66</span>        <span class="fl">0.99</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a> Number of subjects <span class="ot">=</span> <span class="dv">5</span>     Number of Judges <span class="ot">=</span>  <span class="dv">3</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>See the help file <span class="cf">for</span> a discussion of the other <span class="dv">4</span> McGraw and Wong estimates,</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="lmer-방식의-모던-icc-r코드" class="level2">
+<h2 class="anchored" data-anchor-id="lmer-방식의-모던-icc-r코드">lmer 방식의 모던 ICC R코드</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">each =</span> <span class="dv">3</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">rater =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">times =</span> <span class="dv">5</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">score =</span> <span class="fu">c</span>(<span class="dv">80</span>, <span class="dv">82</span>, <span class="dv">81</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>            <span class="dv">75</span>, <span class="dv">76</span>, <span class="dv">74</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            <span class="dv">90</span>, <span class="dv">89</span>, <span class="dv">91</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>            <span class="dv">70</span>, <span class="dv">72</span>, <span class="dv">71</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="dv">85</span>, <span class="dv">86</span>, <span class="dv">84</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(score <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> subject) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> rater), <span class="at">data =</span> df)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="fu">icc</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>출력</strong></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Intraclass Correlation Coefficient</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    Adjusted ICC<span class="sc">:</span> <span class="fl">0.985</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  Unadjusted ICC<span class="sc">:</span> <span class="fl">0.985</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="모던-icc에서-ci-구하기" class="level2">
+<h2 class="anchored" data-anchor-id="모던-icc에서-ci-구하기">모던 ICC에서 CI 구하기</h2>
+<p>lmer을 이용한 모던 ICC에서는 CI를 직접 제공하지 않는 것을 알 수 있다. 이는 ICC는 비선형 함수이고, <span class="math inline">\(\sigma^2\)</span>자체는 정규분포를 따르지 않기 때문에 정규 근사(CI ≈ estimate ± 1.96 × SE)가 잘 맞지 않기 때문이다.</p>
+<p>그러나 bootstrapping 방식을 통해서 충분히 CI를 추정할 수 있다. bootstrap은 데이터를 반복적으로 다시 샘플링해서, 어떤 통계량의 표본 분포를 직접 만들어내는 기법이다. 원래 데이터를 기준으로 같은 크기의 샘플을 복원추출로 다시 만든 후, 새롭게 만들어진 데이터로 lmer을 적합한다. 그 모델에서 ICC를 계산하고, 이 과정을 계속 반복하여 ICC의 분포를 만든다. 그 값들의 분포에서 CI을 추출할 수 있다.</p>
+<p>아래는 그 과정을 실행하는 코드이다.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>n_subjects <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>n_raters <span class="ot">&lt;-</span> <span class="dv">6</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>ratings_per_subject <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>subjects <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n_subjects</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>raters <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n_raters</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터프레임 생성</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(subjects, <span class="cf">function</span>(s) {</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">sample</span>(raters, ratings_per_subject)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="at">mean =</span> <span class="dv">75</span>, <span class="at">sd =</span> <span class="dv">5</span>)  <span class="co"># subject 고유의 평균 실력</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> <span class="fu">factor</span>(s),</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">rater =</span> <span class="fu">factor</span>(r),</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">score =</span> <span class="fu">rnorm</span>(ratings_per_subject, <span class="at">mean =</span> mu, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(score <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> subject) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> rater), <span class="at">data =</span> df, <span class="at">REML =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>performance<span class="sc">::</span><span class="fu">icc</span>(model, <span class="at">ci =</span><span class="cn">TRUE</span>, <span class="at">iterations =</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>출력</strong></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Intraclass Correlation Coefficient</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    Adjusted ICC<span class="sc">:</span> <span class="fl">0.794</span> [<span class="fl">0.472</span>, <span class="fl">0.934</span>]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  Unadjusted ICC<span class="sc">:</span> <span class="fl">0.794</span> [<span class="fl">0.472</span>, <span class="fl">0.934</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{choi2025,
+  author = {Choi, Sungho},
+  title = {Intraclass {Correlation} {Coefficient} {공부하기}},
+  date = {2025-03-24},
+  url = {https://blog.zarathu.com/en/posts/2025-03-24-IntraclassCorrelationCoefficient/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-choi2025" class="csl-entry quarto-appendix-citeas" role="listitem">
+Choi, Sungho. 2025. <span>“Intraclass Correlation Coefficient
+공부하기.”</span> March 24, 2025. <a href="https://blog.zarathu.com/en/posts/2025-03-24-IntraclassCorrelationCoefficient/">https://blog.zarathu.com/en/posts/2025-03-24-IntraclassCorrelationCoefficient/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com\/en");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

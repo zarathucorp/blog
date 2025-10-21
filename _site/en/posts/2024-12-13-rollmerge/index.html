@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.47">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Jeongmin Seo">
+<meta name="dcterms.date" content="2024-12-13">
+<meta name="description" content="data.table에서 제공하는 inequality join method 중 하나인 rolling merge에 대해 알아보자">
+<title>data.table의 rolling join – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script><style>html{ scroll-behavior: smooth; }</style>
+<link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../../en/index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">Applications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R packages</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages">
+<li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../en/contributors.html"> 
+<span class="menu-text">Contributors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-partners" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Partners</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-partners">
+<li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">
+<li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+</li>
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">data.table의 rolling join</h1>
+                  <div>
+        <div class="description">
+          <p>data.table에서 제공하는 inequality join method 중 하나인 rolling merge에 대해 알아보자</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">data.table</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/jmjmfasdf">Jeongmin Seo</a> <a href="mailto:jmme42518@gmail.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">December 13, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li>
+<a href="#introduction-data.table" id="toc-introduction-data.table" class="nav-link active" data-scroll-target="#introduction-data.table">1. Introduction: Data.table</a>
+  <ul class="collapse">
+<li><a href="#join" id="toc-join" class="nav-link" data-scroll-target="#join">1. join</a></li>
+  <li><a href="#rolling-join" id="toc-rolling-join" class="nav-link" data-scroll-target="#rolling-join">2. rolling join</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#data.table%EC%9D%98-roll-merge-option" id="toc-data.table의-roll-merge-option" class="nav-link" data-scroll-target="#data.table%EC%9D%98-roll-merge-option">2. Data.table의 roll merge option</a>
+  <ul class="collapse">
+<li>
+<a href="#roll-%EC%98%B5%EC%85%98" id="toc-roll-옵션" class="nav-link" data-scroll-target="#roll-%EC%98%B5%EC%85%98">1. <code>roll =</code> 옵션</a>
+  <ul class="collapse">
+<li><a href="#roll-inf" id="toc-roll-inf" class="nav-link" data-scroll-target="#roll-inf"><code>roll = Inf</code></a></li>
+  <li><a href="#roll--inf" id="toc-roll--inf" class="nav-link" data-scroll-target="#roll--inf"><code>roll = -Inf</code></a></li>
+  </ul>
+</li>
+  <li><a href="#rollends-%EC%98%B5%EC%85%98" id="toc-rollends-옵션" class="nav-link" data-scroll-target="#rollends-%EC%98%B5%EC%85%98">2. <code>rollends =</code> 옵션</a></li>
+  </ul>
+</li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">3. Conclusion</a></li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="introduction-data.table" class="level1"><h1>1. Introduction: Data.table</h1>
+<p>data.table은 대용량의 데이터를 처리하는 데 있어 빠른 속도와 메모리 효율을 보여주는 패키지이다. 또한 <code>dplyr</code>와 비교하여, <code>dplyr</code>에서 지원하지 않는 기능도 가지고 있는데, 그 중 하나인 rolling join을 소개한다.</p>
+<section id="join" class="level2"><h2 class="anchored" data-anchor-id="join">1. join</h2>
+<p>일반적으로 join이라 함은 원하는 재료집합이 2개 이상일때, 이를 인결하여 새로운 집합을 만드는 연산을 의미한다. 당연히 join 연산을 할 때마다 집합이 확장되며 컬럼의 수가 증가하게 된다. join 연산의 경우 일반적으로는 equality condition을 사용한다. 즉 사용되는 집합이 일치하는 경우에만 연산이 이루어진다. 보통 이러한 조건 때문에 inner join, outter join 등을 사용하게 된다.</p>
+</section><section id="rolling-join" class="level2"><h2 class="anchored" data-anchor-id="rolling-join">2. rolling join</h2>
+<p>rolling join은 inequality condition을 사용한다. 병합의 기준이 되는 컬럼 내에서 값을 탐색할 때, 다음과 같은 단계를 따를 수 있다.</p>
+<p>① 일단 일치하는 값이 있는지 확인하고, 없으면 선택한 방향을 따라 탐색한다. ② 탐색 범위에 기준 값에 가장 가까운 값이 있으면 그 값이 존재하는 행과 merge를 실행한다. ③ 탐색 범위 내에 값이 존재하지 않으면 병합을 실행하지 않는다.</p>
+<p>일반적으로 두 data.table object를 병합할 때에는 다음과 같이 실행할 수 있다. 여기서 <code>on =</code> 을 활용해서 기준이 되는 컬럼을 지정할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result_dt</span> <span class="op">&lt;-</span> <span class="va">dt1</span><span class="op">[</span><span class="va">dt2</span>, on <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">key_column1</span>, <span class="va">key_column2</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>그러나 rolling join을 실행하고 싶은 경우, 다음과 같이 작성할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result_dt</span> <span class="op">&lt;-</span> <span class="va">dt1</span><span class="op">[</span><span class="va">dt2</span>, on <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">key_column1</span>, <span class="va">key_column2</span><span class="op">)</span>, roll <span class="op">=</span> <span class="cn">Inf</span><span class="op">]</span> <span class="co"># roll option = c(Inf, -Inf, number, "nearest")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="data.table의-roll-merge-option" class="level1"><h1>2. Data.table의 roll merge option</h1>
+<section id="roll-옵션" class="level2"><h2 class="anchored" data-anchor-id="roll-옵션">1. <code>roll =</code> 옵션</h2>
+<p>아래는 실습에 사용할 데이터를 전처리하는 코드이다. 실습 데이터는 <a href="https://1drv.ms/u/s!AvwFxLQIpBXdiJoyMrc7YufAVCG6fA?e=8RBnZ9">다음 링크</a>에서 다운받을 수 있으며, 4개 파일을 사용하여 실습을 진행할 것이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>;<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bnc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">"data/nsc2_bnc_1000.csv"</span><span class="op">)</span> </span>
+<span><span class="va">bnd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">"data/nsc2_bnd_1000.csv"</span><span class="op">)</span><span class="op">[</span>, <span class="va">Deathdate</span> <span class="op">:=</span> <span class="op">(</span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html">ym</a></span><span class="op">(</span><span class="va">DTH_YYYYMM</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html">ceiling_date</a></span><span class="op">(</span>unit <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="op">]</span></span>
+<span><span class="va">m20</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">"data/nsc2_m20_1000.csv"</span><span class="op">)</span> </span>
+<span><span class="va">m40</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">"data/nsc2_m40_1000.csv"</span><span class="op">)</span><span class="op">[</span><span class="va">SICK_CLSF_TYPE</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">]</span> </span>
+<span></span>
+<span><span class="va">code.HTN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="fl">10</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span></span>
+<span><span class="va">data.start</span> <span class="op">&lt;-</span> <span class="va">m20</span><span class="op">[</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/like.html">like</a></span><span class="op">(</span><span class="va">SICK_SYM1</span>, <span class="va">code.HTN</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">MDCARE_STRT_DT</span> <span class="op">&gt;=</span> <span class="fl">20060101</span><span class="op">)</span>, <span class="fu">.</span><span class="op">(</span>Indexdate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">MDCARE_STRT_DT</span><span class="op">)</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="st">"RN_INDI"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co">## Previous disease: Among all sick code</span></span>
+<span><span class="va">excl</span> <span class="op">&lt;-</span> <span class="va">m40</span><span class="op">[</span><span class="op">(</span><span class="va">MCEX_SICK_SYM</span> <span class="op"><a href="https://rdatatable.gitlab.io/data.table/reference/like.html">%like%</a></span> <span class="va">code.HTN</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">MDCARE_STRT_DT</span> <span class="op">&lt;</span> <span class="fl">20060101</span><span class="op">)</span>, <span class="va">.SD</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, .SDcols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"MDCARE_STRT_DT"</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="st">"RN_INDI"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co">## Merge: left anti join</span></span>
+<span><span class="va">data.incl</span> <span class="op">&lt;-</span> <span class="va">data.start</span><span class="op">[</span><span class="op">!</span><span class="va">excl</span>, on <span class="op">=</span> <span class="st">"RN_INDI"</span><span class="op">]</span><span class="op">[</span>, <span class="va">Indexdate</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">Indexdate</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"%Y%m%d"</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="op">]</span></span>
+<span><span class="va">data.asd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">bnd</span>, <span class="va">bnc</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>SEX <span class="op">=</span> <span class="va">SEX</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, keyby <span class="op">=</span> <span class="st">"RN_INDI"</span><span class="op">]</span>, by <span class="op">=</span> <span class="st">"RN_INDI"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">data.incl</span>, by <span class="op">=</span> <span class="st">"RN_INDI"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="fu">`:=`</span><span class="op">(</span>Age <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/IDateTime.html">year</a></span><span class="op">(</span><span class="va">Indexdate</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="va">BTH_YYYY</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>           Death <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">DTH_YYYYMM</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>           Day_FU <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"2015-12-31"</span><span class="op">)</span>, <span class="va">Deathdate</span>, na.rm <span class="op">=</span><span class="cn">T</span><span class="op">)</span> <span class="op">-</span> <span class="va">Indexdate</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="va">.</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"BTH_YYYY"</span>, <span class="st">"DTH_YYYYMM"</span>, <span class="st">"Deathdate"</span><span class="op">)</span><span class="op">]</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">code.cci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  MI <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"I21"</span>, <span class="st">"I22"</span>, <span class="st">"I252"</span><span class="op">)</span>,</span>
+<span>  CHF <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"099"</span>, <span class="fl">110</span>, <span class="fl">130</span>, <span class="fl">132</span>, <span class="fl">255</span>, <span class="fl">420</span>, <span class="fl">425</span><span class="op">:</span><span class="fl">429</span>, <span class="fl">43</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>, <span class="st">"P290"</span><span class="op">)</span>,</span>
+<span>  Peripheral_VD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="fl">70</span>, <span class="fl">71</span>, <span class="fl">731</span>, <span class="fl">738</span>, <span class="fl">739</span>, <span class="fl">771</span>, <span class="fl">790</span>, <span class="fl">792</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"K"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">551</span>, <span class="fl">558</span>, <span class="fl">559</span><span class="op">)</span><span class="op">)</span>, <span class="st">"Z958"</span>, <span class="st">"Z959"</span><span class="op">)</span>,</span>
+<span>  Cerebro_VD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"G45"</span>, <span class="st">"G46"</span>, <span class="st">"H340"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="fl">60</span><span class="op">:</span><span class="fl">69</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  Dementia <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"F0"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">51</span><span class="op">)</span><span class="op">)</span>, <span class="st">"G30"</span>, <span class="st">"G311"</span><span class="op">)</span>,</span>
+<span>  Chronic_pulmonary_dz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"I278"</span>, <span class="st">"I279"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"J"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span><span class="op">:</span><span class="fl">47</span>, <span class="fl">60</span><span class="op">:</span><span class="fl">67</span>, <span class="fl">684</span>, <span class="fl">701</span>, <span class="fl">703</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  Rheumatologic_dz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"05"</span>, <span class="st">"06"</span>, <span class="fl">315</span>, <span class="fl">32</span><span class="op">:</span><span class="fl">34</span>, <span class="fl">351</span>, <span class="fl">353</span>, <span class="fl">360</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  Peptic_ulcer_dz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"K"</span>, <span class="fl">25</span><span class="op">:</span><span class="fl">28</span><span class="op">)</span>,</span>
+<span>  Mild_liver_dz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"B18"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"K"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">700</span><span class="op">:</span><span class="fl">703</span>, <span class="fl">709</span>, <span class="fl">713</span><span class="op">:</span><span class="fl">715</span>, <span class="fl">717</span>, <span class="fl">73</span>, <span class="fl">74</span>, <span class="fl">760</span>, <span class="fl">762</span><span class="op">:</span><span class="fl">764</span>, <span class="fl">768</span>, <span class="fl">769</span><span class="op">)</span><span class="op">)</span>, <span class="st">"Z944"</span><span class="op">)</span>,</span>
+<span>  DM_no_complication <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"E"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">101</span>, <span class="fl">106</span>, <span class="fl">108</span><span class="op">:</span><span class="fl">111</span>, <span class="fl">116</span>, <span class="fl">118</span><span class="op">:</span><span class="fl">121</span>, <span class="fl">126</span>, <span class="fl">128</span><span class="op">:</span><span class="fl">131</span>, <span class="fl">136</span>, <span class="fl">138</span><span class="op">:</span><span class="fl">141</span>, <span class="fl">146</span>, <span class="fl">148</span>, <span class="fl">149</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  DM_complication <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"E"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">102</span><span class="op">:</span><span class="fl">105</span>, <span class="fl">107</span>, <span class="fl">112</span><span class="op">:</span><span class="fl">115</span>, <span class="fl">117</span>, <span class="fl">122</span><span class="op">:</span><span class="fl">125</span>, <span class="fl">127</span>, <span class="fl">132</span><span class="op">:</span><span class="fl">135</span>, <span class="fl">137</span>, <span class="fl">142</span><span class="op">:</span><span class="fl">145</span>, <span class="fl">147</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  Hemi_paraplegia <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"G"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"041"</span>, <span class="fl">114</span>, <span class="fl">801</span>, <span class="fl">802</span>, <span class="fl">81</span>, <span class="fl">82</span>, <span class="fl">830</span><span class="op">:</span><span class="fl">834</span>, <span class="fl">839</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  Renal_dz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"I120"</span>, <span class="st">"I131"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"032"</span>, <span class="st">"033"</span>, <span class="st">"034"</span>, <span class="st">"035"</span>, <span class="st">"036"</span>, <span class="st">"037"</span>, <span class="st">"052"</span>, <span class="st">"053"</span>, <span class="st">"054"</span>, <span class="st">"055"</span>, <span class="st">"056"</span>, <span class="st">"057"</span>,</span>
+<span>                                             <span class="fl">18</span>, <span class="fl">19</span>, <span class="fl">250</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Z"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">490</span><span class="op">:</span><span class="fl">492</span>, <span class="fl">940</span>, <span class="fl">992</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  Malig_with_Leuk_lymphoma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span>, <span class="fl">10</span><span class="op">:</span><span class="fl">26</span>, <span class="fl">30</span><span class="op">:</span><span class="fl">34</span>, <span class="fl">37</span><span class="op">:</span><span class="fl">41</span>, <span class="fl">43</span>, <span class="fl">45</span><span class="op">:</span><span class="fl">58</span>, <span class="fl">60</span><span class="op">:</span><span class="fl">76</span>, <span class="fl">81</span><span class="op">:</span><span class="fl">85</span>, <span class="fl">88</span>, <span class="fl">90</span>, <span class="fl">97</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  Moderate_severe_liver_dz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">85</span>, <span class="fl">859</span>, <span class="fl">864</span>, <span class="fl">982</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"K"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">704</span>, <span class="fl">711</span>, <span class="fl">721</span>, <span class="fl">729</span>, <span class="fl">765</span><span class="op">:</span><span class="fl">767</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  Metastatic_solid_tumor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">77</span><span class="op">:</span><span class="fl">80</span><span class="op">)</span>,</span>
+<span>  AIDS_HIV <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span><span class="op">:</span><span class="fl">22</span>, <span class="fl">24</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">cciscore</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">6</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">cciscore</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">code.cci</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>지금부터는 실제 의료 데이터를 활용하여 roll merge가 사용될 수 있는 상황에 대해 알아보고, 이를 코드로 적용해 보겠다. 데이터는 성균관대학교 바이오헬스규제학과 강의에 사용된 건강보험공단 데이터를 사용하였다. 일단 roll merge를 시행할 데이터에 대해 알아보자.</p>
+<section id="roll-inf" class="level3"><h3 class="anchored" data-anchor-id="roll-inf"><code>roll = Inf</code></h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "병력 진단 기준 날짜(Indexdate)가 있는 data.asd 데이터"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Key: &lt;RN_INDI&gt;
+   RN_INDI   COD1   COD2   SEX  Indexdate   Age Death Day_FU
+     &lt;int&gt; &lt;char&gt; &lt;char&gt; &lt;int&gt;     &lt;Date&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt;
+1:   13546                   1 2006-08-08    45     0   3432
+2:   23682                   1 2008-09-22    53     0   2656
+3:   36714                   2 2010-01-19    64     0   2172
+4:   39217                   1 2013-04-02    56     0   1003
+5:   46621                   1 2011-03-24    51     0   1743
+6:   51049                   1 2006-11-23    21     0   3325</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "병력 진단 날짜(MDCARE_STRT_DT)가 있는 m40 데이터"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   RN_INDI        RN_KEY MDCARE_STRT_DT FORM_CD MCEX_SICK_SYM
+     &lt;int&gt;         &lt;i64&gt;          &lt;int&gt;   &lt;int&gt;        &lt;char&gt;
+1:  596535 2002120187152       20021202       3          J209
+2:  615374 2002121012274       20021202       3          J209
+3: 1005547 2002120808216       20021202       3          J209
+4:  226594 2002120381612       20021202       3          J209
+5:  204930 2002120790182       20021202       3          J209
+6:  798943 2002040446183       20020401       3          J209
+   DETAIL_TMSG_SUBJ_CD SICK_CLSF_TYPE STD_YYYY
+                &lt;char&gt;          &lt;int&gt;    &lt;int&gt;
+1:                                 NA     2002
+2:                                 NA     2002
+3:                                 NA     2002
+4:                                 NA     2002
+5:                                 NA     2002
+6:                                 NA     2002</code></pre>
+</div>
+</div>
+<p>첫 번째 데이터는 환자별로 병력 진단 기준일이 되는 날짜가 적혀 있다. 그리고 두 번째 데이터는 환자가 병력 진단을 받았을 경우 해당 날짜가 적혀 있다. 우리는 이 데이터를 가지고, 나름의 기준을 세워서 두 데이터를 병합하는 것이 목적이다. 만약 ’첫 번째 데이터의 Indexdate를 기준으로 <strong>그 이전의 모든 날짜에서 진단일이 한 번이라도 있으면</strong> 병력이 존재하는 것으로 간주’하려면 어떻게 해야 할까?</p>
+<p>병합을 하는 기준이 비교하는 두 날짜가 완벽히 일치하는 것이기 아니기 때문에 일반적인 join method를 사용할 수 없다. 이러한 경우에 roll merge를 사용할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">info.cci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">code.cci</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">data.asd</span><span class="op">[</span>, <span class="va">MDCARE_STRT_DT</span> <span class="op">:=</span> <span class="va">Indexdate</span><span class="op">]</span></span>
+<span>  <span class="va">dt</span> <span class="op">&lt;-</span> <span class="va">m40</span><span class="op">[</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/like.html">like</a></span><span class="op">(</span><span class="va">MCEX_SICK_SYM</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">code.cci</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">[</span>, <span class="va">MDCARE_STRT_DT</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">MDCARE_STRT_DT</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"%Y%m%d"</span><span class="op">)</span><span class="op">]</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">RN_INDI</span>, <span class="va">MDCARE_STRT_DT</span>, Incidate <span class="op">=</span> <span class="va">MDCARE_STRT_DT</span><span class="op">)</span><span class="op">]</span>  </span>
+<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">.SD</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, keyby <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"RN_INDI"</span>, <span class="st">"MDCARE_STRT_DT"</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="va">data.asd</span>, on <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"RN_INDI"</span>, <span class="st">"MDCARE_STRT_DT"</span><span class="op">)</span>, roll <span class="op">=</span> <span class="cn">Inf</span><span class="op">]</span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">info.cci</span><span class="op">[[</span><span class="fl">10</span><span class="op">]</span><span class="op">]</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   RN_INDI MDCARE_STRT_DT   Incidate   COD1   COD2   SEX  Indexdate   Age Death
+     &lt;int&gt;         &lt;Date&gt;     &lt;Date&gt; &lt;char&gt; &lt;char&gt; &lt;int&gt;     &lt;Date&gt; &lt;int&gt; &lt;int&gt;
+1:   13546     2006-08-08       &lt;NA&gt;                   1 2006-08-08    45     0
+2:   23682     2008-09-22       &lt;NA&gt;                   1 2008-09-22    53     0
+3:   36714     2010-01-19 2009-12-26                   2 2010-01-19    64     0
+4:   39217     2013-04-02 2013-04-02                   1 2013-04-02    56     0
+5:   46621     2011-03-24 2011-02-16                   1 2011-03-24    51     0
+   Day_FU
+    &lt;int&gt;
+1:   3432
+2:   2656
+3:   2172
+4:   1003
+5:   1743</code></pre>
+</div>
+</div>
+<p>주의할 점은 data.table의 <code>on=</code>으로 병합을 시도할 경우에는 대상 컬럼이 이름이 같아야 한다는 것이다. 위의 코드에서는 Indexdate, incidate와 값이 같은 MDCARE_STRT_DT 컬럼을 대상으로 roll merge를 시도하였다.</p>
+<p><code>roll = Inf</code>로 옵션을 주었기 때문에 dt의 날짜를 기준으로 data.asd를 연결할 때 정확히 일치하는 날짜가 없다면 data.asd의 날짜를 뒤로 밀어서 일치하는 날짜를 찾는다. 결과적으로 data.asd의 Indexdate 기준으로 앞 날짜에 m40의 Incidate가 존재한다면 병합이 되는 로직이라고 할 수 있다.</p>
+<p>roll merge를 사용하지 않는다면 <code>cartesian = T</code> 옵션을 사용하여 모든 가능한 조합을 허용하여 merge하고 그후에 조건에 맞게 필터링하는 과정을 거쳐야 한다. 다음은 rolling join을 사용하지 않은 코드의 예시이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">info.cci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">code.cci</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">data.asd</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">RN_INDI</span>, <span class="va">Indexdate</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>                  <span class="va">m40</span><span class="op">[</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/like.html">like</a></span><span class="op">(</span><span class="va">MCEX_SICK_SYM</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">code.cci</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">MDCARE_STRT_DT</span><span class="op">)</span>, <span class="va">.SD</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, keyby <span class="op">=</span> <span class="st">"RN_INDI"</span><span class="op">]</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">RN_INDI</span>, Incidate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">MDCARE_STRT_DT</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"%Y%m%d"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>                  by <span class="op">=</span> <span class="st">"RN_INDI"</span>, all.x <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span>  <span class="va">result</span><span class="op">[</span><span class="va">Indexdate</span> <span class="op">&lt;</span> <span class="va">Incidate</span>, <span class="va">Incidate</span> <span class="op">:=</span> <span class="cn">NA</span><span class="op">]</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">info.cci</span><span class="op">[[</span><span class="fl">10</span><span class="op">]</span><span class="op">]</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Key: &lt;RN_INDI&gt;
+   RN_INDI  Indexdate   Incidate
+     &lt;int&gt;     &lt;Date&gt;     &lt;Date&gt;
+1:   13546 2006-08-08       &lt;NA&gt;
+2:   23682 2008-09-22       &lt;NA&gt;
+3:   36714 2010-01-19 2005-12-09
+4:   39217 2013-04-02 2007-11-08
+5:   46621 2011-03-24 2005-09-20</code></pre>
+</div>
+</div>
+<p>일단 merge를 수행한 이후, Incidate가 가장 빠른 첫 번째 날짜를 채택하여, 그 날짜가 Indexdate보다 뒤에 있을 경우 NA로 바꾸는 방식으로 필터링하였다. 이렇게 작업하여도 <strong>그 이전의 모든 날짜에서 진단일이 한 번이라도 있으면</strong>이라는 조건을 만족하는 행을 필터링하는 데에는 문제가 없지만 로직의 차이로 인해 Incidate에 적힌 날짜가 다른 것을 알 수 있다. 또한 필터링 과정 때문에 코드가 길어져 가독성이 좋지 않다.</p>
+</section><section id="roll--inf" class="level3"><h3 class="anchored" data-anchor-id="roll--inf"><code>roll = -Inf</code></h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "병력 진단 기준 날짜(Indexdate)가 있는 data.asd 데이터"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Key: &lt;RN_INDI&gt;
+   RN_INDI   COD1   COD2   SEX  Indexdate   Age Death Day_FU MDCARE_STRT_DT
+     &lt;int&gt; &lt;char&gt; &lt;char&gt; &lt;int&gt;     &lt;Date&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt;         &lt;Date&gt;
+1:   13546                   1 2006-08-08    45     0   3432     2006-08-08
+2:   23682                   1 2008-09-22    53     0   2656     2008-09-22
+3:   36714                   2 2010-01-19    64     0   2172     2010-01-19
+4:   39217                   1 2013-04-02    56     0   1003     2013-04-02
+5:   46621                   1 2011-03-24    51     0   1743     2011-03-24
+6:   51049                   1 2006-11-23    21     0   3325     2006-11-23</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "병력 진단 날짜(MDCARE_STRT_DT)가 있는 m40 데이터"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   RN_INDI        RN_KEY MDCARE_STRT_DT FORM_CD MCEX_SICK_SYM
+     &lt;int&gt;         &lt;i64&gt;          &lt;int&gt;   &lt;int&gt;        &lt;char&gt;
+1:  596535 2002120187152       20021202       3          J209
+2:  615374 2002121012274       20021202       3          J209
+3: 1005547 2002120808216       20021202       3          J209
+4:  226594 2002120381612       20021202       3          J209
+5:  204930 2002120790182       20021202       3          J209
+6:  798943 2002040446183       20020401       3          J209
+   DETAIL_TMSG_SUBJ_CD SICK_CLSF_TYPE STD_YYYY
+                &lt;char&gt;          &lt;int&gt;    &lt;int&gt;
+1:                                 NA     2002
+2:                                 NA     2002
+3:                                 NA     2002
+4:                                 NA     2002
+5:                                 NA     2002
+6:                                 NA     2002</code></pre>
+</div>
+</div>
+<p>두 번째 예시는 동일한 데이터를 활용할 것이지만, 이번에는 ’첫 번째 데이터의 Indexdate를 기준으로 <strong>이후의 모든 날짜에서 발병 기록이 한 번이라도 있으면</strong> 발병한 것으로 간주’하려면 어떻게 해야 할까?</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data.asd</span><span class="op">[</span>, <span class="va">MDCARE_STRT_DT</span> <span class="op">:=</span> <span class="va">Indexdate</span><span class="op">]</span></span>
+<span><span class="va">info.MI</span> <span class="op">&lt;-</span> <span class="va">m40</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="va">.</span><span class="op">[</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/like.html">like</a></span><span class="op">(</span><span class="va">MCEX_SICK_SYM</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">code.cci</span><span class="op">[[</span><span class="st">"MI"</span><span class="op">]</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span><span class="op">)</span>, <span class="fu">.</span><span class="op">(</span><span class="va">RN_INDI</span>, MDCARE_STRT_DT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">MDCARE_STRT_DT</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"%Y%m%d"</span><span class="op">)</span>, MIdate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">MDCARE_STRT_DT</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"%Y%m%d"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="va">.</span><span class="op">[</span><span class="va">data.asd</span>, on <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"RN_INDI"</span>, <span class="st">"MDCARE_STRT_DT"</span><span class="op">)</span>, roll <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span><span class="op">]</span> </span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">info.MI</span><span class="op">[</span><span class="fl">40</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    RN_INDI MDCARE_STRT_DT     MIdate   COD1   COD2   SEX  Indexdate   Age
+      &lt;int&gt;         &lt;Date&gt;     &lt;Date&gt; &lt;char&gt; &lt;char&gt; &lt;int&gt;     &lt;Date&gt; &lt;int&gt;
+ 1:  484978     2006-02-04 2006-02-04                   2 2006-02-04    63
+ 2:  505228     2013-04-02       &lt;NA&gt;                   2 2013-04-02    45
+ 3:  517447     2011-10-05       &lt;NA&gt;                   2 2011-10-05    61
+ 4:  518792     2011-01-09       &lt;NA&gt;                   1 2011-01-09    50
+ 5:  529690     2013-01-09       &lt;NA&gt;                   2 2013-01-09    58
+ 6:  530990     2015-11-25       &lt;NA&gt;                   1 2015-11-25    63
+ 7:  540586     2008-06-03       &lt;NA&gt;                   1 2008-06-03    59
+ 8:  546772     2006-07-24       &lt;NA&gt;                   2 2006-07-24    19
+ 9:  551252     2008-05-20       &lt;NA&gt;                   2 2008-05-20    73
+10:  559420     2014-12-22       &lt;NA&gt;                   2 2014-12-22    52
+11:  562142     2013-03-27 2013-03-27                   1 2013-03-27    53
+    Death Day_FU
+    &lt;int&gt;  &lt;int&gt;
+ 1:     0   3617
+ 2:     0   1003
+ 3:     0   1548
+ 4:     0   1817
+ 5:     0   1086
+ 6:     0     36
+ 7:     0   2767
+ 8:     0   3447
+ 9:     0   2781
+10:     0    374
+11:     0   1009</code></pre>
+</div>
+</div>
+<p><code>roll = -Inf</code>로 옵션을 주었기 때문에 m40의 날짜를 기준으로 data.asd를 연결할 때 정확히 일치하는 날짜가 없다면 data.asd의 날짜를 앞으로 당겨서 일치하는 날짜를 찾는다. 결과적으로 data.asd의 Indexdate 기준으로 뒤 날짜에 m40의 Incidate가 존재한다면 병합이 되는 로직이라고 할 수 있다. (여기서는 시작 날짜도 포함하였다.)</p>
+<p>roll merge를 사용하지 않는다면 <code>cartesian = T</code> 옵션을 사용하여 모든 가능한 조합을 허용하여 merge하고 그후에 조건에 맞게 필터링하는 과정을 거쳐야 한다. 다음은 rolling join을 사용하지 않은 코드의 예시이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">info.MI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">data.asd</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">RN_INDI</span>, <span class="va">Indexdate</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>                 <span class="va">m40</span><span class="op">[</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/like.html">like</a></span><span class="op">(</span><span class="va">MCEX_SICK_SYM</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">code.cci</span><span class="op">[[</span><span class="st">"MI"</span><span class="op">]</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">MDCARE_STRT_DT</span><span class="op">)</span>, <span class="va">.SD</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, keyby <span class="op">=</span> <span class="st">"RN_INDI"</span><span class="op">]</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">RN_INDI</span>, MIdate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">MDCARE_STRT_DT</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"%Y%m%d"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>                 by <span class="op">=</span> <span class="st">"RN_INDI"</span>, all.x <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="va">.</span><span class="op">[</span><span class="va">Indexdate</span> <span class="op">&lt;</span> <span class="va">MIdate</span>, <span class="va">MIdate</span> <span class="op">:=</span> <span class="cn">NA</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">info.MI</span><span class="op">[</span><span class="fl">40</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Key: &lt;RN_INDI&gt;
+    RN_INDI  Indexdate     MIdate
+      &lt;int&gt;     &lt;Date&gt;     &lt;Date&gt;
+ 1:  484978 2006-02-04 2006-02-04
+ 2:  505228 2013-04-02       &lt;NA&gt;
+ 3:  517447 2011-10-05       &lt;NA&gt;
+ 4:  518792 2011-01-09       &lt;NA&gt;
+ 5:  529690 2013-01-09       &lt;NA&gt;
+ 6:  530990 2015-11-25       &lt;NA&gt;
+ 7:  540586 2008-06-03       &lt;NA&gt;
+ 8:  546772 2006-07-24       &lt;NA&gt;
+ 9:  551252 2008-05-20       &lt;NA&gt;
+10:  559420 2014-12-22       &lt;NA&gt;
+11:  562142 2013-03-27 2013-03-27</code></pre>
+</div>
+</div>
+<p>일단 merge를 수행한 이후, MIdate의 첫 번째 날짜를 채택하여, 그 날짜가 Indexdate보다 뒤에 있을 경우 NA로 바꾸는 방식으로 필터링하였다. 이렇게 작업하여도 <strong>그 이전의 모든 날짜에서 진단일이 한 번이라도 있으면</strong>이라는 조건을 만족하는 행을 필터링하는 데에는 문제가 없지만 로직의 차이로 인해 MIdate에 적힌 날짜가 다른 것을 알 수 있다. 또한 필터링 과정 때문에 코드가 길어져 가독성이 좋지 않다.</p>
+<p>정리하면 <code>result_dt &lt;- dt1[dt2, on = .(key_column1, key_column2), roll = Inf]</code>에서 roll의 방향은 <code>Inf</code> 옵션일 때에는 dt1을 기준으로 dt2의 컬럼 값을 더 큰값으로 바꾸며 탐색하며, <code>-Inf</code> 옵션일 때에는 dt1을 기준으로 dt2의 컬럼 값을 더 작은 값으로 바꾸며 탐색한다. <code>roll =</code> 옵션에는 숫자도 줄 수 있는데, 이 경우 정해준 컬럼 값 기준 숫자 범위 내에서만 탐색한다. <code>roll = nearest</code> 옵션에서는 양방향 탐색을 진행하되, 가장 가까운 값을 찾아서 merge를 시도한다.</p>
+</section></section><section id="rollends-옵션" class="level2"><h2 class="anchored" data-anchor-id="rollends-옵션">2. <code>rollends =</code> 옵션</h2>
+<p><code>rollends =</code> 옵션을 활용하여 rolling을 시작한 경계와 끝 경계에서 어떤 동작을 취할 지 지정할 수 있다. 아래 코드 예시와 같이, <code>rollends</code> 옵션은 두 개의 boolean 값을 가진다. 첫 번째 index는 rolling 시작 경계값에 대한 처리이며, 두 번째 index는 rolling 끝 경계값에 대한 처리이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result_dt</span> <span class="op">&lt;-</span> <span class="va">dt1</span><span class="op">[</span><span class="va">dt2</span>, on <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">id</span><span class="op">)</span>, roll <span class="op">=</span> <span class="cn">Inf</span>, rollends <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>즉 양 끝의 값을 포함할 것인지, 버리고 NA를 취할 것인지에 대한 조정이라고 보면 된다. <code>rollends =</code>옵션이 Inf일 경우 (T, F), -Inf일 경우 (F, T), 숫자일 경우 (F, F)이다. 이전에 사용했던 건강보험공단 데이터로 실행해보면서 알아보자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">info.cci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">code.cci</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">data.asd</span><span class="op">[</span>, <span class="va">MDCARE_STRT_DT</span> <span class="op">:=</span> <span class="va">Indexdate</span><span class="op">]</span></span>
+<span>  <span class="va">dt</span> <span class="op">&lt;-</span> <span class="va">m40</span><span class="op">[</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/like.html">like</a></span><span class="op">(</span><span class="va">MCEX_SICK_SYM</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">code.cci</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">[</span>, <span class="va">MDCARE_STRT_DT</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">MDCARE_STRT_DT</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"%Y%m%d"</span><span class="op">)</span><span class="op">]</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">RN_INDI</span>, <span class="va">MDCARE_STRT_DT</span>, Incidate <span class="op">=</span> <span class="va">MDCARE_STRT_DT</span><span class="op">)</span><span class="op">]</span>  </span>
+<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">.SD</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, keyby <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"RN_INDI"</span>, <span class="st">"MDCARE_STRT_DT"</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="va">data.asd</span>, on <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"RN_INDI"</span>, <span class="st">"MDCARE_STRT_DT"</span><span class="op">)</span>, roll <span class="op">=</span> <span class="cn">Inf</span>, rollends <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">T</span>, <span class="cn">F</span><span class="op">)</span><span class="op">]</span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">info.cci</span><span class="op">[[</span><span class="fl">10</span><span class="op">]</span><span class="op">]</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   RN_INDI MDCARE_STRT_DT   Incidate   COD1   COD2   SEX  Indexdate   Age Death
+     &lt;int&gt;         &lt;Date&gt;     &lt;Date&gt; &lt;char&gt; &lt;char&gt; &lt;int&gt;     &lt;Date&gt; &lt;int&gt; &lt;int&gt;
+1:   13546     2006-08-08 2007-03-12                   1 2006-08-08    45     0
+2:   23682     2008-09-22       &lt;NA&gt;                   1 2008-09-22    53     0
+3:   36714     2010-01-19 2009-12-26                   2 2010-01-19    64     0
+4:   39217     2013-04-02 2013-04-02                   1 2013-04-02    56     0
+5:   46621     2011-03-24 2011-02-16                   1 2011-03-24    51     0
+   Day_FU
+    &lt;int&gt;
+1:   3432
+2:   2656
+3:   2172
+4:   1003
+5:   1743</code></pre>
+</div>
+</div>
+<p><code>roll = Inf</code>이므로 Incidate 기준으로 <strong>Indexdate는 Incidate보다 큰 값이 탐지되어야</strong> merge를 할 수 있다. 하지만 <code>rollends = (T, F)</code> 로 되어 있으므로 첫 번째 행에서 시작 바운더리인 기준값보다 작아도 roll merge가 일어난 모습을 볼 수 있다.</p>
+</section></section><section id="conclusion" class="level1"><h1>3. Conclusion</h1>
+<p>지금까지 건강보험공단 데이터를 활용하여 rolling join이 무엇이고, 왜 사용해야 하며, 어떤 상황에서 사용할 수 있는지 알아보았다. rolling join을 사용하지 않으면 <code>cartesian=T</code>옵션을 사용하여 모든 join의 수를 다 계산한 뒤 목적에 맞게 필터링을 해야 하는 추가 작업을 진행해야 했다. 하지만 rolling join 옵션을 사용하면 연구자의 목적에 맞게 inequality join을 간편하게 사용할 수 있다.</p>
+<ul>
+<li>rolling join은 inequality join의 일종으로, 기준 값이 완벽하게 일치하지 않아도 주어진 목적에 맞게 두 집합을 병합할 수 있게 해 준다.</li>
+<li>rolling join의 옵션은 바깥 dt를 기준으로 하여 <code>Inf(순방향), -Inf(역방향), number(숫자 범위), 'nearest'(방향무관)</code>이 있다.</li>
+<li>
+<code>rollends =</code> 옵션을 사용하여 경계에서의 roll 여부를 결정할 수 있다.</li>
+</ul>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{seo2024,
+  author = {Seo, Jeongmin},
+  title = {Data.table의 Rolling Join},
+  date = {2024-12-13},
+  url = {https://blog.zarathu.com/en/posts/2024-12-13-rollmerge/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-seo2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+Seo, Jeongmin. 2024. <span>“Data.table의 Rolling Join.”</span> December
+13, 2024. <a href="https://blog.zarathu.com/en/posts/2024-12-13-rollmerge/">https://blog.zarathu.com/en/posts/2024-12-13-rollmerge/</a>.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com\/en");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

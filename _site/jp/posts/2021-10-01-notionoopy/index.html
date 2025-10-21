@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.47">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Changwoo Lim">
+<meta name="dcterms.date" content="2021-10-01">
+<meta name="description" content="Notion과 Oopy를 사용해 개편한 당사 홈페이지의 구축 논의 사항과 장·단점을 설명하였습니다.">
+
+<title>Notion으로 홈페이지 제작후 oopy로 배포한 후기 – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../jp/index.html"> 
+<span class="menu-text">ホーム</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">アプリケーション</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-パッケージ" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R パッケージ</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-パッケージ">    
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../jp/contributors.html"> 
+<span class="menu-text">投稿者</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">パートナー</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">    
+        <li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Notion으로 홈페이지 제작후 oopy로 배포한 후기</h1>
+                  <div>
+        <div class="description">
+          Notion과 Oopy를 사용해 개편한 <a href="https://www.zarathu.com">당사 홈페이지</a>의 구축 논의 사항과 장·단점을 설명하였습니다.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">review</div>
+              </div>
+                  </div>
+  </div>
+    
+  <div class="quarto-title-meta-author">
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-heading">Affiliation</div>
+    
+      <div class="quarto-title-meta-contents">
+      <p class="author"><a href="https://github.com/ChangwooLim">Changwoo Lim</a> <a href="mailto:limcw@zarathu.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+    </div>
+    <div class="quarto-title-meta-contents">
+          <p class="affiliation">
+              Zarathu Co.,Ltd
+            </p>
+        </div>
+    </div>
+
+  <div class="quarto-title-meta">
+
+        
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 1, 2021</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#요약" id="toc-요약" class="nav-link active" data-scroll-target="#요약">요약</a></li>
+  <li><a href="#기존-홈페이지" id="toc-기존-홈페이지" class="nav-link" data-scroll-target="#기존-홈페이지">기존 홈페이지</a></li>
+  <li><a href="#탐색" id="toc-탐색" class="nav-link" data-scroll-target="#탐색">탐색</a>
+  <ul class="collapse">
+  <li><a href="#jekyll-프레임워크와-github-pages" id="toc-jekyll-프레임워크와-github-pages" class="nav-link" data-scroll-target="#jekyll-프레임워크와-github-pages">Jekyll 프레임워크와 GitHub Pages</a></li>
+  <li><a href="#새롭게-웹-작성" id="toc-새롭게-웹-작성" class="nav-link" data-scroll-target="#새롭게-웹-작성">새롭게 웹 작성</a></li>
+  <li><a href="#notion으로-페이지를-작성하고-oopy로-노션-페이지를-홈페이지로-가공-후-배포" id="toc-notion으로-페이지를-작성하고-oopy로-노션-페이지를-홈페이지로-가공-후-배포" class="nav-link" data-scroll-target="#notion으로-페이지를-작성하고-oopy로-노션-페이지를-홈페이지로-가공-후-배포">Notion으로 페이지를 작성하고 oopy로 노션 페이지를 홈페이지로 가공 후 배포</a></li>
+  </ul></li>
+  <li><a href="#장점" id="toc-장점" class="nav-link" data-scroll-target="#장점">장점</a>
+  <ul class="collapse">
+  <li><a href="#커스텀-html" id="toc-커스텀-html" class="nav-link" data-scroll-target="#커스텀-html">커스텀 HTML</a></li>
+  <li><a href="#쉽게-적용하는-플러그인" id="toc-쉽게-적용하는-플러그인" class="nav-link" data-scroll-target="#쉽게-적용하는-플러그인">쉽게 적용하는 플러그인</a></li>
+  <li><a href="#클린-url" id="toc-클린-url" class="nav-link" data-scroll-target="#클린-url">클린 URL</a></li>
+  </ul></li>
+  <li><a href="#한계" id="toc-한계" class="nav-link" data-scroll-target="#한계">한계</a>
+  <ul class="collapse">
+  <li><a href="#커스텀-html의-편의성-부재" id="toc-커스텀-html의-편의성-부재" class="nav-link" data-scroll-target="#커스텀-html의-편의성-부재">커스텀 HTML의 편의성 부재</a></li>
+  <li><a href="#부족한-seo" id="toc-부족한-seo" class="nav-link" data-scroll-target="#부족한-seo">부족한 SEO</a></li>
+  </ul></li>
+  <li><a href="#결론" id="toc-결론" class="nav-link" data-scroll-target="#결론">결론</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script>
+
+
+
+
+
+<section id="요약" class="level1">
+<h1>요약</h1>
+<ol type="1">
+<li>기존 Hugo로 작성하고 Netlify로 배포하던 홈페이지의 한계점로, 새롭게 홈페이지를 구축하기로 결정.</li>
+<li>당사 홈페이지가 정적 웹이고, 최근 트렌드를 고려하여, <a href="https://www.notion.so">Notion</a>으로 홈페이지를 구축하기로 결정.</li>
+<li>Notion을 홈페이지화 해 주는 배포 서비스를 <a href="https://www.oopy.io">oopy</a>로 결정.</li>
+<li>구축 후 oopy를 통해 커스텀 URL, 추가 JS, CSS 등 설정.</li>
+</ol>
+</section>
+<section id="기존-홈페이지" class="level1">
+<h1>기존 홈페이지</h1>
+<p>당사는 지금까지 <a href="https://gohugo.io">Hugo</a> 프레임워크를 통해 정적 웹을 생성하고, 이를 <a href="https://www.netlify.com">Netlify</a> 서비스를 통해 배포하였습니다. 이 과정의 자동화를 위하여, Hugo 프로젝트를 GitHub로 관리하고, Commit이 있을 때 마다 Netlify의 자동 Build 기능을 통해 실시간으로 업데이트 할 수 있었습니다. 이 과정은 홈페이지 업데이트를 손쉽게 할 수 있다는 점에서 편리했지만, 선택한 테마에서 제공하는 기능만을 이용할 수 있다는 점, 다른 서비스들에 비해 커스텀 할 수 있는 영역이 부족하다는 점 등의 단점이 존재했습니다.</p>
+</section>
+<section id="탐색" class="level1">
+<h1>탐색</h1>
+<p>이에 Hugo와 Netlify를 대체할 수 있는 서비스를 탐색했습니다.</p>
+<section id="jekyll-프레임워크와-github-pages" class="level2">
+<h2 class="anchored" data-anchor-id="jekyll-프레임워크와-github-pages"><a href="https://jekyllrb.com">Jekyll</a> 프레임워크와 <a href="https://pages.github.com">GitHub Pages</a></h2>
+<p>정적 웹 프레임워크에서 가장 유명한 두 개의 프레임워크 중 하나는 Jekyll입니다. 당사는 소스코드를 GitHub로 관리하기에, GitHub Pages로 바로 배포가 가능한 Jekyll도 고려하였으나, 근본적으로 Hugo와 큰 차이가 없어 기존의 문제를 다 해결할 수는 없을 것이라고 생각해 포기하였습니다.</p>
+</section>
+<section id="새롭게-웹-작성" class="level2">
+<h2 class="anchored" data-anchor-id="새롭게-웹-작성">새롭게 웹 작성</h2>
+<p>새롭게 홈페이지을 작성하고 당사 서버의 남은 자원으로 호스팅 하는 방법도 있었습니다. 다만 빠른 제작이 필요했던 탓에 단기간에 만들기 힘든 부분이 있어 배제하였습니다.</p>
+</section>
+<section id="notion으로-페이지를-작성하고-oopy로-노션-페이지를-홈페이지로-가공-후-배포" class="level2">
+<h2 class="anchored" data-anchor-id="notion으로-페이지를-작성하고-oopy로-노션-페이지를-홈페이지로-가공-후-배포">Notion으로 페이지를 작성하고 oopy로 노션 페이지를 홈페이지로 가공 후 배포</h2>
+<p>최근 많은 기업체에서 채용 등 일부 페이지를 Notion으로 구축하는 사례가 늘고 있습니다. 예를 들어 <a href="https://watcha.team">왓챠</a>나 <a href="https://www.notion.so/CLASSUM-7ee2543f7ea94acdbb2da5763ecda119">클라썸</a>같은 유명 스타트업이 있습니다. 다만 이들 또한 주 홈페이지까지 Notion을 사용하지는 않았습니다. 각 회사에서 서비스하는 제품이 정적 웹으로는 해결되지 않았기 때문입니다. 그러나 당사의 경우 주 홈페이지는 정적 웹으로 충분하고, 실제 서비스는 <a href="https://app.zarathu.com">Zarathu App</a>을 사용하기 때문에 큰 문제가 되지 않습니다.</p>
+<p>또한 노션의 기본 기능 뿐 아니라, oopy에서 간단한 SEO, 스타일(테마), HTML(CSS, JS포함), 클린 URL, Google Analytics나 channel.io 등 플러그인까지 지원하기에 자유도와 편리함이 적절하다 판단했습니다. oopy와 비슷한 서비스 - 대표적으로 <a href="https://super.so">Super</a> - 도 존재하나, 지원의 편리성과 가격을 고려하여 Notion과 oopy를 사용하기로 최종 결정하였습니다.</p>
+</section>
+</section>
+<section id="장점" class="level1">
+<h1>장점</h1>
+<section id="커스텀-html" class="level2">
+<h2 class="anchored" data-anchor-id="커스텀-html">커스텀 HTML</h2>
+<p>저희가 Notion과 oopy조합을 사용하게 된 가장 큰 이유는 커스텀 HTML(이하 CSS, JS 포함)입니다. <a href="https://www.zarathu.com">당사 홈페이지</a> 하단의 ‘연구지원 신청하기’ 버튼은 oopy의 페이지별 HTML기능을 사용한 것입니다. oopy는 모든 페이지에 커스텀 HTML을 적용시킬 수도 있고, 페이지마다 개별적으로 적용할 수도 있습니다. <img src="./img/htmlnotion.png" class="img-fluid" alt="페이지마다 적용하는 HTML"> 차라투는 위 사진처럼 media쿼리를 사용해 사용자의 환경에 따라 컨텐츠를 다르게 적용하기도 하였으며,</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/htmloopy.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>전역적으로 적용하는 HTML</figcaption>
+</figure>
+</div>
+<p>위 사진처럼 모든 페이지 하단에 연구지원 신청하기 버튼을 만들기도 하였습니다.</p>
+</section>
+<section id="쉽게-적용하는-플러그인" class="level2">
+<h2 class="anchored" data-anchor-id="쉽게-적용하는-플러그인">쉽게 적용하는 플러그인</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/plugin.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>플러그인</figcaption>
+</figure>
+</div>
+<p>대부분 JS를 통해 직접 설치하는 플러그인(Google Analytics나 channel.io)또한 위 사진처럼 쉽게 추가가 가능합니다.</p>
+</section>
+<section id="클린-url" class="level2">
+<h2 class="anchored" data-anchor-id="클린-url">클린 URL</h2>
+<p><img src="./img/cleanurl.png" class="img-fluid" alt="클린 URL 예시"> 노션 주소를 공유할 때에는 위 사진의 복잡한 부분처럼 uuid형식으로 된 값을 사용합니다. 이는 효율적인 방법일 수 있으나, 심미적인 관점에서는 그렇지 않습니다. 또 링크를 누군가에게 공유할 때에도 링크만을 보고 대략적 내용을 유추할 수 없어 비 효율적인 면이 있습니다. oopy는 이러한 Notion의 URL을 쉽게 바꿀 수 있게 해 줍니다.</p>
+</section>
+</section>
+<section id="한계" class="level1">
+<h1>한계</h1>
+<p>그러나 Notion과 oopy 조합에 문제가 없는 것은 아닙니다. 우선 Notion 자체의 한계입니다. 노션은 다양한 커스텀을 지원하지 않습니다. Bootstrap를 통해 쉽게 구현할 수 있는 Grid같은 레이아웃 조절도 불가능하거나 매우 까다롭습니다. 네이게이션 바나 하단바를 Bootstrap 등을 통해 구현할 수는 있지만, 본문을 조정하기는 어렵다는 점에서 콘텐츠를 보여주는 것에 한계가 있습니다.</p>
+<section id="커스텀-html의-편의성-부재" class="level2">
+<h2 class="anchored" data-anchor-id="커스텀-html의-편의성-부재">커스텀 HTML의 편의성 부재</h2>
+<p>Microsoft의 Visual Studio Code(VSCode)나 JetBrains사의 WebStorm같은 전문 프로그램은 물론이고, 최근에는 가벼원 편집기들 또한 자동 완성이나 괄호 자동 닫음 기능을 지원합니다. oopy의 커스텀 html 편집의 경우 아래의 사진과 같은 창에서 수행하게 되는데, 외부 편집기를 이용할 수 없어 Intellisence같은 기능을 사용할 수 없는 등의 단점은 있습니다. 다행히, 기초적인 오류는 경고 표시로 탐지가 가능합니다. <img src="./img/oopyhtmledit.png" class="img-fluid" alt="oopy의 커스텀 html 편집창"></p>
+</section>
+<section id="부족한-seo" class="level2">
+<h2 class="anchored" data-anchor-id="부족한-seo">부족한 SEO</h2>
+<p><a href="https://www.oopy.io/b140b869-1c29-4f0b-adc4-9a779e523dbd">우피는 자체적으로 SEO를 지원한다고 밝혔으나</a>, 실제로는 Favicon과 og:image 설정, 메타태그 설정 등만이 가능하고, robots.txt는 일괄 변경만이 가능해 보여 해당 기능들의 추가가 필요합니다.</p>
+</section>
+</section>
+<section id="결론" class="level1">
+<h1>결론</h1>
+<p>새롭게 회사를 꾸리는 스타트업이고, 홈페이지에서 요구하는 큰 기능이 없다면 차라투와 같이 Notion과 oopy를 사용하여 홈페이지를 구축하는것도 좋은 선택일 것 같습니다. (노션의) 디자인과 구축 속도 두 마리 토끼를 다 잡을 수 있기 때문입니다. 그러나 장기적으로 홈페이지에 많은 정보가 추가될 수 있다면 처음부터 Hugo, Jekyll, Notion과 oopy같은 서비스보다는 직접 훔페이지를 제작하는 것이 효율적이리라 생각합니다.</p>
+<p>당사는 당분간 Notion과 oopy조합을 계속해서 사용할 계획입니다.</p>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{lim2021,
+  author = {Lim, Changwoo},
+  title = {Notion으로 {홈페이지} {제작후} {oopy로} {배포한} {후기}},
+  date = {2021-10-01},
+  url = {https://blog.zarathu.com/jp/posts/2021-10-01-notionoopy/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-lim2021" class="csl-entry quarto-appendix-citeas" role="listitem">
+Lim, Changwoo. 2021. <span>“Notion으로 홈페이지 제작후 Oopy로 배포한
+후기.”</span> October 1, 2021. <a href="https://blog.zarathu.com/jp/posts/2021-10-01-notionoopy/">https://blog.zarathu.com/jp/posts/2021-10-01-notionoopy/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com\/jp");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

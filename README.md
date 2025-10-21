@@ -45,7 +45,7 @@ license: CC BY-NC
 ---
 ```
 
-8.  아티클을 `index.qmd`에 이어서 작성 후 **Knit**
+8.  아티클을 `index.qmd`에 이어서 작성 후 **Knit(Render)**
 9.  이때 이미지는 디렉토리내의 `/img`를 활용하길 권장
 10. 로컬에 **Commit**
 11. zarathucorp/blog에 **Pull Request** 생성
@@ -58,7 +58,7 @@ license: CC BY-NC
 
 1.  생성한 디렉토리에 추가로 **슬라이드 qmd 파일 작성**
 
-2.  **Knit**
+2.  **Knit(Render)**
 
 3.  `index.qmd` 에 아래의 예시를 참조하여 iframe 추가
 

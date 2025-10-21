@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.47">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Minhyuk Kim">
+<meta name="dcterms.date" content="2025-10-20">
+<meta name="description" content="나만의 R 패키지를 만들어보자">
+<title>R 패키지 개발부터 CRAN 제출까지의 여정 – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script><style>html{ scroll-behavior: smooth; }</style>
+<link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../../jp/index.html"> 
+<span class="menu-text">ホーム</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">アプリケーション</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-パッケージ" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R パッケージ</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-パッケージ">
+<li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../jp/contributors.html"> 
+<span class="menu-text">投稿者</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">パートナー</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-">
+<li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">
+<li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+</li>
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">R 패키지 개발부터 CRAN 제출까지의 여정</h1>
+                  <div>
+        <div class="description">
+          <p>나만의 R 패키지를 만들어보자</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">rpackage</div>
+                <div class="quarto-category">CRAN</div>
+                <div class="quarto-category">githubpage</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/newjoseph">Minhyuk Kim</a> <a href="mailto:mhkim@zarathu.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 20, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#%EC%95%84%EC%9D%B4%EB%94%94%EC%96%B4-%EC%84%A0%EC%A0%95%EA%B3%BC-%EB%B0%A9%ED%96%A5-%EC%84%A4%EC%A0%95---%EC%96%B4%EB%96%A4-%ED%8C%A8%ED%82%A4%EC%A7%80%EB%A5%BC-%EA%B0%9C%EB%B0%9C%ED%95%A0-%EA%B2%83%EC%9D%B8%EA%B0%80" id="toc-아이디어-선정과-방향-설정---어떤-패키지를-개발할-것인가" class="nav-link" data-scroll-target="#%EC%95%84%EC%9D%B4%EB%94%94%EC%96%B4-%EC%84%A0%EC%A0%95%EA%B3%BC-%EB%B0%A9%ED%96%A5-%EC%84%A4%EC%A0%95---%EC%96%B4%EB%96%A4-%ED%8C%A8%ED%82%A4%EC%A7%80%EB%A5%BC-%EA%B0%9C%EB%B0%9C%ED%95%A0-%EA%B2%83%EC%9D%B8%EA%B0%80">아이디어 선정과 방향 설정 - 어떤 패키지를 개발할 것인가?</a></li>
+  <li><a href="#%EA%B8%B0%ED%9A%8D-%EB%B0%B0%EA%B2%BD" id="toc-기획-배경" class="nav-link" data-scroll-target="#%EA%B8%B0%ED%9A%8D-%EB%B0%B0%EA%B2%BD">기획 배경</a></li>
+  <li><a href="#%EB%8B%A4%EB%A5%B8-%ED%8C%A8%ED%82%A4%EC%A7%80%EC%99%80%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90" id="toc-다른-패키지와의-차이점" class="nav-link" data-scroll-target="#%EB%8B%A4%EB%A5%B8-%ED%8C%A8%ED%82%A4%EC%A7%80%EC%99%80%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90">다른 패키지와의 차이점</a></li>
+  <li>
+<a href="#%EA%B0%9C%EB%B0%9C-%EB%8B%A8%EA%B3%84" id="toc-개발-단계" class="nav-link" data-scroll-target="#%EA%B0%9C%EB%B0%9C-%EB%8B%A8%EA%B3%84">개발 단계</a>
+  <ul class="collapse">
+<li><a href="#%EA%B4%80%EB%A0%A8-%ED%95%A8%EC%88%98%EB%93%A4" id="toc-관련-함수들" class="nav-link" data-scroll-target="#%EA%B4%80%EB%A0%A8-%ED%95%A8%EC%88%98%EB%93%A4">관련 함수들</a></li>
+  <li><a href="#%EC%82%AC%EC%9A%A9%ED%95%9C-%ED%8C%A8%ED%82%A4%EC%A7%80" id="toc-사용한-패키지" class="nav-link" data-scroll-target="#%EC%82%AC%EC%9A%A9%ED%95%9C-%ED%8C%A8%ED%82%A4%EC%A7%80">사용한 패키지</a></li>
+  <li>
+<a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EB%A7%8C%EB%93%A4%EA%B8%B0" id="toc-패키지-만들기" class="nav-link" data-scroll-target="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EB%A7%8C%EB%93%A4%EA%B8%B0">패키지 만들기</a>
+  <ul class="collapse">
+<li><a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EA%B8%B0%EB%B3%B8-%EA%B5%AC%EC%A1%B0-%EB%A7%8C%EB%93%A4%EA%B8%B0" id="toc-패키지-기본-구조-만들기" class="nav-link" data-scroll-target="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EA%B8%B0%EB%B3%B8-%EA%B5%AC%EC%A1%B0-%EB%A7%8C%EB%93%A4%EA%B8%B0">패키지 기본 구조 만들기</a></li>
+  <li><a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%84%A4%EB%AA%85-%EC%B6%94%EA%B0%80" id="toc-패키지-설명-추가" class="nav-link" data-scroll-target="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%84%A4%EB%AA%85-%EC%B6%94%EA%B0%80">패키지 설명 추가</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%ED%85%8C%EC%8A%A4%ED%8A%B8" id="toc-패키지-테스트" class="nav-link" data-scroll-target="#%ED%8C%A8%ED%82%A4%EC%A7%80-%ED%85%8C%EC%8A%A4%ED%8A%B8">패키지 테스트</a>
+  <ul class="collapse">
+<li><a href="#%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C-%EC%9E%91%EC%84%B1" id="toc-테스트-코드-작성" class="nav-link" data-scroll-target="#%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C-%EC%9E%91%EC%84%B1">테스트 코드 작성</a></li>
+  </ul>
+</li>
+  <li><a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EA%B2%80%EC%82%AC" id="toc-패키지-검사" class="nav-link" data-scroll-target="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EA%B2%80%EC%82%AC">패키지 검사</a></li>
+  <li>
+<a href="#%EA%B7%B8-%EC%99%B8" id="toc-그-외" class="nav-link" data-scroll-target="#%EA%B7%B8-%EC%99%B8">그 외</a>
+  <ul class="collapse">
+<li><a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%86%8C%EA%B0%9C%EB%AC%B8%EC%84%9C-%EC%9E%91%EC%84%B1" id="toc-패키지-소개문서-작성" class="nav-link" data-scroll-target="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%86%8C%EA%B0%9C%EB%AC%B8%EC%84%9C-%EC%9E%91%EC%84%B1">패키지 소개문서 작성</a></li>
+  </ul>
+</li>
+  </ul>
+</li>
+  <li>
+<a href="#%EC%98%A4%ED%94%88%EC%86%8C%EC%8A%A4-%EC%9A%B4%EC%98%81-%EB%B0%8F-github-%EA%B4%80%EB%A6%AC" id="toc-오픈소스-운영-및-github-관리" class="nav-link" data-scroll-target="#%EC%98%A4%ED%94%88%EC%86%8C%EC%8A%A4-%EC%9A%B4%EC%98%81-%EB%B0%8F-github-%EA%B4%80%EB%A6%AC">오픈소스 운영 및 GitHub 관리</a>
+  <ul class="collapse">
+<li><a href="#git-%EC%83%9D%EC%84%B1-%EB%B0%8F-github-%EC%97%B0%EA%B2%B0" id="toc-git-생성-및-github-연결" class="nav-link" data-scroll-target="#git-%EC%83%9D%EC%84%B1-%EB%B0%8F-github-%EC%97%B0%EA%B2%B0">Git 생성 및 GitHub 연결</a></li>
+  <li><a href="#test-coverage" id="toc-test-coverage" class="nav-link" data-scroll-target="#test-coverage">test coverage</a></li>
+  <li><a href="#github-%EC%9E%90%EB%8F%99%ED%99%94" id="toc-github-자동화" class="nav-link" data-scroll-target="#github-%EC%9E%90%EB%8F%99%ED%99%94">GitHub 자동화</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#cran%EC%97%90-%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%A0%9C%EC%B8%A8%ED%95%98%EA%B8%B0" id="toc-cran에-패키지-제츨하기" class="nav-link" data-scroll-target="#cran%EC%97%90-%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%A0%9C%EC%B8%A8%ED%95%98%EA%B8%B0">CRAN에 패키지 제츨하기</a>
+  <ul class="collapse">
+<li><a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EA%B8%B0%EB%B3%B8-%EA%B2%80%EC%82%AC" id="toc-패키지-기본-검사" class="nav-link" data-scroll-target="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EA%B8%B0%EB%B3%B8-%EA%B2%80%EC%82%AC">패키지 기본 검사</a></li>
+  <li><a href="#pdf-%EB%A9%94%EB%89%B4%EC%96%BC-%EC%83%9D%EC%84%B1-%ED%99%95%EC%9D%B8" id="toc-pdf-메뉴얼-생성-확인" class="nav-link" data-scroll-target="#pdf-%EB%A9%94%EB%89%B4%EC%96%BC-%EC%83%9D%EC%84%B1-%ED%99%95%EC%9D%B8">PDF 메뉴얼 생성 확인</a></li>
+  <li><a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%A0%9C%EC%B6%9C" id="toc-패키지-제출" class="nav-link" data-scroll-target="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%A0%9C%EC%B6%9C">패키지 제출</a></li>
+  </ul>
+</li>
+  <li><a href="#%EB%8A%90%EB%82%80-%EC%A0%90" id="toc-느낀-점" class="nav-link" data-scroll-target="#%EB%8A%90%EB%82%80-%EC%A0%90">느낀 점</a></li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="introduction" class="level1"><h1>Introduction</h1>
+<p>이번 포스트에서는 내부 의료연구 프로젝트에서 출발해 <strong>생존분석 모델 성능평가 R 패키지(<code>survC</code>)</strong>를 개발하고, GitHub에 배포하고, CRAN에 제출하기까지의 과정을 공유합니다.</p>
+</section><section id="아이디어-선정과-방향-설정---어떤-패키지를-개발할-것인가" class="level1"><h1>아이디어 선정과 방향 설정 - 어떤 패키지를 개발할 것인가?</h1>
+<p>패키지 개발의 첫 걸음은 <em>“무엇을 만들 것인가?”</em>를 결정하는 과정입니다. 단순하게 새로운 기능을 추가하는 것이 아닌, 사용자의 불편함을 해결하는 것에서 출발합니다. 내가 ‘평소에 R을 사용하면서 어떤 부분에서 이러한 불편함이 있었지?’ 라는 질문을 스스로에게 묻고 답을 해나가며 개발 아이디어를 얻을 수 있습니다.</p>
+<p>고려할 사항들</p>
+<ol type="1">
+<li>문제 중심의 접근
+<ul>
+<li>내가 자주 반복하는 과정 중 자동화되면 좋을 부분은 무엇인가?</li>
+</ul>
+</li>
+<li>기존 패키지의 공백 찾기
+<ul>
+<li>CRAN, GitHub에서 비슷한 기능의 패키지를 찾아보고,</li>
+<li>어떤 부분이 불편하게 구현되어 있는가?</li>
+<li>어떤 작업은 빠져 있는가?를 비교한다.</li>
+</ul>
+</li>
+<li>최종 사용자가 누구인가?
+<ul>
+<li>통계 전문가</li>
+<li>의료 연구가</li>
+<li>비전공 분석가 등</li>
+</ul>
+</li>
+<li>확장성 및 지속 가능성
+<ul>
+<li>향후 버전에서 확장 가능한 구조인지 고려한다.</li>
+</ul>
+</li>
+</ol>
+<p>저는 제가 사용하면서 불편했던 점들을 하나씩 적어보았고, 다른 사람들이 R이나 R Studio를 사용하면서 불편했던 점들도 물어보며 아이디어를 적었습니다.</p>
+<p>그 과정에서 나왔던 불편한 점들 중에 몇가지를 적어보았습니다:</p>
+<ul>
+<li>의료 데이터의 전처리 및 변수 설정을 매번 해야해서 불편함이 있다</li>
+<li>의료 데이터에서 배제 포함 조건을 적용한 뒤의 N수를 플로우 차트로 보여주기 어렵다.</li>
+<li>의학통계 교육을 진행할 때 필요한 데이터가 여러군데 나뉘어 있어 참조하기 번거롭다.</li>
+<li>R studio에서 파일 관리가 번거롭다 등</li>
+</ul></section><section id="기획-배경" class="level1"><h1>기획 배경</h1>
+<p>의학 연구에서 생존분석 연구를 진행할 때 cox 모델을 만들고 원하는 분석을 진행하려면 여러 패키지를 따로 적용했어야 했으며, 그 과정이 복잡해서 이를 한번에 통합해서 쉽게 결과를 얻을 수 있는 패키지가 있으면 좋겠다고 생각했습니다. 그래서 여러가지 다른 시간대를 기준으로 다른 모델들과의 비교를 위한 <strong>ROC 와 Harrell’s c-index</strong>를 한번에 확인하는 패키지를 만들고 싶었습니다. 그래서 이 결과와 그래프를 보여주는 패키지를 개발하게 되었습니다.</p>
+</section><section id="다른-패키지와의-차이점" class="level1"><h1>다른 패키지와의 차이점</h1>
+<p><code>survival</code>의 패키지는 생존분석의 모델을 만드는 것에 중점적이지만 <code>survC</code> 패키지는 ROC와 C-index 기반의 모델 평가 산출에 초점이 맞춰져있습니다. <code>riskRegression</code>과 같은 패키지의 경우 모델의 예측 성능을 검증하는데 사용되는데 <code>survC</code> 패키지의 경우 concordance를 중심으로 경량화해서 설계된 패키지라는 것에 차이점이 있습니다. <code>survC</code> 패키지의 장점으로는 원하는 결과값을 한번에 파워포인트 형식으로 추출하고, 이를 파워포인트에서 직접 수정할 수 있다는 점에서 장점이 있습니다.</p>
+</section><section id="개발-단계" class="level1"><h1>개발 단계</h1>
+<p>각 시간별로 달라지는 생존분석과 이 결과를 나타내는 time-dependent ROC를 구하고 이를 test set과 validation set을 비교했었던 이전에 진행했던 연구를 바탕으로 패키지 개발을 진행하였습니다.</p>
+<section id="관련-함수들" class="level2"><h2 class="anchored" data-anchor-id="관련-함수들">관련 함수들</h2>
+<p><code>calc_risk_score</code> 함수는 <code>coxph</code> 모델을 기반으로 risk score를 구하는 함수 입니다. <code>cindex_calc</code> 함수는 Harrell’s C‑index을 구할때 사용되는 함수입니다. <code>validation_report</code> 함수는 원하는 결과값을 test와 validate을 비교할 수 있도록 ppt 형식으로 ROC 그래프를 그려주는 함수입니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">survC</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
+<span><span class="va">lung</span> <span class="op">&lt;-</span> <span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/lung.html">lung</a></span></span>
+<span><span class="va">lung</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/complete.cases.html">complete.cases</a></span><span class="op">(</span><span class="va">lung</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"status"</span>, <span class="st">"age"</span>, <span class="st">"ph.ecog"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Split into training and validation cohorts</span></span>
+<span><span class="va">split_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">train_idx</span> <span class="op">&lt;-</span> <span class="va">split_ids</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">110</span><span class="op">]</span></span>
+<span><span class="va">val_idx</span> <span class="op">&lt;-</span> <span class="va">split_ids</span><span class="op">[</span><span class="fl">111</span><span class="op">:</span><span class="fl">200</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">train_df</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="va">train_idx</span>, <span class="op">]</span></span>
+<span><span class="va">val_df</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="va">val_idx</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Fit a simple Cox model on the training data</span></span>
+<span><span class="va">cox_fit</span> <span class="op">&lt;-</span> <span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html">coxph</a></span><span class="op">(</span></span>
+<span>  <span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">ph.ecog</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">train_df</span>,</span>
+<span>  x <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Linear predictor / risk scores</span></span>
+<span><span class="va">train_lp</span> <span class="op">&lt;-</span> <span class="fu">calc_risk_score</span><span class="op">(</span><span class="va">cox_fit</span><span class="op">)</span> <span class="co"># risk score 구하기</span></span>
+<span><span class="va">val_lp</span> <span class="op">&lt;-</span> <span class="fu">calc_risk_score</span><span class="op">(</span><span class="va">cox_fit</span>, data <span class="op">=</span> <span class="va">val_df</span><span class="op">)</span> <span class="co"># validation dataset risk score 구하기</span></span>
+<span></span>
+<span><span class="co">#  Harrell's concordance on the validation cohort</span></span>
+<span><span class="fu">cindex_calc</span><span class="op">(</span><span class="va">cox_fit</span><span class="op">)</span> <span class="co"># train dataset의 C-index 구하기</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cindex  Lower  Upper 
+ 0.600  0.534  0.666 </code></pre>
+</div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">c_index_val</span> <span class="op">&lt;-</span> <span class="fu">cindex_calc</span><span class="op">(</span><span class="va">cox_fit</span>, newdata <span class="op">=</span> <span class="va">val_df</span><span class="op">)</span> <span class="co"># validation의 C-index 구하기</span></span>
+<span></span>
+<span><span class="co"># validation report 추출하기</span></span>
+<span><span class="va">horizons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">400</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">validation_report</span><span class="op">(</span></span>
+<span>  train_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html">transform</a></span><span class="op">(</span><span class="va">train_df</span>, time <span class="op">=</span> <span class="va">time</span>, status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  val_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html">transform</a></span><span class="op">(</span><span class="va">val_df</span>, time <span class="op">=</span> <span class="va">time</span>, status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">cox_fit</span>,</span>
+<span>  time_col <span class="op">=</span> <span class="st">"time"</span>,</span>
+<span>  status_col <span class="op">=</span> <span class="st">"status"</span>,</span>
+<span>  times <span class="op">=</span> <span class="va">horizons</span>,</span>
+<span>  time_unit <span class="op">=</span> <span class="st">"days"</span>,</span>
+<span>  output <span class="op">=</span> <span class="st">"validation_report.pptx"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="사용한-패키지" class="level2"><h2 class="anchored" data-anchor-id="사용한-패키지">사용한 패키지</h2>
+<p>survival, stats, timeROC, officer, rvg 등</p>
+</section><section id="패키지-만들기" class="level2"><h2 class="anchored" data-anchor-id="패키지-만들기">패키지 만들기</h2>
+<section id="패키지-기본-구조-만들기" class="level3"><h3 class="anchored" data-anchor-id="패키지-기본-구조-만들기">패키지 기본 구조 만들기</h3>
+<p><code>devtools</code>로 패키지의 기본 구조를 만듭니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/">devtools</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="st">"myPackage"</span><span class="op">)</span>  <span class="co"># 원하는 패키지 이름을 정합니다.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>DESCRIPTION</code>, <code>NAMESPACE</code>, <code>R/</code> 폴더 등을 포함한 패키지의 틀을 자동으로 갖출 수 있게 해줍니다. 그리고 패키지에 필요한 함수들을 <code>R</code> 폴더 아래에 작성합니다.</p>
+<p><code>DESCRIPTION</code>은 패키지의 설명을 적은 파일입니다. 어떤 패키지인지, 누가 만들었는지, 다른 패키지는 무엇이 필요한지 명시되어 있습니다.</p>
+</section><section id="패키지-설명-추가" class="level3"><h3 class="anchored" data-anchor-id="패키지-설명-추가">패키지 설명 추가</h3>
+<p><code>roxygen2</code>를 사용하여 각 함수에 주석을 자동으로 달아줍니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html">document</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>위의 함수를 사용해서, <code>NAMESPACE</code>와 <code>man/</code> 폴더에 R Markdown 문서들을 자동으로 생성합니다.</p>
+<p><code>NAMESPACE</code>는 패키지의 설계도와 같아서 어떤 함수들이 공개되고, 다른 패키지의 어떤 함수들을 import 할지 적어둔 파일입니다.</p>
+<p><code>man/</code> 폴더는 패키지의 각 함수에 대한 설명을 저장하는 폴더입니다.</p>
+<p>예시는 아래와 같습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Compute risk scores from a fitted survival model</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' This helper wraps `stats::predict()` for `coxph` objects so that package users</span></span>
+<span><span class="co">#' can easily obtain linear predictors (default) or risk scores to feed into</span></span>
+<span><span class="co">#' downstream metrics such as time-dependent ROC or Harrell's C-index.</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @param model A fitted `coxph` object.</span></span>
+<span><span class="co">#' @param data Optional dataset on which to score the model. Defaults to the</span></span>
+<span><span class="co">#'   training data stored within `model`.</span></span>
+<span><span class="co">#' @param type Scale of the predictions to return. Either `"lp"` (linear</span></span>
+<span><span class="co">#'   predictor, the default) or `"risk"`. If `NULL` or omitted, `"lp"` is used.</span></span>
+<span><span class="co">#' @param ... Additional arguments passed to [stats::predict()].</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @return A numeric vector containing the requested risk scores.</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @examples</span></span>
+<span><span class="co">#' if (requireNamespace("survival", quietly = TRUE)) {</span></span>
+<span><span class="co">#'   fit &lt;- survival::coxph(survival::Surv(time, status) ~ age, data = survival::lung)</span></span>
+<span><span class="co">#'   # Linear predictor on the training data</span></span>
+<span><span class="co">#'   calc_risk_score(fit)</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#'   # Risk scale predictions on new data</span></span>
+<span><span class="co">#'   calc_risk_score(fit, survival::lung, type = "risk")</span></span>
+<span><span class="co">#' }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="패키지-테스트" class="level2"><h2 class="anchored" data-anchor-id="패키지-테스트">패키지 테스트</h2>
+<section id="테스트-코드-작성" class="level3"><h3 class="anchored" data-anchor-id="테스트-코드-작성">테스트 코드 작성</h3>
+<p><code>testthat</code> 패키지를 사용하여 unit test를 추가합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_testthat.html">use_testthat</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_r.html">use_test</a></span><span class="op">(</span><span class="st">"function_name"</span><span class="op">)</span> <span class="co"># 테스트 하고 싶은 함수 이름을 입력합니다.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>위와 같이 프로그램을 실행한다면, <code>tests/testthat/test-function_name.R</code> 파일이 자동으로 생성됩니다. 생성된 파일에 아래와 같이 unit test를 추가할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">test_that</span><span class="op">(</span><span class="st">"calc_risk_score matches predict() on training data"</span>, <span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span></span>
+<span>  <span class="va">lung</span> <span class="op">&lt;-</span> <span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/lung.html">lung</a></span></span>
+<span>  <span class="va">lung</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/complete.cases.html">complete.cases</a></span><span class="op">(</span><span class="va">lung</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"status"</span>, <span class="st">"age"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, <span class="op">]</span></span>
+<span>  <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html">coxph</a></span><span class="op">(</span><span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">lung</span>, x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu">expect_equal</span><span class="op">(</span></span>
+<span>    <span class="fu">calc_risk_score</span><span class="op">(</span><span class="va">model</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"lp"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>기대하는 값과, 실행하는 값의 결과에 따라 테스트의 성공 및 실패 여부를 가릴 수 있습니다. 아래 코드를 실행해서 테스트를 실행할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/test.html">test</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># 테스트 실행</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="패키지-검사" class="level2"><h2 class="anchored" data-anchor-id="패키지-검사">패키지 검사</h2>
+<p>위와 같은 과정을 모두 마쳤다면, 전체 패키지를 테스트 합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/check.html">check</a></span><span class="op">(</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>테스트를 진행하면서 ERROR / WARNING / NOTE 메시지를 보고 수정해야합니다. CRAN에 제출하기 위해서는 ERROR, WARNING 없음이 기준입니다.</p>
+</section><section id="그-외" class="level2"><h2 class="anchored" data-anchor-id="그-외">그 외</h2>
+<section id="패키지-소개문서-작성" class="level3"><h3 class="anchored" data-anchor-id="패키지-소개문서-작성">패키지 소개문서 작성</h3>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_readme_rmd.html">use_readme_rmd</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code><a href="https://usethis.r-lib.org/reference/use_readme_rmd.html">use_readme_rmd()</a></code> 함수를 사용하여 README 파일을 자동으로 생성하고, 필요에 따라 설명 부분을 직접 작성합니다.</p>
+<p><code>pkdown</code>패키지를 사용하여 GitHub의 웹페이지를 만드는 것은 https://blog.zarathu.com/posts/2023-03-17-pkgdown/index.html 를 참조</p>
+</section></section></section><section id="오픈소스-운영-및-github-관리" class="level1"><h1>오픈소스 운영 및 GitHub 관리</h1>
+<section id="git-생성-및-github-연결" class="level2"><h2 class="anchored" data-anchor-id="git-생성-및-github-연결">Git 생성 및 GitHub 연결</h2>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_git.html">use_git</a></span><span class="op">(</span><span class="op">)</span>    <span class="co"># git 생성</span></span>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_github.html">use_github</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># github 연결</span></span>
+<span><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="https://gitcreds.r-lib.org/reference/gitcreds_get.html">gitcreds_set</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># GitHub Personal Access Token 입력</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>패키지의 Git을 생성하고 GitHub 연결합니다.</p>
+</section><section id="test-coverage" class="level2"><h2 class="anchored" data-anchor-id="test-coverage">test coverage</h2>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://covr.r-lib.org">covr</a></span><span class="op">)</span></span>
+<span><span class="fu">package_coverage</span><span class="op">(</span><span class="op">)</span> <span class="co"># 패키지 폴더에서 실행</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>test coverage(테스트 커버리지) 는 “테스트 코드가 실제 함수 코드를 얼마나 실행했는가”를 측정하는 지표입니다. 즉, 전체 코드 중 테스트 코드가 다룬 부분의 비율(%)을 보여주는 것입니다. 이 값이 높을수록 테스트가 코드 전체를 잘 검증하고 있다고 볼 수 있습니다.</p>
+<pre><code>[![Codecov test coverage](https://codecov.io/gh/USERNAME/REPO/branch/main/graph/badge.svg)](https://app.codecov.io/gh/USERNAME/REPO)</code></pre>
+<p>위의 코드를 수정하여 GitHub의 패키지 README 파일에 입력하면, 패키지의 코드 커버리지 결과가 홈페이지에 반영됩니다.</p>
+</section><section id="github-자동화" class="level2"><h2 class="anchored" data-anchor-id="github-자동화">GitHub 자동화</h2>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_github_actions.html">use_github_action_check_standard</a></span><span class="op">(</span><span class="op">)</span>   <span class="co"># R CMD check 자동화</span></span>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_github_action.html">use_github_action</a></span><span class="op">(</span><span class="st">"pkgdown"</span><span class="op">)</span>         <span class="co"># 사이트 자동 빌드</span></span>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_github_action.html">use_github_action</a></span><span class="op">(</span><span class="st">"test-coverage"</span><span class="op">)</span>   <span class="co"># 테스트 커버리지 자동추적</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>위의 코드를 실행하면, 패키지를 자동으로 체크하고, 패키지 사이트를 자동으로 빌드하며, 테스트 커버리지도 자동으로 추척합니다. 자동화를 설정한 경우에, 업데이트한 경우에 각 단계를 하나씩 확인할 필요 없이, 모든 것을 자동으로 처리할 수 있어 편리합니다.</p>
+</section></section><section id="cran에-패키지-제츨하기" class="level1"><h1>CRAN에 패키지 제츨하기</h1>
+<section id="패키지-기본-검사" class="level2"><h2 class="anchored" data-anchor-id="패키지-기본-검사">패키지 기본 검사</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 패키지 폴더의 상위 디렉토리에서 실행</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> CMD build myPackage <span class="co"># 이름이 myPackage인 패키지를 빌드. tar.gz 파일 생성 </span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> CMD check myPackage_0.1.0.tar.gz <span class="at">--as-cran</span> <span class="co"># 패키지 버전이 0.1.0을 확인</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>0 errors | 0 warnings | 0 notes</code> 결과가 나와야 CRAN에 제출할 수 있습니다. 주로 점검해야 하는 항목은 아래와 같습니다.</p>
+<ul>
+<li>예제 코드가 너무 오래 걸리지 않게 작성합니다.</li>
+<li>모든 함수에 Rd 문서가 존재해야 합니다.</li>
+<li>의존 패키지는 DESCRIPTION의 Imports/Suggests에 명시헤야 합니다.</li>
+</ul></section><section id="pdf-메뉴얼-생성-확인" class="level2"><h2 class="anchored" data-anchor-id="pdf-메뉴얼-생성-확인">PDF 메뉴얼 생성 확인</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pdf 메뉴얼 생성 확인</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> CMD Rd2pdf .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>pdf 파일의 경우 LaTeX 환경이 설정되어야 합니다. Ubuntu의 경우에는 아래와 같은 코드를 실행하여 LaTeX 환경을 설치할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install texlive texlive-fonts-extra texinfo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="패키지-제출" class="level2"><h2 class="anchored" data-anchor-id="패키지-제출">패키지 제출</h2>
+<p>https://cran.r-project.org/submit.html 상기의 링크에 위의 테스트들을 통과한 <code>.tar.gz</code> 파일을 업로드 합니다. 그리고 이메일 인증을 완료하면, CRAN에서 기본적인 테스트를 진행합니다. 오류가 발생한 경우에는 오류 내용과 함께 오류 내용을 수정해서 재제출 하라는 이메일을 10분 내외로 받게 됩니다. 특별한 오류가 발생하지 않은 경우에는, 약 10일 전후로 해서 CRAN의 리뷰 결과를 받게 됩니다.</p>
+</section></section><section id="느낀-점" class="level1"><h1>느낀 점</h1>
+<p>처음 패키지를 개발하면서 어디서부터 시작해야할지 모르겠다는 막막함이 있었지만, 패키지 개발에 도움을 주는 많은 라이브러리들이 있다는 사실에 놀랐습니다. <code>devtools</code>나 <code>usethis</code>와 같은 라이브러리의 도움을 받아 패키지의 기본 틀을 갖출 수 있었고 이를 토대로 패키지를 개발해서 생각보다 수월했습니다. 그리고 <code>pkgdown</code>와 <code>roxygen2</code>도 사용을 해서 라이브러리의 웹페이지 제작 및 설명을 쉽게 만들수 있었습니다. 패키지의 수정된 부분들을 간단한 함수들을 사용해서 자동으로 업데이트 할 수 있다는 점에서 생각보다 빠른 속도로 패키지를 개발하고 업데이트 할 수 있었습니다.</p>
+<p>패키지를 개발하면서 가장 큰 어려움을 겪었던 것은 ‘어떤 패키지를 개발해야 할까?’ 에 대한 답을 찾는 과정이었습니다. digital AI coding assistant를 이용한다면, 원하는 패키지의 개발은 그리 어렵지 않지만, R을 사용하며 불편함을 느꼈던 부분이나, 자동화 혹은 간소화 하고 싶은 부분들은 경험이 많지 않은 사람에게는 쉽지 않겠다는 생각을 했습니다.</p>
+<p>처음 패키지를 개발해서 CRAN에 업로드 하는 것보다 앞으로 이 패키지를 유지 보수하고 다른 새로운 기능을 업데이트 하는것이 더 중요하겠다는 생각이 듭니다. 처음에는 미약하지만 R의 생태계를 이해하고 오픈소스의 발전에 기여했다는 점에서 뿌듯함을 느꼈습니다.</p>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2025,
+  author = {Kim, Minhyuk},
+  title = {R {패키지} {개발부터} {CRAN} {제출까지의} {여정}},
+  date = {2025-10-20},
+  url = {https://blog.zarathu.com/jp/posts/2025-10-20-R_package/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2025" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Minhyuk. 2025. <span>“R 패키지 개발부터 CRAN 제출까지의
+여정.”</span> October 20, 2025. <a href="https://blog.zarathu.com/jp/posts/2025-10-20-R_package/">https://blog.zarathu.com/jp/posts/2025-10-20-R_package/</a>.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com\/jp");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

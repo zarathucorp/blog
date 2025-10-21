@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.47">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Won Kim">
+<meta name="dcterms.date" content="2023-02-01">
+<meta name="description" content="streamlit 패키지의 사용방법을 알아보자">
+
+<title>Python Streamlit 패키지를 이용한 대시보드 만들기 – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../jp/index.html"> 
+<span class="menu-text">ホーム</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">アプリケーション</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-パッケージ" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R パッケージ</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-パッケージ">    
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../jp/contributors.html"> 
+<span class="menu-text">投稿者</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">パートナー</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">    
+        <li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Python Streamlit 패키지를 이용한 대시보드 만들기</h1>
+                  <div>
+        <div class="description">
+          <p>streamlit 패키지의 사용방법을 알아보자</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">python</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Won Kim </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 1, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#streamlit-소개" id="toc-streamlit-소개" class="nav-link active" data-scroll-target="#streamlit-소개"><span class="header-section-number">1</span> Streamlit 소개</a>
+  <ul class="collapse">
+  <li><a href="#streamlit과-shiny-예제-비교" id="toc-streamlit과-shiny-예제-비교" class="nav-link" data-scroll-target="#streamlit과-shiny-예제-비교"><span class="header-section-number">1.1</span> streamlit과 shiny 예제 비교</a></li>
+  </ul></li>
+  <li><a href="#streamlit-따라-해보기" id="toc-streamlit-따라-해보기" class="nav-link" data-scroll-target="#streamlit-따라-해보기"><span class="header-section-number">2</span> Streamlit 따라 해보기</a>
+  <ul class="collapse">
+  <li><a href="#스트림릿-설치" id="toc-스트림릿-설치" class="nav-link" data-scroll-target="#스트림릿-설치"><span class="header-section-number">2.1</span> 스트림릿 설치</a></li>
+  <li><a href="#스트림릿-기능-소개" id="toc-스트림릿-기능-소개" class="nav-link" data-scroll-target="#스트림릿-기능-소개"><span class="header-section-number">2.2</span> 스트림릿 기능 소개</a>
+  <ul class="collapse">
+  <li><a href="#강조-문구" id="toc-강조-문구" class="nav-link" data-scroll-target="#강조-문구"><span class="header-section-number">2.2.1</span> 강조 문구</a></li>
+  <li><a href="#layout-짜기" id="toc-layout-짜기" class="nav-link" data-scroll-target="#layout-짜기"><span class="header-section-number">2.2.2</span> layout 짜기</a></li>
+  <li><a href="#이미지-불러오기" id="toc-이미지-불러오기" class="nav-link" data-scroll-target="#이미지-불러오기"><span class="header-section-number">2.2.3</span> 이미지 불러오기</a></li>
+  </ul></li>
+  <li><a href="#웹사용자로부터-input-받기" id="toc-웹사용자로부터-input-받기" class="nav-link" data-scroll-target="#웹사용자로부터-input-받기"><span class="header-section-number">2.3</span> 웹사용자로부터 input 받기</a></li>
+  </ul></li>
+  <li><a href="#시각화" id="toc-시각화" class="nav-link" data-scroll-target="#시각화"><span class="header-section-number">3</span> 시각화</a>
+  <ul class="collapse">
+  <li><a href="#plotly" id="toc-plotly" class="nav-link" data-scroll-target="#plotly"><span class="header-section-number">3.1</span> plotly</a>
+  <ul class="collapse">
+  <li><a href="#st.plotly_chart" id="toc-st.plotly_chart" class="nav-link" data-scroll-target="#st.plotly_chart"><span class="header-section-number">3.1.1</span> st.plotly_chart</a></li>
+  </ul></li>
+  <li><a href="#지도표시" id="toc-지도표시" class="nav-link" data-scroll-target="#지도표시"><span class="header-section-number">3.2</span> 지도표시</a></li>
+  </ul></li>
+  <li><a href="#st.session_state-st.cache" id="toc-st.session_state-st.cache" class="nav-link" data-scroll-target="#st.session_state-st.cache"><span class="header-section-number">4</span> st.session_State / st.cache</a>
+  <ul class="collapse">
+  <li><a href="#st.session_state-세션-스테이트란" id="toc-st.session_state-세션-스테이트란" class="nav-link" data-scroll-target="#st.session_state-세션-스테이트란"><span class="header-section-number">4.1</span> st.session_state 세션 스테이트란?</a></li>
+  <li><a href="#st.session_state-활용" id="toc-st.session_state-활용" class="nav-link" data-scroll-target="#st.session_state-활용"><span class="header-section-number">4.2</span> st.session_state 활용</a></li>
+  <li><a href="#cache-란-무엇인가" id="toc-cache-란-무엇인가" class="nav-link" data-scroll-target="#cache-란-무엇인가"><span class="header-section-number">4.3</span> cache 란 무엇인가?</a></li>
+  <li><a href="#streamlit-에서-cache-기능-사용하기" id="toc-streamlit-에서-cache-기능-사용하기" class="nav-link" data-scroll-target="#streamlit-에서-cache-기능-사용하기"><span class="header-section-number">4.4</span> streamlit 에서 cache 기능 사용하기</a></li>
+  <li><a href="#로딩상태-구현" id="toc-로딩상태-구현" class="nav-link" data-scroll-target="#로딩상태-구현"><span class="header-section-number">4.5</span> 로딩상태 구현</a>
+  <ul class="collapse">
+  <li><a href="#st.progress" id="toc-st.progress" class="nav-link" data-scroll-target="#st.progress"><span class="header-section-number">4.5.1</span> st.progress</a></li>
+  <li><a href="#st.-spinner-사용" id="toc-st.-spinner-사용" class="nav-link" data-scroll-target="#st.-spinner-사용"><span class="header-section-number">4.5.2</span> st. spinner 사용</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#스트림릿의-단점" id="toc-스트림릿의-단점" class="nav-link" data-scroll-target="#스트림릿의-단점"><span class="header-section-number">5</span> 스트림릿의 단점</a>
+  <ul class="collapse">
+  <li><a href="#근본적-한계" id="toc-근본적-한계" class="nav-link" data-scroll-target="#근본적-한계"><span class="header-section-number">5.1</span> 근본적 한계</a></li>
+  <li><a href="#극복방안-css-hack" id="toc-극복방안-css-hack" class="nav-link" data-scroll-target="#극복방안-css-hack"><span class="header-section-number">5.2</span> 극복방안 : CSS hack</a></li>
+  </ul></li>
+  <li><a href="#소개하지-못했지만-중요한-기능" id="toc-소개하지-못했지만-중요한-기능" class="nav-link" data-scroll-target="#소개하지-못했지만-중요한-기능"><span class="header-section-number">6</span> 소개하지 못했지만 중요한 기능</a></li>
+  <li><a href="#파이썬-streamlit을-활용한-전공의-실태조사-대시보드-제작기" id="toc-파이썬-streamlit을-활용한-전공의-실태조사-대시보드-제작기" class="nav-link" data-scroll-target="#파이썬-streamlit을-활용한-전공의-실태조사-대시보드-제작기"><span class="header-section-number">7</span> 파이썬 streamlit을 활용한 전공의 실태조사 대시보드 제작기</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script>
+
+
+
+
+
+<p><img src="logo.jpeg" class="img-fluid"></p>
+<p><a href="https://docs.streamlit.io/library/api-reference" class="uri">https://docs.streamlit.io/library/api-reference</a> 를 바탕으로 정리한 글입니다.</p>
+<p>2023년 2월 기준) <em>streamlit version 1.17.0</em> 을 기준으로 작성하였습니다.</p>
+<section id="streamlit-소개" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Streamlit 소개</h1>
+<p>언제 스트림릿을 사용해야할지 스트림릿이 타 프레임워크에 비하여 가질 수 있는 장점을 바탕으로 비교하여 보겠습니다.</p>
+<p><img src="src-1.png" class="img-fluid"></p>
+<ol type="1">
+<li><p>빠르게 개발이 가능하다 - 웹개발관련 지식이 부족해도 쉽게 웹페이지를 만들 수 있다.</p></li>
+<li><p>파이썬에서 분석한 내용을 옮길 필요 없이 바로바로 웹에 띄울 수 있다. + ML/DL 사용가능한 라이브러리들이 많다!</p></li>
+<li><p>interactive한 웹 개발이 가능하다. Dashboard 만들기 등</p></li>
+</ol>
+<p>단점 : 스트림릿으로 구현한 웹을 바로 product로 사용하기엔 다듬어야 할 부분들이 많고, 디테일한 layout 조정등은 어려움 -&gt; CSS hack을 통해 조정 가능하다!</p>
+<p>다른 대안 : pyscript라는 것이 인기를 끌고 있다. 하지만 아직 보완되어야 할 점이 정말 많다.</p>
+<p>(html 에서 작동하는 python) <a href="https://github.com/pyscript/pyscript" class="uri">https://github.com/pyscript/pyscript</a></p>
+<hr>
+<section id="streamlit과-shiny-예제-비교" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="streamlit과-shiny-예제-비교"><span class="header-section-number">1.1</span> streamlit과 shiny 예제 비교</h2>
+<ul>
+<li>streamlit 활용 사례</li>
+</ul>
+<p><a href="https://streamlit.io/gallery" class="uri">https://streamlit.io/gallery</a></p>
+<ul>
+<li>shiny 활용 사례</li>
+</ul>
+<p><a href="https://shiny.rstudio.com/gallery/" class="uri">https://shiny.rstudio.com/gallery/</a></p>
+<p><br></p>
+</section>
+</section>
+<section id="streamlit-따라-해보기" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Streamlit 따라 해보기</h1>
+<p>Streamlit에 어떤 기능이 있는지 따라 쳐보면서 확인해보자.</p>
+<section id="스트림릿-설치" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="스트림릿-설치"><span class="header-section-number">2.1</span> 스트림릿 설치</h2>
+<p>파이썬, 가상환경 설치와 관한 내용은 다른 게시물을 참고하시기 바랍니다.</p>
+<pre class="{terminal}"><code>pip install streamlit </code></pre>
+<p>파이썬 가상환경에 streamlit패키지를 설치합니다</p>
+<p>app.py를 생성한 후 다음 과 같이 수정하여 저장합니다.</p>
+<div id="6123e1ec" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> streamlit <span class="im">as</span> st</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>st.title(<span class="st">'Hello Streamlit'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이후 터미널에서</p>
+<pre class="{bash}"><code>streamlit run app.py </code></pre>
+<p>streamlit run app.py 명렁어를 실행하면, 로컬서버로 페이지가 만들어지게 됩니다.</p>
+<p><img src="src2-1.png" class="img-fluid"></p>
+</section>
+<section id="스트림릿-기능-소개" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="스트림릿-기능-소개"><span class="header-section-number">2.2</span> 스트림릿 기능 소개</h2>
+<p>더 자세한 내용은 <a href="https://docs.streamlit.io/library/api-reference" class="uri">https://docs.streamlit.io/library/api-reference</a>에서 확인하실 수 있습니다.</p>
+<section id="강조-문구" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="강조-문구"><span class="header-section-number">2.2.1</span> 강조 문구</h3>
+<ol type="1">
+<li>title</li>
+<li>header</li>
+<li>subheader</li>
+</ol>
+<div id="597d1aed" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> streamlit <span class="im">as</span> st</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>st.title(<span class="st">'this is title'</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>st.header(<span class="st">'this is header'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>st.subheader(<span class="st">'this is subheader'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="src-header.png" class="img-fluid"></p>
+<p>제목과 헤더,서브헤더를 구현할 수 있다.</p>
+<ol start="4" type="1">
+<li>etc</li>
+</ol>
+<p>추가적으로 Markdown 문법을 st.markdown으로, caption, Latex Code block을 활용가능합니다</p>
+<p><br></p>
+</section>
+<section id="layout-짜기" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="layout-짜기"><span class="header-section-number">2.2.2</span> layout 짜기</h3>
+<p>페이지의 공간을 레이아웃을 통해 웹페이지를 분할할 수 있다.</p>
+<ol type="1">
+<li>column</li>
+</ol>
+<div id="1ca9ca05" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> streamlit <span class="im">as</span> st</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>col1,col2 <span class="op">=</span> st.columns([<span class="dv">2</span>,<span class="dv">3</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 공간을 2:3 으로 분할하여 col1과 col2라는 이름을 가진 컬럼을 생성합니다.  </span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> col1 :</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># column 1 에 담을 내용</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  st.title(<span class="st">'here is column1'</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> col2 :</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># column 2 에 담을 내용</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  st.title(<span class="st">'here is column2'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  st.checkbox(<span class="st">'this is checkbox1 in col2 '</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># with 구문 말고 다르게 사용 가능 </span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>col1.subheader(<span class="st">' i am column1  subheader !! '</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>col2.checkbox(<span class="st">'this is checkbox2 in col2 '</span>) </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#=&gt;위에 with col2: 안의 내용과 같은 기능을합니다</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<p>결과물</p>
+<p><img src="src-columns.png" class="img-fluid"></p>
+<ol start="2" type="1">
+<li>tab</li>
+</ol>
+<div id="9c31e8a7" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> streamlit <span class="im">as</span> st</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 탭 생성 : 첫번째 탭의 이름은 Tab A 로, Tab B로 표시합니다. </span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>tab1, tab2<span class="op">=</span> st.tabs([<span class="st">'Tab A'</span> , <span class="st">'Tab B'</span>])</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tab1:</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#tab A 를 누르면 표시될 내용</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  st.write(<span class="st">'hello'</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tab2:</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#tab B를 누르면 표시될 내용 </span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  st.write(<span class="st">'hi'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br> 다음을 실행하면 tab A 를 눌렀을 경우 hello, tab B를 눌렀을 경우 hi가 나오게 됩니다.</p>
+<p>탭의 특징으로는, 탭을 클릭과 동시에 데이터가 만들어지는 것이 아니라,탭에 표시될 데이터가 이미 만들어져 았는 것이 특징입니다. 장점이 될 수도 있고, 단점이 될 수도 있습니다.</p>
+<p><img src="src-tab1.png" class="img-fluid"> <img src="src-tab2.png" class="img-fluid"></p>
+<ol start="3" type="1">
+<li>sidebar</li>
+</ol>
+<div id="e98741c5" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> streamlit <span class="im">as</span> st</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#st.sidebar는 </span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>st.sidebar.title(<span class="st">'this is sidebar'</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>st.sidebar.checkbox(<span class="st">'체크박스에 표시될 문구'</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 사이드바에 체크박스, 버튼등 추가할 수 있습니다! </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="src-sidebar.png" class="img-fluid"> <img src="src-sidebar2.png" class="img-fluid"></p>
+<ol start="4" type="1">
+<li>etc</li>
+</ol>
+<p>추가적으로 Expander, Container ,Empty가 있습니다</p>
+</section>
+<section id="이미지-불러오기" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="이미지-불러오기"><span class="header-section-number">2.2.3</span> 이미지 불러오기</h3>
+<div id="3b83549b" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> streamlit <span class="im">as</span> st</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#PIL 패키지에 이미지 모듈을 통해 이미지 열기 </span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Image.open('이미지 경로')</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>zarathu_img <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'zarathu.png'</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>col1,col2 <span class="op">=</span> st.columns([<span class="dv">2</span>,<span class="dv">3</span>])</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> col1 :</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># column 1 에 담을 내용</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  st.title(<span class="st">'here is column1'</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> col2 :</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># column 2 에 담을 내용</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  st.title(<span class="st">'here is column2'</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  st.checkbox(<span class="st">'this is checkbox1 in col2 '</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 컬럼2에 불러온 사진 표시하기</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>col2.image(zarathu_img)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<p><img src="src-image.png" class="img-fluid"></p>
+<p><br></p>
+</section>
+</section>
+<section id="웹사용자로부터-input-받기" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="웹사용자로부터-input-받기"><span class="header-section-number">2.3</span> 웹사용자로부터 input 받기</h2>
+<p>이제 UI적인 부분을 전반적으로 살펴봤기 때문에, 사용자로 하여금 input을 받아 interactive하게 데이터를 보여주는 페이지를 만들어보겠습니다</p>
+<p>데이터는 사이킷런의 아이리스 데이터를 가져와 사용하도록 하겠습니다. <br></p>
+<div id="c6df1417" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> streamlit <span class="im">as</span> st</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>iris_dataset <span class="op">=</span> load_iris()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>df<span class="op">=</span> pd.DataFrame(data<span class="op">=</span>iris_dataset.data,columns<span class="op">=</span> iris_dataset.feature_names)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>df.columns<span class="op">=</span> [ col_name.split(<span class="st">' (cm)'</span>)[<span class="dv">0</span>] <span class="cf">for</span> col_name <span class="kw">in</span> df.columns] <span class="co"># 컬럼명을 뒤에 cm 제거하였습니다</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'species'</span>]<span class="op">=</span> iris_dataset.target </span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>species_dict <span class="op">=</span> {<span class="dv">0</span> :<span class="st">'setosa'</span>, <span class="dv">1</span> :<span class="st">'versicolor'</span>, <span class="dv">2</span> :<span class="st">'virginica'</span>} </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mapp_species(x):</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> species_dict[x]</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'species'</span>] <span class="op">=</span> df[<span class="st">'species'</span>].<span class="bu">apply</span>(mapp_species)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<p>streamlit 에서 데이터 프레임을 보여주는 방식은 table과 dataframe 두가지를 사용할 수 있습니다.</p>
+<p>dataframe의 head함수를 이용하여 첫 5행의 데이터에 대해 table과 dataframe으로 출력한 경우입니다.</p>
+<div id="514870c6" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>st.subheader(<span class="st">'this is table'</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>st.table(df.head())</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>st.subheader(<span class="st">'this is data frame'</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>st.dataframe(df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="src-table.png" class="img-fluid"></p>
+<p>이제 버튼을 동작시키는 방법을 배워보도록 하겠습니다.</p>
+<p><br> 1. Select Box</p>
+<div id="cc0f9876" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 사이드바에 select box를 활용하여 종을 선택한 다음 그에 해당하는 행만 추출하여 데이터프레임을 만들고자합니다.</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>st.sidebar.title(<span class="st">'Iris Species🌸'</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># select_species 변수에 사용자가 선택한 값이 지정됩니다</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>select_species <span class="op">=</span> st.sidebar.selectbox(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'확인하고 싶은 종을 선택하세요'</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'setosa'</span>,<span class="st">'versicolor'</span>,<span class="st">'virginica'</span>]</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 원래 dataframe으로 부터 꽃의 종류가 선택한 종류들만 필터링 되어서 나오게 일시적인 dataframe을 생성합니다</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>tmp_df <span class="op">=</span> df[df[<span class="st">'species'</span>]<span class="op">==</span> select_species]</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 선택한 종의 맨 처음 5행을 보여줍니다 </span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>st.table(tmp_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="src-selectbox.png" class="img-fluid"></p>
+<p>사용자가 sidebar에서 종을 바꿀 때마다 자동으로 해당하는 종의 테이블 정보가 불러와지게 됩니다.</p>
+<p><img src="src_selectbox2.png" class="img-fluid"></p>
+<p><br></p>
+<ol start="2" type="1">
+<li>multi select</li>
+</ol>
+<div id="b9f8dac0" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 여러개 선택할 수 있을 때는 multiselect를 이용하실 수 있습니다 </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># return : list</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>select_multi_species <span class="op">=</span> st.sidebar.multiselect(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'확인하고자 하는 종을 선택해 주세요. 복수선택가능'</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'setosa'</span>,<span class="st">'versicolor'</span>,<span class="st">'virginica'</span>]</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 원래 dataframe으로 부터 꽃의 종류가 선택한 종류들만 필터링 되어서 나오게 일시적인 dataframe을 생성합니다</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>tmp_df <span class="op">=</span> df[df[<span class="st">'species'</span>].isin(select_multi_species)]</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 선택한 종들의 결과표를 나타냅니다.  </span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>st.table(tmp_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="src-multiselect.png" class="img-fluid"></p>
+<p><br></p>
+<ol start="3" type="1">
+<li>Radio / Slider</li>
+</ol>
+<div id="95509b5f" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 라디오에 선택한 내용을 radio select변수에 담습니다</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>radio_select <span class="op">=</span>st.sidebar.radio(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"what is key column?"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'sepal length'</span>, <span class="st">'sepal width'</span>, <span class="st">'petal length'</span>,<span class="st">'petal width'</span>],</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    horizontal<span class="op">=</span><span class="va">True</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 선택한 컬럼의 값의 범위를 지정할 수 있는 slider를 만듭니다. </span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>slider_range <span class="op">=</span> st.sidebar.slider(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"choose range of key column"</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>     <span class="fl">0.0</span>, <span class="co">#시작 값 </span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>     <span class="fl">10.0</span>, <span class="co">#끝 값  </span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    (<span class="fl">2.5</span>, <span class="fl">7.5</span>) <span class="co"># 기본값, 앞 뒤로 2개 설정 /  하나만 하는 경우 value=2.5 이런 식으로 설정가능</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 필터 적용버튼 생성 </span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>start_button <span class="op">=</span> st.sidebar.button(</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"filter apply 📊 "</span><span class="co">#"버튼에 표시될 내용"</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co"># button이 눌리는 경우 start_button의 값이 true로 바뀌게 된다.</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 이를 이용해서 if문으로 버튼이 눌렸을 때를 구현 </span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> start_button:</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    tmp_df <span class="op">=</span> df[df[<span class="st">'species'</span>].isin(select_multi_species)]</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">#slider input으로 받은 값에 해당하는 값을 기준으로 데이터를 필터링합니다.</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    tmp_df<span class="op">=</span> tmp_df[ (tmp_df[radio_select] <span class="op">&gt;=</span> slider_range[<span class="dv">0</span>]) <span class="op">&amp;</span> (tmp_df[radio_select] <span class="op">&lt;=</span> slider_range[<span class="dv">1</span>])]</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    st.table(tmp_df)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 성공문구 + 풍선이 날리는 특수효과 </span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    st.sidebar.success(<span class="st">"Filter Applied!"</span>)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    st.balloons()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>slider_range : list 형식으로 2개의 값이 저장됩니다. 양쪽 앞뒤로 두개의 값을 저장합니다.</p>
+<pre class="{bash}"><code>slider_range[0] : 최솟값 
+slider_range[1] : 최댓값  </code></pre>
+<p><img src="src-slider-filter.png" class="img-fluid"></p>
+<p>petal_width 컬럼값이 0에서 1.38사이인 값들로 정보를 filtering한 결과물이 표시됩니다.</p>
+<p><br></p>
+</section>
+</section>
+<section id="시각화" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> 시각화</h1>
+<section id="plotly" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="plotly"><span class="header-section-number">3.1</span> plotly</h2>
+<p>python의 시각화로 자주 이용되는 패키지는 matplotlib,seaborn,bokeh,plotly 등이 있습니다.</p>
+<p>스트림릿에서는 bokeh, plotly, matplotlib 등의 패키지를 통해 생성한 그림(figure)를 streamlit을 통해 웹에서 표시하는 기능을 제공합니다. <br></p>
+<section id="st.plotly_chart" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="st.plotly_chart"><span class="header-section-number">3.1.1</span> st.plotly_chart</h3>
+<div id="73ec9fc1" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#st.plotly_chart(figure_or_data, use_container_width=False, theme="streamlit", **kwargs)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br> 인자로 줄 수 있는 옵션들에 대해서 하나씩 설명해드리도록 하겠습니다.</p>
+<ul>
+<li>figure_or_data : 첫번째 인자로 plotly로 생성한 그림의 이름이 들어가는 위치입니다.</li>
+<li>use_container_width : 레이아웃으로 지정한 사이즈에 그림이 해상도를 조절해서 들어갈 것인지 (-&gt;‘True’) <br> 아니면 원래그림 크기대로 표시될 것인지 (-&gt; ‘False’) 선택하는 옵션입니다.</li>
+<li>theme : 스트림릿 웹에 어떻게 표시될지 테마를 설정합니다. 인자로는 “streamlit” 과 None(입력하지 않음)을 선택할 수 있습니다.</li>
+</ul>
+<p><br></p>
+<div id="7098dc33" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> px.data.gapminder()</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.scatter(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    df.query(<span class="st">"year==2007"</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"gdpPercap"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"lifeExp"</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="st">"pop"</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">"continent"</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    hover_name<span class="op">=</span><span class="st">"country"</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    log_x<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    size_max<span class="op">=</span><span class="dv">60</span>,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>fig.show()</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>tab1, tab2 <span class="op">=</span> st.tabs([<span class="st">"Streamlit theme (default)"</span>, <span class="st">"Plotly native theme"</span>])</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tab1:</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Use the Streamlit theme.</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is the default. So you can also omit the theme argument.</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    st.plotly_chart(fig, theme<span class="op">=</span><span class="st">"streamlit"</span>, use_container_width<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tab2:</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Use the native Plotly theme.</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    st.plotly_chart(fig, theme<span class="op">=</span><span class="va">None</span>, use_container_width<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+</section>
+</section>
+<section id="지도표시" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="지도표시"><span class="header-section-number">3.2</span> 지도표시</h2>
+<div id="e46096fd" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#지도 위에 표시될 점 좌표 값을 위도경도에 담습니다 .</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>base_position <span class="op">=</span>  [<span class="fl">37.5073423</span>, <span class="fl">127.0572734</span>]</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#중심점의 위도, 경도 좌표를 리스트에 담습니다.</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># base_position에, 랜덤으로 생성한 값을 더하여 5개의 좌표를 데이터 프레임으로 생성하였고,</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 컬럼명은 위도 :lat  경도 lon으로 지정하였습니다. </span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>map_data <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    np.random.randn(<span class="dv">5</span>, <span class="dv">1</span>) <span class="op">/</span> [<span class="dv">20</span>, <span class="dv">20</span>] <span class="op">+</span> base_position , </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="st">'lat'</span>, <span class="st">'lon'</span>])</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># map data 생성 : 위치와 경도 </span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(map_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이어서 이 위도 경도 데이터를 스트림릿 웹 페이지에 지도로 나타내는 과정은 다음과 같습니다. <br></p>
+<div id="e87d5515" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>st.code(<span class="st">'st.map(map_data)'</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 웹사이트에 어떤 코드인지 표시해주기 </span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>st.subheader(<span class="st">'Map of Data '</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 제목 생성 </span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>st.<span class="bu">map</span>(map_data)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 지도 생성 </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>결과물</p>
+<p><img src="src-map.png" class="img-fluid"></p>
+<p><br></p>
+</section>
+</section>
+<section id="st.session_state-st.cache" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> st.session_State / st.cache</h1>
+<p><br> <a href="https://docs.streamlit.io/library/api-reference/performance/st.cache" class="uri">https://docs.streamlit.io/library/api-reference/performance/st.cache</a></p>
+<section id="st.session_state-세션-스테이트란" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="st.session_state-세션-스테이트란"><span class="header-section-number">4.1</span> st.session_state 세션 스테이트란?</h2>
+<p><strong>상태가 자꾸 변하는 것들을 세션스테이트에 관리해두면 바뀌는 값에 따라 내용이 바뀌는 것들을 기록할 수 있다.</strong></p>
+<p>** 아주 중요한 역할을 하는 기능입니다. **</p>
+</section>
+<section id="st.session_state-활용" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="st.session_state-활용"><span class="header-section-number">4.2</span> st.session_state 활용</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="src-whysession_state.png" class="img-fluid figure-img"></p>
+<figcaption>why we use sessionstate</figcaption>
+</figure>
+</div>
+<p>세션스테이트에 key값의 초기값이 없으면, 초기값을 생성하여 놓는 작업을 if문을 통해 진행합니다.</p>
+<p>세션스테이트에 사용자가 입력한 인풋에 따라서 dataframe이 재가공 되는데 이 값이 interactive하게 지정되게 하기 위해 st.session_state값으로 사용합니다.</p>
+<div id="5de3f5e2" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 예시코드 </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># import streamlit as st</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># if 'final_dataframe' not in st.session_state:</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   # session state 에 final 이라는 값이 없으면, </span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   st.session_state['final_dataframe']= df</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   # 초기 값 설정 : session_state에 final_dataframe키 값에 초기값 데이터를 집어넣습니다 .</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># #아래 코드는 df의 테이블 값이 바뀌더라도 interactive하게 연동되서 바뀌지 않습니다</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co"># st.table(df)</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co"># #  아래 코드는  이제 dataframe가 조작될 때 마다 session_state객체 안에 final_dataframe값을 변경하면, </span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co"># #  수정 될 때  계속 바뀌어서 보여줍니다. </span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co"># st.table(st.session_state.final_dataframe)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="cache-란-무엇인가" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="cache-란-무엇인가"><span class="header-section-number">4.3</span> cache 란 무엇인가?</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="src-whatiscache.png" class="img-fluid figure-img"></p>
+<figcaption>캐싱기능의 필요성</figcaption>
+</figure>
+</div>
+<p>캐싱에 관한 간단한 개념은 주문이 들어왔을 때 우리가 만들기 시작하면 코드가 결과물을 만들어내는데 시간이 오래 걸리는 경우 유저가 결과물을 오랜시간 기달려야하는 경우가 발생합니다.</p>
+<p>따라서 만들어내는데 오래걸리는 결과물을 미리 만들어두고, 보이지 않는 곳에 캐싱하여 필요할때 찾아 꺼내는 것을 cache기능이라고 간단히 설명하도록 하겠습니다.</p>
+</section>
+<section id="streamlit-에서-cache-기능-사용하기" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="streamlit-에서-cache-기능-사용하기"><span class="header-section-number">4.4</span> streamlit 에서 cache 기능 사용하기</h2>
+<p>streamlit에서는 시간이 오래걸리는 작업: 데이터 로드 등을 할때 위에 <code>@st.cache</code>를 추가하여 캐싱할 수 있게 할 수 있다.</p>
+<div id="385e4b6a" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> streamlit <span class="im">as</span> st</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>file_path <span class="op">=</span> <span class="st">'~~~filepath'</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="at">@st.cache</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_data():</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> pd.read_csv(file_path)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>큰 데이터를 로드하거나, 실행이 오래걸리는 복잡한 연산을 해야할 때 cache기능을 이용하면 용이하다.</p>
+</section>
+<section id="로딩상태-구현" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="로딩상태-구현"><span class="header-section-number">4.5</span> 로딩상태 구현</h2>
+<section id="st.progress" class="level3" data-number="4.5.1">
+<h3 data-number="4.5.1" class="anchored" data-anchor-id="st.progress"><span class="header-section-number">4.5.1</span> st.progress</h3>
+<div id="ea6a084d" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 방법 1 progress bar </span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>latest_iteration <span class="op">=</span> st.empty()</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>bar <span class="op">=</span> st.progress(<span class="dv">0</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Update the progress bar with each iteration.</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  latest_iteration.text(<span class="ss">f'Iteration </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  bar.progress(i <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  time.sleep(<span class="fl">0.05</span>)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 0.05 초 마다 1씩증가</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>st.balloons()</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 시간 다 되면 풍선 이펙트 보여주기 </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>코드 수행 소요시간이 긴 경우, progress bar와 streamlit의 spinner를 통해서 로딩페이지를 만들 수 있다!</p>
+<p><img src="src-progress.png" class="img-fluid"> <img src="src-progressbar2.png" class="img-fluid"></p>
+</section>
+<section id="st.-spinner-사용" class="level3" data-number="4.5.2">
+<h3 data-number="4.5.2" class="anchored" data-anchor-id="st.-spinner-사용"><span class="header-section-number">4.5.2</span> st. spinner 사용</h3>
+<div id="a9b19e31" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#방법2  st.spinner 사용 </span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> st.spinner(<span class="st">'Wait for it...'</span>):</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  time.sleep(<span class="dv">5</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  st.success(<span class="st">'Done!'</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="src-spinner.png" class="img-fluid"> <img src="src-spinner2.png" class="img-fluid"></p>
+</section>
+</section>
+</section>
+<section id="스트림릿의-단점" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> 스트림릿의 단점</h1>
+<section id="근본적-한계" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="근본적-한계"><span class="header-section-number">5.1</span> 근본적 한계</h2>
+<p>streamlit 에서 제공하는 UI들이 대부분 예쁘지만, 디테일적으로 맘에 들지 않을 수가 있다.</p>
+<p><img src="src-css.png" class="img-fluid"></p>
+<p>예를 들어 4.87로 표시된 부분의 폰트가 맘에들지 않는다고 하자. 그렇다면 streamlit를 markdown을 통해서 style을 직접 수정해주어야한다.</p>
+</section>
+<section id="극복방안-css-hack" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="극복방안-css-hack"><span class="header-section-number">5.2</span> 극복방안 : CSS hack</h2>
+<p>이 작업을 streamlit CSS hack이라고 한다</p>
+<p><img src="src-csshack.png" class="img-fluid"></p>
+<p>브라우저에 검사기능을 이용하여 css해당하는 부분을 마크다운으로 직접 style tag를 넣어서 수정하면 된다.</p>
+<p>아래 유튜브를 통해서 더욱 자세한 내용을 배울 수 있습니다.</p>
+<p><a href="https://www.youtube.com/watch?v=gr_KyGfO_eU" class="uri">https://www.youtube.com/watch?v=gr_KyGfO_eU</a></p>
+</section>
+</section>
+<section id="소개하지-못했지만-중요한-기능" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> 소개하지 못했지만 중요한 기능</h1>
+<ul>
+<li><p>DB를 연결하는 부분 streamlit은 다양한 DBMS 연결을 지원합니다.<br> 제공하는 tutorial을 통해 연결해보세요 <br> <a href="https://docs.streamlit.io/knowledge-base/tutorials/databases" class="uri">https://docs.streamlit.io/knowledge-base/tutorials/databases</a></p></li>
+<li><p>배포하는 부분<br>
+streamlit을 로컬에서 말고 링크를 만들어 배포할 수 있습니다 <a href="https://docs.streamlit.io/knowledge-base/tutorials/deploy" class="uri">https://docs.streamlit.io/knowledge-base/tutorials/deploy</a></p></li>
+</ul>
+</section>
+<section id="파이썬-streamlit을-활용한-전공의-실태조사-대시보드-제작기" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> 파이썬 streamlit을 활용한 전공의 실태조사 대시보드 제작기</h1>
+<iframe class="slide-deck" src="../../posts/2023-02-01-streamlit/streamlit_slide.html" width="750px" height="500px" style="border: solid 1px black">
+</iframe>
+<!-- <https://kimkimwonwon.github.io/zarathu> 를 클릭하시면 슬라이드를 볼 수 있습니다. -->
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+  author = {Kim, Won},
+  title = {Python {Streamlit} {패키지를} {이용한} {대시보드} {만들기}},
+  date = {2023-02-01},
+  url = {https://blog.zarathu.com/jp/posts/2023-02-01-streamlit/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Won. 2023. <span>“Python Streamlit 패키지를 이용한 대시보드
+만들기.”</span> February 1, 2023. <a href="https://blog.zarathu.com/jp/posts/2023-02-01-streamlit/">https://blog.zarathu.com/jp/posts/2023-02-01-streamlit/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com\/jp");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
