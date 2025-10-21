@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.47">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Jinhwan Kim">
+<meta name="dcterms.date" content="2023-02-05">
+<meta name="description" content="문항별 만족/불만족을 한번에 표현하는 likert chart를 그려보자">
+<title>likert 패키지 소개 – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script><style>html{ scroll-behavior: smooth; }</style>
+<link href="../../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="../../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="../../site_libs/plotly-binding-4.10.4/plotly.js"></script><script src="../../site_libs/typedarray-0.1/typedarray.min.js"></script><script src="../../site_libs/jquery-3.5.1/jquery.min.js"></script><link href="../../site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="../../site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script><link href="../../site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="../../site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script><link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../../jp/index.html"> 
+<span class="menu-text">ホーム</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">アプリケーション</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-パッケージ" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R パッケージ</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-パッケージ">
+<li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../jp/contributors.html"> 
+<span class="menu-text">投稿者</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">パートナー</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-">
+<li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">
+<li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+</li>
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">likert 패키지 소개</h1>
+                  <div>
+        <div class="description">
+          <p>문항별 만족/불만족을 한번에 표현하는 likert chart를 그려보자</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">rpackage</div>
+                <div class="quarto-category">shiny</div>
+                <div class="quarto-category">plotly</div>
+                <div class="quarto-category">quarto</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/jhk0530">Jinhwan Kim</a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 5, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li>
+<a href="#%EB%A6%AC%EC%BB%A4%ED%8A%B8-%EC%B2%99%EB%8F%84" id="toc-리커트-척도" class="nav-link active" data-scroll-target="#%EB%A6%AC%EC%BB%A4%ED%8A%B8-%EC%B2%99%EB%8F%84">리커트 척도</a>
+  <ul class="collapse">
+<li><a href="#barplot" id="toc-barplot" class="nav-link" data-scroll-target="#barplot">Barplot</a></li>
+  <li><a href="#stacked-bar-plot" id="toc-stacked-bar-plot" class="nav-link" data-scroll-target="#stacked-bar-plot">Stacked Bar plot</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#likert-chart-with-r" id="toc-likert-chart-with-r" class="nav-link" data-scroll-target="#likert-chart-with-r">Likert chart with R</a>
+  <ul class="collapse">
+<li><a href="#%EC%98%88%EC%8B%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0" id="toc-예시-데이터" class="nav-link" data-scroll-target="#%EC%98%88%EC%8B%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0">예시 데이터</a></li>
+  <li><a href="#likert-print" id="toc-likert-print" class="nav-link" data-scroll-target="#likert-print">likert: print</a></li>
+  <li><a href="#likert-summary" id="toc-likert-summary" class="nav-link" data-scroll-target="#likert-summary">likert: summary</a></li>
+  <li>
+<a href="#liert-plot" id="toc-liert-plot" class="nav-link" data-scroll-target="#liert-plot">liert: Plot</a>
+  <ul class="collapse">
+<li><a href="#information" id="toc-information" class="nav-link" data-scroll-target="#information">information</a></li>
+  <li><a href="#colors" id="toc-colors" class="nav-link" data-scroll-target="#colors">colors</a></li>
+  <li><a href="#center" id="toc-center" class="nav-link" data-scroll-target="#center">center</a></li>
+  <li><a href="#include.center" id="toc-include.center" class="nav-link" data-scroll-target="#include.center">include.center</a></li>
+  <li><a href="#centered" id="toc-centered" class="nav-link" data-scroll-target="#centered">centered</a></li>
+  <li><a href="#na-info-histogram" id="toc-na-info-histogram" class="nav-link" data-scroll-target="#na-info-histogram">NA info (histogram)</a></li>
+  <li><a href="#density-plot" id="toc-density-plot" class="nav-link" data-scroll-target="#density-plot">density plot</a></li>
+  <li><a href="#heat-map" id="toc-heat-map" class="nav-link" data-scroll-target="#heat-map">Heat map</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#group-likert" id="toc-group-likert" class="nav-link" data-scroll-target="#group-likert">Group Likert</a>
+  <ul class="collapse">
+<li><a href="#group-horizontal-plot" id="toc-group-horizontal-plot" class="nav-link" data-scroll-target="#group-horizontal-plot">Group horizontal Plot</a></li>
+  </ul>
+</li>
+  </ul>
+</li>
+  <li><a href="#likert-chart-with-shiny" id="toc-likert-chart-with-shiny" class="nav-link" data-scroll-target="#likert-chart-with-shiny">Likert chart with Shiny</a></li>
+  <li><a href="#likert-chart-with-ggplotly" id="toc-likert-chart-with-ggplotly" class="nav-link" data-scroll-target="#likert-chart-with-ggplotly">Likert chart with ggplotly</a></li>
+  <li><a href="#%EC%A0%95%EB%A6%AC" id="toc-정리" class="nav-link" data-scroll-target="#%EC%A0%95%EB%A6%AC">정리</a></li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><section id="리커트-척도" class="level1"><h1>리커트 척도</h1>
+<p>사용자로 부터 수집되는 데이터중 많은 부분은 설문조사를 통해 얻을 수 있으며, <strong>제시된 문장에 얼마나 동의하는지</strong>의 단계를 나타내는 표현하는 방법으로 <a href="https://en.wikipedia.org/wiki/Likert_scale">리커트 척도</a> 라는 방법이 쓰이기도 합니다.</p>
+<p>하나의 예시를 들면 다음과 같습니다.</p>
+<hr>
+<fieldset>
+<h5 class="anchored">이 아티클은 읽기 쉬운 내용으로 쓰여져 있다.</h5>
+
+  <div>
+  <input type="radio" id="huey" name="drone" value="huey" checked=""><label for="huey">매우 그렇다</label>
+  </div>
+
+  <div>
+  <input type="radio" id="dewey" name="drone" value="dewey"><label for="dewey">그런 편이다</label>
+  </div>
+  
+  <div>
+  <input type="radio" id="dewey" name="drone" value="dewey"><label for="dewey">보통이다</label>
+  </div>
+  
+  <div>
+  <input type="radio" id="dewey" name="drone" value="dewey"><label for="dewey">그렇지 않다</label>
+  </div>
+  
+  <div>
+  <input type="radio" id="louie" name="drone" value="louie"><label for="louie">전혀 그렇지 않다</label>
+  </div>
+</fieldset>
+<p><br></p>
+<p>이 설문을 10명에게 진행했고, 그 결과가 다음 테이블과 같다고 가정해보겠습니다.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: xtable</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">읽기쉬움</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">id1</td>
+<td style="text-align: left;">그런 편이다</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">id2</td>
+<td style="text-align: left;">보통이다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">id3</td>
+<td style="text-align: left;">매우 그렇다</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">id4</td>
+<td style="text-align: left;">보통이다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">id5</td>
+<td style="text-align: left;">전혀 그렇지 않다</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">id6</td>
+<td style="text-align: left;">그렇지 않다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">id7</td>
+<td style="text-align: left;">그런 편이다</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">id8</td>
+<td style="text-align: left;">그런 편이다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">id9</td>
+<td style="text-align: left;">그렇지 않다</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">id10</td>
+<td style="text-align: left;">전혀 그렇지 않다</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>이렇게 <strong>순서가 있는, 여러 카테고리의 데이터</strong>를 어떻게 시각화 할 수 있을까요? (Likert 외에도 <a href="https://en.wikipedia.org/wiki/Net_promoter_score">NPS</a>도 해당합니다.)</p>
+<section id="barplot" class="level2"><h2 class="anchored" data-anchor-id="barplot">Barplot</h2>
+<p>제일 먼저 해볼 수 있는 것은, 문항별로 개수를 보여주는 것입니다.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>이 방법 자체는 나쁘지는 않지만, 1개가 아닌 여러개 문항의 결과를 보여줘야 한다면 아쉬운 문제점이 생깁니다.</p>
+</section><section id="stacked-bar-plot" class="level2"><h2 class="anchored" data-anchor-id="stacked-bar-plot">Stacked Bar plot</h2>
+<p>다음과 같이 데이터를 세줄 더 추가해보겠습니다.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">읽기쉬움</th>
+<th style="text-align: left;">도움이됨</th>
+<th style="text-align: left;">따라하기쉬움</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">id1</td>
+<td style="text-align: left;">그런 편이다</td>
+<td style="text-align: left;">전혀 그렇지 않다</td>
+<td style="text-align: left;">그런 편이다</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">id2</td>
+<td style="text-align: left;">보통이다</td>
+<td style="text-align: left;">전혀 그렇지 않다</td>
+<td style="text-align: left;">그렇지 않다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">id3</td>
+<td style="text-align: left;">매우 그렇다</td>
+<td style="text-align: left;">그런 편이다</td>
+<td style="text-align: left;">그렇지 않다</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">id4</td>
+<td style="text-align: left;">보통이다</td>
+<td style="text-align: left;">보통이다</td>
+<td style="text-align: left;">그런 편이다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">id5</td>
+<td style="text-align: left;">전혀 그렇지 않다</td>
+<td style="text-align: left;">매우 그렇다</td>
+<td style="text-align: left;">그렇지 않다</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">id6</td>
+<td style="text-align: left;">그렇지 않다</td>
+<td style="text-align: left;">전혀 그렇지 않다</td>
+<td style="text-align: left;">그런 편이다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">id7</td>
+<td style="text-align: left;">그런 편이다</td>
+<td style="text-align: left;">그렇지 않다</td>
+<td style="text-align: left;">보통이다</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">id8</td>
+<td style="text-align: left;">그런 편이다</td>
+<td style="text-align: left;">그렇지 않다</td>
+<td style="text-align: left;">그렇지 않다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">id9</td>
+<td style="text-align: left;">그렇지 않다</td>
+<td style="text-align: left;">그렇지 않다</td>
+<td style="text-align: left;">그런 편이다</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">id10</td>
+<td style="text-align: left;">전혀 그렇지 않다</td>
+<td style="text-align: left;">전혀 그렇지 않다</td>
+<td style="text-align: left;">전혀 그렇지 않다</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>이 여러개의 데이터를 표기 하는 방법은 문항을 하나의 축 (x)에, 그리고 문항의 결과들을 나머지 축(y)을 활용하여 그려야 하기 때문에 “stacked bar”를 활용하는 방법이 있습니다.</p>
+<p><img src="img/stacked_bar_graph.png" width="500" align=""></p>
+<p><em>Image from <a href="https://datavizcatalogue.com/methods/stacked_bar_graph.html">The Data Visualisation Catalogue</a></em></p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>문항별로 응답자 수는 같기 때문에 (<code>NA</code>는 고려하지 않습니다) 전부 높이가 동일한 결과가 나오게 됩니다.</p>
+<p>그런데 주의해야할 점으로는, 당연하게도 문항에 따라 분포가 다를 수 있습니다. “한쪽으로 몰리는” 답이 나오는 경우가 있을 수 있다는 의미입니다.</p>
+<p>위의 그림에서 보통이다는 동일하게 각각 1개씩 답변이 있음에도 불구하고 <code>도움이됨</code>의 위치는 높게 되어있어 시각적 비교에 혼선을 줄 수 있습니다.</p>
+<p>이를 위해서 아래 이미지처럼 Neutral(회색)의 위치를 고정시키고, 이를 기준으로 위 아래로 Positive / Negative를 붙여 표현하는 방법을 고려할 수 있습니다.</p>
+<p><img src="img/diverging-bar-neutral-split.png" width="500"></p>
+<p><em>Image from <a href="http://daydreamingnumbers.com/blog/4-ways-to-visualize-likert-scales/">daydreamingnumbers</a></em></p>
+<p>이러한 차트의 정확한 이름은 모르겠지만, 이 글에서는 편의상 <strong>Likert chart</strong>라 표현하겠습니다.</p>
+</section></section><section id="likert-chart-with-r" class="level1"><h1>Likert chart with R</h1>
+<p>이번 글에서 소개할 패키지는 이 Likert chart를 그릴 수 있게 하는 패키지 입니다.</p>
+<p><img src="img/hex.png" width="150"></p>
+<p><a href="https://github.com/jbryer/likert" class="uri">https://github.com/jbryer/likert</a></p>
+<section id="예시-데이터" class="level2"><h2 class="anchored" data-anchor-id="예시-데이터">예시 데이터</h2>
+<p>시각화 패키지의 특성상 사용자의 데이터의 형태와 패키지가 요구하는 형태가 다를 수 있어, likert 패키지에서는 활용할 수 있는 예시데이터를 제공합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># install.package('likert')</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jbryer/likert">likert</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">pisaitems</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">pisaitems</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         CNT           ST24Q01           ST24Q02
+68038 Canada          Disagree    Strongly agree
+68039 Canada             Agree Strongly disagree
+68040 Canada    Strongly agree Strongly disagree
+68041 Canada          Disagree          Disagree
+68042 Canada Strongly disagree          Disagree
+68043 Canada             Agree Strongly disagree</code></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># str(pisaitems)</span></span>
+<span><span class="co"># View(pisaitems)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>pisaitems</code> 데이터의 경우, - rownames를 가지고 있으며 - 첫 <code>CNT</code> 이후로는 전부 scale을 갖는 <strong>factor</strong>의 형태로 이루어져 있습니다. - 개수는 각 column 마다 다르며, <strong>NA</strong>를 포함하고 있기도 합니다. (ex: <code>ST36Q01</code>)</p>
+<p>이후 이 데이터를 <code>likert</code> 오브젝트로 변환해야 합니다. 다만 모든 데이터를 다 사용하진 않고, <code>CNT</code> 이후의 처음 3개만 사용하겠습니다.</p>
+</section><section id="likert-print" class="level2"><h2 class="anchored" data-anchor-id="likert-print">likert: print</h2>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">pisaitems</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              ST24Q01                   ST24Q02                   ST24Q03     
+ Strongly disagree:14947   Strongly disagree:13323   Strongly disagree:13900  
+ Disagree         :23515   Disagree         :23811   Disagree         :22072  
+ Agree            :20000   Agree            :20935   Agree            :23525  
+ Strongly agree   : 7029   Strongly agree   : 7487   Strongly agree   : 5917  
+ NA's             : 1199   NA's             : 1134   NA's             : 1276  </code></pre>
+</div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">100</span> <span class="op">*</span> <span class="fl">14947</span> <span class="op">/</span> <span class="op">(</span><span class="fl">14947</span> <span class="op">+</span> <span class="fl">23515</span> <span class="op">+</span> <span class="fl">20000</span> <span class="op">+</span> <span class="fl">7029</span><span class="op">)</span> <span class="co"># ST24Q01: Strongly disagree </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 22.82298</code></pre>
+</div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="fu">likert</span><span class="op">(</span><span class="va">pisaitems</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">ll</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Item Strongly disagree Disagree    Agree Strongly agree
+1 ST24Q01          22.82298 35.90570 30.53855      10.732772
+2 ST24Q02          20.32308 36.32162 31.93453      11.420770
+3 ST24Q03          21.24927 33.74201 35.96325       9.045464</code></pre>
+</div>
+</div>
+<p>위의 <code>summary</code>와 바로 비교해보면 알 수 있듯, <code>likert</code> 를 출력했을때는 <code>NA</code>를 제외한 각 문항별 factor의 백분율을 출력합니다.</p>
+</section><section id="likert-summary" class="level2"><h2 class="anchored" data-anchor-id="likert-summary">likert: summary</h2>
+<p>한편 <code>summary</code> 함수를 사용하면 low와 high를 표기해주는데 이는 각각 Neutral보다 낮은 / 높은 값의 백분율 합을 표기합니다. (예시의 경우 <code>Strongly disagree</code> + <code>Disagree</code>, <code>Strongly agree</code> + <code>agree</code>)</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">ll</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Item      low neutral     high     mean        sd
+3 ST24Q03 54.99129       0 45.00871 2.328049 0.9090326
+2 ST24Q02 56.64470       0 43.35530 2.344530 0.9277495
+1 ST24Q01 58.72868       0 41.27132 2.291811 0.9369023</code></pre>
+</div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">22.82298</span> <span class="op">+</span> <span class="fl">35.90570</span> <span class="co"># ST24Q01's Low</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 58.72868</code></pre>
+</div>
+</div>
+<ul>
+<li>물론 문항이 4-5개가 아닌, 여러개도 가능하기 때문에 Neutral은 가운데를 기준으로 설정하지만, 사용자가 <code>center</code>를 통해 지정할 수도 있습니다.</li>
+<li>
+<code>mean</code>과 <code>sd</code>는 크게 신경쓰지 않아도 괜찮습니다.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">ll</span>, center <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Item      low neutral     high     mean        sd
+2 ST24Q02 20.32308       0 79.67692 2.344530 0.9277495
+3 ST24Q03 21.24927       0 78.75073 2.328049 0.9090326
+1 ST24Q01 22.82298       0 77.17702 2.291811 0.9369023</code></pre>
+</div>
+</div>
+</section><section id="liert-plot" class="level2"><h2 class="anchored" data-anchor-id="liert-plot">liert: Plot</h2>
+<p><code>likert</code> object는 그냥 <code>plot</code>에 넣는 것으로도 결과를 바로 만들어 낼 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>기본 <code>center</code>는 가운데, 이 경우 <code>2</code>와 <code>3</code>사이인 <code>2.5</code>를 기준으로 그려지고, 문항별 <code>High</code>, <code>Low</code>를 차트 양옆에 추가로 표기하게 됩니다.</p>
+<section id="information" class="level3"><h3 class="anchored" data-anchor-id="information">information</h3>
+<p>차트에서의 factor 별 %, high, low 는 plot.percents, plot.percent.low, plot.percent.high를 통해 설정할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span>, plot.percents <span class="op">=</span> <span class="cn">TRUE</span>, plot.percent.low <span class="op">=</span> <span class="cn">FALSE</span>, plot.percent.high <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="colors" class="level3"><h3 class="anchored" data-anchor-id="colors">colors</h3>
+<p>기본 색상외에 <code>colors</code>를 사용하여 색상을 커스텀 할 수 있습니다. 단, 개수는 factor의 수와 동일해야합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span>, colors<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'orange'</span>,<span class="st">'darkorange'</span>,<span class="st">'darkblue'</span>,<span class="st">'blue'</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="center" class="level3"><h3 class="anchored" data-anchor-id="center">center</h3>
+<p>만약 위의 summary 처럼 Neutral을 바꾸고 싶다면, <code>center</code>를 통해 값을 지정하여 그릴 수 있습니다.</p>
+<p>여기서 <code>center</code>가 정수라면 해당하는 factor의 색상이 자동으로 회색으로 바뀌는 것을 확인 할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span>, center <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="include.center" class="level3"><h3 class="anchored" data-anchor-id="include.center">include.center</h3>
+<p>차트에서 Neutral을 제외하고 그리고 싶다면 <code>include.center = FALSE</code>를 사용하여 제거할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span>, center <span class="op">=</span> <span class="fl">2</span>, include.center <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="centered" class="level3"><h3 class="anchored" data-anchor-id="centered">centered</h3>
+<p>단순히 stacked bar chart를 그리고 싶다면 <code>centered = FALSE</code>를 사용하면 됩니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span>, centered <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="na-info-histogram" class="level3"><h3 class="anchored" data-anchor-id="na-info-histogram">NA info (histogram)</h3>
+<p>문항에서 결측치 (<code>NA</code>) 정보를 같이 표현하고 싶은 경우, <code>include.histogram = TRUE</code>를 설정하여 그릴 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">pisaitems</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Strongly disagree          Disagree             Agree    Strongly agree 
+            14947             23515             20000              7029 
+             NA's 
+             1199 </code></pre>
+</div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">100</span> <span class="op">*</span> <span class="fl">1199</span> <span class="op">/</span> <span class="fl">66690</span> <span class="co"># 1.79% NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.797871</code></pre>
+</div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span>, include.histogram <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="density-plot" class="level3"><h3 class="anchored" data-anchor-id="density-plot">density plot</h3>
+<p><code>likert</code> 오브젝트는 <code>type = 'density'</code>를 사용하여 bar chart의 형태가 아닌 density plot으로도 표현할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span>, type <span class="op">=</span> <span class="st">'density'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>여러개의 density plot을 <code>facet</code>을 사용하여 하나로 겹치게 보여줄 수 있으며, 추가로 legend를 지정하는 예시입니다. (<em>구분은 잘 안가지만, fill의 색상은 미세하게 다르게 표현되어 있습니다</em>)</p>
+<div class="cell">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span>, type<span class="op">=</span><span class="st">'density'</span>, facet<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">guides</span><span class="op">(</span></span>
+<span>    color <span class="op">=</span> <span class="fu">guide_legend</span><span class="op">(</span>title<span class="op">=</span><span class="st">"Legend with Color"</span><span class="op">)</span>,</span>
+<span>    fill <span class="op">=</span> <span class="fu">guide_legend</span><span class="op">(</span>title<span class="op">=</span><span class="st">"Legend with Fill"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="heat-map" class="level3"><h3 class="anchored" data-anchor-id="heat-map">Heat map</h3>
+<p><code>likert</code> 오브젝트는 <code>type = 'heat'</code>를 사용해 heatmap으로 도 표현할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span>, type<span class="op">=</span><span class="st">'heat'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section><section id="group-likert" class="level2"><h2 class="anchored" data-anchor-id="group-likert">Group Likert</h2>
+<p>한편 <code>likert</code> 오브젝트를 만들때, 사용자의 그룹을 설정해준다면 (예시데이터의 <code>CNT</code>와 같이) dplyr의 <code>group by</code>를 사용한 것과 유사한 결과를 낼 수 있습니다.</p>
+<p>사용 가능한 parameter는 위와 동일합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">llg</span> <span class="op">&lt;-</span> <span class="fu">likert</span><span class="op">(</span><span class="va">pisaitems</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, grouping<span class="op">=</span><span class="va">pisaitems</span><span class="op">$</span><span class="va">CNT</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">llg</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Group    Item Strongly disagree Disagree    Agree Strongly agree
+1        Canada ST24Q01          25.69810 35.12856 24.88383      14.289507
+2        Canada ST24Q02          26.77758 35.18871 24.63608      13.397637
+3        Canada ST24Q03          25.22917 31.68150 33.47062       9.618706
+4        Mexico ST24Q01          21.87500 36.76845 33.45526       7.901293
+5        Mexico ST24Q02          15.26451 36.42523 37.79077      10.519491
+6        Mexico ST24Q03          18.44410 34.78607 37.89150       8.878331
+7 United States ST24Q01          17.16996 33.00426 33.97213      15.853659
+8 United States ST24Q02          29.08282 40.51858 21.03328       9.365325
+9 United States ST24Q03          24.31646 35.13671 32.79038       7.756448</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">llg</span>, group.order<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Mexico'</span>, <span class="st">'Canada'</span>, <span class="st">'United States'</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="group-horizontal-plot" class="level3"><h3 class="anchored" data-anchor-id="group-horizontal-plot">Group horizontal Plot</h3>
+<p>그룹을 사용하면 차트를 여러개의 그룹에 따라 구분지어 그려야 하는 만큼 <code>ggplot</code>의 <code>facet</code>처럼 차트를 나누어야 하는데, 이 과정에서 위아래가 아닌, 좌우로도 설정 할 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">llg</span>, panel.arrange<span class="op">=</span><span class="st">'h'</span>, wrap<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section></section><section id="likert-chart-with-shiny" class="level1"><h1>Likert chart with Shiny</h1>
+<p>likert는 이 아티클의 예시와 같은 1회성 코드, 혹은 이를 작성한 <code>quarto</code>와 같은 문서에서도 활용할 수 있지만 <code>shiny</code>를 통해서 다른 사람들에게 웹으로 공유할 수 있습니다.</p>
+<p>단, <code>shinyapps.io</code>를 활용하여 배포 하지 않고서는 <code>quarto</code> 아티클에 shiny를 심는 것은 기술적으로 불가능 하기 때문에 shiny는 코드와 결과 이미지를 활용합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/">shiny</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jbryer/likert">likert</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html">h2</a></span><span class="op">(</span><span class="st">'shiny with Likert'</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html">hr</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">plotOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">'myLikert'</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">pisaitems</span><span class="op">)</span></span>
+<span>  <span class="va">ll</span> <span class="op">&lt;-</span> <span class="fu">likert</span><span class="op">(</span><span class="va">pisaitems</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">myLikert</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>위 코드를 사용한 shiny app의 결과는 다음과 같습니다.</p>
+<p><img src="img/shiny.png" width="500"></p>
+</section><section id="likert-chart-with-ggplotly" class="level1"><h1>Likert chart with ggplotly</h1>
+<p><code>ggplotly</code>는 ggplot과 같은 R에서 그린 그림을 <code>plotly</code> 패키지와 연동하여, 이미지를 정적인 이미지에서 동적인 이미지로 바꾸는 역할을 하는 함수입니다. 이를 통해 hover, download, zoom 등의 액션을 사용자가 추가로 할 수 있어 shiny나 rmarkdown 등의 interactive document에서는 종종 활용하기도 합니다.</p>
+<p><code>likert</code> 패키지 또한 마찬가지로 <code>ggplotly</code>를 통해서 정적인 이미지를 동적으로 바꿔줄 수 있습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://plotly-r.com">plotly</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/plotly/man/ggplotly.html">ggplotly</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-22acb44c85a2a9c528d4" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-22acb44c85a2a9c528d4">{"x":{"data":[{"x":[0,0],"y":[0.40000000000000002,3.6000000000000001],"text":"yintercept: 0","type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":[0.90000000000000036,0.90000000000000013,0.89999999999999991],"base":[-54.991286268994408,-56.644700713893464,-58.728680276679242],"x":[21.249273855749536,20.323082555372508,22.822983310683917],"y":[3,2,1],"text":["Item: ST24Q03<br />value: 21.24927<br />Item: ST24Q03<br />variable: Strongly disagree","Item: ST24Q02<br />value: 20.32308<br />Item: ST24Q02<br />variable: Strongly disagree","Item: ST24Q01<br />value: 22.82298<br />Item: ST24Q01<br />variable: Strongly disagree"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(216,179,101,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Strongly disagree","legendgroup":"Strongly disagree","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":[0.90000000000000036,0.90000000000000013,0.89999999999999991],"base":[-33.742012413244872,-36.321618158520955,-35.905696965995325],"x":[33.742012413244872,36.321618158520955,35.905696965995325],"y":[3,2,1],"text":["Item: ST24Q03<br />value: 33.74201<br />Item: ST24Q03<br />variable: Disagree","Item: ST24Q02<br />value: 36.32162<br />Item: ST24Q02<br />variable: Disagree","Item: ST24Q01<br />value: 35.90570<br />Item: ST24Q01<br />variable: Disagree"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(235,217,178,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Disagree","legendgroup":"Disagree","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036],"base":[0,0,0],"x":[30.538547281305828,31.93452925742876,35.963249457302723],"y":[1,2,3],"text":["Item: ST24Q01<br />value: 30.538547<br />Item: ST24Q01<br />variable: Agree","Item: ST24Q02<br />value: 31.934529<br />Item: ST24Q02<br />variable: Agree","Item: ST24Q03<br />value: 35.963249<br />Item: ST24Q03<br />variable: Agree"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(172,217,213,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Agree","legendgroup":"Agree","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036],"base":[30.538547281305828,31.93452925742876,35.963249457302723],"x":[10.73277244201493,11.420770028677769,9.0454642737028763],"y":[1,2,3],"text":["Item: ST24Q01<br />value: 10.732772<br />Item: ST24Q01<br />variable: Strongly agree","Item: ST24Q02<br />value: 11.420770<br />Item: ST24Q02<br />variable: Strongly agree","Item: ST24Q03<br />value:  9.045464<br />Item: ST24Q03<br />variable: Strongly agree"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(90,180,172,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Strongly agree","legendgroup":"Strongly agree","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-100,-100,-100],"y":[3,2,1],"text":["55%","57%","59%"],"hovertext":["Item: ST24Q03<br />value: -100<br />Item: ST24Q03<br />paste0(round(low), \"%\"): 55%","Item: ST24Q02<br />value: -100<br />Item: ST24Q02<br />paste0(round(low), \"%\"): 57%","Item: ST24Q01<br />value: -100<br />Item: ST24Q01<br />paste0(round(low), \"%\"): 59%"],"textfont":{"size":11.338582677165356,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[100,100,100],"y":[3,2,1],"text":["45%","43%","41%"],"hovertext":["Item: ST24Q03<br />value: 100<br />Item: ST24Q03<br />paste0(round(high), \"%\"): 45%","Item: ST24Q02<br />value: 100<br />Item: ST24Q02<br />paste0(round(high), \"%\"): 43%","Item: ST24Q01<br />value: 100<br />Item: ST24Q01<br />paste0(round(high), \"%\"): 41%"],"textfont":{"size":11.338582677165356,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283108,"r":7.3059360730593621,"b":40.182648401826498,"l":51.872146118721474},"plot_bgcolor":"transparent","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"NanumGothic","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-115.5,115.5],"tickmode":"array","ticktext":[100,50,0,50,100],"tickvals":[-100,-50,0,50,100],"categoryorder":"array","categoryarray":[100,50,0,50,100],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"NanumGothic","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Percentage","font":{"color":"rgba(0,0,0,1)","family":"NanumGothic","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,3.6000000000000001],"tickmode":"array","ticktext":["ST24Q01","ST24Q02","ST24Q03"],"tickvals":[1,2,3],"categoryorder":"array","categoryarray":["ST24Q01","ST24Q02","ST24Q03"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"NanumGothic","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"NanumGothic","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"NanumGothic","size":11.68949771689498},"title":{"text":"Response","font":{"color":"rgba(0,0,0,1)","family":"NanumGothic","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"184235b9a7c2f":{"yintercept":{},"type":"scatter"},"184237b4f20a4":{"x":{},"y":{},"fill":{}},"184237e82e3b":{"x":{},"y":{},"fill":{}},"184231c33278b":{"x":{},"y":{},"label":{}},"1842362692523":{"x":{},"y":{},"label":{}}},"cur_data":"184235b9a7c2f","visdat":{"184235b9a7c2f":["function (y) ","x"],"184237b4f20a4":["function (y) ","x"],"184237e82e3b":["function (y) ","x"],"184231c33278b":["function (y) ","x"],"1842362692523":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>ggplotly는 shiny로도 동시에 연동이 가능합니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html">h2</a></span><span class="op">(</span><span class="st">'shiny with Likert'</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html">hr</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">plotOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">'myLikert'</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html">h3</a></span><span class="op">(</span><span class="st">"with ggplotly"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/plotly-shiny.html">plotlyOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">'myLikert2'</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">pisaitems</span><span class="op">)</span></span>
+<span>  <span class="va">ll</span> <span class="op">&lt;-</span> <span class="fu">likert</span><span class="op">(</span><span class="va">pisaitems</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">myLikert</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">myLikert2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/plotly-shiny.html">renderPlotly</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/ggplotly.html">ggplotly</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ll</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>위 코드의 실행결과는 다음과 같습니다.</p>
+<p><img src="img/shiny2.png" width="500"></p>
+</section><section id="정리" class="level1"><h1>정리</h1>
+<ul>
+<li>만족도 설문조사 등에서 많이 활용되는 <strong>“순서가 있는 카테고리형”</strong> 답안을 표현하는 것은 다른 시각화와 살짝 결이 다르다.</li>
+<li>
+<code>likert</code> 패키지를 활용하여 likert chart를 그릴 수 있다.</li>
+<li>density plot, heatmap 등도 같이 활용 가능하며, <code>center</code>를 포함한 옵션을 설정할 수 있다.</li>
+<li>
+<code>group</code>을 할당하여 구분 짓는 것도 가능하다.</li>
+<li>
+<code>shiny</code>, <code>quarto</code>, <code>plotly</code>등 다른 패키지와도 연동이 가능하다.</li>
+</ul>
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+  author = {Kim, Jinhwan},
+  title = {Likert {패키지} {소개}},
+  date = {2023-02-05},
+  url = {https://blog.zarathu.com/jp/posts/2023-02-05-likert/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Jinhwan. 2023. <span>“Likert 패키지 소개.”</span> February 5, 2023.
+<a href="https://blog.zarathu.com/jp/posts/2023-02-05-likert/">https://blog.zarathu.com/jp/posts/2023-02-05-likert/</a>.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com\/jp");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

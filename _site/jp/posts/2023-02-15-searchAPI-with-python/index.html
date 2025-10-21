@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.47">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Won Kim">
+<meta name="dcterms.date" content="2023-02-15">
+<meta name="description" content="python을 이용한 크롤링 검색결과 저장하기">
+
+<title>Python을 이용한 검색포털 API 활용 – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../jp/index.html"> 
+<span class="menu-text">ホーム</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">アプリケーション</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-パッケージ" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R パッケージ</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-パッケージ">    
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../jp/contributors.html"> 
+<span class="menu-text">投稿者</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">パートナー</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">    
+        <li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Python을 이용한 검색포털 API 활용</h1>
+                  <div>
+        <div class="description">
+          <p>python을 이용한 크롤링 검색결과 저장하기</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">python</div>
+                <div class="quarto-category">API</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://github.com/kimkimwonwon">Won Kim</a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 15, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#task의-목적" id="toc-task의-목적" class="nav-link active" data-scroll-target="#task의-목적"><span class="header-section-number">1</span> Task의 목적</a>
+  <ul class="collapse">
+  <li><a href="#왜-크롤링을-하지-않았는지" id="toc-왜-크롤링을-하지-않았는지" class="nav-link" data-scroll-target="#왜-크롤링을-하지-않았는지"><span class="header-section-number">1.1</span> 왜 크롤링을 하지 않았는지</a></li>
+  <li><a href="#api란" id="toc-api란" class="nav-link" data-scroll-target="#api란"><span class="header-section-number">1.2</span> API란?</a></li>
+  </ul></li>
+  <li><a href="#구글-api-사용법" id="toc-구글-api-사용법" class="nav-link" data-scroll-target="#구글-api-사용법"><span class="header-section-number">2</span> 구글 API 사용법</a>
+  <ul class="collapse">
+  <li><a href="#구글-크롤링-코드-전체" id="toc-구글-크롤링-코드-전체" class="nav-link" data-scroll-target="#구글-크롤링-코드-전체"><span class="header-section-number">2.1</span> 구글 크롤링 코드 전체</a>
+  <ul class="collapse">
+  <li><a href="#url에-내용의-신뢰도가-낮은-사이트의-검색결과는-저장하지-않도록-예외처리를-합니다.-선택사항" id="toc-url에-내용의-신뢰도가-낮은-사이트의-검색결과는-저장하지-않도록-예외처리를-합니다.-선택사항" class="nav-link" data-scroll-target="#url에-내용의-신뢰도가-낮은-사이트의-검색결과는-저장하지-않도록-예외처리를-합니다.-선택사항"><span class="header-section-number">2.1.1</span> url에 내용의 신뢰도가 낮은 사이트의 검색결과는 저장하지 않도록 예외처리를 합니다. (선택사항)</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#네이버-검색-api-사용법" id="toc-네이버-검색-api-사용법" class="nav-link" data-scroll-target="#네이버-검색-api-사용법"><span class="header-section-number">3</span> 네이버 검색 API 사용법</a>
+  <ul class="collapse">
+  <li><a href="#네이버-크롤링-코드" id="toc-네이버-크롤링-코드" class="nav-link" data-scroll-target="#네이버-크롤링-코드"><span class="header-section-number">3.1</span> 네이버 크롤링 코드</a></li>
+  </ul></li>
+  <li><a href="#다음-검색-api-사용법" id="toc-다음-검색-api-사용법" class="nav-link" data-scroll-target="#다음-검색-api-사용법"><span class="header-section-number">4</span> 다음 검색 API 사용법</a>
+  <ul class="collapse">
+  <li><a href="#다음-api-활용-파이썬-코드" id="toc-다음-api-활용-파이썬-코드" class="nav-link" data-scroll-target="#다음-api-활용-파이썬-코드"><span class="header-section-number">4.1</span> 다음 API 활용 파이썬 코드</a></li>
+  </ul></li>
+  <li><a href="#최종-코드" id="toc-최종-코드" class="nav-link" data-scroll-target="#최종-코드"><span class="header-section-number">5</span> 최종 코드</a></li>
+  <li><a href="#개발-후기" id="toc-개발-후기" class="nav-link" data-scroll-target="#개발-후기"><span class="header-section-number">6</span> 개발 후기</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script>
+
+
+
+
+
+<section id="task의-목적" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Task의 목적</h1>
+<p><img src="img/GND.png" width="800"></p>
+<p>이번 태스크의 목적은 바로 구글, 네이버, 다음 API를 모두 이용하여 검색결과를 DB화 시키는 작업입니다.</p>
+<p>사용자로 부터 query와 크롤링 원하는 검색 글 수를 인풋으로 입력받아서, API로 부터 제공받은 데이터를 가공하여 새로운 데이터프레임으로 만드는 작업을 수행합니다. 데이터 프레임의 컬럼은</p>
+<p>[Title] - 글 제목, [Link] - 글 링크 , [Description] - 글 미리보기 내용, [Search engine] - 검색결과를 제공한 포털 (naver,google,daumkakao), [search_date] -글을 검색한 날짜</p>
+<p>입니다.</p>
+<p>전체 JupyterNoteBook Source Code</p>
+<p><a href="https://github.com/zarathucorp/blog/blob/master/source_code/Custom_Search_Zarathu.ipynb" class="uri">https://github.com/zarathucorp/blog/blob/master/source_code/Custom_Search_Zarathu.ipynb</a></p>
+<p><img src="img/final_data.png" width="1000"></p>
+<section id="왜-크롤링을-하지-않았는지" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="왜-크롤링을-하지-않았는지"><span class="header-section-number">1.1</span> 왜 크롤링을 하지 않았는지</h2>
+<p>흔히 동적 크롤러로 Selenium을 많이 활용합니다. 하지만 이런 크롤링에는 기업의 자산인 데이터 자산을 침해한다는 문제점이 있습니다. 이와 관련하여 부동산 정보 플랫폼 직방의 데이터를 크롤링한 경위로 스타트업 방픽은 소송에서 얻은 데이터를 폐기하고, 직방에 2000만원을 지급하도록 2월 3일에 판결을 내려졌습니다. 따라서 홈페이지를 통해 정보가 공개됐다고 하더라도, 이런 타 사이트에 대한 데이터 베이스를 수집하는 행위는 위험하다고 생각합니다. 따라서 크롤링을 해야한다면 해도 되는지 확인을 하고 하거나, 개발자를 위한 도구로 제공된 API가 먼저 있는지 없는지 검토를 하는 것이 안전해 보입니다. (특히 얻은 데이터로 수익을 창출하는 경우는 더 더욱)</p>
+<p><img src="img/dangerous_crawling.png" width="800"></p>
+<p><a href="https://www.joongang.co.kr/article/25139935#home" class="uri">https://www.joongang.co.kr/article/25139935#home</a></p>
+</section>
+<section id="api란" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="api란"><span class="header-section-number">1.2</span> API란?</h2>
+<p>API란 무엇인지 위키백과의 설명을 통하면, “API(application programming interface 애플리케이션 프로그래밍 인터페이스[*], 응용 프로그램 프로그래밍 인터페이스)는 컴퓨터나 컴퓨터 프로그램 사이의 연결이다. 일종의 소프트웨어 인터페이스이며 다른 종류의 소프트웨어에 서비스를 제공한다”라고 설명하고 있습니다. 즉 컴퓨터끼리 연결하고 소통하는 방식인데, 주로 우리가 API를 연결해서 쓸 때는 클라이언트와 서버를 연결하여 원하는 요청을 처리하는 것이 보통입니다. 오늘 이 글에서 사용할 API는 REST API라고 합니다. API와 구별되는 REST API의 특징으로는 API를 이용할 때 규칙이 정해져 있다는 특징이 있습니다.</p>
+<p>URL을 통해 소통할 방법을 서버와 클라이언트 사이에 주고 받는다. 그때 어떤 자원에 대해 어떤 행위를 요청받을지 URL에 명시를 해주는 것이 원칙입니다.</p>
+<ul>
+<li>GET : 리소스 생성</li>
+<li>POST: 조회</li>
+<li>PUT : 수정</li>
+<li>DELETE: 삭제</li>
+</ul>
+<p>등이 있고, 서버는 요청에 대해 상태코드로 응답합니다</p>
+<p>상태코드에 따라 정상과 비정상적으로 처리했는지 response 개체를 받아옵니다.</p>
+<ul>
+<li>200: 정상</li>
+<li>400: 비정상</li>
+</ul>
+<p><img src="img/how_api_works.png" width="800"></p>
+</section>
+</section>
+<section id="구글-api-사용법" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> 구글 API 사용법</h1>
+<p>API를 통해 서버로 부터 응답을 받기 위해선 api key가 필요합니다. 구글에서는 검색한 내용을 반환시켜주는 API로 custom_search_engine cse를 사용해서 검색 결과를 가져올 수 있습니다. (일일 100개의 쿼리제한이 걸려있습니다.)</p>
+<p>구글 API 키 발급받는 방법은 아래 링크를 참조하세요</p>
+<ul>
+<li><a href="https://gomgomi.tistory.com/3" class="uri">https://gomgomi.tistory.com/3</a></li>
+</ul>
+<hr>
+<p>구글 CSE 공식문서를 참고하여 작성하였습니다.</p>
+<p><a href="https://developers.google.com/custom-search/v1/using_rest?hl=ko" class="uri">https://developers.google.com/custom-search/v1/using_rest?hl=ko</a></p>
+<p>예시코드로</p>
+<pre class="{terminal}"><code>GET https://www.googleapis.com/customsearch/v1?key=INSERT_YOUR_API_KEY&amp;cx=017576662512468239146:omuauf_lfve&amp;q=lectures</code></pre>
+<p>이런 코드가 적혀있는 것을 알 수 있습니다. 이것은 터미널에서 리눅스 명령어로 앞에 curl을 호출해서 url로 부터 응답을 받아오는 코드를 의미합니다</p>
+<p>자세히 보시면 중간에 key=INSERT_YOUR_API_KEY로 발급받은 키가 들어가는 자리이고, cx= google_search_engine의 id값이 들어갑니다. 또 &amp;q= query로 검색할 검색어를 입력하는 것을 알 수 있습니다.</p>
+<p>이외에도 request 요청을 할 때 다양한 인자들을 줄 수 있습니다.</p>
+<p>더욱 자세한 인자들을 모두 소개하는 것은 한계가 있으니 링크를 통하여 <a href="https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list?hl=ko&amp;apix_params=%7B%22cx%22%3A%22sadasda%22%2C%22q%22%3A%22react%22%2C%22start%22%3A1%7D" class="uri">https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list?hl=ko&amp;apix_params=%7B%22cx%22%3A%22sadasda%22%2C%22q%22%3A%22react%22%2C%22start%22%3A1%7D</a> 확인하시기 바랍니다.</p>
+<p>파이썬에서는 curl이라는 명령어가 없습니다. 따라서 우리는 url에 대한 응답을 요청하고 받아오기 위해서 python의 패키지인 urllib와 requests를 활용해야합니다.</p>
+<p>curl에 대한 명렁어는 파이썬에서 requests 패키지와 urllib을 통해서 요청할 수 있습니다.</p>
+<p>요청을 보내는 코드는 아래와 같습니다.</p>
+<div id="fc988208" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>Google_SEARCH_ENGINE_ID <span class="op">=</span> <span class="st">""</span>  <span class="co"># Search Engine ID </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>Google_API_KEY <span class="op">=</span> <span class="st">""</span> <span class="co"># Custom Search Engine API KEY </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">""</span>  <span class="co"># 검색할 쿼리</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>start_page <span class="op">=</span> <span class="st">""</span> <span class="co"># 몇 페이지를 검색할 것인지. 한 페이지 당 10개의 게시물을 받아들일 수 있습니다. </span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="ss">f"https://www.googleapis.com/customsearch/v1?key=</span><span class="sc">{</span>Google_API_KEY<span class="sc">}</span><span class="ss">&amp;cx=</span><span class="sc">{</span>Google_SEARCH_ENGINE_ID<span class="sc">}</span><span class="ss">&amp;q=</span><span class="sc">{</span>query<span class="sc">}</span><span class="ss">&amp;start=</span><span class="sc">{</span>start_page<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(url).json()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이렇게 요청하는 url을 우리는 작성하면 얻는 response를 한번 확인해 보겠습니다.</p>
+<p><a href="https://developers.google.com/custom-search/v1/reference/rest/v1/Search?hl=ko" class="uri">https://developers.google.com/custom-search/v1/reference/rest/v1/Search?hl=ko</a> 응답에 대한 양식에 대한 링크이며 응답을 테스트 해볼 수 있습니다.</p>
+<p>이때 우리는 응답에 대해서 response 객체로 JSON 형식의 데이터를 반환하는 것을 알 수 있습니다. JSON 형식의 데이터는 key-value로 이루어진 딕셔너리 형태의 데이터 타입으로, value 값을 얻기 위해 get 메서드를 많이 사용합니다.</p>
+<p>이렇게 서버로 부터 응답해온 결과 중 우리가 원하는 정보를 추출해서, 데이터프레임에 담아내는 것이 목적입니다. response 객체 중, items의 키값을 통해 요청한 결과물들이 담겨 있는 것을 확인했습니다.</p>
+<p><img src="img/response_google.png" width="800"></p>
+<section id="구글-크롤링-코드-전체" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="구글-크롤링-코드-전체"><span class="header-section-number">2.1</span> 구글 크롤링 코드 전체</h2>
+<p>응답받은 response 이 코드에선 data로 변수명을 저장했습니다. 이 객체에 접근해서 우리의 목표에 맞게 데이터에 접근해서 한 줄 한 줄 데이터 프레임에 입력하여 저장하는 작업을 하겠습니다.</p>
+<section id="url에-내용의-신뢰도가-낮은-사이트의-검색결과는-저장하지-않도록-예외처리를-합니다.-선택사항" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="url에-내용의-신뢰도가-낮은-사이트의-검색결과는-저장하지-않도록-예외처리를-합니다.-선택사항"><span class="header-section-number">2.1.1</span> url에 내용의 신뢰도가 낮은 사이트의 검색결과는 저장하지 않도록 예외처리를 합니다. (선택사항)</h3>
+<div id="f5f5ac8c" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Trash_Link <span class="op">=</span> [<span class="st">"tistory"</span>, <span class="st">"kin"</span>, <span class="st">"youtube"</span>, <span class="st">"blog"</span>, <span class="st">"book"</span>, <span class="st">"news"</span>, <span class="st">"dcinside"</span>, <span class="st">"fmkorea"</span>, <span class="st">"ruliweb"</span>, <span class="st">"theqoo"</span>, <span class="st">"clien"</span>, <span class="st">"mlbpark"</span>, <span class="st">"instiz"</span>, <span class="st">"todayhumor"</span>] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>url 링크에, 티스토리, 지식인,유튜브, 블로그,책,뉴스,디시인사이드,에펨코리아,루리엡,더쿠,클리앙,엠엘비파크,인스티즈,오늘의유머의 검색결과는 제거하도록 했습니다.</p>
+<div id="0806aaa5" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Google_API(query, wanted_row):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">    input : </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">        query : str  검색하고 싶은 검색어 </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">        wanted_row : str 검색 결과를 몇 행 저장할 것인지 </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">    output : </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">        df_google : dataframe / column = title, link,description  </span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">        사용자로 부터 입력받은 쿼리문을 통해 나온 검색 결과를 wanted_row만큼 (100행을 입력받았으면) 100행이 저장된 데이터 프레임을 return합니다.</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span> query.replace(<span class="st">"|"</span>,<span class="st">"OR"</span>) <span class="co">#쿼리에서 입력받은 | 기호를 OR 로 바꿉니다 </span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    query <span class="op">+=</span> <span class="st">"-filetype:pdf"</span> <span class="co"># 검색식을 사용하여 file type이 pdf가 아닌 것을 제외시켰습니다 </span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    start_pages<span class="op">=</span>[] <span class="co"># start_pages 라는 리스트를 생성합니다. </span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    df_google<span class="op">=</span> pd.DataFrame(columns<span class="op">=</span>[<span class="st">'Title'</span>,<span class="st">'Link'</span>,<span class="st">'Description'</span>]) <span class="co"># df_Google이라는 데이터 프레임에 컬럼명은 Title, Link, Description으로 설정했습니다.</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    row_count <span class="op">=</span><span class="dv">0</span> <span class="co"># dataframe에 정보가 입력되는 것을 카운트 하기 위해 만든 변수입니다. </span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,wanted_row<span class="op">+</span><span class="dv">1000</span>,<span class="dv">10</span>):</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        start_pages.append(i) <span class="co">#구글 api는 1페이지당 10개의 결과물을 보여줘서 1,11,21순으로 로드한 페이지를 리스트에 담았습니다. </span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> start_page <span class="kw">in</span> start_pages:</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>      <span class="co"># 1페이지, 11페이지,21페이지 마다, </span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        url <span class="op">=</span> <span class="ss">f"https://www.googleapis.com/customsearch/v1?key=</span><span class="sc">{</span>Google_API_KEY<span class="sc">}</span><span class="ss">&amp;cx=</span><span class="sc">{</span>Google_SEARCH_ENGINE_ID<span class="sc">}</span><span class="ss">&amp;q=</span><span class="sc">{</span>query<span class="sc">}</span><span class="ss">&amp;start=</span><span class="sc">{</span>start_page<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 요청할 URL에 사용자 정보인 API key, CSE ID를 저장합니다. </span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> requests.get(url).json()</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># request를 requests 라이브러리를 통해서 요청하고, 결과를 json을 호출하여 데이터에 담습니다.</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        search_items <span class="op">=</span> data.get(<span class="st">"items"</span>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data의 하위에 items키로 저장돼있는 값을 불러옵니다. </span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># search_items엔 검색결과 [1~ 10]개의 아이템들이 담겨있다.  start_page = 11 ~ [11~20] </span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>          <span class="co">#try 구문을 하는 이유: 검색 결과가 null인 경우 link를 가져올 수가 없어서 없으면 없는대로 예외처리</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i, search_item <span class="kw">in</span> <span class="bu">enumerate</span>(search_items, start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>              <span class="co"># link 가져오기 </span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>                link <span class="op">=</span> search_item.get(<span class="st">"link"</span>)</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="bu">any</span>(trash <span class="kw">in</span> link <span class="cf">for</span> trash <span class="kw">in</span> Trash_Link):</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>                  <span class="co"># 링크에 dcinside, News 등을 포함하고 있으면 데이터를 데이터프레임에 담지 않고, 다음 검색결과로 </span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">pass</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span>: </span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># 제목저장</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>                    title <span class="op">=</span> search_item.get(<span class="st">"title"</span>)</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># 설명 저장 </span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>                    descripiton <span class="op">=</span> search_item.get(<span class="st">"snippet"</span>)</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># df_google에 한줄한줄 append </span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>                    df_google.loc[start_page <span class="op">+</span> i] <span class="op">=</span> [title,link,descripiton] </span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># 저장하면 행 갯수 카운트 </span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>                    row_count<span class="op">+=</span><span class="dv">1</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> (row_count <span class="op">&gt;=</span> wanted_row) <span class="kw">or</span> (row_count <span class="op">==</span> <span class="dv">300</span>) :</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#원하는 갯수만큼 저장끝나면</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">return</span> df_google</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span>:</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>          <span class="co"># 더 이상 검색결과가 없으면 df_google 리턴 후 종료 </span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> df_google</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df_google</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>link를 입력 받을 때 try except구문을 활용하여 예외처리를 하였습니다.이를 자세히 설명하게 되면, 특정 키워드로 검색했을 때 나오는 검색결과가 충분하지 않는 경우 response객체에 items 값이 null이 되게 됩니다. 따라서 이후의 작업들이 문제가 생기게 되는데, 이를 try except 구문을 통해 처리했습니다.</p>
+</section>
+</section>
+</section>
+<section id="네이버-검색-api-사용법" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> 네이버 검색 API 사용법</h1>
+<p>네이버 API 키를 발급받는 방법은 아래를 참고하세요.</p>
+<p>일 허용 한도 25000건을 제공합니다 더 많은 요청을 보내기 위해선 제휴를 신청해야합니다.</p>
+<ul>
+<li><a href="https://zerosecu.tistory.com/18" class="uri">https://zerosecu.tistory.com/18</a></li>
+</ul>
+<p>네이버 웹문서 검색 API 공식문서</p>
+<p><a href="https://developers.naver.com/docs/serviceapi/search/web/web.md#%EC%9B%B9%EB%AC%B8%EC%84%9C" class="uri">https://developers.naver.com/docs/serviceapi/search/web/web.md#%EC%9B%B9%EB%AC%B8%EC%84%9C</a></p>
+<section id="네이버-크롤링-코드" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="네이버-크롤링-코드"><span class="header-section-number">3.1</span> 네이버 크롤링 코드</h2>
+<div id="e5bd54e3" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Naver_client_id = '~~~~' # 발급받은 ID를 입력해주세요 </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Naver_client_secret = '~~~' </span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Naver_API(query,wanted_row):</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    query <span class="op">=</span> urllib.parse.quote(query)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    display<span class="op">=</span><span class="dv">100</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">#네이버 검색 API는 한 페이지를 요청했을 때 몇개의 건수를 보여줄 것인지 인자로 표시할 수 있습니다. </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    start<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># start page를 1로 설정합니다.</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    end<span class="op">=</span>wanted_row<span class="op">+</span><span class="dv">10000</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 끝내는 페이지를 원하는 행의 갯수보다 더 많이 설정했는데 이유는 , trashlink 보다 많은 데이터를 저장합니다.  </span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    sort<span class="op">=</span><span class="st">'sim'</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 네이버 API 검색 결과는 검색결과 데이터를 정렬하는 순서의 기준을 정합니다. </span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    df<span class="op">=</span> pd.DataFrame(columns<span class="op">=</span>[<span class="st">'Title'</span>,<span class="st">'Link'</span>,<span class="st">'Description'</span>])</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 마찬가지로 title,link,description의 컬럼을 가진 데이터프레임을 생성합니다. </span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    row_count<span class="op">=</span> <span class="dv">0</span> </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># dataframe에 정보가 입력되는 것을 카운트 하기 위해 만든 변수입니다. </span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> start_index <span class="kw">in</span> <span class="bu">range</span>(start,end,display):</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        url <span class="op">=</span> <span class="st">"https://openapi.naver.com/v1/search/webkr?query="</span><span class="op">+</span> query <span class="op">+\</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>            <span class="st">"&amp;display="</span> <span class="op">+</span> <span class="bu">str</span>(display)<span class="op">+</span> <span class="op">\</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"&amp;start="</span> <span class="op">+</span> <span class="bu">str</span>(start_index) <span class="op">+</span> <span class="op">\</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"&amp;sort="</span> <span class="op">+</span> sort</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        <span class="co">#url에 요청할 정보에 대한 내용을 담아 변수 선언하고, </span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>        request <span class="op">=</span> urllib.request.Request(url)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        <span class="co">#urllib.request 모듈을 통해 요청을만들고,  </span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        request.add_header(<span class="st">"X-Naver-Client-Id"</span>,Naver_client_id)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>        request.add_header(<span class="st">"X-Naver-Client-Secret"</span>,Naver_client_secret)</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 그 요청에 헤더를 만들어서 클라이언트 아이디와, 비밀번호를 헤더에 입력합니다. </span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>            response <span class="op">=</span> urllib.request.urlopen(request)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 요청하여 받은 내용을 response로 저장합니다.</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>            rescode <span class="op">=</span> response.getcode()</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>            <span class="co"># response 객체에 담긴 응답 코드를 받아옵니다</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(rescode<span class="op">==</span><span class="dv">200</span>):</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>                response_body <span class="op">=</span> response.read()</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>                <span class="co"># response 내용을 읽어들여 response_body에 저장합니다. </span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>                items<span class="op">=</span> json.loads(response_body.decode(<span class="st">'utf-8'</span>))[<span class="st">'items'</span>]</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>                <span class="co"># 전체 response를 json화 한 뒤 key값이 items로 되어있는 값에 저장을 합니다. </span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>                remove_tag <span class="op">=</span> re.<span class="bu">compile</span>(<span class="st">'&lt;.*?&gt;'</span>)</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>                <span class="co"># html문법의 태그들을 제거하는 컴파일러를 정규식을 패키지를 통해 생성합니다.</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> item_index <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="bu">len</span>(items)):</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>                    link <span class="op">=</span> items[item_index][<span class="st">'link'</span>]</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># 아이템에 링크에 접근합니다</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> <span class="bu">any</span>(trash <span class="kw">in</span> link <span class="cf">for</span> trash <span class="kw">in</span> Trash_Link):</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>                      <span class="co"># link url에 출처가 신뢰도가 낮은 사이트의 정보라면 데이터프레임에 저장하지 않고 넘어갑니다. </span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">pass</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span>:</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>                        title <span class="op">=</span> re.sub(remove_tag, <span class="st">''</span>, items[item_index][<span class="st">'title'</span>])</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>                        description <span class="op">=</span> re.sub(remove_tag, <span class="st">''</span>, items[item_index][<span class="st">'description'</span>])</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>                        <span class="co"># html 태그를 제거한 후, 제목 설명,링크 저장 </span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>                        df.loc[row_count] <span class="op">=</span>[title,link,description]</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>                        row_count<span class="op">+=</span><span class="dv">1</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> (row_count <span class="op">&gt;=</span> wanted_row) <span class="kw">or</span> (row_count <span class="op">==</span> <span class="dv">300</span>):</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>                            <span class="cf">return</span> df</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>                        </span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span>:</span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>큰 흐름은 구글에서 작성한 코드와 유사합니다.</p>
+<p>먼저 네이버 클라이언트 ID와 KEY값을 변수로 넣어줍니다. 경우에 따라 자기 혼자 쓰는 건 상관없겠지만 , 보통 키를 저렇게 코드에 보이게 노출하는 것 보다는 INPUT을 통해 보이지 않게 입력하는 것이 좋을 것 같습니다. 그리고 구글에서는 URL에 서비스 요청할 정보와 요청자의 신원을 확인할 수 있는 정보들을 모두 입력했습니다. 네이버에서는 조금 다르게 URL에 넣는 인자로는 어떤 검색결과를 받을지 표시하고, 몇 건이 출력될지 등 파라미터를 줘서 코드를 작성할 수 있습니다. 또 URL에 통해 사용자를 키값 정보를 같이 담지 않고 요청에 헤더를 추가하여 그곳에 담아 요청합니다.</p>
+<p>이후는 이전과 동일하게 네이버 웹문서 검색 API가 제공하는 JSON 데이터 형식을 보고 필요한 키-밸류값에 접근하여 데이터를 수집한 뒤 데이터프레임을 반환합니다.</p>
+<p>구글에서는 요청에 대한 응답(response) items에 데이터가 불용어와 html문법의 태그로 돼있는 것들이 나와있지 않았지만, 네이버에서 보낸 응답에는 불용어가 많이 섞여있어서 그것을 제거하기 위해 re 패키지의 정규식을 이용하여 글자만 남기도록 했습니다.</p>
+</section>
+</section>
+<section id="다음-검색-api-사용법" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> 다음 검색 API 사용법</h1>
+<p>카카오 API 키 발급받는 방법은 해당 링크름 참조하세요</p>
+<ul>
+<li><a href="https://kadosholy.tistory.com/25" class="uri">https://kadosholy.tistory.com/25</a></li>
+</ul>
+<p>다음 검색 API 공식문서</p>
+<p><a href="https://developers.kakao.com/docs/latest/ko/daum-search/dev-guide" class="uri">https://developers.kakao.com/docs/latest/ko/daum-search/dev-guide</a></p>
+<section id="다음-api-활용-파이썬-코드" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="다음-api-활용-파이썬-코드"><span class="header-section-number">4.1</span> 다음 API 활용 파이썬 코드</h2>
+<div id="579621c2" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Kakao_API_key = '~~~~' # 발급받은 api키를 입력해주세요 </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Daum_API(query,wanted_row):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    pages<span class="op">=</span> wanted_row<span class="op">//</span><span class="dv">10</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 검색해야할 페이지를 10으로 나눈 몫으로 구합니다 </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 예: 100 행 검색이면 10페이지</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    method <span class="op">=</span> <span class="st">"GET"</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> <span class="st">"https://dapi.kakao.com/v2/search/web"</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    header <span class="op">=</span> {<span class="st">'authorization'</span>: <span class="ss">f'KakaoAK </span><span class="sc">{</span>Kakao_API_key<span class="sc">}</span><span class="ss">'</span>}</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 다음 카카오 API를 호출할 때는, header 딕셔너리로 생성하여 정해진 형식으로  API키를 넘겨줘야합니다. 형식은 위와 같습니다. </span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    df<span class="op">=</span> pd.DataFrame(columns<span class="op">=</span>[<span class="st">'Title'</span>,<span class="st">'Link'</span>,<span class="st">'Description'</span>])</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">#데이터프레임을 생성합니다 </span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    row_count<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># row_count 변수를 생성합니다</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> page <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,pages<span class="op">+</span><span class="dv">10</span>):</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="co">#여유있게 10페이지더 검색합니다 이유는 Link가 버려지는 경우를 위해서입니다. </span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        params <span class="op">=</span> {<span class="st">'query'</span> : query, <span class="st">'page'</span> : page}</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 다른 API 호출방식과 달리 url string에 담아서 넘겨주는 형식이 아니라, 딕셔너리형태로 </span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># params와 header에 담아서 리퀘스트를 요청합니다. </span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        request <span class="op">=</span> requests.get( url, params<span class="op">=</span> params, headers<span class="op">=</span>header)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="co">#요청한 내용을 받은 것을 request에 저장합니다. 변수명 request이지만 사실은 response</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, item <span class="kw">in</span> <span class="bu">enumerate</span>(request.json()[<span class="st">"documents"</span>], start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>          <span class="co">#아이템 객체에서 url을 받아옵니다.</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>            link <span class="op">=</span> item[<span class="st">'url'</span>]</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>              <span class="co"># date time이 null인 경우가 많아서 예외처리를 해서 경우를 나눴습니다. 앞의 4글자 년도 YYYY를 저장합니다. </span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>                written_year<span class="op">=</span><span class="bu">int</span>(item[<span class="st">'datetime'</span>][:<span class="dv">4</span>])</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span>:</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>              <span class="co"># 작성일자가 null인 경우, 2023년으로 저장합니다.  </span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>                written_year <span class="op">=</span> <span class="dv">2023</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (<span class="bu">any</span>(trash <span class="kw">in</span> link <span class="cf">for</span> trash <span class="kw">in</span> Trash_Link) <span class="kw">or</span> (written_year <span class="op">&lt;</span><span class="dv">2020</span>)):</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>              <span class="co"># 출처가 신뢰도가 낮은 사이트거나, 작성된지 오래된 글의 경우</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>                <span class="cf">pass</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>                title<span class="op">=</span> item[<span class="st">"title"</span>]</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>                description <span class="op">=</span> item[<span class="st">"contents"</span>]</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>                df.loc[<span class="dv">10</span><span class="op">*</span>page<span class="op">+</span>i] <span class="op">=</span>[title,link,description]</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>                <span class="co">#title과  본문 설명을 담아서 데이터프레임에 한줄한줄 append합니다. </span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>                row_count<span class="op">+=</span><span class="dv">1</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> (row_count <span class="op">&gt;=</span> wanted_row) <span class="kw">or</span> (row_count <span class="op">==</span> <span class="dv">300</span>):</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>                  <span class="co"># 행수가 원하는 로우만큼 채워지거나, Maximum_row개수인 300에 도달하면</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>                  <span class="co"># html태그들을 제거한 후 반환합니다.</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>                    remove_tag <span class="op">=</span> re.<span class="bu">compile</span>(<span class="st">'&lt;.*?&gt;'</span>)</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>                    df[<span class="st">'Title'</span>] <span class="op">=</span>df[<span class="st">'Title'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x :re.sub(remove_tag, <span class="st">''</span>,x))</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>                    df[<span class="st">'Description'</span>] <span class="op">=</span>df[<span class="st">'Description'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x :re.sub(remove_tag, <span class="st">''</span>,x))</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">return</span> df</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    remove_tag <span class="op">=</span> re.<span class="bu">compile</span>(<span class="st">'&lt;.*?&gt;'</span>)</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Title'</span>] <span class="op">=</span>df[<span class="st">'Title'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x :re.sub(remove_tag, <span class="st">''</span>,x))</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Description'</span>] <span class="op">=</span>df[<span class="st">'Description'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x :re.sub(remove_tag, <span class="st">''</span>,x))</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>카카오 API는 요청을 하면 보내주는 response 중 우리가 원하는 내용을 구글과 네이버는 items에 내용들이 담겨있었습니다. 카카오 다음검색 api는 보낸 응답에 documents라는 키값에 저장돼있음을 문서를 통해 확인할 수 있습니다. 문서를 통해 확인할 수 있고, 보통 api를 제공하는 사이트에서 테스트해볼 수 있어 입력물과 결과물의 형식을 요청해보지 않아도 확인가능합니다. 조금 다른 점이라면 이번에는 카카오 api에서 담겨있는 내용 중 작성일자를 Document-datetime에 저장돼있어서 검색 기간을 설정할 수 있는 기능을 구현했습니다.</p>
+<p>이렇게 나온 결과물에서 한번 더 필터링하는 것도 있을 수 있지만, 애초에 검색식을 이용하여 검색결과로 반환해야할 데이터를 줄일 수 있는데, 기간검색은 검색식으로 제어가 되지 않았습니다.</p>
+</section>
+</section>
+<section id="최종-코드" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> 최종 코드</h1>
+<div id="16603587" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> final(query,wanted_row<span class="op">=</span><span class="dv">100</span>):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    df_google <span class="op">=</span> Google_API(query,wanted_row)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    df_google[<span class="st">'search_engine'</span>]<span class="op">=</span><span class="st">'Google'</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 서치엔진 구글을 통해 얻었음을 기록 </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    df_naver <span class="op">=</span> Naver_API(query,wanted_row)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    df_naver[<span class="st">'search_engine'</span>]<span class="op">=</span><span class="st">'Naver'</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 서치엔진 기록 </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    df_daum <span class="op">=</span> Daum_API(query,wanted_row)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    df_daum[<span class="st">'search_engine'</span>]<span class="op">=</span><span class="st">'Daum'</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    df_final<span class="op">=</span> pd.concat([df_google,df_naver,df_daum])</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 전체 네이버 구글 카카오에서 크롤링한 내용을 수평으로 결합 rowbind </span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    df_final[<span class="st">'search_date'</span>] <span class="op">=</span> today</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 검색한 날자 저장 </span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    df_final.reset_index(inplace<span class="op">=</span><span class="va">True</span>,drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">#인덱스 초기화 </span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df_final</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">############### 검색할 검색어를 query에, 검색엔진당 추출할 문서의 개수를 wanted_row 에 적어주세요####################</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co">## 아래 코드를 실행시키기 위해선 위의 함수들이 모두 불러와져 있어야 합니다!</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># today = datetime.today().strftime("%Y%m%d")</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co"># query = "뇌진탕 | 외상성 뇌손상 | 두부외상" </span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co"># wanted_row = 100</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co"># df = final(query=query, wanted_row=wanted_row) #최종함수를 호출하여 dataframe을 받습니다.</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co"># query_filename =  re.sub(r"[^\uAC00-\uD7A30-9a-zA-Z\s]", "", query) #저장할때 파일명에는 특수문자 제거  </span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co"># df.to_csv(f'{query_filename}_{today}.csv',index=False)  #파일이름을 지정하여 저장합니다.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="개발-후기" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> 개발 후기</h1>
+<p>역시 데이터 분석가의 업무 중 가장 시간이 오래걸리는 것은 전처리가 아닐까 싶습니다. 이 API를 호출하는 과정을 통해서 API에 어떻게 요청하고 응답의 형태를 고려해서 원하는 데이터를 저장하기 위해 어떤 코드를 작성해야하는지 알게됐습니다.</p>
+<p>저는 컴퓨터공학 비전공자로 먼저 API라는 것이 이름을 들으면 잘 모르는 것이였어서 두려운 마음이 컸었습니다. 하지만 이번에 실제로 사용을해보니, API 기술의 무엇인지와 이것이 왜 필요한지에 대해서 알게 됐고, 어떤 원리로 동작하는지 알 수 있어서 좋았습니다. 하지만 본문의 내용에서 RESTful한 API, API에 대해서 설명이 깊이있지 못하여 조금 아쉬움이 남습니다.</p>
+<p>또 이렇게 앞으로 API를 직접 만들일이 생긴다면, FAST API를 통해 만들 수 있다는 것을 알게됐고 추후에 그 쪽에 대해서도 나중에 더 깊게 공부해보고 싶어졌습니다.</p>
+<p>그리고 검색API마다 결국 기본적으로 타이틀과 url ,설명들을 제공하고 있어서 검색 API들이 검색 포털 별로 데이터 규격을 쉽게 맞출 수 있어서 좋았습니다. 공식문서를 정독하는 것이 다른 개발의 과정에서도 중요하지만 특히 API를 사용하는데 있어서 가장 중요한 역할을 한다는 것을 느꼈습니다.</p>
+<p>모든 소스코드는 차라투 깃허브에 같이 포스팅 해놓았고 아래 링크에서 확인 가능합니다.</p>
+<p>Source Code</p>
+<p><a href="https://github.com/zarathucorp/blog/blob/master/source_code/Custom_Search_Zarathu.ipynb" class="uri">https://github.com/zarathucorp/blog/blob/master/source_code/Custom_Search_Zarathu.ipynb</a></p>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2023,
+  author = {Kim, Won},
+  title = {Python을 {이용한} {검색포털} {API} {활용}},
+  date = {2023-02-15},
+  url = {https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Won. 2023. <span>“Python을 이용한 검색포털 API 활용.”</span>
+February 15, 2023. <a href="https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/">https://blog.zarathu.com/jp/posts/2023-02-15-searchAPI-with-python/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com\/jp");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

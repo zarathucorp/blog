@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.47">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Jinseob Kim">
+<meta name="dcterms.date" content="2018-11-28">
+<meta name="description" content="중앙보훈병원 정신건강의학과에서 강의한 내용으로, 의학 연구에 필요한 기술 통계(descriptive statistics)를 정리하고 웹 애플리케이션과 Rstudio Addins을 이용하여 실습하였습니다.">
+<title>의학 연구에서의 기술 통계 with R – 차라투 블로그</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/logo_favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-135478021-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script><style>html{ scroll-behavior: smooth; }</style>
+<link href="../../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="../../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="../../site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="../../site_libs/datatables-binding-0.33/datatables.js"></script><script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><link href="../../site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="../../site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="../../site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script><link href="../../site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="../../site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/logo.png" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">차라투 블로그</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../../jp/index.html"> 
+<span class="menu-text">ホーム</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://openstat.ai/" target="_blank"> 
+<span class="menu-text">アプリケーション</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-パッケージ" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R パッケージ</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-パッケージ">
+<li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jstable/" target="_blank">
+ <span class="dropdown-text">jstable</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jskm/" target="_blank">
+ <span class="dropdown-text">jskm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://jinseob2kim.github.io/jsmodule/" target="_blank">
+ <span class="dropdown-text">jsmodule</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../jp/contributors.html"> 
+<span class="menu-text">投稿者</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">パートナー</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-">
+<li>
+    <a class="dropdown-item" href="https://www.r-bloggers.com/" target="_blank">
+ <span class="dropdown-text"><img src="https://www.r-bloggers.com/favicon.ico"> R-bloggers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/shinykorea/" target="_blank">
+ <span class="dropdown-text"><img width="16px" src="https://avatars.githubusercontent.com/u/46996346?s=200&amp;v=4"> Shinykorea</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zarathucorp" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/zarathu/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" target="_blank"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-translate" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-translate">
+<li>
+    <a class="dropdown-item" href="../../../index.html">
+ <span class="dropdown-text">한국어</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../jp/index.html">
+ <span class="dropdown-text">日本語</span></a>
+  </li>  
+    </ul>
+</li>
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">의학 연구에서의 기술 통계 with R</h1>
+                  <div>
+        <div class="description">
+          <p>중앙보훈병원 정신건강의학과에서 강의한 내용으로, 의학 연구에 필요한 기술 통계(descriptive statistics)를 정리하고 웹 애플리케이션과 Rstudio Addins을 이용하여 실습하였습니다.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">lecture</div>
+                <div class="quarto-category">statistics</div>
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">shiny</div>
+              </div>
+                  </div>
+  </div>
+    
+  <div class="quarto-title-meta-author">
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-heading">Affiliation</div>
+    
+      <div class="quarto-title-meta-contents">
+      <p class="author"><a href="https://github.com/jinseob2kim">Jinseob Kim</a> </p>
+    </div>
+    <div class="quarto-title-meta-contents">
+          <p class="affiliation">
+              Zarathu Co.,Ltd
+            </p>
+        </div>
+    </div>
+
+  <div class="quarto-title-meta">
+
+        
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 28, 2018</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90" id="toc-시작하기-전에" class="nav-link active" data-scroll-target="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90">시작하기 전에</a></li>
+  <li><a href="#%EC%9D%98%ED%95%99-%EC%97%B0%EA%B5%AC%EC%97%90%EC%84%9C%EC%9D%98-%EA%B8%B0%EC%88%A0-%ED%86%B5%EA%B3%84" id="toc-의학-연구에서의-기술-통계" class="nav-link" data-scroll-target="#%EC%9D%98%ED%95%99-%EC%97%B0%EA%B5%AC%EC%97%90%EC%84%9C%EC%9D%98-%EA%B8%B0%EC%88%A0-%ED%86%B5%EA%B3%84">의학 연구에서의 기술 통계</a></li>
+  <li>
+<a href="#%EC%97%B0%EC%86%8D-%EB%B3%80%EC%88%98%EC%9D%98-%EA%B7%B8%EB%A3%B9-%EB%B9%84%EA%B5%90" id="toc-연속-변수의-그룹-비교" class="nav-link" data-scroll-target="#%EC%97%B0%EC%86%8D-%EB%B3%80%EC%88%98%EC%9D%98-%EA%B7%B8%EB%A3%B9-%EB%B9%84%EA%B5%90">연속 변수의 그룹 비교</a>
+  <ul class="collapse">
+<li><a href="#t-test" id="toc-t-test" class="nav-link" data-scroll-target="#t-test"><strong>T-test</strong></a></li>
+  <li><a href="#anova2" id="toc-anova2" class="nav-link" data-scroll-target="#anova2"><strong>ANOVA</strong></a></li>
+  <li><a href="#%EB%B9%84%EB%AA%A8%EC%88%98-%ED%86%B5%EA%B3%84-%EC%A0%95%EA%B7%9C%EB%B6%84%ED%8F%AC-%EC%95%84%EB%8B%90-%EB%95%8C" id="toc-비모수-통계-정규분포-아닐-때" class="nav-link" data-scroll-target="#%EB%B9%84%EB%AA%A8%EC%88%98-%ED%86%B5%EA%B3%84-%EC%A0%95%EA%B7%9C%EB%B6%84%ED%8F%AC-%EC%95%84%EB%8B%90-%EB%95%8C">비모수 통계: 정규분포 아닐 때</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EB%B2%94%EC%A3%BC%ED%98%95-%EB%B3%80%EC%88%98%EC%9D%98-%EA%B7%B8%EB%A3%B9-%EB%B9%84%EA%B5%90" id="toc-범주형-변수의-그룹-비교" class="nav-link" data-scroll-target="#%EB%B2%94%EC%A3%BC%ED%98%95-%EB%B3%80%EC%88%98%EC%9D%98-%EA%B7%B8%EB%A3%B9-%EB%B9%84%EA%B5%90">범주형 변수의 그룹 비교</a>
+  <ul class="collapse">
+<li><a href="#%EC%83%98%ED%94%8C-%EC%88%98-%EC%B6%A9%EB%B6%84-chi-square-test" id="toc-샘플-수-충분-chi-square-test" class="nav-link" data-scroll-target="#%EC%83%98%ED%94%8C-%EC%88%98-%EC%B6%A9%EB%B6%84-chi-square-test">샘플 수 충분: Chi-square test</a></li>
+  <li><a href="#%EC%83%98%ED%94%8C-%EC%88%98-%EB%B6%80%EC%A1%B1-fishers-exact-test" id="toc-샘플-수-부족-fishers-exact-test" class="nav-link" data-scroll-target="#%EC%83%98%ED%94%8C-%EC%88%98-%EB%B6%80%EC%A1%B1-fishers-exact-test">샘플 수 부족: Fisher’s exact test</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EC%B6%94%EA%B0%80-%EC%A7%9D%EC%A7%80%EC%9D%80-2-%EA%B7%B8%EB%A3%B9" id="toc-추가-짝지은-2-그룹" class="nav-link" data-scroll-target="#%EC%B6%94%EA%B0%80-%EC%A7%9D%EC%A7%80%EC%9D%80-2-%EA%B7%B8%EB%A3%B9">추가: 짝지은 2 그룹</a>
+  <ul class="collapse">
+<li><a href="#%EC%97%B0%EC%86%8D%EB%B3%80%EC%88%98-paired-t-test" id="toc-연속변수-paired-t-test" class="nav-link" data-scroll-target="#%EC%97%B0%EC%86%8D%EB%B3%80%EC%88%98-paired-t-test">연속변수: Paired t-test</a></li>
+  <li><a href="#%EB%B2%94%EC%A3%BC%ED%98%95-%EB%B3%80%EC%88%98-mcnemar-test-symmetry-test-for-a-paired-contingency-table" id="toc-범주형-변수-mcnemar-test-symmetry-test-for-a-paired-contingency-table" class="nav-link" data-scroll-target="#%EB%B2%94%EC%A3%BC%ED%98%95-%EB%B3%80%EC%88%98-mcnemar-test-symmetry-test-for-a-paired-contingency-table">범주형 변수: Mcnemar test, Symmetry test for a paired contingency table</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EC%8B%A4%EC%8A%B5" id="toc-실습" class="nav-link" data-scroll-target="#%EC%8B%A4%EC%8A%B5">실습</a>
+  <ul class="collapse">
+<li><a href="#%EC%9B%B9-%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98" id="toc-웹-애플리케이션" class="nav-link" data-scroll-target="#%EC%9B%B9-%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98">웹 애플리케이션</a></li>
+  <li><a href="#rstudio-addins" id="toc-rstudio-addins" class="nav-link" data-scroll-target="#rstudio-addins">Rstudio Addins</a></li>
+  </ul>
+</li>
+  <li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0" id="toc-마치며" class="nav-link" data-scroll-target="#%EB%A7%88%EC%B9%98%EB%A9%B0">마치며</a></li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content"><!-- Google tag (gtag.js) --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L0DYYSH9KM"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L0DYYSH9KM');
+</script><p><a href="https://github.com/jinseob2kim">김진섭</a> 대표는 11월 28일(수) <a href="https://seoul.bohun.or.kr/040part/01_body.php?left=26&amp;idx=82">중앙보훈병원 정신건강의학과</a>를 방문, 의학 연구에 필요한 기술 통계(descriptive statistics)에 대해 강의하고 자체 제작한 <a href="https://jinseob2kim.shinyapps.io/BasicStat/">웹 애플리케이션</a>과 <a href="https://rstudio.github.io/rstudioaddins/"><strong>Rstudio Addins</strong></a>를 이용하여 실습을 진행하였습니다. 강의 내용을 공유합니다.</p>
+<section id="시작하기-전에" class="level2"><h2 class="anchored" data-anchor-id="시작하기-전에">시작하기 전에</h2>
+<p>의학연구에서 <a href="https://www.r-project.org/"><strong>R</strong></a> 활용 능력을 대략 5단계로 구분할 수 있다.</p>
+<ol type="1">
+<li><p>데이터 정리는 미리 excel로 완료, 통계분석만 <a href="https://www.r-project.org/"><strong>R</strong></a> 이용.</p></li>
+<li><p><a href="https://www.r-project.org/"><strong>R</strong></a>로 데이터 정리와 통계분석을 모두 수행.</p></li>
+<li><p><a href="https://www.r-project.org/"><strong>R</strong></a>로 그림을 그린다.</p></li>
+<li><p>논문에 들어갈 Table과 figure를 모두 <a href="https://www.r-project.org/"><strong>R</strong></a>로 만든다.</p></li>
+<li><p>글쓰기, 참고문헌 등 논문의 모든 작업을 <a href="https://www.r-project.org/"><strong>R</strong></a>에서 직접 수행한다.</p></li>
+</ol>
+<p>본 강의는 1단계에 해당하는 연구자가 <a href="https://www.r-project.org/"><strong>R</strong></a>을 쉽게 이용할 수 있도록 돕는 내용에 해당하며 <a href="https://www.r-project.org/"><strong>R</strong></a>과 <a href="https://www.rstudio.com/"><strong>Rstudio</strong></a>의 설치과정은 생략한다. 혹시 설치를 못했다면 <a href="https://www.r-project.org" class="uri">https://www.r-project.org</a> 와 <a href="https://www.r-project.org%20%EC%99%80%20https://www.rstudio.com/products/rstudio/download">https://www.rstudio.com/products/rstudio/download</a> 를 참조하여 설치하길 바란다. <a href="https://www.r-project.org/"><strong>R</strong></a>의 전반적인 도움말은 <code><a href="https://rdrr.io/r/utils/help.start.html">help.start()</a></code> 명령어를 활용하고 특정 함수를 보려면 <code><a href="https://rdrr.io/r/base/which.html">help(which)</a></code> 형태로 실행하면 된다.</p>
+</section><section id="의학-연구에서의-기술-통계" class="level2"><h2 class="anchored" data-anchor-id="의학-연구에서의-기술-통계">의학 연구에서의 기술 통계</h2>
+<p>기술 통계는 원래 평균(mean), 중위수(median), 분산(variance), 빈도표(frequency table)등의 데이터를 설명하는 <strong>숫자</strong>들이나 히스토그램(histogram), 상자그림(box-plot)같은 <strong>그래프</strong>를 의미한다. 그러나 대부분의 의학 연구에서는 단순한 기술 통계가 아닌 그것들의 <strong>그룹 비교</strong>(ex: 성별, 질환 유무)가 Table 1에 기술 통계란 제목으로 제시된다.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="table1.jpg" class="img-fluid figure-img" width="244"></p>
+<figcaption>Table 1 example<span class="citation" data-cites="Balaji2011">(<a href="#ref-Balaji2011" role="doc-biblioref">Balaji 2011</a>)</span></figcaption></figure>
+</div>
+</div>
+</div>
+<p>보통 연구의 흐름은 <strong>기술 통계</strong>로 데이터를 보여주고 <strong>단변량(univariate) 분석</strong>을 통해 가설 검정을 수행한 후, <strong>다변량(multivariate)</strong> 혹은 <strong>소그룹(subgroup) 분석</strong> 을 이용하여 다른 변수들의 효과를 보정한 결과를 보여주는 것으로 이루어진다. 그러나 단변량 분석에서 끝나는 간단한 연구도 많고 이것은 본질적으로 기술 통계의 그룹 비교와 같으므로, Table 1에 필요한 통계를 알고 쉽게 구현할 수 있다면 그것만으로 간단한 의학 연구를 수행할 수 있다.</p>
+<p>본 강의에서는 Table 1의 그룹 비교에 필요한 통계 방법들을 알아보고 <a href="https://www.r-project.org/"><strong>R</strong></a>을 이용해서 실제 분석을 수행할 것이다. 통계 방법을 선택하는 기준은 크게 <strong>(1) 연속 변수(continuous variable) vs 범주형 변수(categorical variable)</strong>, <strong>(2) 비교할 그룹 수</strong>, <strong>(3) 샘플 수 혹은 정규분포 여부</strong> 의 3가지가 있으며 추가로 짝지은 그룹인 경우를 살펴보겠다.</p>
+<p>마지막으로 자체 개발한 <a href="https://jinseob2kim.shinyapps.io/BasicStat/">웹 애플리케이션</a>과 <a href="https://rstudio.github.io/rstudioaddins/"><strong>Rstudio Addins</strong></a>을 사용하여 간단히 Table 1을 만들어 볼 것이다(Figure @ref(fig:appgif), @ref(fig:addingif)).</p>
+</section><section id="연속-변수의-그룹-비교" class="level2"><h2 class="anchored" data-anchor-id="연속-변수의-그룹-비교">연속 변수의 그룹 비교</h2>
+<p>연속 변수의 그룹 비교는 2 그룹일 때는 <strong>t-test</strong>, 3 그룹 이상이면 <strong>ANOVA</strong>라고 생각하면 되며, 2 그룹일 때 <strong>ANOVA</strong> 결과는 <strong>t-test</strong> 결과와 <strong>거의(?)</strong> 같다. 따라서 연속 변수는 무조건 <strong>ANOVA</strong>라고 생각해도 대충 맞다.</p>
+<section id="t-test" class="level3"><h3 class="anchored" data-anchor-id="t-test"><strong>T-test</strong></h3>
+<p><strong>T-test</strong>는 2 그룹의 <strong>평균값</strong>을 비교하는 통계 방법<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>으로 필요한 숫자는 각 그룹의 <strong>평균과 분산</strong>이다. 실제로 데이터 없이 두 그룹의 평균과 분산만 있어도 <strong>t-test</strong>를 수행할 수 있으며 <a href="https://www.evanmiller.org/ab-testing/t-test.html" class="uri">https://www.evanmiller.org/ab-testing/t-test.html</a> 를 통해 웹에서도 간단히 계산할 수 있다. 아래 남녀의 총 콜레스테롤 데이터를 이용해 <strong>t-test</strong>를 수행해 보자.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-87e0fb92c20cc938668d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-87e0fb92c20cc938668d">{"x":{"filter":"none","vertical":false,"caption":"<caption>data.t: sex and total cholesterol<\/caption>","data":[["person 1","person 2","person 3","person 4","person 5","person 6","person 7","person 8","person 9","person 10","person 11","person 12","person 13","person 14","person 15","person 16","person 17","person 18","person 19","person 20","person 21","person 22","person 23","person 24","person 25","person 26","person 27","person 28","person 29","person 30"],["Male","Male","Female","Female","Male","Male","Female","Male","Female","Female","Male","Male","Male","Female","Male","Female","Female","Female","Female","Female","Male","Male","Female","Female","Male","Female","Male","Male","Male","Male"],[164,139,167,122,151,139,125,166,167,152,137,124,218,105,198,152,131,92,130,142,230,164,86,116,139,197,125,178,166,90]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>sex<\/th>\n      <th>tChol<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"sex","targets":1},{"name":"tChol","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>이제 <code>t.test</code> 함수를 이용하여 남녀의 총 콜레스테롤 수치를 비교한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nev.ttest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">tChol</span> <span class="op">~</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">data.t</span>, var.equal <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="va">nev.ttest</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  tChol by sex
+t = -1.9211, df = 27.992, p-value = 0.06496
+alternative hypothesis: true difference in means between group Female and group Male is not equal to 0
+95 percent confidence interval:
+ -48.410207   1.553065
+sample estimates:
+mean in group Female   mean in group Male 
+            134.5714             158.0000 </code></pre>
+</div>
+</div>
+<p>여자의 평균 콜레스테롤 값은 134.6, 남자는 158 이고 <span class="math inline">\(p\)</span>-value는 0.065임을 확인할 수 있다.</p>
+<p>위의 <code>t.test</code> 함수의 옵션 중 <code>var.equal = F</code>는 등분산 가정 없이 분석하겠다는 뜻으로 옵션을 적지 않아도 기본적으로 <code>F</code>가 적용된다. 등분산 가정이란 두 그룹의 분산이 같다고 가정하는 것인데, 계산이 좀 더 쉽다는 이점이 있으나 아무 근거 없이 분산이 같다고 가정하는 것은 위험한 가정이다. 위의 분석에 <code>var.equal = T</code>를 적용해보자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ev.ttest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">tChol</span> <span class="op">~</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">data.t</span>, var.equal <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="va">ev.ttest</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Two Sample t-test
+
+data:  tChol by sex
+t = -1.9007, df = 28, p-value = 0.06767
+alternative hypothesis: true difference in means between group Female and group Male is not equal to 0
+95 percent confidence interval:
+ -48.677187   1.820044
+sample estimates:
+mean in group Female   mean in group Male 
+            134.5714             158.0000 </code></pre>
+</div>
+</div>
+<p>앞서는 Welch t-test였는데 이름이 바뀐 것을 확인할 수 있고 <span class="math inline">\(p\)</span>-value도 0.068로 아까와 다르다. 논문 리뷰어가 요구하는 등의 특별한 경우가 아니고서야 위험한 등분산가정을 할 필요가 없고, 이제부터 <code>var.equal</code> 옵션은 신경쓰지 않아도 좋다.</p>
+</section><section id="anova2" class="level3"><h3 class="anchored" data-anchor-id="anova2">
+<strong>ANOVA</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>
+</h3>
+<p>3 그룹 이상일 때는 2그룹씩 짝을 지어서 <strong>t-test</strong>를 여러 번 수행할 수 있다. 그러나 Table 1에서는 대부분 하나의 <span class="math inline">\(p\)</span>-value만 제시하고 이것은 전체적으로 <strong>튀는 것이 하나라도 있는가?</strong>를 테스트하는 <strong>ANOVA</strong>를 이용한다.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> <strong>ANOVA</strong>는 비교할 모든 그룹에서 분산이 같다는 등분산 가정 하에 분석을 수행하며, 실제로 2 그룹일 때 <strong>ANOVA</strong>를 수행하면 등분산 가정 하에 수행한 <strong>t-test</strong>와 동일한 결과를 얻는다. 위에도 언급했듯이 모든 그룹에서 분산이 같다는 것은 너무 위험한 가정이나, 3 그룹 이상인 경우 마땅한 대안이 없고 Table 1에서 엄밀한 통계를 요구하는 것도 아니기 때문에 그냥 <strong>ANOVA</strong>를 쓰는 것이 관행이다. 아래 세 그룹의 총 콜레스테롤 데이터를 활용해 분석을 수행해 보자.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-2e49e9ebd8cf71d4ccad" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-2e49e9ebd8cf71d4ccad">{"x":{"filter":"none","vertical":false,"caption":"<caption>data.t: group and total cholesterol<\/caption>","data":[["person 1","person 2","person 3","person 4","person 5","person 6","person 7","person 8","person 9","person 10","person 11","person 12","person 13","person 14","person 15","person 16","person 17","person 18","person 19","person 20","person 21","person 22","person 23","person 24","person 25","person 26","person 27","person 28","person 29","person 30"],["A","C","C","A","B","A","C","B","C","B","B","A","B","A","A","B","C","C","B","B","C","C","C","C","C","A","C","C","A","A"],[142,157,142,120,135,143,177,155,182,108,167,157,114,159,177,145,161,216,142,200,135,174,162,180,92,189,188,121,79,151]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>group<\/th>\n      <th>tChol<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"group","targets":1},{"name":"tChol","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>이제 <code>aov</code>함수를 이용하여 3 그룹의 평균 콜레스테롤 값을 한번에 비교한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res.aov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aov.html">aov</a></span><span class="op">(</span><span class="va">tChol</span> <span class="op">~</span> <span class="va">group</span>, data <span class="op">=</span> <span class="va">data.aov</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">res.aov</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)
+group        2   1546   773.0    0.78  0.468
+Residuals   27  26751   990.8               </code></pre>
+</div>
+</div>
+<p>결과에서 나온 <span class="math inline">\(p\)</span>-value인 0.468가 Table 1에 이용되며 의미는 “<strong>3 그룹에서 총콜레스테롤 값이 비슷하다</strong>(다른 것이 있다고 할 수 없다)” 이다.</p>
+</section><section id="비모수-통계-정규분포-아닐-때" class="level3"><h3 class="anchored" data-anchor-id="비모수-통계-정규분포-아닐-때">비모수 통계: 정규분포 아닐 때</h3>
+<p><strong>T-test</strong>나 <strong>ANOVA</strong>는 모두 변수가 정규분포를 이룬다고 가정하고 분석을 수행하는데, 언뜻 생각하기에 의학에서 정규분포가 아닌 변수는 없을 것 같지만<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> 일부 지표(ex: CRP, 자녀 수)들은 정규분포를 따르지 않는다고 알려져 있다. 이 때는 변수의 값 자체가 아닌 순위 정보만을 이용하는 비모수 검정을 이용한다. <strong>T-test</strong>에 대응되는 비모수 분석은 <strong>Wilcoxon rank-sum test</strong> 혹은 <strong>Mann–Whitney U test</strong> 로 불리며 앞서 이용한 남녀별 총 콜레스테롤 데이터로 분석을 수행하면 아래와 같다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res.wilcox</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/wilcox.test.html">wilcox.test</a></span><span class="op">(</span><span class="va">tChol</span> <span class="op">~</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">data.t</span><span class="op">)</span></span>
+<span><span class="va">res.wilcox</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon rank sum test with continuity correction
+
+data:  tChol by sex
+W = 72.5, p-value = 0.1046
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+</div>
+<p>위 결과에서 <span class="math inline">\(p\)</span>-value는 0.105임을 확인할 수 있다. <strong>ANOVA</strong>에 대응되는 비모수 분석은 <strong>Kruskal–Wallis one-way ANOVA</strong>이며 역시 앞서 이용한 그룹별 총 콜레스테롤 데이터에 적용하면 아래와 같다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res.kruskal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kruskal.test.html">kruskal.test</a></span><span class="op">(</span><span class="va">tChol</span> <span class="op">~</span> <span class="va">group</span>, data <span class="op">=</span> <span class="va">data.aov</span><span class="op">)</span></span>
+<span><span class="va">res.kruskal</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  tChol by group
+Kruskal-Wallis chi-squared = 2.0192, df = 2, p-value = 0.3644</code></pre>
+</div>
+</div>
+<p>마찬가지로 <span class="math inline">\(p\)</span>-value는 0.364임을 확인할 수 있다.</p>
+</section></section><section id="범주형-변수의-그룹-비교" class="level2"><h2 class="anchored" data-anchor-id="범주형-변수의-그룹-비교">범주형 변수의 그룹 비교</h2>
+<p>범주형 변수의 그룹 비교는 그룹 수나 정규분포를 고려할 필요가 없어 연속 변수일 때보다 훨씬 간단하며 딱 하나, 샘플 수가 충분한지만 확인하면 된다.</p>
+<section id="샘플-수-충분-chi-square-test" class="level3"><h3 class="anchored" data-anchor-id="샘플-수-충분-chi-square-test">샘플 수 충분: Chi-square test</h3>
+<p><strong>Chi-square test</strong>는 두 범주형 변수가 관계가 있는지 없는지를 파악하는 테스트로<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> 아래의 혈압약과 당뇨약 복용 여부를 조사한 데이터로 분석을 수행해 보겠다.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-6f77aadaf9b9637317fe" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-6f77aadaf9b9637317fe">{"x":{"filter":"none","vertical":false,"caption":"<caption>data.chi: HTN &amp; DM medication<\/caption>","data":[["person 1","person 2","person 3","person 4","person 5","person 6","person 7","person 8","person 9","person 10","person 11","person 12","person 13","person 14","person 15","person 16","person 17","person 18","person 19","person 20","person 21","person 22","person 23","person 24","person 25","person 26","person 27","person 28","person 29","person 30","person 31","person 32","person 33","person 34","person 35","person 36","person 37","person 38","person 39","person 40","person 41","person 42","person 43","person 44","person 45","person 46","person 47","person 48","person 49","person 50"],[1,0,0,0,1,1,0,0,0,0,0,0,0,1,1,0,1,0,0,0,1,0,0,0,0,1,1,0,0,1,0,1,0,0,0,1,1,0,0,1,1,1,1,1,0,1,1,1,0,1],[0,0,1,1,0,0,0,0,1,1,0,0,1,1,0,1,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,1,1,1,0,1,1,0,0,1,0,0,1,1,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>HTN_medi<\/th>\n      <th>DM_medi<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"HTN_medi","targets":1},{"name":"DM_medi","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>두 약물 복용 여부를 테이블로 나타내면</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tb.chi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">data.chi</span><span class="op">)</span></span>
+<span><span class="va">tb.chi</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        DM_medi
+HTN_medi  0  1
+       0 15 13
+       1 14  8</code></pre>
+</div>
+</div>
+<p>이며 언뜻 봐서는 관계가 있는지 아닌지 잘 모르겠다. 이제 <code>chisq.test</code>함수를 이용해서 <strong>Chi-square test</strong>를 수행하자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res.chi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/chisq.test.html">chisq.test</a></span><span class="op">(</span><span class="va">tb.chi</span><span class="op">)</span></span>
+<span><span class="va">res.chi</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test with Yates' continuity correction
+
+data:  tb.chi
+X-squared = 0.18246, df = 1, p-value = 0.6693</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(p\)</span>-value는 0.669가 나오고 <strong>혈압약 복용과 당뇨약 복용은 유의한 관계가 없다</strong>고 말할 수 있다.</p>
+</section><section id="샘플-수-부족-fishers-exact-test" class="level3"><h3 class="anchored" data-anchor-id="샘플-수-부족-fishers-exact-test">샘플 수 부족: Fisher’s exact test</h3>
+<p>이번엔 다른 사람들의 혈압, 당뇨약 복용 데이터로 <strong>chi-square test</strong>를 수행해 보겠다.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1ae6b60e88ae1628c08f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1ae6b60e88ae1628c08f">{"x":{"filter":"none","vertical":false,"caption":"<caption>data.fisher: HTN &amp; DM medication<\/caption>","data":[["person 1","person 2","person 3","person 4","person 5","person 6","person 7","person 8","person 9","person 10","person 11","person 12","person 13","person 14","person 15","person 16","person 17","person 18","person 19","person 20","person 21","person 22","person 23","person 24","person 25","person 26","person 27","person 28","person 29","person 30","person 31","person 32","person 33","person 34","person 35","person 36","person 37","person 38","person 39","person 40","person 41","person 42","person 43","person 44","person 45","person 46","person 47","person 48","person 49","person 50"],[1,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,1],[0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>HTN_medi<\/th>\n      <th>DM_medi<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"HTN_medi","targets":1},{"name":"DM_medi","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>아까와 마찬가지로 테이블로 두 약물 복용상태를 비교하면 아래와 같다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tb.fisher</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">data.fisher</span><span class="op">)</span></span>
+<span><span class="va">tb.fisher</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        DM_medi
+HTN_medi  0  1
+       0 31  8
+       1  9  2</code></pre>
+</div>
+</div>
+<p>혈압약과 당뇨약을 모두 복용한 사람이 2명으로 좀 작아보이지만 무시하고 <strong>chi-square test</strong>를 수행하면 결과는 나오나 <code>Warning</code> 메시지가 뜬다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/chisq.test.html">chisq.test</a></span><span class="op">(</span><span class="va">tb.fisher</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in chisq.test(tb.fisher): Chi-squared approximation may be incorrect</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test with Yates' continuity correction
+
+data:  tb.fisher
+X-squared = 4.5971e-31, df = 1, p-value = 1</code></pre>
+</div>
+</div>
+<p>이는 두 약을 모두 복용한 사람이 2명뿐이라서 일어나는 문제로, 일반적으로 분석할 테이블에서 샘플 수가 너무 작은 항이 있으면 <strong>chi-square test</strong>의 계산이 부정확해진다. 이 때는 <strong>fisher’s exact test</strong>를 수행하며 아래와 같이 <code>fisher.test</code>함수를 이용하면 된다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res.fisher</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/fisher.test.html">fisher.test</a></span><span class="op">(</span><span class="va">tb.fisher</span><span class="op">)</span></span>
+<span><span class="va">res.fisher</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Fisher's Exact Test for Count Data
+
+data:  tb.fisher
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.07627205 5.55561549
+sample estimates:
+odds ratio 
+ 0.8636115 </code></pre>
+</div>
+</div>
+<p><span class="math inline">\(p\)</span>-value는 1로 확인되고 마찬가지로 혈압약 복용과 당뇨약 복용은 유의한 관계가 없다고 할 수 있다.</p>
+<p>여기서 의문점이 들 수 있다. <strong>무조건 fisher’s test만 하면 간단한데</strong> 도대체 <strong>chi-square test</strong>는 왜 하는 것일까? 샘플 수가 작을 때는 <strong>fisher’s test</strong>만 하는 것이 실제로 더 간단하고 방법론적으로도 아무 문제가 없다. 그러나 샘플 수나 그룹 수가 늘어날수록 <strong>fisher’s test</strong>는 필요한 계산량이 급격하게 증가하는 문제가 있어 <strong>chi-square test</strong>를 먼저 수행하는 것을 권유한다.</p>
+</section></section><section id="추가-짝지은-2-그룹" class="level2"><h2 class="anchored" data-anchor-id="추가-짝지은-2-그룹">추가: 짝지은 2 그룹</h2>
+<p>각 사람의 혈압을 한 번은 사람이 직접, 한 번은 자동혈압계로 측정했다고 하자. 이 때 직접 잰 혈압과 자동혈압계의 측정값을 비교한다면 <strong>t-test</strong>로 충분할까? t-test는 혈압 재는 방법마다 <strong>평균을 먼저 구한 후</strong> 그것이 같은지를 테스트하므로 <strong>짝지은 정보를 활용하지 못한다.</strong> 이 때는 각 사람마다 두 혈압값의 <strong>차이를 먼저 구한 후</strong> 평균이 0인지를 테스트하면, 짝지은 정보를 활용하면서 계산도 더 간단한 방법이 된다.</p>
+<section id="연속변수-paired-t-test" class="level3"><h3 class="anchored" data-anchor-id="연속변수-paired-t-test">연속변수: Paired t-test</h3>
+<p>위에 언급한 대로 각 사람마다 <strong>차이값을 먼저 구한 후</strong> 그 평균이 0인지를 테스트하는 방법이 <strong>paired t-test</strong>이다. 아래의 수축기 혈압 데이터를 통해 <strong>t-test</strong>와의 차이점을 알아보자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data.pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>SBP_hand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">30</span>, mean <span class="op">=</span> <span class="fl">125</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>, SBP_machine <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">30</span>, mean <span class="op">=</span> <span class="fl">125</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">data.pt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span></span>
+<span><span class="fu">datatable</span><span class="op">(</span><span class="va">data.pt</span>, rownames <span class="op">=</span> <span class="cn">T</span>, caption <span class="op">=</span> <span class="st">"data.pt: systolic blood pressure measured by hand &amp; machine"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-221b5acdd3e72344bd91" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-221b5acdd3e72344bd91">{"x":{"filter":"none","vertical":false,"caption":"<caption>data.pt: systolic blood pressure measured by hand &amp; machine<\/caption>","data":[["person 1","person 2","person 3","person 4","person 5","person 6","person 7","person 8","person 9","person 10","person 11","person 12","person 13","person 14","person 15","person 16","person 17","person 18","person 19","person 20","person 21","person 22","person 23","person 24","person 25","person 26","person 27","person 28","person 29","person 30"],[128,128,120,119,124,130,127,131,127,120,119,131,129,129,125,129,126,132,123,111,125,125,119,112,129,126,125,128,125,128],[128,119,119,126,118,124,128,129,117,130,123,128,128,133,127,126,127,119,122,125,124,127,128,126,127,123,129,123,142,123]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>SBP_hand<\/th>\n      <th>SBP_machine<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"SBP_hand","targets":1},{"name":"SBP_machine","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>위 데이터는 30명의 사람이 앞서 말한 두 가지 방법으로 수축기 혈압을 측정한 데이터이다. 먼저 <strong>t-test</strong>를 수행하자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pt.ttest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">data.pt</span><span class="op">$</span><span class="va">SBP_hand</span>, <span class="va">data.pt</span><span class="op">$</span><span class="va">SBP_machine</span><span class="op">)</span></span>
+<span><span class="va">pt.ttest</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  data.pt$SBP_hand and data.pt$SBP_machine
+t = -0.45768, df = 57.863, p-value = 0.6489
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -3.224307  2.024307
+sample estimates:
+mean of x mean of y 
+    125.0     125.6 </code></pre>
+</div>
+</div>
+<p>위 결과를 보면 각 방법의 평균을 먼저 구한 후 그것을 비교한 것을 확인할 수 있고 <span class="math inline">\(p\)</span>-value는 0.649이다. 이제 <strong>paired t-test</strong>를 수행하자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pt.ttest.pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">data.pt</span><span class="op">$</span><span class="va">SBP_hand</span>, <span class="va">data.pt</span><span class="op">$</span><span class="va">SBP_machine</span>, paired <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">pt.ttest.pair</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Paired t-test
+
+data:  data.pt$SBP_hand and data.pt$SBP_machine
+t = -0.46171, df = 29, p-value = 0.6477
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ -3.257804  2.057804
+sample estimates:
+mean difference 
+           -0.6 </code></pre>
+</div>
+</div>
+<p>이번에는 사람마다 차이값을 먼저 구한 후 그것이 0인지 테스트 한 것을 확인할 수 있고 <span class="math inline">\(p\)</span>-value는 0.648이다.</p>
+<p><strong>Paired t-test</strong>의 비모수버전은 <strong>wilcoxon-signed rank test</strong> 이며 아래와 같이 실행한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pt.wilcox.pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/wilcox.test.html">wilcox.test</a></span><span class="op">(</span><span class="va">data.pt</span><span class="op">$</span><span class="va">SBP_hand</span>, <span class="va">data.pt</span><span class="op">$</span><span class="va">SBP_machine</span>, paired <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in wilcox.test.default(data.pt$SBP_hand, data.pt$SBP_machine, paired =
+TRUE): cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in wilcox.test.default(data.pt$SBP_hand, data.pt$SBP_machine, paired =
+TRUE): cannot compute exact p-value with zeroes</code></pre>
+</div>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pt.wilcox.pair</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon signed rank test with continuity correction
+
+data:  data.pt$SBP_hand and data.pt$SBP_machine
+V = 214, p-value = 0.9482
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+</div>
+<p>본 강의에서는 다루지 않겠지만 짝지은 3개 이상의 그룹은 <strong>repeated measure ANOVA</strong><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>라는 방법을 이용한다.</p>
+</section><section id="범주형-변수-mcnemar-test-symmetry-test-for-a-paired-contingency-table" class="level3"><h3 class="anchored" data-anchor-id="범주형-변수-mcnemar-test-symmetry-test-for-a-paired-contingency-table">범주형 변수: Mcnemar test, Symmetry test for a paired contingency table</h3>
+<p>이번에는 측정값이 0,1과 같은 범주형 변수인 경우를 살펴보자. 아래 데이터를 활용해 약 복용 전후로 복통증상 발생에 차이가 있는지 알아본다고 하자.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-f5ae658fa919df414118" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-f5ae658fa919df414118">{"x":{"filter":"none","vertical":false,"caption":"<caption>data.mc: Abdominal pain - before &amp; after<\/caption>","data":[["person 1","person 2","person 3","person 4","person 5","person 6","person 7","person 8","person 9","person 10","person 11","person 12","person 13","person 14","person 15","person 16","person 17","person 18","person 19","person 20","person 21","person 22","person 23","person 24","person 25","person 26","person 27","person 28","person 29","person 30"],[0,1,0,0,0,1,0,0,0,0,1,1,0,1,0,1,1,0,0,0,1,1,1,0,1,1,0,1,0,1],[0,1,1,0,1,0,0,0,0,1,0,0,0,1,1,0,1,0,1,1,1,0,0,1,0,0,0,1,1,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Pain_before<\/th>\n      <th>Pain_after<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Pain_before","targets":1},{"name":"Pain_after","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>이 데이터를 2 by 2 테이블로 정리하면 아래와 같다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">table.mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">data.mc</span><span class="op">)</span></span>
+<span><span class="va">table.mc</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           Pain_after
+Pain_before 0 1
+          0 8 8
+          1 9 5</code></pre>
+</div>
+</div>
+<p>먼저 앞서 배운 <strong>Chi-sqaure test</strong> 를 이용한 결과를 보자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mc.chi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/chisq.test.html">chisq.test</a></span><span class="op">(</span><span class="va">table.mc</span><span class="op">)</span></span>
+<span><span class="va">mc.chi</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test with Yates' continuity correction
+
+data:  table.mc
+X-squared = 0.17514, df = 1, p-value = 0.6756</code></pre>
+</div>
+</div>
+<p>이것은 약 복용 전 복통 증상과 복용 후의 복통 증상이 얼마나 관계가 있는지 알아보는 테스트로 짝지은 정보를 활용하지 않는다. 이번엔 짝지은 정보를 활용하는 <strong>mcnemar test</strong>를 수행하자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mc.mcnemar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/mcnemar.test.html">mcnemar.test</a></span><span class="op">(</span><span class="va">table.mc</span><span class="op">)</span></span>
+<span><span class="va">mc.mcnemar</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    McNemar's Chi-squared test with continuity correction
+
+data:  table.mc
+McNemar's chi-squared = 0, df = 1, p-value = 1</code></pre>
+</div>
+</div>
+<p><strong>Mcnemar test</strong>는 약 복용후 증상발생이 달라진 사람 즉, <strong>discordant pair</strong>만 분석에 이용한다. 따라서 <strong>condordant pair</strong> 의 구성과 어떻더라도 통계결과는 동일하게 나온다.</p>
+<p>한편 측정값이 3개 이상일 때는 <strong>chi-square test</strong>는 그대로 이용할 수 있으나, <strong>mcnemar test</strong>는 그대로 쓰지 못하고 <strong>symmetry test for a paired contingency table</strong><a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>라는 일반화된 테스트를 사용한다. 본 강의에서는 간단한 실행법만 살펴볼 것이며 먼저 <a href="http://rcompanion.org/handbook/"><strong>rcompanion</strong> R package</a>를 설치하자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## For symmmetry test</span></span>
+<span><span class="co">#install.packages("rcompanion")</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://CRAN.R-project.org/package=rcompanion">rcompanion</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>예제 테이블(3 <span class="math inline">\(\times\)</span> 3)을 아래와 같이 불러온 후</p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Example data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">AndersonRainGarden</span><span class="op">)</span> </span>
+<span><span class="va">AndersonRainGarden</span>       </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Yes.after No.after Maybe.after
+Yes.before           6        0           1
+No.before            5        3           7
+Maybe.before        11        1          12</code></pre>
+</div>
+</div>
+<p><code>nominalSymmetryTest</code> 함수로 분석을 수행한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Symmetry test</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/rcompanion/man/nominalSymmetryTest.html">nominalSymmetryTest</a></span><span class="op">(</span><span class="va">AndersonRainGarden</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$Global.test.for.symmetry
+  Dimensions  p.value
+1      3 x 3 0.000476
+
+$Pairwise.symmetry.tests
+                                       Comparison p.value p.adjust
+1       Yes.before/Yes.after : No.before/No.after  0.0736   0.0771
+2 Yes.before/Yes.after : Maybe.before/Maybe.after 0.00937   0.0281
+3   No.before/No.after : Maybe.before/Maybe.after  0.0771   0.0771
+
+$p.adjustment
+  Method
+1    fdr
+
+$statistical.method
+        Method
+1 McNemar test</code></pre>
+</div>
+</div>
+</section></section><section id="실습" class="level2"><h2 class="anchored" data-anchor-id="실습">실습</h2>
+<section id="웹-애플리케이션" class="level3"><h3 class="anchored" data-anchor-id="웹-애플리케이션"><a href="https://jinseob2kim.shinyapps.io/BasicStat/">웹 애플리케이션</a></h3>
+<p><a href="https://www.anpanman.co.kr/"><strong>Anpanman</strong></a> 에서 만든 <a href="https://jinseob2kim.shinyapps.io/BasicStat/">기초통계 앱</a>을 소개한다(Figure @ref(fig:appgif)). 5메가 이하의 <strong>excel</strong>, <strong>csv</strong> 형태 혹은 <strong>sas</strong>, <strong>spss</strong> 프로그램으로 만든 데이터를 업로드하면 Table 1과 회귀분석, 로지스틱 회귀분석을 간단하게 수행하고 결과를 <strong>excel</strong>로 바로 다운받을 수 있다.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="app.gif" class="img-fluid figure-img"></p>
+<figcaption>Application mady by Anpanman</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="rstudio-addins" class="level3"><h3 class="anchored" data-anchor-id="rstudio-addins"><a href="https://rstudio.github.io/rstudioaddins/">Rstudio Addins</a></h3>
+<p>5메가보다 큰 데이터는 <a href="https://www.r-project.org/"><strong>R</strong></a>에서 데이터를 읽은 후, 자체적으로 만든 <a href="https://github.com/jinseob2kim/jsmodule"><strong>jsmodule</strong> R package</a>를 설치하여 앱을 이용할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## For private package install </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>   </span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"jinseob2kim/jstable"</span>, <span class="st">"jinseob2kim/jsmodule"</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>패키지를 설치한 후 <a href="https://www.rstudio.com/"><strong>Rstudio</strong></a> 프로그램의 <strong>Addins</strong> 탭을 누르면 <strong>Basic statistics</strong> 항목이 보일 것이다. 데이터를 읽고 그것의 이름을 드래그 한 상태로 <strong>Basic statistics</strong> 를 누르면 된다(Figure @ref(fig:addingif)).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="addin.gif" class="img-fluid figure-img"></p>
+<figcaption>Rstudo Addins made by Anpanman<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a></figcaption></figure>
+</div>
+</div>
+</div>
+<p>직접 <a href="https://www.r-project.org/"><strong>R</strong></a>에서 코드를 실행하고 싶은 유저는 <a href="https://github.com/kaz-yos/tableone"><strong>tableone</strong> R package</a>를 참고하기 바란다.</p>
+</section></section><section id="마치며" class="level2"><h2 class="anchored" data-anchor-id="마치며">마치며</h2>
+<p>지금까지 의학 연구에서 쓰이는 그룹 비교 통계들을 알아보고 <a href="https://jinseob2kim.shinyapps.io/BasicStat/">웹 앱</a>과 <a href="https://rstudio.github.io/rstudioaddins/"><strong>Rstudio Addins</strong></a> 을 이용하여 직접 Table 1을 만들어보았다. 앞으로 연구자들은 어려운 통계 프로그램을 이용할 필요 없이 <a href="https://www.anpanman.co.kr/"><strong>Anpanman</strong></a>의 서비스를 활용, 빠르게 통계 분석을 수행하고 테이블과 그림을 바로 다운받을 수 있다.</p>
+
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Balaji2011" class="csl-entry" role="listitem">
+Balaji, SM. 2011. <span>“Alveolar Cleft Defect Closure with Iliac Bone Graft, <span class="nocase">rhBMP</span>-2 and <span class="nocase">rhBMP</span>-2 with Zygoma Shavings: Comparative Study.”</span> <em>Annals of Maxillofacial Surgery</em> 1 (1): 8. <a href="https://doi.org/10.4103/2231-0746.83144">https://doi.org/10.4103/2231-0746.83144</a>.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<ol>
+<li id="fn1"><p>1 그룹의 평균값을 특정 숫자와 비교할 수도 있다.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>본 강의에서는 One-way ANOVA만 다룬다.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>사후(post-hoc) 분석을 이용, 어떤 것이 튀는지를 알아볼 수도 있다.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>정규분포에 대한 내용은 <a href="https://jinseob2kim.github.io/Normal_distribution.html">https://jinseob2kim.github.io/Normal_distribution.html</a> 를 참고하기 바란다.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>세 범주형 변수일 때도 이용할 수 있으나 본 강의에서는 생략한다.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>https://statistics.laerd.com/statistical-guides/repeated-measures-anova-statistical-guide.php<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>http://rcompanion.org/handbook/H_05.html<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>https://github.com/jinseob2kim/jsmodule<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{kim2018,
+  author = {Kim, Jinseob},
+  title = {의학 {연구에서의} {기술} {통계} with {R}},
+  date = {2018-11-28},
+  url = {https://blog.zarathu.com/jp/posts/2018-11-24-basic-biostatistics/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-kim2018" class="csl-entry quarto-appendix-citeas" role="listitem">
+Kim, Jinseob. 2018. <span>“의학 연구에서의 기술 통계 with R.”</span>
+November 28, 2018. <a href="https://blog.zarathu.com/jp/posts/2018-11-24-basic-biostatistics/">https://blog.zarathu.com/jp/posts/2018-11-24-basic-biostatistics/</a>.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blog\.zarathu\.com\/jp");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><script src="https://giscus.app/client.js" data-repo="zarathucorp/giscus-blog" data-repo-id="R_kgDOHztuxg" data-category="General" data-category-id="DIC_kwDOHztuxs4CQ6h5" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+<p>© 2019. <a href="https://www.zarathu.com">Zarathu Co.,Ltd.</a> All rights reserved. Licence: <a href="https://opensource.org/license/mit-0/">MIT</a>.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
