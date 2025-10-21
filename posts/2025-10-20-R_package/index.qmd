@@ -1,7 +1,7 @@
 ---
 title: "R 패키지 개발부터 CRAN 제출까지의 여정"
 description: | 
-  R 패키지를 다른 사람들도 잘 활용할 수 있게 설명해주는 웹사이트를 pkgdown을 사용하여 만들어보자
+  나만의 R 패키지를 만들어보자
 categories:
   - R
   - rpackage
@@ -72,11 +72,11 @@ license: CC BY-NC
 `cindex_calc` 함수는 Harrell’s C‑index을 구할때 사용되는 함수입니다.
 `validation_report` 함수는 원하는 결과값을 test와 validate을 비교할 수 있도록 ppt 형식으로 ROC 그래프를 그려주는 함수입니다.
 
-```{r}
+```{r, eval = T}
 library(survC)
 library(survival)
 
-set.seed(2024)
+set.seed(1234)
 lung <- survival::lung
 lung <- lung[complete.cases(lung[, c("time", "status", "age", "ph.ecog")]), ]
 
@@ -104,6 +104,8 @@ cindex_calc(cox_fit) # train dataset의 C-index 구하기
 c_index_val <- cindex_calc(cox_fit, newdata = val_df) # validation의 C-index 구하기
 
 # validation report 추출하기
+horizons <- c(200, 400)
+
 validation_report(
   train_data = transform(train_df, time = time, status = as.integer(status == 2)),
   val_data = transform(val_df, time = time, status = as.integer(status == 2)),
@@ -128,7 +130,7 @@ survival, stats, timeROC, officer, rvg 등
 
 `devtools`로 패키지의 기본 구조를 만듭니다. 
 
-```{r}
+```{r, eval = FALSE}
 library(devtools)
 create_package("myPackage")  # 원하는 패키지 이름을 정합니다.
 ```
@@ -141,7 +143,7 @@ create_package("myPackage")  # 원하는 패키지 이름을 정합니다.
 
 `roxygen2`를 사용하여 각 함수에 주석을 자동으로 달아줍니다.
 
-```{r}
+```{r, eval = FALSE}
 devtools::document()
 ```
 
@@ -152,7 +154,7 @@ devtools::document()
 `man/` 폴더는 패키지의 각 함수에 대한 설명을 저장하는 폴더입니다. 
 
 예시는 아래와 같습니다. 
-```{r}
+```{r, eval = FALSE}
 #' Compute risk scores from a fitted survival model
 #'
 #' This helper wraps `stats::predict()` for `coxph` objects so that package users
@@ -187,14 +189,14 @@ devtools::document()
 
 `testthat` 패키지를 사용하여 unit test를 추가합니다.
 
-```{r}
+```{r, eval = FALSE}
 usethis::use_testthat()
 usethis::use_test("function_name") # 테스트 하고 싶은 함수 이름을 입력합니다.
 ```
 
 위와 같이 프로그램을 실행한다면, `tests/testthat/test-function_name.R` 파일이 자동으로 생성됩니다. 생성된 파일에 아래와 같이 unit test를 추가할 수 있습니다. 
 
-```{r}
+```{r, eval = FALSE}
 test_that("calc_risk_score matches predict() on training data", {
   library(survival)
   lung <- survival::lung
@@ -210,7 +212,7 @@ test_that("calc_risk_score matches predict() on training data", {
 
 기대하는 값과, 실행하는 값의 결과에 따라 테스트의 성공 및 실패 여부를 가릴 수 있습니다. 아래 코드를 실행해서 테스트를 실행할 수 있습니다.
 
-```{r}
+```{r, eval = FALSE}
 devtools::test() # 테스트 실행
 ```
 
@@ -220,7 +222,7 @@ devtools::test() # 테스트 실행
 
 위와 같은 과정을 모두 마쳤다면, 전체 패키지를 테스트 합니다.
 
-```{r}
+```{r, eval = FALSE}
 devtools::check() 
 ```
 
@@ -229,7 +231,7 @@ devtools::check()
 ## 그 외
 ### 패키지 소개문서 작성
 
-```{r}
+```{r, eval = FALSE}
 usethis::use_readme_rmd()
 ```
 
@@ -245,7 +247,7 @@ usethis::use_readme_rmd()
 
 ## Git 생성 및 GitHub 연결
 
-```{r}
+```{r, eval = FALSE}
 usethis::use_git()    # git 생성
 usethis::use_github() # github 연결
 gitcreds::gitcreds_set() # GitHub Personal Access Token 입력
@@ -257,7 +259,7 @@ gitcreds::gitcreds_set() # GitHub Personal Access Token 입력
 
 ## test coverage
 
-```{r}
+```{r, eval = FALSE}
 library(covr)
 package_coverage() # 패키지 폴더에서 실행
 
@@ -274,7 +276,7 @@ test coverage(테스트 커버리지) 는 “테스트 코드가 실제 함수 �
 
 
 ## GitHub 자동화
-```{r}
+```{r, eval = FALSE}
 usethis::use_github_action_check_standard()   # R CMD check 자동화
 usethis::use_github_action("pkgdown")         # 사이트 자동 빌드
 usethis::use_github_action("test-coverage")   # 테스트 커버리지 자동추적
@@ -286,7 +288,7 @@ usethis::use_github_action("test-coverage")   # 테스트 커버리지 자동추
 # CRAN에 패키지 제츨하기
 
 ## 패키지 기본 검사
-```{bash}
+```{bash, eval = FALSE }
 # 패키지 폴더의 상위 디렉토리에서 실행
 R CMD build myPackage # 이름이 myPackage인 패키지를 빌드. tar.gz 파일 생성 
 R CMD check myPackage_0.1.0.tar.gz --as-cran # 패키지 버전이 0.1.0을 확인
@@ -302,7 +304,7 @@ R CMD check myPackage_0.1.0.tar.gz --as-cran # 패키지 버전이 0.1.0을 확�
 
 ## PDF 메뉴얼 생성 확인
 
-```{bash}
+```{bash, eval = FALSE}
 # pdf 메뉴얼 생성 확인
 R CMD Rd2pdf .
 ```
@@ -310,7 +312,7 @@ R CMD Rd2pdf .
 
 pdf 파일의 경우 LaTeX 환경이 설정되어야 합니다. Ubuntu의 경우에는 아래와 같은 코드를 실행하여 LaTeX 환경을 설치할 수 있습니다.
 
-```{bash}
+```{bash, eval = FALSE}
 sudo apt install texlive texlive-fonts-extra texinfo
 ```
 

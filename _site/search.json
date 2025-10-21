@@ -4562,5 +4562,96 @@
     "title": "반복측정자료 모델링: linear mixed effects model",
     "section": "Why Linear Mixed Model Is Better?",
     "text": "Why Linear Mixed Model Is Better?\n지금까지 잘 읽어오시다가 몇몇 분들은 이런 생각이 드셨을 수도 있습니다.\n반복측정자료고 뭐고 그냥 환자 NO를 dummy variable로 만들어서 fitting해도 되지 않나? 굳이 왜 random effects를 쓰지? 이렇게 하면 fixed effects만으로도 표현이 가능한데…\n네 맞습니다. 가능합니다. 한 번 그렇게 진행해볼까요?\n\nglm_fit &lt;- glm(\n  Value ~ NO + Group + Time + Group*Time,\n  data = data)\nsummary(glm_fit)\n\n\nCall:\nglm(formula = Value ~ NO + Group + Time + Group * Time, data = data)\n\nCoefficients: (1 not defined because of singularities)\n                             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)                  10.67448    1.04090  10.255 2.78e-14 ***\nNO10                          0.43968    1.29108   0.341   0.7348    \nNO11                         -0.24069    1.47206  -0.164   0.8707    \nNO12                         -0.88679    1.47206  -0.602   0.5494    \nNO13                          0.48099    1.47206   0.327   0.7451    \nNO14                         -0.71105    1.47206  -0.483   0.6310    \nNO15                          0.28560    1.47206   0.194   0.8469    \nNO16                         -2.18372    1.47206  -1.483   0.1438    \nNO17                          0.75654    1.47206   0.514   0.6094    \nNO18                         -2.92089    1.47206  -1.984   0.0523 .  \nNO19                         -0.43488    1.47206  -0.295   0.7688    \nNO2                          -0.78528    1.29108  -0.608   0.5456    \nNO20                         -1.12076    1.47206  -0.761   0.4498    \nNO3                          -0.50924    1.29108  -0.394   0.6948    \nNO4                          -1.20306    1.29108  -0.932   0.3556    \nNO5                          -0.20593    1.29108  -0.160   0.8739    \nNO6                          -1.05182    1.29108  -0.815   0.4188    \nNO7                          -0.05504    1.29108  -0.043   0.9662    \nNO8                          -1.48829    1.29108  -1.153   0.2541    \nNO9                           0.21424    1.29108   0.166   0.8688    \nGroup65-79                         NA         NA      NA       NA    \nTimePost 1 year              -0.44664    0.81655  -0.547   0.5866    \nTimePost 6 months             0.44668    0.81655   0.547   0.5866    \nTimePre OP                   -0.97777    0.81655  -1.197   0.2364    \nGroup65-79:TimePost 1 year    0.24482    1.15478   0.212   0.8329    \nGroup65-79:TimePost 6 months -0.18020    1.15478  -0.156   0.8766    \nGroup65-79:TimePre OP         0.72501    1.15478   0.628   0.5328    \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n(Dispersion parameter for gaussian family taken to be 3.333764)\n\n    Null deviance: 260.10  on 79  degrees of freedom\nResidual deviance: 180.02  on 54  degrees of freedom\nAIC: 345.91\n\nNumber of Fisher Scoring iterations: 2\n\n\nGroup 변수에서 NA가 나왔습니다. 아마 다중공산성 문제 등이 발생해서 design matirx가 singular 해진 것 같습니다. 여기서부터 문제가 느껴지시나요? NO의 level이 너무 많아지게되어서 모델 구조가 필요 이상으로 복잡해지고, 원하지도 않은 수많은 계수들을 추정하게 됩니다. 이렇게 되면 정작 우리가 중요하게 생각하고 있는 변수들의 효과에 대한 해석도 어려워집니다.\nGroup 변수에서 NA가 발생한 것 자체가 추정의 불안정성을 보여주는 예시라고 볼 수 있겠습니다. 이와 별개로 만약 반복측정된 횟수가 정말 적은 경우라면, NA가 뜨지 않더라고 해당 변수에 해당하는 표준 오차가 굉장히 커질 것이기에 값 자체에 대한 신뢰성 또한 떨어집니다.\n이것이 우리가 lmer을 쓰는 이유 중 하나입니다. fixed effects만으로 처리하기에는 어려운 부분을 random effects로 말끔하게 처리하여 문제를 해결해준다는 점에서 큰 장점을 가집니다."
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html",
+    "href": "posts/2025-10-20-R_package/index.html",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "",
+    "text": "이번 포스트에서는 내부 의료연구 프로젝트에서 출발해 생존분석 모델 성능평가 R 패키지(survC)를 개발하고, GitHub에 배포하고, CRAN에 제출하기까지의 과정을 공유합니다."
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#관련-함수들",
+    "href": "posts/2025-10-20-R_package/index.html#관련-함수들",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "관련 함수들",
+    "text": "관련 함수들\ncalc_risk_score 함수는 coxph 모델을 기반으로 risk score를 구하는 함수 입니다. cindex_calc 함수는 Harrell’s C‑index을 구할때 사용되는 함수입니다. validation_report 함수는 원하는 결과값을 test와 validate을 비교할 수 있도록 ppt 형식으로 ROC 그래프를 그려주는 함수입니다.\n\nlibrary(survC)\nlibrary(survival)\n\nset.seed(1234)\nlung &lt;- survival::lung\nlung &lt;- lung[complete.cases(lung[, c(\"time\", \"status\", \"age\", \"ph.ecog\")]), ]\n\n# Split into training and validation cohorts\nsplit_ids &lt;- sample(seq_len(nrow(lung)))\ntrain_idx &lt;- split_ids[1:110]\nval_idx &lt;- split_ids[111:200]\n\ntrain_df &lt;- lung[train_idx, ]\nval_df &lt;- lung[val_idx, ]\n\n# Fit a simple Cox model on the training data\ncox_fit &lt;- survival::coxph(\n  survival::Surv(time, status == 2) ~ age + ph.ecog,\n  data = train_df,\n  x = TRUE\n)\n\n# Linear predictor / risk scores\ntrain_lp &lt;- calc_risk_score(cox_fit) # risk score 구하기\nval_lp &lt;- calc_risk_score(cox_fit, data = val_df) # validation dataset risk score 구하기\n\n#  Harrell's concordance on the validation cohort\ncindex_calc(cox_fit) # train dataset의 C-index 구하기\n\nCindex  Lower  Upper \n 0.600  0.534  0.666 \n\nc_index_val &lt;- cindex_calc(cox_fit, newdata = val_df) # validation의 C-index 구하기\n\n# validation report 추출하기\nhorizons &lt;- c(200, 400)\n\nvalidation_report(\n  train_data = transform(train_df, time = time, status = as.integer(status == 2)),\n  val_data = transform(val_df, time = time, status = as.integer(status == 2)),\n  model = cox_fit,\n  time_col = \"time\",\n  status_col = \"status\",\n  times = horizons,\n  time_unit = \"days\",\n  output = \"validation_report.pptx\"\n)"
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#사용한-패키지",
+    "href": "posts/2025-10-20-R_package/index.html#사용한-패키지",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "사용한 패키지",
+    "text": "사용한 패키지\nsurvival, stats, timeROC, officer, rvg 등"
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#패키지-만들기",
+    "href": "posts/2025-10-20-R_package/index.html#패키지-만들기",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "패키지 만들기",
+    "text": "패키지 만들기\n패키지 기본 구조 만들기\ndevtools로 패키지의 기본 구조를 만듭니다.\n\nlibrary(devtools)\ncreate_package(\"myPackage\")  # 원하는 패키지 이름을 정합니다.\n\nDESCRIPTION, NAMESPACE, R/ 폴더 등을 포함한 패키지의 틀을 자동으로 갖출 수 있게 해줍니다. 그리고 패키지에 필요한 함수들을 R 폴더 아래에 작성합니다.\nDESCRIPTION은 패키지의 설명을 적은 파일입니다. 어떤 패키지인지, 누가 만들었는지, 다른 패키지는 무엇이 필요한지 명시되어 있습니다.\n패키지 설명 추가\nroxygen2를 사용하여 각 함수에 주석을 자동으로 달아줍니다.\n\ndevtools::document()\n\n위의 함수를 사용해서, NAMESPACE와 man/ 폴더에 R Markdown 문서들을 자동으로 생성합니다.\nNAMESPACE는 패키지의 설계도와 같아서 어떤 함수들이 공개되고, 다른 패키지의 어떤 함수들을 import 할지 적어둔 파일입니다.\nman/ 폴더는 패키지의 각 함수에 대한 설명을 저장하는 폴더입니다.\n예시는 아래와 같습니다.\n\n#' Compute risk scores from a fitted survival model\n#'\n#' This helper wraps `stats::predict()` for `coxph` objects so that package users\n#' can easily obtain linear predictors (default) or risk scores to feed into\n#' downstream metrics such as time-dependent ROC or Harrell's C-index.\n#'\n#' @param model A fitted `coxph` object.\n#' @param data Optional dataset on which to score the model. Defaults to the\n#'   training data stored within `model`.\n#' @param type Scale of the predictions to return. Either `\"lp\"` (linear\n#'   predictor, the default) or `\"risk\"`. If `NULL` or omitted, `\"lp\"` is used.\n#' @param ... Additional arguments passed to [stats::predict()].\n#'\n#' @return A numeric vector containing the requested risk scores.\n#' @export\n#'\n#' @examples\n#' if (requireNamespace(\"survival\", quietly = TRUE)) {\n#'   fit &lt;- survival::coxph(survival::Surv(time, status) ~ age, data = survival::lung)\n#'   # Linear predictor on the training data\n#'   calc_risk_score(fit)\n#'\n#'   # Risk scale predictions on new data\n#'   calc_risk_score(fit, survival::lung, type = \"risk\")\n#' }"
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#패키지-테스트",
+    "href": "posts/2025-10-20-R_package/index.html#패키지-테스트",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "패키지 테스트",
+    "text": "패키지 테스트\n테스트 코드 작성\ntestthat 패키지를 사용하여 unit test를 추가합니다.\n\nusethis::use_testthat()\nusethis::use_test(\"function_name\") # 테스트 하고 싶은 함수 이름을 입력합니다.\n\n위와 같이 프로그램을 실행한다면, tests/testthat/test-function_name.R 파일이 자동으로 생성됩니다. 생성된 파일에 아래와 같이 unit test를 추가할 수 있습니다.\n\ntest_that(\"calc_risk_score matches predict() on training data\", {\n  library(survival)\n  lung &lt;- survival::lung\n  lung &lt;- lung[complete.cases(lung[, c(\"time\", \"status\", \"age\")]), ]\n  model &lt;- survival::coxph(survival::Surv(time, status) ~ age, data = lung, x = TRUE)\n\n  expect_equal(\n    calc_risk_score(model),\n    as.numeric(stats::predict(model, type = \"lp\"))\n  )\n})\n\n기대하는 값과, 실행하는 값의 결과에 따라 테스트의 성공 및 실패 여부를 가릴 수 있습니다. 아래 코드를 실행해서 테스트를 실행할 수 있습니다.\n\ndevtools::test() # 테스트 실행"
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#패키지-검사",
+    "href": "posts/2025-10-20-R_package/index.html#패키지-검사",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "패키지 검사",
+    "text": "패키지 검사\n위와 같은 과정을 모두 마쳤다면, 전체 패키지를 테스트 합니다.\n\ndevtools::check() \n\n테스트를 진행하면서 ERROR / WARNING / NOTE 메시지를 보고 수정해야합니다. CRAN에 제출하기 위해서는 ERROR, WARNING 없음이 기준입니다."
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#그-외",
+    "href": "posts/2025-10-20-R_package/index.html#그-외",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "그 외",
+    "text": "그 외\n패키지 소개문서 작성\n\nusethis::use_readme_rmd()\n\nuse_readme_rmd() 함수를 사용하여 README 파일을 자동으로 생성하고, 필요에 따라 설명 부분을 직접 작성합니다.\npkdown패키지를 사용하여 GitHub의 웹페이지를 만드는 것은 https://blog.zarathu.com/posts/2023-03-17-pkgdown/index.html 를 참조"
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#git-생성-및-github-연결",
+    "href": "posts/2025-10-20-R_package/index.html#git-생성-및-github-연결",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "Git 생성 및 GitHub 연결",
+    "text": "Git 생성 및 GitHub 연결\n\nusethis::use_git()    # git 생성\nusethis::use_github() # github 연결\ngitcreds::gitcreds_set() # GitHub Personal Access Token 입력\n\n패키지의 Git을 생성하고 GitHub 연결합니다."
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#test-coverage",
+    "href": "posts/2025-10-20-R_package/index.html#test-coverage",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "test coverage",
+    "text": "test coverage\n\nlibrary(covr)\npackage_coverage() # 패키지 폴더에서 실행\n\ntest coverage(테스트 커버리지) 는 “테스트 코드가 실제 함수 코드를 얼마나 실행했는가”를 측정하는 지표입니다. 즉, 전체 코드 중 테스트 코드가 다룬 부분의 비율(%)을 보여주는 것입니다. 이 값이 높을수록 테스트가 코드 전체를 잘 검증하고 있다고 볼 수 있습니다.\n[![Codecov test coverage](https://codecov.io/gh/USERNAME/REPO/branch/main/graph/badge.svg)](https://app.codecov.io/gh/USERNAME/REPO)\n위의 코드를 수정하여 GitHub의 패키지 README 파일에 입력하면, 패키지의 코드 커버리지 결과가 홈페이지에 반영됩니다."
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#github-자동화",
+    "href": "posts/2025-10-20-R_package/index.html#github-자동화",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "GitHub 자동화",
+    "text": "GitHub 자동화\n\nusethis::use_github_action_check_standard()   # R CMD check 자동화\nusethis::use_github_action(\"pkgdown\")         # 사이트 자동 빌드\nusethis::use_github_action(\"test-coverage\")   # 테스트 커버리지 자동추적\n\n위의 코드를 실행하면, 패키지를 자동으로 체크하고, 패키지 사이트를 자동으로 빌드하며, 테스트 커버리지도 자동으로 추척합니다. 자동화를 설정한 경우에, 업데이트한 경우에 각 단계를 하나씩 확인할 필요 없이, 모든 것을 자동으로 처리할 수 있어 편리합니다."
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#패키지-기본-검사",
+    "href": "posts/2025-10-20-R_package/index.html#패키지-기본-검사",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "패키지 기본 검사",
+    "text": "패키지 기본 검사\n\n# 패키지 폴더의 상위 디렉토리에서 실행\nR CMD build myPackage # 이름이 myPackage인 패키지를 빌드. tar.gz 파일 생성 \nR CMD check myPackage_0.1.0.tar.gz --as-cran # 패키지 버전이 0.1.0을 확인\n\n0 errors | 0 warnings | 0 notes 결과가 나와야 CRAN에 제출할 수 있습니다. 주로 점검해야 하는 항목은 아래와 같습니다.\n\n예제 코드가 너무 오래 걸리지 않게 작성합니다.\n모든 함수에 Rd 문서가 존재해야 합니다.\n의존 패키지는 DESCRIPTION의 Imports/Suggests에 명시헤야 합니다."
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#pdf-메뉴얼-생성-확인",
+    "href": "posts/2025-10-20-R_package/index.html#pdf-메뉴얼-생성-확인",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "PDF 메뉴얼 생성 확인",
+    "text": "PDF 메뉴얼 생성 확인\n\n# pdf 메뉴얼 생성 확인\nR CMD Rd2pdf .\n\npdf 파일의 경우 LaTeX 환경이 설정되어야 합니다. Ubuntu의 경우에는 아래와 같은 코드를 실행하여 LaTeX 환경을 설치할 수 있습니다.\n\nsudo apt install texlive texlive-fonts-extra texinfo"
+  },
+  {
+    "objectID": "posts/2025-10-20-R_package/index.html#패키지-제출",
+    "href": "posts/2025-10-20-R_package/index.html#패키지-제출",
+    "title": "R 패키지 개발부터 CRAN 제출까지의 여정",
+    "section": "패키지 제출",
+    "text": "패키지 제출\nhttps://cran.r-project.org/submit.html 상기의 링크에 위의 테스트들을 통과한 .tar.gz 파일을 업로드 합니다. 그리고 이메일 인증을 완료하면, CRAN에서 기본적인 테스트를 진행합니다. 오류가 발생한 경우에는 오류 내용과 함께 오류 내용을 수정해서 재제출 하라는 이메일을 10분 내외로 받게 됩니다. 특별한 오류가 발생하지 않은 경우에는, 약 10일 전후로 해서 CRAN의 리뷰 결과를 받게 됩니다."
   }
 ]
