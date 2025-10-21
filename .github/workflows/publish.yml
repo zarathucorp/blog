@@ -1,0 +1,52 @@
+on:
+  workflow_dispatch:
+  push:
+    branches: dev
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4 
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Run genjson.py
+        run: python genjson.py
+
+      - name: Copy posts.json to _site
+        run: mkdir -p _site && cp posts.json _site/posts.json
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
+      - name: Render Quarto (ko)
+        uses: quarto-dev/quarto-actions/render@v2
+        env:
+          QUARTO_PROFILE: ko
+        
+      - name: Render Quarto (en)
+        uses: quarto-dev/quarto-actions/render@v2
+        env:
+          QUARTO_PROFILE: en
+        
+      - name: Render Quarto (jp)
+        uses: quarto-dev/quarto-actions/render@v2
+        env:
+          QUARTO_PROFILE: jp
+
+      - name: Publish 
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: netlify
+          render: "false"
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
