@@ -1,8 +1,17 @@
 # _install_packages.R
 
-# install shinylive package
-# from r-universe
-install.packages("shinylive", repos = c("https://posit-dev.r-universe.dev", getOption("repos")))
+# install required R packages (shinylive extension and dependencies)
+repos <- c("https://posit-dev.r-universe.dev", getOption("repos"))
+required_pkgs <- c(
+  "archive",
+  "curl",
+  "gh",
+  "httr2",
+  "pkgdepends",
+  "pkgcache",
+  "rmarkdown",
+  "shinylive"
+)
 
-# install other necessary R packages
-# e.g., install.packages(c("tidyverse", "ggplot2", "shiny"))
+message("Installing R packages: ", paste(required_pkgs, collapse = ", "))
+install.packages(required_pkgs, repos = repos, dependencies = TRUE)
