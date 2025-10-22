@@ -1,7 +1,8 @@
 on:
   workflow_dispatch:
-  push:
-    branches: dev
+  # push:
+  #   branches:
+  #     - master
 
 name: Quarto Publish
 
@@ -10,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4 
-      
+        uses: actions/checkout@v4
+
       - name: Install system libraries
         run: |
           set -xe
@@ -21,20 +22,20 @@ jobs:
             libssl-dev \
             libxml2-dev \
             libarchive-dev
-        
+
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
-          r-version: '4.3.2'
+          r-version: "4.3.2"
           use-public-rspm: true
-      
+
       - name: Install R dependencies
         run: Rscript _install_packages.R
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Install Python dependencies
         run: pip install pyyaml
@@ -47,25 +48,38 @@ jobs:
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-        
+
       - name: Render Quarto (ko)
         uses: quarto-dev/quarto-actions/render@v2
         env:
           QUARTO_PROFILE: ko
-        
+
       - name: Render Quarto (en)
         uses: quarto-dev/quarto-actions/render@v2
         env:
           QUARTO_PROFILE: en
-        
+
       - name: Render Quarto (jp)
         uses: quarto-dev/quarto-actions/render@v2
         env:
           QUARTO_PROFILE: jp
 
-      - name: Publish 
+      - name: Publish to Netlify (dev)
+        if: github.ref == 'refs/heads/dev'
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: netlify
           render: "false"
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        env:
+          QUARTO_PROFILE: dev
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEV_AUTH_TOKEN }}
+
+      - name: Publish to Netlify (prod)
+        if: github.ref == 'refs/heads/master'
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: netlify
+          render: "false"
+        env:
+          QUARTO_PROFILE: prod
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PROD_AUTH_TOKEN }}

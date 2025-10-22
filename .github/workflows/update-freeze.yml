@@ -1,0 +1,108 @@
+name: Update Freeze Artifacts
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-freeze:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Install system libraries
+        run: |
+          set -xe
+          echo "Installing system libraries for Quarto render"
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcurl4-openssl-dev \
+            libssl-dev \
+            libxml2-dev \
+            libarchive-dev
+      
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.3.2'
+          use-public-rspm: true
+      
+      - name: Install R dependencies
+        run: |
+          set -xe
+          echo "Installing R packages defined in _install_packages.R"
+          Rscript _install_packages.R
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install Python dependencies
+        run: |
+          set -xe
+          echo "Installing Python packages used in preprocessing"
+          pip install pyyaml
+      
+      - name: Regenerate posts.json
+        run: |
+          set -xe
+          echo "Running genjson.py for freeze sync"
+          python genjson.py
+      
+      - name: Copy posts.json to _site
+        run: |
+          set -xe
+          echo "Propagating posts.json into _site mirror"
+          mkdir -p _site
+          cp posts.json _site/posts.json
+      
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+      
+      - name: Render Quarto profiles
+        run: |
+          set -e
+          echo "Rendering with ko profile"
+          QUARTO_PROFILE=ko quarto render
+          echo "Rendering with en profile"
+          QUARTO_PROFILE=en quarto render
+          echo "Rendering with jp profile"
+          QUARTO_PROFILE=jp quarto render
+      
+      - name: Detect freeze changes
+        id: changes
+        run: |
+          set -e
+          echo "Inspecting working tree for freeze updates"
+          CHANGES="$(git status --porcelain -- _freeze posts.json)"
+          git status --short
+          if [ -z "$CHANGES" ]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No tracked freeze updates detected."
+          else
+            echo "Detected changes:"
+            echo "$CHANGES"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+      
+      - name: Commit freeze updates
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          set -e
+          echo "Staging freeze artifacts before commit"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _freeze posts.json
+          if git diff --cached --quiet; then
+            echo "No staged diff after add; skipping commit."
+            exit 0
+          fi
+          git commit -m "chore: update freeze artifacts"
+          git push
