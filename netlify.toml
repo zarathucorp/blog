@@ -1,0 +1,17 @@
+# netlify.toml
+
+[build]
+  # Python 종속성 설치 및 스크립트 실행을 먼저 처리합니다.
+  # 'quarto render' 명령어는 여기서 제거합니다.
+  command = "pip install -r requirements.txt && python genjson.py"
+  
+  # Quarto의 결과물이 저장되는 디렉토리입니다.
+  publish = "_site"
+
+[build.environment]
+  # 빌드 환경에서 사용할 Quarto와 Python 버전을 지정합니다.
+  PYTHON_VERSION = "3.11"
+
+# Quarto 설치 및 렌더링을 위해 플러그인을 다시 추가합니다.
+[[plugins]]
+  package = "@quarto/netlify-plugin-quarto"
