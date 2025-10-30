@@ -34,7 +34,7 @@ jobs:
           CHECK_ONLY_INPUT: ${{ github.event.inputs.netlify_check_only }}
 
       - name: Check Netlify API (dev)
-        if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/dev' || env.NETLIFY_CHECK_ONLY == 'true'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEV_AUTH_TOKEN }}
         run: |
@@ -50,7 +50,7 @@ jobs:
             https://api.netlify.com/api/v1/sites/19d7e3dc-5598-4e8a-ac33-51fdba0efa72/deploys >/dev/null
 
       - name: Check Netlify API (prod)
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master' || env.NETLIFY_CHECK_ONLY == 'true'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PROD_AUTH_TOKEN }}
         run: |
