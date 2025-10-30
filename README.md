@@ -105,9 +105,9 @@ cd posts/{YYYY-MM-DD-TITLE}
 quarto render
 ```
 
-10. 렌더 성공 시 **Commit**
-11. zarathucorp/blog의 `dev` 브랜치에 **Pull Request** 생성 (Merge x)
-12. 끝
+10. 렌더 성공 시 **Commit** (_site/posts/{YYYY-MM-DD-TITLE}/index.html 에서 미리보기 가능)
+11. zarathucorp/blog의 `dev` 브랜치에 **Pull Request** 생성 (`master` 브랜치에 PR 하지 않게 주의)
+12. 끝 (Merge x)
 
 ### 아티클에 revealjs (quarto 슬라이드) 올리는 방법
 
