@@ -14,6 +14,26 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Require Netlify token (dev)
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          if [ -z "${NETLIFY_AUTH_TOKEN}" ]; then
+            echo "::error::Missing NETLIFY_DEV_AUTH_TOKEN secret for dev deploy"
+            exit 1
+          fi
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEV_AUTH_TOKEN }}
+
+      - name: Require Netlify token (prod)
+        if: github.ref == 'refs/heads/master'
+        run: |
+          if [ -z "${NETLIFY_AUTH_TOKEN}" ]; then
+            echo "::error::Missing NETLIFY_PROD_AUTH_TOKEN secret for prod deploy"
+            exit 1
+          fi
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PROD_AUTH_TOKEN }}
+
       - name: Install system libraries
         run: |
           set -xe
@@ -50,26 +70,6 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Require Netlify token (dev)
-        if: github.ref == 'refs/heads/dev'
-        run: |
-          if [ -z "${NETLIFY_AUTH_TOKEN}" ]; then
-            echo "::error::Missing NETLIFY_DEV_AUTH_TOKEN secret for dev deploy"
-            exit 1
-          fi
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEV_AUTH_TOKEN }}
-
-      - name: Require Netlify token (prod)
-        if: github.ref == 'refs/heads/master'
-        run: |
-          if [ -z "${NETLIFY_AUTH_TOKEN}" ]; then
-            echo "::error::Missing NETLIFY_PROD_AUTH_TOKEN secret for prod deploy"
-            exit 1
-          fi
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PROD_AUTH_TOKEN }}
-
       - name: Render Quarto (ko)
         uses: quarto-dev/quarto-actions/render@v2
         env:
@@ -91,6 +91,7 @@ jobs:
         with:
           target: netlify
           render: "false"
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEV_AUTH_TOKEN }}
         env:
           QUARTO_PROFILE: dev
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEV_AUTH_TOKEN }}
@@ -101,6 +102,7 @@ jobs:
         with:
           target: netlify
           render: "false"
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PROD_AUTH_TOKEN }}
         env:
           QUARTO_PROFILE: prod
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PROD_AUTH_TOKEN }}
