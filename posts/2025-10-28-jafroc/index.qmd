@@ -1,5 +1,5 @@
 ---
-title: "AFROC vs. JAFROC: MRMC 연구의 올바른 통계 분석"
+title: "AFROC vs. JAFROC: MRMC 연구의 통계 분석"
 description: |
   AFROC 와 JAFROC의 차이점을 알고, JAFROC의 원리를 알아보자
 categories:
@@ -34,7 +34,7 @@ license: CC BY-NC
 MRMC 연구의 목표는 "A 방법과 B 방법 중 어느 것이 더 우수한가?"를 통계적으로 검증하는 것입니다. 하지만 여기에는 여러 **변동성(Variability)** 요인이 복합적으로 얽혀있습니다.
 
 1.  **증례 변동성 (Case Variability)**: 어떤 증례의 환자 데이터는 진단이 쉽고, 어떤 데이터는 어렵습니다.
-2.  **독자 변동성 (Reader Variability)**: 어떤 판독자는 전반적으로 실력이 좋고, 어떤 의사는 안 좋습니다.
+2.  **독자 변동성 (Reader Variability)**: 어떤 판독자는 전반적으로 실력이 좋고, 어떤 판독자는 안 좋습니다.
 3.  **독자-처치 상호작용 (Reader-Treatment Interaction)**: 어떤 의사는 유독 A 방법(AI 없음)에 익숙하고, 다른 의사는 B 방법(AI 사용)에서만 성능이 크게 향상될 수 있습니다.
 
 올바른 통계 분석은 이 모든 변동성 요인을 고려하여 "평균적으로 B 방법이 A 방법보다 우수하다"고 말할 수 있는지 검증해야 합니다.
@@ -153,9 +153,7 @@ JAFROC의 계산 과정은 다음과 같습니다.
 다음과 같이 Jackknife Pseudovalue $P_{ijk}$ 를 구합니다.
 
 $$
-P_{ijk} \;=\; K\,\hat{\theta}_{ij} \;-\; (K-1)\,\hat{\theta}_{ij(-k)}, 
-\qquad 
-\tilde P_{ijk} \;=\; P_{ijk} - \hat{\theta}_{ij}.
+P_{ijk} \;=\; K\,\hat{\theta}_{ij} \;-\; (K-1)\,\hat{\theta}_{ij(-k)}
 $$
 
 Delete-1-Case FOM을 계산할 때 증례 k를 제거하면 그 케이스의 **모든 병변 마크**가 한꺼번에 사라집니다. Jackknife Pseudovalue는 Delete-1-Case FOM을 이용하여 구하기 때문에 $P_{ijk}$가 증례 k에 포함된 **병변 클러스터 전체의 기여를 반영**합니다.
@@ -282,11 +280,12 @@ jafroc_result$RRRC$FTests
 Treatment 행의 FStat (10.91667)와 p (0.003093432) 값이 바로 JAFROC 분석법으로 계산한 F-통계량과 p-value입니다.
 
 ```{r, eval = T}
-PlotEmpOpChrs(dataset01, 
+jafroc_plot <- PlotEmpOpChrs(dataset01, 
               trts = list(1, 2),          # two treatments
               rdrs = list(1:5, 1:5),      # average over all readers for each treatment
               opChType = "AFROC")
 
+jafroc_plot$Plot
 ```
 
 마지막으로 `PlotEmpOpChrs` 함수를 사용하여 판독자 평균 AFROC 곡선을 그릴 수 있습니다. 위 곡선 2개는 각 trt별 판독자 평균 AFROC 곡선입니다.
@@ -297,7 +296,7 @@ trts = list(1, 2)와 rdrs = list(1:5, 1:5)를 지정하면
 
 -   2번 처치에 대한 5명 독자의 평균 곡선
 
-이렇게 총 2개의 곡선을 비교하여 볼 수 있습니다."
+이렇게 총 2개의 곡선을 비교하여 볼 수 있습니다.
 
 # Conclusion
 
