@@ -1,5 +1,10 @@
 on:
   workflow_dispatch:
+    inputs:
+      netlify_check_only:
+        description: "Skip render/publish and run Netlify API checks only"
+        required: false
+        default: "false"
   push:
     branches:
       - master
@@ -10,31 +15,58 @@ name: Quarto Publish
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    env:
+      NETLIFY_CHECK_ONLY: false
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Require Netlify token (dev)
-        if: github.ref == 'refs/heads/dev'
+      - name: Set check-only mode
+        run: |
+          if [ "${EVENT_NAME}" = "workflow_dispatch" ] && [ "${CHECK_ONLY_INPUT}" = "true" ]; then
+            echo "NETLIFY_CHECK_ONLY=true" >> "$GITHUB_ENV"
+            echo "Running Netlify API checks only (no render/publish)"
+          else
+            echo "NETLIFY_CHECK_ONLY=false" >> "$GITHUB_ENV"
+          fi
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          CHECK_ONLY_INPUT: ${{ github.event.inputs.netlify_check_only }}
+
+      - name: Check Netlify API (dev)
+        if: github.ref == 'refs/heads/dev' || env.NETLIFY_CHECK_ONLY == 'true'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEV_AUTH_TOKEN }}
         run: |
           if [ -z "${NETLIFY_AUTH_TOKEN}" ]; then
             echo "::error::Missing NETLIFY_DEV_AUTH_TOKEN secret for dev deploy"
             exit 1
           fi
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEV_AUTH_TOKEN }}
+          curl --fail \
+            -H "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+            https://api.netlify.com/api/v1/sites/19d7e3dc-5598-4e8a-ac33-51fdba0efa72 >/dev/null
+          curl --fail \
+            -H "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+            https://api.netlify.com/api/v1/sites/19d7e3dc-5598-4e8a-ac33-51fdba0efa72/deploys >/dev/null
 
-      - name: Require Netlify token (prod)
-        if: github.ref == 'refs/heads/master'
+      - name: Check Netlify API (prod)
+        if: github.ref == 'refs/heads/master' || env.NETLIFY_CHECK_ONLY == 'true'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PROD_AUTH_TOKEN }}
         run: |
           if [ -z "${NETLIFY_AUTH_TOKEN}" ]; then
             echo "::error::Missing NETLIFY_PROD_AUTH_TOKEN secret for prod deploy"
             exit 1
           fi
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PROD_AUTH_TOKEN }}
+          curl --fail \
+            -H "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+            https://api.netlify.com/api/v1/sites/3b41765e-c008-499f-93c4-83fdbe833cd8 >/dev/null
+          curl --fail \
+            -H "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+            https://api.netlify.com/api/v1/sites/3b41765e-c008-499f-93c4-83fdbe833cd8/deploys >/dev/null
 
       - name: Install system libraries
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         run: |
           set -xe
           sudo apt-get update
@@ -45,48 +77,58 @@ jobs:
             libarchive-dev
 
       - name: Set up R
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: "4.3.2"
           use-public-rspm: true
 
       - name: Install R dependencies
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         run: Rscript _install_packages.R
 
       - name: Set up Python
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
       - name: Install Python dependencies
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         run: pip install pyyaml
 
       - name: Run genjson.py
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         run: python genjson.py
 
       - name: Copy posts.json to _site
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         run: mkdir -p _site && cp posts.json _site/posts.json
 
       - name: Set up Quarto
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Render Quarto (ko)
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         uses: quarto-dev/quarto-actions/render@v2
         env:
           QUARTO_PROFILE: ko
 
       - name: Render Quarto (en)
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         uses: quarto-dev/quarto-actions/render@v2
         env:
           QUARTO_PROFILE: en
 
       - name: Render Quarto (jp)
+        if: env.NETLIFY_CHECK_ONLY != 'true'
         uses: quarto-dev/quarto-actions/render@v2
         env:
           QUARTO_PROFILE: jp
 
       - name: Publish to Netlify (dev)
-        if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/dev' && env.NETLIFY_CHECK_ONLY != 'true'
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: netlify
@@ -97,7 +139,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEV_AUTH_TOKEN }}
 
       - name: Publish to Netlify (prod)
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master' && env.NETLIFY_CHECK_ONLY != 'true'
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: netlify
