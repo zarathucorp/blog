@@ -33,6 +33,29 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           CHECK_ONLY_INPUT: ${{ github.event.inputs.netlify_check_only }}
 
+      - name: Generate _publish.yml
+        if: env.NETLIFY_CHECK_ONLY != 'true'
+        run: |
+          if [ "${GITHUB_REF}" = "refs/heads/master" ]; then
+            printf '%s\n' \
+              "- source: project" \
+              "  profile: prod" \
+              "  netlify:" \
+              "    - id: \"3b41765e-c008-499f-93c4-83fdbe833cd8\"" \
+              "      url: \"https://zarathublog.netlify.app\"" \
+              > _publish.yml
+          elif [ "${GITHUB_REF}" = "refs/heads/dev" ]; then
+            printf '%s\n' \
+              "- source: project" \
+              "  profile: dev" \
+              "  netlify:" \
+              "    - id: \"19d7e3dc-5598-4e8a-ac33-51fdba0efa72\"" \
+              "      url: \"https://spiffy-souffle-bcd20e.netlify.app\"" \
+              > _publish.yml
+          else
+            echo "Skipping publish config generation for branch ${GITHUB_REF}"
+          fi
+
       - name: Check Netlify API (dev)
         if: github.ref == 'refs/heads/dev' || env.NETLIFY_CHECK_ONLY == 'true'
         env:
