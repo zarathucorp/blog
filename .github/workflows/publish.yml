@@ -36,29 +36,25 @@ jobs:
       - name: Generate _publish.yml
         if: env.NETLIFY_CHECK_ONLY != 'true'
         run: |
-          case "${GITHUB_REF}" in
-            refs/heads/master)
-              cat <<'EOF' > _publish.yml
-- source: project
-  profile: prod
-  netlify:
-    - id: "3b41765e-c008-499f-93c4-83fdbe833cd8"
-      url: "https://zarathublog.netlify.app"
-EOF
-              ;;
-            refs/heads/dev)
-              cat <<'EOF' > _publish.yml
-- source: project
-  profile: dev
-  netlify:
-    - id: "19d7e3dc-5598-4e8a-ac33-51fdba0efa72"
-      url: "https://spiffy-souffle-bcd20e.netlify.app"
-EOF
-              ;;
-            *)
-              echo "Skipping publish config generation for branch ${GITHUB_REF}"
-              ;;
-          esac
+          if [ "${GITHUB_REF}" = "refs/heads/master" ]; then
+            printf '%s\n' \
+              "- source: project" \
+              "  profile: prod" \
+              "  netlify:" \
+              "    - id: \"3b41765e-c008-499f-93c4-83fdbe833cd8\"" \
+              "      url: \"https://zarathublog.netlify.app\"" \
+              > _publish.yml
+          elif [ "${GITHUB_REF}" = "refs/heads/dev" ]; then
+            printf '%s\n' \
+              "- source: project" \
+              "  profile: dev" \
+              "  netlify:" \
+              "    - id: \"19d7e3dc-5598-4e8a-ac33-51fdba0efa72\"" \
+              "      url: \"https://spiffy-souffle-bcd20e.netlify.app\"" \
+              > _publish.yml
+          else
+            echo "Skipping publish config generation for branch ${GITHUB_REF}"
+          fi
 
       - name: Check Netlify API (dev)
         if: github.ref == 'refs/heads/dev' || env.NETLIFY_CHECK_ONLY == 'true'
