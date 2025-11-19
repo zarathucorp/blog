@@ -1,0 +1,227 @@
+---
+title: "코호트 연구의 핵심, 대조군의 Index date 설정"
+
+description: |
+  코호트 연구에서 치료군과 대조군의 Index Date를 설정하는 방법을 알아보자
+categories:
+  - review
+author:
+  name: "Wonbin Hahn"
+  email: andrewhahn2001@gmail.com
+  url: https://github.com/wbhahn
+image: img/logo.png
+fig_width: 400
+date: 2025-11-19
+format: html
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+
+# Introduction
+
+## RCT, RWD, 그리고 관찰 연구
+
+의학 연구에서 특정 치료법이나 요인의 인과관계를 규명하는 가장 강력한 표준 방법은 **무작위 대조 시험(Randomized Controlled Trial, RCT)**입니다. RCT는 연구 대상을 무작위로 치료군과 대조군에 배정하여 두 집단 간의 편향을 최소화합니다.
+
+하지만 RCT 가 항상 수행 가능한 것은 아닙니다. 비용과 시간의 문제도 있고, 윤리적인 문제도 베재할 수 없습니다. 예를 들어 담배와 같은 유해한 요인을 강제로 노출시킬 수 없습니다. 또한 엄격하게 통제된 환경에서 진행되기 때문에 현실의 다양한 환자들에게 동일하게 적용되기 어렵다는는 한계도 있습니다.
+
+이런 경우에 **실제 임상 데이터(Real-World Data, RWD)**가 쓰입니다. RWD는 건강보험심사평가원 데이터, 국민건강보험공단 데이터 등 실제 진료 환경에서 수집된 방대한 데이터를 의미합니다.
+
+이러한 RWD를 활용하는 대표적인 연구 방법이 바로 **관찰 연구(Observational Study)**이며, **코호트 연구(Cohort Study)**는 그 핵심 방법론 중 하나입니다.
+
+## Cohort Study 란?
+
+**코호트 연구(Cohort Study)**는 특정 요인에 노출된 집단(exposed group)과 노출되지 않은 집단(unexposed group)을 시간의 흐름에 따라 추적하며 특정 질병이나 결과(outcome)의 발생률을 비교하는 관찰 연구 방법입니다.
+
+잘 설계된 코호트 연구는 강력한 결과를 제공할 수 있습니다. 코호트 연구에서는 먼저 특정 노출이나 사건을 기준으로 질병이나 결과가 없는 연구 집단을 식별합니다. 그리고 이들을 시간의 흐름에 따라 추적하며 관심 있는 질병이나 결과가 발생할 때까지 관찰합니다. 이처럼 **노출이 결과보다 먼저 식별되기 때문에**, 코호트 연구는 인과성을 평가할 수 있는 시간적 기준을 가지며, 관찰 연구 중에서는 강력한 과학적 증거를 제공합니다.
+
+## Cohort vs. Case-Control
+
+관찰 연구에는 코호트 연구 외에도 환자-대조군 연구(Case-Control Study)가 있습니다. 두 연구는 RWD를 사용한다는 공통점이 있지만, 연구의 시작점과 방향이 정반대입니다.
+
+```{r, echo = F, message= F}
+library(data.table)
+library(flextable)
+library(dplyr)
+
+study_data <- data.table(
+  "비교 항목" = c(
+    "연구 시작점",
+    "연구 방향",
+    "연구 집단",
+    "주요 질문",
+    "주요 측정 지표"
+  ),
+  "Cohort Study" = c(
+    "노출 (Exposure)",
+    "미래 (Forward-looking)\n(노출 → 결과)",
+    "A약물 복용군 (노출군)\nvs.\nA약물 미복용군 (대조군)",
+    "\"A약 복용 시 B질병 발생\n위험이 얼마나 변하는가?\"",
+    "위험비 (RR, HR)"
+  ),
+  "Case-Control Study" = c(
+    "결과 (Outcome)",
+    "과거 (Backward-looking)\n(결과 → 노출)",
+    "B질병 환자군 (Case)\nvs.\nB질병 없는 대조군 (Control)",
+    "\"B질병 환자들이 과거에\nA약을 얼마나 더 많이 복용했는가?\"",
+    "교차비 (OR)"
+  )
+)
+
+# 2. Flextable 생성 및 스타일링
+ft <- flextable(study_data) %>%
+  # 테마 적용 (깔끔한 박스 스타일)
+  theme_box() %>%
+  
+  # 헤더 스타일 설정 (굵게, 배경색, 텍스트 색상)
+  bold(part = "header") %>%
+  bg(part = "header", bg = "#f2f2f2") %>%
+  color(part = "header", color = "black") %>%
+  
+  # 첫 번째 열(비교 항목) 굵게 처리
+  bold(j = 1, part = "body") %>%
+  
+  # 정렬 (모든 셀 가운데 정렬)
+  align(align = "center", part = "all") %>%
+  
+  # 세로 정렬 (중앙)
+  valign(valign = "center", part = "all") %>%
+  
+  # 폰트 크기 및 종류 설정 (옵션)
+  fontsize(size = 11, part = "all") %>%
+  
+  # 내용에 맞게 열 너비 자동 조절 (필요시 width()로 고정 가능)
+  set_table_properties(layout = "autofit", width = 1)
+# 테이블 출력
+ft
+
+```
+
+## Cohort Study 는 어떻게 진행되는가?
+
+일반적으로 코호트 연구는 다음과 같은 단계로 진행됩니다.
+
+1.  **연구 질문 설정**: 명확한 가설을 설정합니다. (예: "A 약물 복용이 B 질병 발생 위험을 낮추는가?")
+2.  **연구 집단 선정**:
+    -   **치료군/노출군 (Treatment/Exposed Group)**: A 약물을 복용한 사람
+    -   **대조군/비노출군 (Control/Unexposed Group)**: A 약물을 복용하지 않은 사람
+3.  **Index Date 정의**: 연구의 '시작일'을 정의합니다. 이는 **결과가 발생하기 전**이어야 하며, 두 집단 간의 추적 기간을 동일하게 설정하는 기준이 됩니다.
+4.  **추적 관찰 (Follow-up)**: 두 집단을 일정 기간 추적하며 B 질병 발생 여부를 관찰합니다.
+5.  **결과 분석**: 두 집단의 B 질병 발생률을 비교하여 위험비(Hazard Ratio, Relative Risk 등)를 계산합니다.
+
+이 글에서는 3번 단계의 Index Date를 정의하는 문제, 특히 **대조군의 Index Date를 어떻게 설정**해야 하는지에 초점을 맞춥니다.
+
+## Propensity Score Matching vs. Exact matching
+
+코호트 연구에서 치료군과 대조군을 비교할 때 흔히 잘못 생각할 수 있는 부분 중 하나는 대조군이 치료군과 **모든 점에서 달라야 한다고** 생각하는 것입니다. (예: 치료군은 환자, 대조군은 '완벽하게 건강한 사람')
+
+오히려 그 반대입니다. 공정한 비교를 위해서는 **대조군을 치료군과 최대한 비슷하게 설정**하는 것이 중요합니다.
+
+왜 그럴까요?
+
+대조군 역시 '만약 상황이 달랐다면' 치료군처럼 **노출될 가능성이 잠재적으로 있었던 집단**이어야 하기 때문입니다. 예를 들어 특정 항암제의 효과를 본다면, 대조군 역시 해당 암을 진단받았으나 그 약만 투여받지 않은 환자여야지, 암 자체가 없는 건강한 사람이면 비교가 어렵습니다.
+
+이렇게 두 집단의 특성(나이, 성별, 기저질환 중증도 등)이 비슷해야, 우리가 관찰한 결과의 차이가 그 노출(치료) 요인 하나에서 비롯되었다고 주장할 수 있습니다. 비교할 유사 집단을 찾는 과정을 **매칭(Matching)**이라고 합니다.
+
+-   **Exact Matching**:
+
+    나이, 성별 등 **모든 매칭 변수의 값이 정확히 일치**하는 대상을 1:1 또는 1:N으로 짝짓는 방법입니다. 직관적이지만 변수가 많아지면 매칭 대상을 찾기 어려워집니다.
+
+-   **Propensity Score Matching (PSM)**:
+
+    나이, 성별, 기저질환 등 수많은 변수를 사용하여 "**그 사람이 치료(Treatment)를 받을 확률**"을 하나의 점수(Propensity Score)로 계산합니다. 그 후, **점수가 비슷한** 치료군과 대조군을 매칭합니다. 많은 변수를 하나의 차원으로 줄여 매칭 효율성을 높이는 강력한 방법입니다.
+
+## Treatment vs. Control Group: Index Date 설정
+
+**치료군(Treatment Group)**은 보통 Index Date가 명확합니다. 질병을 처음 진단받은 날, 또는 특정 약을 처음 투여받은 날짜로 설정하면 됩니다.
+
+**하지만 대조군(Control Group)은 어떨까요?**
+
+만약 대조군이 '다른 질병' 진단군이거나 '다른 약' 투여군이라면 그 진단/투여 날짜를 Index Date로 사용하면 됩니다. 하지만 대조군이 해당 질병이 없거나 해당 약을 투여하지 않은 건강한 사람이라면 명확한 시작일이 없습니다. 이때 대조군의 Index Date를 어떻게 정해야 할까요? 이는 연구의 타당성에 매우 중요한 영향을 미칩니다.
+
+여러 논문을 리뷰해본 결과 크게 3가지 방법이 주로 사용됩니다.
+
+## 대조군 Index Date 설정 방법: 3가지 전략
+
+### 방법 1: 치료군의 Index Date를 그대로 사용
+
+가장 일반적이고 직관적인 방법입니다. 나이, 성별, 지역 등 공변량(covariate)으로 치료군과 대조군을 매칭한 후, **매칭된 치료군의 Index Date(진단/투여일)를 대조군의 Index Date로 그대로 할당**하는 방식입니다.
+
+-   **장점**:
+    -   개념이 단순하고 구현이 쉽습니다.
+    -   치료군과 대조군이 추적 관찰을 시작하는 달력상의 시점(calendar time)이 동일해져, 계절적 요인이나 시간에 따른 의료 시스템 변화 등(time-related biases)을 통제하기 용이합니다.
+-   **단점**:
+    -   매칭 시점에 대조군이 살아있고, 관찰 가능(under follow-up)해야 하며, 해당 질병이 없어야 한다는 조건을 만족해야 합니다.
+    -   1:N 매칭 시, 한 명의 치료군 날짜를 N명의 대조군이 공유하게 됩니다.
+
+> **\[예시 논문 1\] Forbes, Harriet et al. (eClinicalMedicine, 2023)**[^1]
+>
+> Matching was done **without replacement** and cancer survivors diagnosed **earliest in calendar time were matched first** (greedy matching approach), to avoid time-related biases. For each cancer survivor, we **randomly selected up to 10 cancer-free comparators from the overall unexposed population**, matched at index date on birth year ( ± 3 years, with closer matches given preference), sex and GP practice; comparators had to be under follow-up and have no cancer history (besides NMSC) on their index date (i.e., on the diagnosis date of the matched cancer case). The matching ratio of 1:10 was chosen as a compromise between maximising precision and minimising exclusions of some patients due to running out of available matches. Similar to cancer survivors, cancer-free comparators were required to have ≥1-year continuous registration prior to index date.
+
+암 환자 목록을 암 진단 날짜순으로 나열한 후 그 순서대로 대조군에서 10명씩 매칭한 것입니다. 매칭할 때는 그 해당 날짜에 유효한 정보를 갖고 있는 대조군 모두가 대상이 되며, 한 번 매칭된 대조군은 다시 복원되지 않는 greedy matching approach를 씁니다. Index date는 매칭된 암환자의 암 진단 날짜를 그대로 갖고옵니다. 여기서는 1:10 비율로 매칭을 한 것을 볼 수 있습니다.
+
+> **\[예시 논문 2\] Tuberculosis and Risk of Ischemic Stroke (Stroke, 2017)**[^2]
+>
+> We obtained an initial pool of ≈1 million non-tuberculosis cases for matching. Among them, we serially matched all tuberculosis cases diagnosed in a specific year with non tuberculosis cases who were alive until the end of that specific year based on birth year and sex. **Matched non-tuberculosis cases were assigned an index date that corresponded to the first date of tuberculosis diagnosis of the matched tuberculosis survivors.** If this matched non-tuberculosis case met the same exclusion criteria (ie, nonparticipants in health screening program within 2 year of index date, health screening data unavailable, ischemic stroke before index date, death, or ischemic stroke within 1 year after index date), they were excluded and new non-tuberculosis cases were matched based on the same exclusion criteria. Finally, 72 863 matched non-tuberculosis cases were included (Figure 1).
+
+결핵환자에 대해 비결핵 환자군을 매칭한 방식입니다. 비결핵 환자들의 Index date는 매칭된 결핵환자의 결핵 진단 날짜를 그대로 갖고옵니다. 매칭 이후에 제외된다면 또 다시 비결핵 환자군에서 매칭한 후 이 과정을 반복합니다.
+
+> **\[예시 논문 3\] Strongman, Helen et al. (The Lancet, 2019)**[^3]
+>
+> Cancer survivors entered the study **1 year after diagnosis (index date)** and were matched on age (±3 years), sex, and general practice with up to five controls with no history of cancer and at least 24 months of continuous preceding follow-up on the index date of the matched cancer survivor (mirroring the requirement on cancer survivors to have 1 year of follow-up before and after cancer diagnosis to enter the study on the index date). If a control went on to receive an incident cancer diagnosis during follow-up, they were no longer available as a control at that time but could then contribute as a site-specific cancer survivor (if the cancer was at one of the 20 sites of interest) with their own set of matched controls.
+
+암 생존자는 진단 1년 후(index date) 연구에 진입했으며, 나이(±3년), 성별, 병원이 동일하고 암 병력이 없는 최대 5명의 대조군과 매칭되었습니다. 대조군은 매칭된 암 생존자의 **index date에 최소 24개월의 연속적인 추적 관찰 기간**을 가지고 있어야 했습니다. 만약 대조군에 속한 사람이 추적 기간 동안 암 진단을 받게 된다면, 암 생존자로 바뀌어 그 자체의 매칭된 대조군을 갖게 되는 방식입니다.
+
+### 방법 2: 대조군 고유의 특정 날짜 사용
+
+두 번째 방법은 치료군의 날짜가 아니라, **대조군 개인이 가진 고유의 특정 날짜**를 Index Date로 사용하는 것입니다. 예를 들어 데이터베이스 상의 마지막 기록 날짜 또는 특정 건강검진일 등을 사용할 수 있습니다.
+
+-   **장점**:
+    -   대조군에서 비롯된 실제 날짜를 부여할 수 있습니다.
+-   **단점**:
+    -   선택한 날짜의 타당성이 중요합니다. 마지막 방문일이 질병 진단일과 임상적으로 동등한 의미인지 생각해봐야 합니다.
+    -   치료군과 대조군의 Index Date가 달력상 다른 시점에 분포하게 되어, 시점에 따른 편향이 발생할 수 있습니다. (Immortal Time Bias 관련 블로그 글 읽기!)
+
+> **\[예시 논문 1\] Nedelec, Thomas et al. (The Lancet Digital Health, 2022)**[^4]
+>
+> The control individuals were then matched with patients with Alzheimer's disease for age (SD 1 year) **at last record in the database** and sex.
+
+대조군은 **데이터베이스의 마지막 기록 날짜(last record in the database)**에서의 연령(±1년)과 성별을 기준으로 알츠하이머 환자군과 매칭되었습니다.
+
+### 방법 3: 치료군 Index Date Pool에서 무작위 할당 후 매칭
+
+세 번째 방법은 조금 더 정교한 접근 방식입니다.
+
+1.  모든 **치료군의 Index Date(예: 수술일) 목록(Pool)을 만듭니다.**
+2.  이 날짜들을 잠재적 대조군 전체에게 **무작위(random)로 할당** 합니다.
+3.  각 대조군은 무작위 할당된 Index Date (Pseudodate)를 기준으로 연구 포함/제외 기준을 만족하는지 확인합니다.
+4.  이 과정을 통해 수술 자격이 있었지만 받지 않은 대조군 풀이 생성됩니다.
+5.  이 풀에서 치료군과 1:N PSM 또는 Exact Matching을 수행합니다.
+
+-   **장점**:
+    -   대조군이 특정 시점에 치료(수술)를 받을 자격이 있었음을 시뮬레이션할 수 있습니다.
+    -   대조군 전체의 Index Date 분포가 치료군 전체의 Index Date 분포와 동일하게 되어, 시간에 따른 편향을 효과적으로 제어할 수 있습니다.
+-   **단점**:
+    -   구현이 다른 방식에 비해 복잡합니다.
+
+> **\[예시 논문 1\] Aminian A, et al. (JAMA, 2022)**[^5]
+>
+> To create a comparable control group, **dates for bariatric surgery were randomly assigned to a pool of 666,451 patients with a body mass index** (BMI; calculated as weight in kilograms divided by height in meters squared) of 35 or greater. Patients who had not undergone bariatric surgery were then removed from the pool if they failed to meet inclusion criteria on the assigned date, at which point the patients could be seen as potentially eligible for bariatric surgery. Using this algorithm, 128,119 comparable patients who had not undergone surgery were identified to be considered for matching. **With propensity matching of each patient who underwent bariatric surgery to 5 patients who had not undergone surgery** (nonsurgical control), 5053 patients in the bariatric surgery group and 25,265 matched patients in the nonsurgical control group were enrolled in the study. Doubly robust estimation combining the propensity score and outcome regression was used. **Each patient who underwent bariatric surgery was matched with a propensity score by the nearest-neighbor method to 5 patients who did not undergo bariatric surgery** (nonsurgical control), using a logistic regression model based on 10 a priori–identified potential confounders. The matching variables included the index date, age, sex, race (which was obtained from the EHR based on patient self-report using fixed categories and was classified as Black, White, or other), BMI on the index date (35-39.9, 40-44.9, 45-49.9, 50-54.9, 55-59.9, or 60-80), smoking history (categorized as never, former, or current), presence of type 2 diabetes, Elixhauser Comorbidity Index, Charlson Comorbidity Index, and state of residence (Florida, Ohio, or other US state).
+
+대조군을 만들기 위해 치료군의 비만대사수술 날짜들을 BMI 35 이상인 666,451명의 수술 받지 않은 환자 풀에 **무작위로 할당**했습니다. 수술을 받지 않은 환자들은 이 할당된 날짜(Pseudodate) 에 포함 기준을 충족하지 못하면 풀에서 제거되고, 모든 조건이 충족 된다면 그 매칭된 대조군의 Index date가 바로 그 Pseudodate가 됩니다. 이 알고리즘을 사용하여 매칭을 위해 고려할 수 있는 128,119명의 비교 가능한 비수술 환자를 식별했습니다. 1:5 Propensity Score 매칭을 통해 수술 그룹 5,053명과 비수술 대조군 25,265명이 연구에 등록되었습니다.
+
+# Conclusion
+
+이 글에서는 코호트 연구와 환자-대조군 연구의 주요 차이점을 비교하며 연구 설계의 중요성을 확인했습니다. 코호트 연구를 성공적으로 수행하고 결과의 타당성을 확보하기 위해 꼭 다뤄야 할 주제는 바로 대조군의 Index date 설정입니다.
+
+코호트 연구는 노출 시점에서 미래의 결과를 추적하지만, 대조군이 노출군과 동일한 방식으로 추적되려면 노출군에게 질병이 진단된 시점과 유사하게 설정되어야 합니다. 가상 노출 시작일 또는 가상의 질병 발생 위험에 노출된 시점을 정확히 정의해야 합니다. 이 Index date를 잘못 설정하면 선택 편향으로 이어질 수 있습니다.
+
+따라서 코호트 연구의 최종 해석을 내릴 때, 연구자는 대조군의 Index date 설정 방식이 연구의 목적과 노출-결과 관계의 시간성을 얼마나 정확하게 반영했는지 확인해야 합니다. 적절한 Index date 정의는 코호트 연구의 타당성을 지키는 증요한 부분입니다.
+
+[^1]: Forbes, Harriet, et al. "Early, medium and long-term mental health in cancer survivors compared with cancer-free comparators: matched cohort study using linked UK electronic health records." EClinicalMedicine 76 (2024).
+[^2]: Lee, Han Rim, et al. "Tuberculosis and risk of ischemic stroke: a nationwide cohort study." Stroke 53.11 (2022): 3401-3409.
+[^3]: Strongman, Helen, et al. "Medium and long-term risks of specific cardiovascular diseases in survivors of 20 adult cancers: a population-based cohort study using multiple linked UK electronic health records databases." The Lancet 394.10203 (2019): 1041-1054.
+[^4]: Nedelec, Thomas, et al. "Identifying health conditions associated with Alzheimer's disease up to 15 years before diagnosis: an agnostic study of French and British health records." The Lancet Digital Health 4.3 (2022): e169-e178.
+[^5]: Aminian, Ali, et al. "Association of bariatric surgery with cancer risk and mortality in adults with obesity." Jama 327.24 (2022): 2423-2433.
