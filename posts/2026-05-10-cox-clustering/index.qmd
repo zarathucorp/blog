@@ -1,0 +1,153 @@
+---
+title: "Cox 회귀에서 군집을 다루는 방법: strata, frailty, coxme, cluster"
+description: |
+  RCT의 covariate adjustment 논의에서 출발해, 다기관 임상시험·반복측정 같은 군집 자료를 Cox 모형에서 어떻게 다룰지 정리한다. strata, frailty, coxme, cluster의 차이를 baseline hazard와 conditional/marginal 관점에서 비교하고, GEE의 working correlation 구조와 어떻게 맞물리는지 살펴본다.
+categories:
+  - R
+  - survival
+  - cox
+  - cluster
+  - frailty
+  - rct
+author:
+  name: "Jinseob Kim"
+  email: jinseob2kim@gmail.com
+  url: https://github.com/jinseob2kim
+fig_width: 400
+date: 2026-05-10
+format: html
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+
+Pocock이 *Clinical Trials*(2026)에 쓴 covariate adjustment 리뷰를 보면, RCT 분석 단계에서 baseline 변수를 어떻게 다룰지에 대한 권장이 비교적 명확하게 정리되어 있다. 연속형 outcome은 ANCOVA로 baseline 값을 조정하는 것이 표준이고, 이분형이나 생존 outcome에서는 강한 예후인자를 고를 때만 통계력 이득이 의미 있다. 그리고 stratified randomization에 사용한 변수는 분석에서도 반드시 조정한다. 마지막 항목이 실무에서는 가장 자주 막히는 지점인데, "그래서 그 stratification factor를 Cox 모형에 어떻게 넣어야 하느냐"는 질문이 곧장 따라오기 때문이다.
+
+선택지는 크게 네 가지다. 그냥 공변량으로 넣는 방법, `strata()`로 baseline hazard를 분리하는 방법, frailty나 `coxme`로 random effect를 부여하는 방법, `cluster()`로 SE만 보정하는 방법. 같은 데이터라도 어떤 길을 고르느냐에 따라 baseline hazard 가정과 추정값의 해석(conditional vs marginal)이 달라지므로, 차이를 한 번 정리해 둘 가치가 있다.
+
+## 공변량으로 넣기 vs `strata()`로 넣기
+
+가장 단순한 형태는 그냥 공변량으로 추가하는 것이다.
+
+```r
+coxph(Surv(time, event) ~ trt + age, data = dd)
+```
+
+이 모형은 모든 환자가 공통의 baseline hazard $h_0(t)$를 공유한다고 본다. age는 그 위에 곱해지는 multiplicative factor일 뿐이다.
+
+$$
+h(t \mid \text{trt}, \text{age}) = h_0(t)\cdot\exp(\beta_1\,\text{trt} + \beta_2\,\text{age})
+$$
+
+age의 HR이 추정되고, 그 효과가 모든 시점에서 일정하다는 PH 가정이 따라붙는다. 연속형 변수도 자연스럽게 들어간다.
+
+반면 `strata()`로 넣으면 그림이 달라진다.
+
+```r
+coxph(Surv(time, event) ~ trt + strata(center), data = dd)
+```
+
+이제 각 층(center)마다 별도의 baseline hazard $h_{0k}(t)$를 가진다. 모양이 완전히 달라도 상관없다.
+
+$$
+h(t \mid \text{trt}, \text{center}=k) = h_{0k}(t)\cdot\exp(\beta_1\,\text{trt})
+$$
+
+대신 center 자체의 HR은 추정되지 않는다. partial likelihood가 층 내부에서만 계산되기 때문에 층 간 비교가 일어나지 않고, 그 덕분에 center에 대한 PH 가정도 굳이 필요 없다. 그래서 `cox.zph()`에서 PH 위반이 잡힌 변수, 다기관 시험에서 baseline 위험 자체가 다를 가능성이 높은 center, stratified randomization에 쓴 층화 변수처럼 "조정은 해야 하지만 그 변수의 HR에는 관심 없는" 경우 strata가 자연스러운 선택이다.
+
+## strata가 너무 많을 때
+
+strata가 만능은 아니다. Cox partial likelihood는 이벤트 시점에 같은 stratum의 risk set 환자들끼리 비교하는 구조라서, 층이 잘게 쪼개질수록 비교 가능한 환자 풀 자체가 작아진다. 어떤 층의 이벤트가 0개라면 그 층은 likelihood에 아무 정보도 기여하지 못하고, 한쪽 군 환자만 있는 층에서는 treatment 비교 자체가 불가능하다. 결국 통계력은 떨어지고 treatment 효과의 표준오차는 커진다.
+
+경험적으로 이벤트 수를 strata 수로 나눈 값이 10 미만이면 strata를 줄이거나 공변량으로 돌리는 편이 낫고, center 수가 20개를 넘어가면 random effect나 robust SE 쪽을 검토할 만하다.
+
+## Frailty와 coxme: random effect로 흡수하기
+
+군집 수가 많아 strata로 빼기엔 정보가 너무 분산되지만, 그렇다고 군집 차이를 무시할 수도 없을 때 쓰는 것이 shared frailty 모형이다.
+
+$$
+h_{ij}(t) = h_0(t)\cdot u_i\cdot \exp(\beta x_{ij}), \quad u_i = \exp(b_i),\; b_i \sim N(0, \sigma^2)
+$$
+
+여기서 결정적인 차이는, baseline hazard $h_0(t)$를 모든 군집이 그대로 공유한다는 점이다. 군집별 위험 차이는 baseline 모양을 바꾸지 않고 multiplicative random shift $u_i$로만 흡수된다. strata가 baseline 곡선 자체를 자유롭게 풀어주는 것과 정반대 전략이다.
+
+구현은 두 가지다. 오래된 방식은 `survival::coxph` 안에서 `frailty()` 항을 쓰는 것이고, 현대적 방식은 별도 패키지인 `coxme`다.
+
+| 항목 | `coxph + frailty()` | `coxme` |
+|---|---|---|
+| 추정 방식 | penalized partial likelihood | Laplace approximation |
+| 분포 | gamma 또는 gaussian | gaussian만 |
+| 다중 random effect | 단일만 | nested/crossed 모두 |
+| Random slope | 불가 | 가능 |
+| 문법 | `frailty(center)` | lme4 스타일 `(1\|center)` |
+
+```r
+coxph(Surv(time, event) ~ trt + age + frailty(center), data = dd)
+
+library(coxme)
+coxme(Surv(time, event) ~ trt + age + (1 | center), data = dd)
+coxme(Surv(time, event) ~ trt + age +
+        (1 | region/center) + (trt | center), data = dd)
+```
+
+survival 패키지를 쓴 사람이라면 누구나 `frailty()`에 익숙하지만, 저자 Therneau 본인이 후속작인 `coxme`를 권장한다. 단순한 단일 random intercept 분석이라도 `coxme` 쪽이 더 안정적이고, 나중에 nested 구조나 random slope를 붙일 때도 자연스럽게 확장된다.
+
+## `cluster()`: SE만 보정하기
+
+군집 효과 자체를 모델링하지는 않지만 군집 내 상관 때문에 SE는 보정해야 할 때, `cluster()`가 적절하다.
+
+```r
+coxph(Surv(time, event) ~ trt + age + cluster(center), data = dd)
+```
+
+이 접근은 GEE에서 working correlation을 independence로 두고 sandwich SE만 쓰는 것과 정확히 같은 사고방식이다. 점추정은 군집을 무시한 partial likelihood 그대로 두고, SE만 sandwich estimator로 군집 상관을 흡수한다. 군집 효과는 추정되지 않고, 결과로 얻는 HR은 population-averaged, 즉 marginal 해석을 가진다. 같은 데이터를 `coxme`로 풀면 within-cluster의 conditional HR이 나오는 것과 대비된다.
+
+## GEE의 exchangeable, AR1을 Cox에서도?
+
+자연스러운 다음 질문은 "그러면 GEE처럼 working correlation을 exchangeable이나 AR1로 줄 수도 있느냐"다. 표준 survival 패키지에는 그런 옵션이 없다. GEE는 mean model이라 working correlation 행렬을 score equation에 직접 끼울 수 있지만, Cox의 partial likelihood는 risk set 기반의 ranking 구조라서 N×N 상관행렬이 들어갈 자리가 자연스럽게 만들어지지 않는다.
+
+그렇다고 등가 수단이 전혀 없는 것은 아니다. shared frailty 자체가 사실상 exchangeable의 conditional 버전이다. 같은 군집의 환자들이 공통 $u_i$를 공유하므로, 군집 내 모든 쌍의 상관이 동일하다는 exchangeable의 정의를 그대로 만족한다. 정리하면 다음과 같이 매핑된다.
+
+| GEE working correlation | Cox 대응 |
+|---|---|
+| `independence` + robust SE | `coxph(... + cluster(center))` |
+| `exchangeable` | `coxme(... + (1 \| center))` 또는 `frailty()` |
+| `ar1` | 직접 등가 없음 (`tt()` 또는 시계열 frailty 필요) |
+| `unstructured` | 거의 시도되지 않음 |
+
+WLW(Wei–Lin–Weissfeld)나 Cai & Prentice 계열의 marginal Cox에 비독립 working correlation을 끼우는 방법이 이론적으로 존재하긴 한다. 다만 효율 이득이 작고 검증된 구현이 적어 임상 논문에서는 거의 보이지 않는다.
+
+## 어떻게 고를까
+
+네 가지를 한 번에 비교하면 다음과 같다.
+
+| 방법 | baseline hazard | 군집 효과 | 해석 |
+|---|---|---|---|
+| 공변량 | 공유 | 회귀계수로 추정 | conditional |
+| `strata()` | **층별 분리** | 추정 안 함 | conditional |
+| `frailty()` / `coxme` | 공유 | random effect | conditional |
+| `cluster()` | 공유 | 무시 (SE만 보정) | **marginal** |
+
+판단 순서는 보통 이렇다. 군집 효과 자체가 관심사이고 PH 가정도 그럴듯하면 그냥 공변량으로 넣으면 된다. baseline 위험의 모양 자체가 군집별로 다를 가능성이 크고 군집 수가 적당히 작으면 `strata()`가 자연스럽다. 군집 수가 많아 strata로 빼면 정보가 너무 분산되는 경우, 군집 차이를 random shift로 흡수하는 `coxme`가 효율적이다. 그리고 군집은 nuisance에 가깝고 marginal HR 해석이 알맞은 상황이라면 `cluster()`로 SE만 보정한다.
+
+다기관 RCT 표준 권장은 center를 strata로, 예후 변수는 공변량으로 두는 형태다.
+
+```r
+coxph(Surv(time, event) ~ trt + age + sex + strata(center), data = dd)
+```
+
+center가 50개 이상으로 많고 각 center 이벤트가 적다면 random effect 쪽으로 옮긴다.
+
+```r
+coxme(Surv(time, event) ~ trt + age + sex + (1 | center), data = dd)
+```
+
+같은 데이터라도 어느 길을 가느냐에 따라 추정값의 해석이 conditional에서 marginal로 바뀌므로, 결과를 보고할 때는 어떤 모형을 썼는지를 함께 적어두는 편이 안전하다.
+
+## 참고문헌
+
+- Pocock SJ. Covariate adjustment in randomized trials: An overview. *Clinical Trials*. 2026.
+- Therneau TM, Grambsch PM. *Modeling Survival Data: Extending the Cox Model*. Springer, 2000.
+- Therneau TM. coxme: Mixed Effects Cox Models. R package documentation.
+- Wei LJ, Lin DY, Weissfeld L. Regression analysis of multivariate incomplete failure time data by modeling marginal distributions. *JASA*. 1989;84:1065–1073.
