@@ -1,0 +1,492 @@
+---
+title: "Simon's Two-Stage Design"
+description: |
+  Phase II 단일군 임상시험에서 흔히 사용되는 Simon의 two-stage design에 대해 알아보고, R 코드와 clinfun 패키지 사용법까지 다룬다.
+categories:
+  - R
+  - statistics
+  - clinicaltrial
+  - studydesign
+  - samplesize
+  - oncology
+author:
+  name: "Siyoung Jang"
+  email: siyoung414@yonsei.ac.kr
+  url: https://github.com/siyoungjang4
+date: 2026-06-15
+format: html
+execute:
+  freeze: true
+draft: false
+license: CC BY-NC
+---
+
+## Introduction
+
+Phase II 단일군 임상시험에서는 새로운 치료가 다음 단계 연구로 넘어갈 만큼 충분한 반응을 보이는지 빠르게 판단해야 한다. 그런데 모든 환자를 한 번에 등록하면, 약제가 실제로는 효과가 낮은 경우에도 계획된 전체 환자가 치료에 노출될 수 있다.
+
+그렇다면 반응이 부족하다는 신호가 초기에 보일 때 조기 중단을 허용하면서도, 사전에 정한 alpha와 power 조건을 만족하는 설계를 만들 수 있을까?
+
+이를 위해 사용하는 대표적인 방법이 Simon의 two-stage design이다. 이 글에서는 Simon의 two-stage design이 어떤 상황에서 필요한지, 조기 중단과 최종 positive 판정 규칙이 어떻게 정의되는지, 그리고 R 코드와 `clinfun` 패키지로 실제 설계를 어떻게 구하고 점검하는지 살펴본다.
+
+### Simon의 two-stage design이란
+
+Simon의 two-stage design은 반응 여부처럼 결과가 두 가지로 나뉘는 단일군 Phase II 연구에서 사용하는 표본수 설계 방법이다. Stage 1에서 일부 환자만 먼저 평가하고, 반응자가 너무 적으면 효과 부족으로 무용하다 보아 조기 중단(futility)한다. 반응자가 충분하면 Stage 2로 진행해 추가 환자를 평가하고, 최종 반응자 수가 기준을 넘으면 치료가 유망하다고 판단한다.
+
+### 왜 필요한가
+
+전통적인 단일군 설계는 모든 환자를 한꺼번에 등록하므로, 약제가 효과가 낮아도 중간에 멈출 기회가 없다. 반대로 매 환자마다 결과를 보고 계속 여부를 판단하는 완전한 sequential design은 통계적으로는 세밀하지만 실제 임상시험 운영에서는 복잡하다.
+
+Simon의 two-stage design은 이 두 방식 사이의 절충안이다. 전체 등록을 한 번에 하지 않고 중간에 한 차례만 반응을 점검하기 때문에, 운영은 비교적 단순하게 유지하면서도 효과가 낮은 치료에 불필요하게 노출되는 환자를 줄일 수 있다.
+
+## 설계 원리
+
+### 기본 가정
+
+위와 같이 환자별 반응 여부를 기준으로 설계를 만들려면, 먼저 낮다고 볼 반응률과 유망하다고 볼 반응률을 정해야 한다. 또한 잘못된 판단을 어느 정도까지 허용할지도 미리 정한다.
+
+$p_0$
+: 후속 개발 가치가 낮다고 보는 반응률 기준. unacceptable response rate.
+
+$p_1$
+: 유망하다고 보는 목표 반응률. desirable response rate.
+
+$\alpha$
+: 효과가 낮은 치료를 유망하다고 잘못 판단할 확률의 허용 한계. Type I error.
+
+$\beta$
+: 치료가 유망한 수준인데 유망하지 않다고 잘못 판단할 확률. Type II error.
+
+Power
+: 치료가 유망한 수준일 때 유망하다고 판단할 확률. $1 - \beta$.
+
+### 통계적 모형
+
+앞에서 정한 $p_0$와 $p_1$은 실제 반응률 $p$를 판단하기 위한 기준값이다. 이제 특정 치료의 true response probability를 $p$라고 하고, 각 환자의 반응 여부를 response = 1, non-response = 0인 outcome으로 기록한다고 하자. 그러면 Stage 1에서 관찰되는 반응자 수 $X_1$은 다음과 같이 볼 수 있다.
+
+$$
+X_1 \sim \text{Binomial}(n_1, p)
+$$
+
+Stage 2까지 진행한 경우의 추가 반응 수는
+
+$$
+X_2 \sim \text{Binomial}(n_2, p), \quad n_2 = n - n_1
+$$
+
+로 볼 수 있다.
+
+따라서 Simon의 two-stage design은 정규근사나 연속형 검정통계량을 사용하는 방식이 아니라, 반응자 수가 나올 확률을 이항분포로 직접 계산하는 방식이다. 이 계산을 통해 $p = p_0$일 때 효과가 낮은 치료를 유망하다고 잘못 판단할 확률과, $p = p_1$일 때 유망한 치료를 실제로 유망하다고 판단할 확률을 평가한다.
+
+### 설계 parameters
+
+이 확률을 계산하려면 Stage 1에서 몇 명을 평가할지, 언제 조기 중단할지, 전체 몇 명까지 평가할지, 최종적으로 몇 명 이상 반응해야 유망하다고 판단할지에 대한 parameter들이 필요하다.
+
+기본 가정 하의 Simon의 two-stage design 결과는 보통 `(n1, r1, n, r)`로 표현한다. 아래 검정 규칙과 공식에서 이 기호들을 사용한다.
+
+| 기호 | 의미 |
+| --- | --- |
+| n1 | Stage 1 evaluable sample size (1단계의 표본 크기) |
+| r1 | Stage 1 futility boundary (1단계의 임계값) |
+| n | Total evaluable sample size (최종 표본 크기) |
+| r | Final futility boundary (최종 임계값) |
+
+### 가설과 판정 규칙
+
+단일군의 response endpoint에서 다음과 같은 가설을 설정한다.
+
+- $H_0: p \le p_0$
+- $H_1: p \ge p_1$
+
+여기서 $p$는 true response probability이며, $p_0$는 임상적으로 받아들이기 어려운 낮은 반응률, $p_1$은 후속 개발을 고려할 만한 목표 반응률이다.
+
+Simon의 two-stage design에서 사용하는 판정 규칙은 다음과 같다.
+
+- Stage 1에서 $X_1 \le r_1$이면 futility로 중단한다.
+- Stage 1에서 $X_1 > r_1$이면 Stage 2로 진행한다.
+- 최종적으로 $X_1 + X_2 > r$이면 positive 판정이다.
+
+따라서 최종 positive 판정 확률은 단순히 $P(\text{Binomial}(n, p) \ge r + 1)$가 아니다. Stage 1에서 중단된 경우 Stage 2로 갈 수 없기에, 실제 positive 판정 확률은 다음과 같이 계산된다.
+
+```text
+P(positive | p)
+= P(X1 > r1 and X1 + X2 > r)
+= Σ P(X1 = x) P(X2 ≥ r + 1 - x)
+  for x = r1 + 1, ..., n1
+```
+
+이를 binomial probability로 풀어 쓰면 다음과 같다.
+
+$$
+P(\text{positive} \mid p)
+=
+\sum_{x=r_1+1}^{n_1}
+\binom{n_1}{x}p^x(1-p)^{n_1-x}
+\left[
+\sum_{y=r+1-x}^{n_2}
+\binom{n_2}{y}p^y(1-p)^{n_2-y}
+\right]
+$$
+위 식은 특정 true response probability $p$에서 최종적으로 positive 판정을 받을 확률이다. 그러나 Simon의 two-stage design에서는 최종 판정 확률뿐 아니라 Stage 1에서 어느 정도의 확률로 조기 중단되는지도 중요하다. 이 값이 조기 중단 확률(Probability of Early Termination, PET)이다.
+
+#### **Stage 1 조기 중단 확률 (PET)**
+
+Stage 1에서 조기 중단되는 경우는, $X_1 \le r_1$일 때이다. 따라서 특정 true response probability $p$에서의 조기 중단 확률은 다음과 같다.
+
+$$
+PET(p) = P(X_1 \le r_1)
+=
+\sum_{x=0}^{r_1}
+\binom{n_1}{x}p^x(1-p)^{n_1-x}
+$$
+
+예를 들어 $n_1 = 10$, $r_1 = 1$인 설계(뒤에서 도출할 optimal design과 같다)에서 $p_0 = 0.10$이라면:
+
+$$
+PET(0.10) = P(\text{Binomial}(10, 0.10) \le 1) = 0.7361
+$$
+
+즉, true ORR이 10%라면 약 73.6% 확률로 Stage 1에서 조기 중단된다.
+
+#### **평균 표본 수**
+
+PET를 알면 평균적으로 몇 명의 환자를 평가하게 되는지도 계산할 수 있다. Stage 1의 $n_1$명은 항상 평가되고, Stage 2의 $n - n_1$명은 조기 중단되지 않은 경우에만 추가로 평가된다. 따라서 expected sample size는 다음과 같다.
+
+$$
+EN(p) = n_1 + [1 - PET(p)] \times (n - n_1)
+$$
+
+## 설계 탐색
+
+### 설계의 두 가지 기준
+
+앞에서 정의한 positive 판정 확률, PET, 평균 표본 수를 계산하면 각 설계 후보가 alpha와 power 조건을 만족하는지, 그리고 평균적으로 얼마나 효율적인지 비교할 수 있다. 조건을 만족하는 `(n1, r1, n, r)` 조합은 여러 개가 나올 수 있으므로, Simon의 two-stage design에서는 그중 어떤 설계를 선택할지에 대해 다음 두 가지 기준을 사용한다.
+
+#### **Optimal design**
+
+Optimal design은 효과가 낮은 치료, 즉 $p = p_0$인 상황에서 평균적으로 등록되는 환자 수를 최소화하는 설계다. 조기 중단이 자주 일어날 것으로 예상되는 상황에서 환자 노출을 줄이는 데 초점을 둔다. 다만 평균 표본 수를 줄이는 대신, 전체 최대 표본 수 $n$은 minimax design보다 커질 수 있다.
+
+$$
+\text{Optimal design} = \arg\min EN(p_0)
+$$
+
+#### **Minimax design**
+
+Minimax design은 가능한 설계 중 전체 최대 표본 수 $n$을 최소화하는 설계다. 연구 전체 규모를 작게 유지해야 하거나 등록 가능한 환자 수가 제한적인 상황에서 유리하다. 다만 최대 표본 수를 줄이는 대신, $p = p_0$에서의 평균 표본 수는 optimal design보다 커질 수 있다.
+
+$$
+\text{Minimax design} = \arg\min n
+$$
+
+따라서 평균적 효율성을 우선하면 optimal design을, 최대 표본 수를 제한해야 하면 minimax design을 선택한다.
+
+### 설계 순서
+
+실제 전수탐색은 가능한 `(n1, r1, n, r)` 조합을 만들고, 각 조합에서 positive 판정 확률과 평균 표본 수를 계산한 뒤 조건을 만족하는 설계를 고르는 방식으로 진행한다.
+
+1. `p0`, `p1`, `alpha`, `power` 결정
+2. 가능한 모든 `(n1, r1, n, r)` 조합 고려
+3. 각 조합에서 `p0`와 `p1`의 positive 판정 확률을 계산한다.
+4. alpha와 power 조건을 만족하는 설계만 남긴다.
+5. 남은 후보 중 optimal/minimax design을 선택한다.
+
+여기서의 positive 판정 확률은 Stage 1에서 중단되지 않은 경우에만 Stage 2로 진행할 수 있다는 조건을 반영해야 한다. 또한 전수탐색에서는 전체 표본 수 `n`의 탐색 범위 상한인 `max_n`을 설정해야 한다.
+
+### R 코드로 전수탐색
+
+먼저 기본 가정을 입력한다.
+
+```r
+library(data.table)
+
+p0 <- 0.10
+p1 <- 0.30
+alpha_target <- 0.05
+power_target <- 0.80
+max_n <- 40
+```
+
+다음으로 하나의 설계 `(n1, r1, n, r)`와 특정 반응률 `p`를 입력받아 positive 판정 확률, PET, 평균 표본 수를 계산하는 함수를 만든다.
+
+```r
+calc_oc <- function(n1, r1, n, r, p) {
+  n2 <- n - n1
+
+  ### Stage 2로 진행 가능한 Stage 1 반응자 수
+  x1_continue <- (r1 + 1):n1
+
+  ### Stage 1 중단 규칙을 반영한 최종 positive 판정 확률
+  prob_positive <- sum(
+    dbinom(x1_continue, n1, p) *
+      pbinom(r - x1_continue, n2, p, lower.tail = FALSE)
+  )
+
+  ### Stage 1 조기 중단 확률
+  pet <- pbinom(r1, n1, p)
+
+  ### 평균 표본 수
+  expected_n <- n1 + (1 - pet) * n2
+
+  list(prob_positive = prob_positive, pet = pet, expected_n = expected_n)
+}
+```
+
+이제 가능한 설계 조합을 만든다. 전체 grid를 한 번에 크게 만들기보다, `n`별로 가능한 범위만 생성한 뒤 합친다.
+
+```r
+design_grid <- rbindlist(lapply(2:max_n, function(n) {
+  CJ(n1 = 1:(n - 1), r1 = 0:(n - 2), r = 0:(n - 1))[
+    r1 < n1 & r >= r1,
+    .(n1, r1, n = n, r)
+  ]
+}))
+
+nrow(design_grid)
+```
+
+```text
+[1] 223860
+```
+
+`max_n = 40`에서는 구조적으로 가능한 설계 조합이 223,860개 생성된다. 각 조합에 대해 `p0`와 `p1`에서의 operating characteristics를 계산하고, alpha와 power 조건을 만족하는 후보만 남긴다.
+
+```r
+candidate_list <- lapply(seq_len(nrow(design_grid)), function(i) {
+  design <- design_grid[i]
+
+  oc0 <- calc_oc(design$n1, design$r1, design$n, design$r, p0)
+  oc1 <- calc_oc(design$n1, design$r1, design$n, design$r, p1)
+
+  ### alpha, power 가정을 만족하지 않으면 제외
+  if (oc0$prob_positive > alpha_target ||
+      oc1$prob_positive < power_target) {
+    return(NULL)
+  }
+
+  data.table(
+    n1 = design$n1,
+    r1 = design$r1,
+    n = design$n,
+    r = design$r,
+    positive_if_at_least = design$r + 1,
+    alpha = oc0$prob_positive,
+    power = oc1$prob_positive,
+    pet_p0 = oc0$pet,
+    en_p0 = oc0$expected_n,
+    pet_p1 = oc1$pet,
+    en_p1 = oc1$expected_n
+  )
+})
+
+candidates <- rbindlist(candidate_list)
+nrow(candidates)
+```
+
+```text
+[1] 2597
+```
+
+총 2,597개의 후보 설계가 alpha와 power 조건을 만족한다. 이 후보들 중에서 `EN(p0)`가 가장 작은 설계를 optimal design으로, 전체 표본 수 `n`이 가장 작은 설계를 minimax design으로 선택한다.
+
+```r
+optimal_design <- candidates[order(en_p0, n, n1, r1, r)][1]
+minimax_design <- candidates[order(n, en_p0, n1, r1, r)][1]
+```
+
+결과를 정리하면 다음과 같다.
+
+| 기준 | n1 | r1 | n | r | Positive 기준 | Actual alpha | Actual power | PET(p0) | EN(p0) | PET(p1) | EN(p1) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Optimal | 10 | 1 | 29 | 5 | ≥ 6 | 0.0471 | 0.8051 | 0.7361 | 15.01 | 0.1493 | 26.16 |
+| Minimax | 15 | 1 | 25 | 5 | ≥ 6 | 0.0328 | 0.8017 | 0.5490 | 19.51 | 0.0353 | 24.65 |
+
+즉 optimal design은 `(n1=10, r1=1, n=29, r=5)`, minimax design은 `(n1=15, r1=1, n=25, r=5)`이다. 두 설계 모두 최종적으로 6명 이상 반응해야 positive 판정으로 본다.
+
+### clinfun 패키지 사용하기
+
+패키지를 사용할 수 있다면 R에서 아래처럼 간단히 확인하는 방법도 있다.
+
+```r
+library(clinfun)
+
+ph2simon(
+  pu = 0.10,   # unacceptable response rate, p0
+  pa = 0.30,   # desirable response rate, p1
+  ep1 = 0.05,  # type I error, alpha
+  ep2 = 0.20,  # type II error, beta = 1 - power
+  nmax = 100
+)
+```
+
+결과는 아래와 같이 나온다.
+
+```text
+ Simon 2-stage Phase II design
+
+Unacceptable response rate:  0.1
+Desirable response rate:  0.3
+Error rates: alpha =  0.05 ; beta =  0.2
+
+           r1 n1 r  n EN(p0) PET(p0)   qLo   qHi
+Minimax     1 15 5 25  19.51  0.5490 0.732 1.000
+Admissible  1 12 5 26  16.77  0.6590 0.482 0.732
+Admissible  1 11 5 27  15.84  0.6974 0.293 0.482
+Optimal     1 10 5 29  15.01  0.7361 0.000 0.293
+```
+
+직접 전수탐색한 결과와 동일하게 Minimax `(n1=15, r1=1, n=25, r=5)`, Optimal `(n1=10, r1=1, n=29, r=5)`이 나온다. 가운데 `Admissible` 행들은 optimal과 minimax 두 기준의 절충안으로, 최대 표본 수와 평균 표본 수 사이의 중간 후보에 해당한다.
+
+`clinfun::ph2simon()`에서 주의할 점은 `ep2`가 power가 아니라 beta라는 점이다. power 80%를 원하면 `ep2 = 0.20`을 넣어야 한다.
+
+또한 출력에서 `r1`, `r`은 "그 숫자 이하이면 실패" 또는 "그 숫자를 초과해야 성공"의 boundary다. 즉 `r = 5`는 5명이 반응했다는 뜻이 아니라, 6명 이상 반응해야 positive 판정이라는 뜻이다.
+
+## 설계 점검: operating characteristics
+
+Simon의 two-stage design에서 `(n1, r1, n, r)`가 정해졌다고 해서 설계 검토가 끝나는 것은 아니다. 실제 보고서나 protocol에서는 선택한 설계가 의도한 방식으로 작동하는지 확인해야 한다. 이를 위해 특정 true response probability $p$에서 positive 판정 확률, 조기 중단 확률, 평균 표본 수를 계산하는데, 이런 값들을 operating characteristics라고 한다.
+
+대표적으로 아래 항목을 확인한다.
+
+<table>
+<colgroup>
+<col style="width: 18%;">
+<col style="width: 40%;">
+<col style="width: 42%;">
+</colgroup>
+<thead>
+<tr>
+<th>항목</th>
+<th>의미</th>
+<th>확인 목적</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Actual alpha</td>
+<td>$p = p_0$에서 positive 판정 확률</td>
+<td>효과 낮은 치료를 잘못 유망하다고 판단할 위험</td>
+</tr>
+<tr>
+<td>Actual power</td>
+<td>$p = p_1$에서 positive 판정 확률</td>
+<td>유망한 치료를 놓치지 않을 확률</td>
+</tr>
+<tr>
+<td>PET($p_0$)</td>
+<td>$p = p_0$에서 Stage 1 조기 중단 확률</td>
+<td>효과 낮은 치료에서 환자 노출 감소</td>
+</tr>
+<tr>
+<td>EN($p_0$)</td>
+<td>$p = p_0$에서 평균 표본 수</td>
+<td>효과 낮은 치료에서 평균 등록 환자 수</td>
+</tr>
+<tr>
+<td>PET($p_1$)</td>
+<td>$p = p_1$에서 Stage 1 조기 중단 확률</td>
+<td>유망한 치료의 조기 중단 위험</td>
+</tr>
+<tr>
+<td>EN($p_1$)</td>
+<td>$p = p_1$에서 평균 표본 수</td>
+<td>유망한 치료에서 전체 진행 정도</td>
+</tr>
+</tbody>
+</table>
+
+이 과정이 필요한 이유는 Simon의 two-stage design에서 nominal alpha와 nominal power가 실제 값과 정확히 같지 않기 때문이다. Response count는 정수이고, `n1`, `r1`, `n`, `r`도 모두 정수이다. 따라서 가능한 설계 조합은 이산적이며, 실제 operating characteristics는 보통 `alpha = 0.0500`, `power = 0.8000`처럼 정확히 떨어지지 않는다. 중요한 것은 actual alpha가 사전 허용 기준 이하이고, actual power가 사전 목표 이상인지이다.
+
+아래 코드는 선택한 설계 `(n1, r1, n, r)`를 입력받아 그 operating characteristics를 직접 계산하는 예시다. 앞 전수탐색 결과의 `optimal_design` 행에도 같은 값이 들어 있지만, 외부 protocol에서 주어진 설계를 독립적으로 점검할 때 이 형태로 그대로 사용할 수 있다.
+
+### R 코드
+
+```r
+## 입력 설계 (전수탐색 또는 protocol에서 확정된 설계)
+n1 <- 10
+r1 <- 1
+n <- 29
+r <- 5
+
+## operating characteristics 계산 함수 (전수탐색에서 쓴 것과 동일한 공식)
+calc_oc <- function(n1, r1, n, r, p) {
+  n2 <- n - n1
+
+  ## Stage 2로 진행 가능한 Stage 1 반응자 수
+  x1_continue <- (r1 + 1):n1
+
+  ## Stage 1 중단 규칙을 반영한 최종 positive 판정 확률
+  prob_positive <- sum(
+    dbinom(x1_continue, size = n1, prob = p) *
+      pbinom(r - x1_continue, size = n2, prob = p, lower.tail = FALSE)
+  )
+
+  ## Stage 1 조기 중단 확률
+  pet <- pbinom(r1, size = n1, prob = p)
+
+  ## 평균 표본 수
+  en <- n1 + (1 - pet) * n2
+
+  data.frame(
+    p = p,
+    prob_positive = prob_positive,
+    pet = pet,
+    expected_n = en
+  )
+}
+
+## p0와 p1에서 확인
+oc_p0 <- calc_oc(p = 0.10, n1 = n1, r1 = r1, n = n, r = r)
+oc_p1 <- calc_oc(p = 0.30, n1 = n1, r1 = r1, n = n, r = r)
+
+oc_p0
+oc_p1
+```
+
+결과는 아래와 같이 나온다.
+
+```text
+    p prob_positive       pet expected_n
+1 0.1    0.04708631 0.7360989   15.01412
+    p prob_positive       pet expected_n
+1 0.3     0.8050629 0.1493083   26.16314
+```
+
+각 열은 차례로 positive 판정 확률, PET, expected sample size다. 정리하면 다음과 같다.
+
+| 항목 | p0 = 0.10 | p1 = 0.30 |
+| --- | --- | --- |
+| positive 판정 확률 | 4.71% (actual alpha) | 80.51% (actual power) |
+| PET | 73.61% | 14.93% |
+| Expected N | 15.01 | 26.16 |
+
+actual one-sided alpha 약 4.71%는 사전 허용 기준(5%) 이하이고, actual power 약 80.51%는 사전 목표(80%) 이상이므로 이 설계는 의도한 대로 작동한다.
+
+위 예시처럼 실제 alpha와 power가 목표 조건을 만족하는지 확인하면, 해당 설계가 통계적으로 의도한 방식으로 작동하는지 판단할 수 있다.
+
+## 장점과 한계
+
+마무리에 앞서, Simon의 two-stage design의 장점과 한계를 간단히 짚어보자.
+
+**장점**
+
+- Stage 1에서 한 번만 중간 점검을 하므로 운영이 단순하고, 완전한 sequential design보다 임상시험 현장에 적용하기 쉽다.
+- 효과가 낮은 치료를 조기에 중단해 불필요한 환자 노출과 평균 표본 수를 줄인다.
+
+**한계**
+
+- historical control에 근거한 $p_0$ 설정에 민감하므로, 낮다고 볼 반응률 기준을 임상적으로 신중히 정해야 한다.
+- 단일군 설계이므로 대조군 대비 치료 효과를 직접 입증하지는 못한다.
+- response duration, safety, dose intensity처럼 반응 여부 외의 정보는 설계 기준에 직접 반영되지 않는다.
+
+## 마무리
+
+지금까지 Simon의 two-stage design의 개념과 판정 규칙, R 코드와 clinfun 패키지 사용법, 그리고 operating characteristics 점검까지 살펴보았다. 이처럼 Simon의 two-stage design은 Stage 1에서 futility를 한 번 점검하는 단순한 구조만으로, 효과가 낮은 치료에 대한 환자 노출을 줄이며 alpha와 power를 만족시킬 수 있다.
+
+## Reference
+
+[1] R. Simon, "Optimal two-stage designs for phase II clinical trials," Controlled Clinical Trials, vol. 10, no. 1, pp. 1–10, 1989.
+
+[2] T. Koyama and H. Chen, "Proper inference from Simon's two-stage designs," Statistics in Medicine, vol. 27, no. 16, pp. 3145–3154, 2008.
+
+[3] A. P. Mander and S. G. Thompson, "Two-stage designs optimal under the alternative hypothesis for phase II cancer clinical trials," Contemporary Clinical Trials, vol. 31, no. 6, pp. 572–578, 2010.
+
+[4] G. Shan and J. J. Chen, "Optimal inference for Simon's two-stage design with over or under enrollment at the second stage," Communications in Statistics - Simulation and Computation, vol. 47, no. 4, pp. 1157–1167, 2017.
